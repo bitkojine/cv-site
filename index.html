@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Robertas Rudys</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+            font-size: 10pt;
+            line-height: 1.3;
+            color: #333;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 8.5in;
+            margin: 0 auto;
+            background: white;
+            padding: 0.5in;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            min-height: 11in;
+        }
+        
+        h1 {
+            font-size: 20pt;
+            margin-bottom: 3px;
+            color: #000;
+            font-weight: 600;
+        }
+        
+        h2 {
+            font-size: 12pt;
+            margin-top: 12px;
+            margin-bottom: 5px;
+            color: #000;
+            border-bottom: 1.5px solid #e0e0e0;
+            padding-bottom: 2px;
+            font-weight: 600;
+        }
+        
+        h3 {
+            font-size: 11pt;
+            margin-top: 8px;
+            margin-bottom: 2px;
+            color: #333;
+            font-weight: 600;
+        }
+        
+        p {
+            margin-bottom: 5px;
+        }
+        
+        ul {
+            margin-left: 20px;
+            margin-bottom: 5px;
+        }
+        
+        li {
+            margin-bottom: 2px;
+        }
+        
+        strong {
+            font-weight: 600;
+            color: #000;
+        }
+        
+        em {
+            font-style: italic;
+            color: #555;
+        }
+        
+        a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+        
+        hr {
+            border: none;
+            border-top: 1px solid #ddd;
+            margin: 16px 0;
+        }
+        
+        code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 10pt;
+        }
+        
+        @media print {
+            @page {
+                margin: 0.4in 0.5in;
+                size: letter;
+            }
+            
+            body {
+                background: white;
+                padding: 0;
+                margin: 0;
+            }
+            
+            .container {
+                box-shadow: none;
+                padding: 0;
+                max-width: 100%;
+                margin: 0;
+                page-break-after: avoid;
+                page-break-inside: avoid;
+            }
+            
+            h1, h2, h3 {
+                page-break-after: avoid;
+                page-break-inside: avoid;
+            }
+            
+            h2 {
+                margin-top: 8px;
+                margin-bottom: 3px;
+            }
+            
+            h3 {
+                margin-top: 4px;
+                margin-bottom: 2px;
+            }
+            
+            p {
+                margin-bottom: 3px;
+                page-break-inside: avoid;
+            }
+            
+            /* Force everything on one page */
+            html, body {
+                height: 100%;
+                overflow: hidden;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+        }
+        
+        .download-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #0066cc;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            cursor: pointer;
+            border: none;
+            font-size: 14px;
+            z-index: 1000;
+            transition: background 0.2s;
+        }
+        
+        .download-btn:hover {
+            background: #0052a3;
+        }
+        
+        .cv-notice {
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 12px 16px;
+            max-width: 280px;
+            font-size: 11px;
+            line-height: 1.4;
+            color: #495057;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            z-index: 999;
+        }
+        
+        .cv-notice strong {
+            display: block;
+            margin-bottom: 6px;
+            color: #212529;
+            font-size: 12px;
+        }
+        
+        .cv-notice p {
+            margin-bottom: 0;
+        }
+        
+        @media print {
+            .download-btn, .cv-notice {
+                display: none;
+            }
+        }
+        
+        /* Mobile portrait and small screens */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+                padding-top: 140px;
+            }
+            
+            .download-btn {
+                position: fixed;
+                top: 10px;
+                left: 10px;
+                right: 10px;
+                width: calc(100% - 20px);
+                text-align: center;
+            }
+            
+            .cv-notice {
+                position: fixed;
+                top: 60px;
+                left: 10px;
+                right: 10px;
+                max-width: none;
+                width: calc(100% - 20px);
+            }
+            
+            .container {
+                padding: 15px;
+            }
+        }
+        
+        /* Tablet and medium screens */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .cv-notice {
+                max-width: 240px;
+                font-size: 10px;
+            }
+            
+            .cv-notice strong {
+                font-size: 11px;
+            }
+        }
+        
+        /* Mobile landscape */
+        @media (max-width: 768px) and (orientation: landscape) {
+            body {
+                padding-top: 10px;
+            }
+            
+            .download-btn {
+                position: static;
+                display: block;
+                margin: 10px;
+                width: calc(100% - 20px);
+            }
+            
+            .cv-notice {
+                position: static;
+                margin: 10px;
+                width: calc(100% - 20px);
+            }
+        }
+        
+        /* Very small screens */
+        @media (max-width: 480px) {
+            .cv-notice {
+                font-size: 10px;
+                padding: 10px 12px;
+            }
+            
+            .cv-notice strong {
+                font-size: 11px;
+                margin-bottom: 4px;
+            }
+            
+            .download-btn {
+                font-size: 13px;
+                padding: 8px 16px;
+            }
+        }
+    </style>
+    <script>
+        function downloadPDF() {
+            // Show instructions, then open print dialog
+            alert('In the print dialog:\n\n1. Select "Save as PDF" as the destination\n2. Click "Save"\n3. Choose where to save your PDF file');
+            window.print();
+        }
+    </script>
+</head>
+<body>
+    <button class="download-btn" onclick="downloadPDF()">Download PDF</button>
+    <div class="container">
+<h1>Robertas Rudys</h1>
+
+<strong>Full-Stack Developer | Angular • ASP.NET/C# • Risk Technology</strong>
+
+<p>robertas.rudys@gmail.com | Kaunas, Lithuania | [LinkedIn](https://www.linkedin.com/in/robertasr/) | [GitHub](https://github.com/bitkojine)</p>
+
+<hr>
+
+<h2>Summary</h2>
+
+<p>Full-stack developer with 7 years building high-performance, data-intensive applications using Angular and .NET/C#. Specialized in scalable backend services, SQL Server optimization for high-volume transactions, and responsive Angular dashboards. Strong Azure cloud and CI/CD experience in mission-critical environments.</p>
+
+<strong>Tech:</strong> Angular, TypeScript, ASP.NET Core, C#, Azure SQL Server, REST APIs, Microservices, Kafka, Real-time Processing
+
+<hr>
+
+<h2>Experience</h2>
+
+<h3>Software Engineer | Adform | <em>2025 - Present</em></h3>
+<strong>Tech Stack:</strong> .NET/C#, Java, Scala, Kafka, Microservices, REST APIs
+
+<p>Built microservices for real-time ad bidding platform processing millions of daily transactions with sub-100ms latency. Implemented Kafka-based message queues for reliable data flow in distributed architecture. Optimized .NET services and database queries for performance-critical financial transactions.</p>
+
+<strong>Key Impact:</strong> Real-time transaction processing, high-volume data handling, distributed systems, financial transaction flows
+
+<hr>
+
+<h3>Software Engineer | Ignitis Group | <em>2024 - 2025</em></h3>
+<strong>Tech Stack:</strong> .NET/C#, Azure SQL Server, Azure Synapse, ETL, Power BI
+
+<p>Built enterprise billing systems processing high-volume financial transactions. Designed ETL pipelines for data warehouse and data lake architecture. Developed self-service portals with data visualization dashboards. Optimized Azure SQL Server queries in hybrid cloud infrastructure.</p>
+
+<strong>Key Impact:</strong> Financial data processing, Azure cloud, data warehousing, ETL pipelines, enterprise-scale systems
+
+<hr>
+
+<h3>Software Engineer | SUPER HOW? Group | <em>2023 - 2024</em></h3>
+<strong>Tech Stack:</strong> TypeScript, .NET/C#
+
+<p>Full-stack development for education platform. Rapid onboarding and agile delivery in time-boxed projects.</p>
+
+<hr>
+
+<h3>Software Engineer | Baltic Amadeus | <em>2022 - 2023</em></h3>
+<strong>Tech Stack:</strong> .NET/C#
+
+<p>Enterprise solutions with scalable backend services and system integration.</p>
+
+<hr>
+
+<h3>Software Engineer | Simplanova | <em>2021 - 2022</em></h3>
+<strong>Tech Stack:</strong> .NET/C#
+
+<p>Full-stack .NET development with focus on code quality and maintainable architecture.</p>
+
+<hr>
+
+<h3>Software Engineer | Euromonitor International | <em>2019 - 2021</em></h3>
+<strong>Tech Stack:</strong> Angular, TypeScript, .NET/C#, Python, MS SQL Server, ElasticSearch, ETL
+
+<p>Built Angular dashboards and .NET REST APIs for global market intelligence platform serving 210+ countries. Developed data visualization components for financial analytics. Reduced query times by 61% through SQL Server optimization. Implemented ElasticSearch for sub-second search on large datasets. Designed ETL pipelines for multi-country financial data.</p>
+
+<strong>Key Impact:</strong> Angular dashboards, data visualization, financial analytics, REST API design, SQL Server optimization, ETL architecture
+
+<hr>
+
+<h2>Technical Skills</h2>
+
+<strong>Frontend:</strong> Angular, TypeScript, data visualization, REST API integration
+
+<strong>Backend:</strong> ASP.NET Core, C#, Entity Framework, Microservices, Kafka, REST APIs
+
+<strong>Databases:</strong> Azure SQL Server, MS SQL Server, T-SQL, ElasticSearch, ETL pipelines, data warehouse
+
+<strong>Cloud:</strong> Azure (SQL Server, Synapse, DevOps), CI/CD, hybrid infrastructure
+
+<strong>Domain:</strong> Financial data processing, high-volume transactions, analytics platforms, real-time systems, enterprise-scale applications
+
+<hr>
+
+<h2>Why Risk Technology</h2>
+
+<p>My career focuses on systems handling critical data flows - real-time financial transactions, billing systems, and analytics platforms processing large-scale data. Risk technology combines the technical challenges I excel at (high-performance systems, large datasets, real-time processing) with meaningful financial impact.</p>
+
+<p>Angular for intuitive dashboards and ASP.NET for scalable backend services align perfectly with risk technology needs. My experience optimizing SQL Server, building ETL pipelines, and ensuring system reliability translates directly to risk platform demands.</p>
+
+<hr>
+
+<h2>Availability</h2>
+
+<p>Available for contract (3-6 months) or permanent positions. Remote preferred. Can start immediately.</p>
+    </div>
+</body>
+</html>
