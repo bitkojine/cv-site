@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Robertas Rudys</title>
+    <title>CV</title>
     <style>
         * {
             margin: 0;
@@ -119,32 +119,57 @@
                 margin: 0;
             }
             
+            /* Prevent headings from being orphaned */
             h1, h2, h3 {
                 page-break-after: avoid;
                 page-break-inside: avoid;
             }
             
+            /* Major sections should start fresh if near page break */
             h2 {
                 margin-top: 8px;
                 margin-bottom: 3px;
+                page-break-before: auto;
             }
             
+            /* Job entries should stay together */
             h3 {
                 margin-top: 4px;
                 margin-bottom: 2px;
                 page-break-after: avoid;
+                page-break-before: auto;
+            }
+            
+            /* Keep h3 with following content */
+            h3 + p,
+            h3 + strong {
+                page-break-before: avoid;
             }
             
             p {
                 margin-bottom: 3px;
+                orphans: 3;
+                widows: 3;
             }
             
+            /* Keep lists together */
             ul {
                 page-break-inside: avoid;
             }
             
             li {
                 page-break-inside: avoid;
+            }
+            
+            /* Horizontal rules mark section boundaries */
+            hr {
+                page-break-after: avoid;
+                margin: 12px 0 8px 0;
+            }
+            
+            /* Keep strong tags with following content */
+            strong {
+                page-break-after: avoid;
             }
         }
         
