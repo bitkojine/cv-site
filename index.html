@@ -117,8 +117,6 @@
                 padding: 0;
                 max-width: 100%;
                 margin: 0;
-                page-break-after: avoid;
-                page-break-inside: avoid;
             }
             
             h1, h2, h3 {
@@ -134,17 +132,19 @@
             h3 {
                 margin-top: 4px;
                 margin-bottom: 2px;
+                page-break-after: avoid;
             }
             
             p {
                 margin-bottom: 3px;
+            }
+            
+            ul {
                 page-break-inside: avoid;
             }
             
-            /* Force everything on one page */
-            html, body {
-                height: 100%;
-                overflow: hidden;
+            li {
+                page-break-inside: avoid;
             }
         }
         
