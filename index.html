@@ -100,6 +100,10 @@
             font-size: 10pt;
         }
         
+        .job-section {
+            page-break-inside: avoid;
+        }
+        
         @media print {
             @page {
                 margin: 0.4in 0.5in;
@@ -120,7 +124,7 @@
             }
             
             /* Prevent headings from being orphaned */
-            h1, h2, h3 {
+            h1, h2 {
                 page-break-after: avoid;
                 page-break-inside: avoid;
             }
@@ -132,17 +136,26 @@
                 page-break-before: auto;
             }
             
-            /* Job entries should stay together */
+            /* Job entries (h3) must stay together with all their content */
             h3 {
-                margin-top: 4px;
+                margin-top: 8px;
                 margin-bottom: 2px;
-                page-break-after: avoid;
                 page-break-before: auto;
+                page-break-after: avoid;
+                page-break-inside: avoid;
             }
             
-            /* Keep h3 with following content */
-            h3 + p,
-            h3 + strong {
+            /* Keep all content after h3 together until next hr */
+            h3 ~ p,
+            h3 ~ strong,
+            h3 ~ ul {
+                page-break-before: avoid;
+                page-break-inside: avoid;
+            }
+            
+            /* Prevent page breaks between h3 and the next hr */
+            h3 + strong,
+            h3 + p {
                 page-break-before: avoid;
             }
             
@@ -150,6 +163,7 @@
                 margin-bottom: 3px;
                 orphans: 3;
                 widows: 3;
+                page-break-inside: avoid;
             }
             
             /* Keep lists together */
@@ -161,15 +175,17 @@
                 page-break-inside: avoid;
             }
             
-            /* Horizontal rules mark section boundaries */
+            /* Horizontal rules mark job boundaries - allow breaks here */
             hr {
-                page-break-after: avoid;
+                page-break-before: auto;
+                page-break-after: auto;
                 margin: 12px 0 8px 0;
             }
             
             /* Keep strong tags with following content */
             strong {
                 page-break-after: avoid;
+                page-break-inside: avoid;
             }
         }
         
@@ -320,6 +336,32 @@
             alert('In the print dialog:\n\n1. Select "Save as PDF" as the destination\n2. Click "Save"\n3. Choose where to save your PDF file');
             window.print();
         }
+        
+        // Wrap job sections to prevent page breaks within them
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.querySelector('.container');
+            const h3Elements = container.querySelectorAll('h3');
+            
+            h3Elements.forEach(function(h3) {
+                // Create wrapper div
+                const wrapper = document.createElement('div');
+                wrapper.className = 'job-section';
+                
+                // Insert wrapper before h3
+                h3.parentNode.insertBefore(wrapper, h3);
+                
+                // Move h3 into wrapper
+                wrapper.appendChild(h3);
+                
+                // Move all following siblings until next h3 or hr
+                let nextElement = wrapper.nextSibling;
+                while (nextElement && nextElement.tagName !== 'H3' && nextElement.tagName !== 'HR' && nextElement.tagName !== 'H2') {
+                    const current = nextElement;
+                    nextElement = nextElement.nextSibling;
+                    wrapper.appendChild(current);
+                }
+            });
+        });
     </script>
 </head>
 <body>
