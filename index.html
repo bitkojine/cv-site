@@ -3,7 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CV</title>
+    <title>CV - Full-Stack Developer</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Full-stack developer with 7 years building high-performance applications using Angular and .NET/C#. Specialized in financial services, analytics platforms, and enterprise systems.">
+    <meta name="author" content="Robertas Rudys">
+    <meta name="keywords" content="Full-Stack Developer, Angular, ASP.NET, C#, Azure, Microservices, Software Engineer">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Robertas Rudys - Full-Stack Developer">
+    <meta property="og:description" content="Full-stack developer with 7 years building high-performance applications using Angular and .NET/C#">
+    <meta property="og:type" content="profile">
+    <meta property="og:url" content="https://robertasrudys.com">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Robertas Rudys - Full-Stack Developer">
+    <meta name="twitter:description" content="Full-stack developer with 7 years building high-performance applications using Angular and .NET/C#">
+    
     <style>
         * {
             margin: 0;
@@ -110,6 +127,13 @@
             page-break-inside: avoid;
         }
         
+        /* Page counter for print */
+        @page {
+            @bottom-right {
+                content: counter(page) " of " counter(pages);
+            }
+        }
+        
         @media print {
             @page {
                 margin: 0.4in 0.5in;
@@ -192,6 +216,18 @@
             strong {
                 page-break-after: avoid;
                 page-break-inside: avoid;
+            }
+            
+            /* Show URLs after links in print */
+            a[href]:after {
+                content: " (" attr(href) ")";
+                font-size: 9pt;
+                color: #666;
+            }
+            
+            /* Don't show URL for anchor links */
+            a[href^="#"]:after {
+                content: "";
             }
         }
         
@@ -319,9 +355,9 @@
 
 <h2>Summary</h2>
 
-<p>Full-stack developer with 7 years building high-performance, data-intensive applications. Proven expertise in Angular and .NET/C# for financial services, analytics platforms, and enterprise systems. Track record of optimizing SQL Server performance (61% query time reduction), architecting microservices handling millions of daily transactions, and building real-time data processing pipelines.</p>
+<p>Full-stack developer with 7 years building high-performance applications for financial services, analytics, and enterprise systems. Specialized in Angular and .NET/C# with proven results: 61% query optimization, microservices handling millions of daily transactions, and real-time data pipelines.</p>
 
-<strong>Core Expertise:</strong> Angular • ASP.NET Core • Azure SQL Server • Microservices • Real-time Processing • ETL Pipelines
+<strong>Core Stack:</strong> Angular • ASP.NET Core • Azure SQL Server • Microservices • Kafka • ETL Pipelines
 
 <hr>
 
@@ -395,14 +431,6 @@
 <strong>Cloud & DevOps:</strong> Azure (SQL Server, Synapse, DevOps, IoT Hub), CI/CD pipelines, hybrid cloud infrastructure
 
 <strong>Domain Expertise:</strong> Financial systems, high-volume transaction processing, real-time data pipelines, analytics platforms, enterprise applications
-
-<hr>
-
-<h2>Why Risk Technology</h2>
-
-<p>My career has been built on systems where data accuracy, performance, and reliability are non-negotiable - from real-time financial transactions processing millions daily, to enterprise billing systems, to analytics platforms serving global markets. Risk technology represents the perfect intersection of technical challenges I excel at and meaningful financial impact.</p>
-
-<p>The combination of Angular for building intuitive risk dashboards and ASP.NET for robust, scalable backend services directly aligns with modern risk platforms. My proven experience in SQL Server optimization, ETL pipeline architecture, and maintaining system reliability in production environments translates seamlessly to the demands of risk technology systems where precision and performance are critical.</p>
 
 <hr>
 
