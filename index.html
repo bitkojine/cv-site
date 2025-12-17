@@ -289,46 +289,48 @@
             }
         }
         
-        .download-btn {
+        /* Control Panel - Mobile First Design */
+        .control-panel {
             position: fixed;
-            top: 20px;
+            bottom: 20px;
             right: 20px;
-            background: var(--button-bg);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 5px;
-            text-decoration: none;
-            font-weight: 600;
-            box-shadow: 0 2px 8px var(--shadow-strong);
-            cursor: pointer;
-            border: none;
-            font-size: 14px;
             z-index: 1000;
-            transition: background 0.2s;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            align-items: flex-end;
+            opacity: 0.9;
+            transition: opacity 0.3s ease;
         }
         
-        .download-btn:hover {
-            background: var(--button-hover);
+        .control-panel:hover {
+            opacity: 1;
         }
         
-        .cv-selector {
-            position: fixed;
-            top: 20px;
-            right: 320px;
-            z-index: 1000;
+        .control-panel .cv-selector {
+            order: 1;
+        }
+        
+        .control-panel .dark-mode-toggle {
+            order: 2;
+        }
+        
+        .control-panel .download-btn {
+            order: 3;
         }
         
         .cv-selector select {
             background: var(--button-bg);
             color: white;
-            padding: 10px 15px;
+            padding: 8px 12px;
             border-radius: 5px;
             font-weight: 600;
             box-shadow: 0 2px 8px var(--shadow-strong);
             cursor: pointer;
             border: none;
-            font-size: 14px;
+            font-size: 13px;
             transition: background 0.2s;
+            min-width: 140px;
         }
         
         .cv-selector select:hover {
@@ -341,118 +343,107 @@
         }
         
         .dark-mode-toggle {
-            position: fixed;
-            top: 20px;
-            right: 170px;
             background: var(--button-bg);
             color: white;
-            padding: 10px 20px;
+            padding: 8px 12px;
             border-radius: 5px;
             text-decoration: none;
             font-weight: 600;
             box-shadow: 0 2px 8px var(--shadow-strong);
             cursor: pointer;
             border: none;
-            font-size: 14px;
-            z-index: 1000;
+            font-size: 13px;
             transition: background 0.2s;
+            min-width: 140px;
+            text-align: center;
         }
         
         .dark-mode-toggle:hover {
             background: var(--button-hover);
         }
         
+        .download-btn {
+            background: var(--button-bg);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            box-shadow: 0 2px 8px var(--shadow-strong);
+            cursor: pointer;
+            border: none;
+            font-size: 13px;
+            transition: background 0.2s;
+            min-width: 140px;
+            text-align: center;
+        }
+        
+        .download-btn:hover {
+            background: var(--button-hover);
+        }
+        
         @media print {
-            .download-btn, .dark-mode-toggle, .cv-selector {
+            .control-panel {
                 display: none;
             }
         }
         
-        /* Mobile portrait and small screens */
-        @media (max-width: 768px) {
-            body {
-                padding: 10px;
-                padding-top: 160px;
-            }
-            
-            .cv-selector {
-                position: fixed;
-                top: 10px;
-                left: 10px;
-                right: 10px;
-                width: calc(100% - 20px);
-            }
-            
-            .cv-selector select {
-                width: 100%;
-                text-align: center;
-            }
-            
-            .download-btn {
-                position: fixed;
-                top: 110px;
-                left: 10px;
-                right: 10px;
-                width: calc(100% - 20px);
-                text-align: center;
-            }
-            
-            .dark-mode-toggle {
-                position: fixed;
-                top: 60px;
-                left: 10px;
-                right: 10px;
-                width: calc(100% - 20px);
-                text-align: center;
-            }
-            
-            .container {
-                padding: 15px;
+        /* Tablet and larger screens */
+        @media (min-width: 769px) {
+            .control-panel {
+                bottom: 20px;
+                right: 20px;
             }
         }
         
-        /* Mobile landscape */
-        @media (max-width: 768px) and (orientation: landscape) {
-            body {
-                padding-top: 10px;
+        /* Mobile screens */
+        @media (max-width: 768px) {
+            .control-panel {
+                bottom: 15px;
+                right: 15px;
+                gap: 6px;
             }
             
-            .cv-selector {
-                position: static;
-                display: block;
-                margin: 10px;
-                width: calc(100% - 20px);
-            }
-            
-            .cv-selector select {
-                width: 100%;
-            }
-            
+            .cv-selector select,
+            .dark-mode-toggle,
             .download-btn {
-                position: static;
-                display: block;
-                margin: 10px;
-                width: calc(100% - 20px);
-            }
-            
-            .dark-mode-toggle {
-                position: static;
-                display: block;
-                margin: 10px;
-                width: calc(100% - 20px);
+                font-size: 12px;
+                padding: 7px 10px;
+                min-width: 120px;
             }
         }
         
         /* Very small screens */
         @media (max-width: 480px) {
-            .download-btn, .dark-mode-toggle {
-                font-size: 13px;
-                padding: 8px 16px;
+            .control-panel {
+                bottom: 10px;
+                right: 10px;
+                gap: 5px;
             }
             
-            .cv-selector select {
-                font-size: 13px;
-                padding: 8px 12px;
+            .cv-selector select,
+            .dark-mode-toggle,
+            .download-btn {
+                font-size: 11px;
+                padding: 6px 8px;
+                min-width: 100px;
+            }
+        }
+        
+        /* Landscape mobile - move to left side to avoid thumb area */
+        @media (max-width: 768px) and (orientation: landscape) {
+            .control-panel {
+                bottom: 15px;
+                left: 15px;
+                right: auto;
+            }
+        }
+        
+        /* Extra wide screens - move panel further from edge */
+        @media (min-width: 1200px) {
+            .control-panel {
+                right: 40px;
+                bottom: 40px;
             }
         }
     </style>
@@ -875,15 +866,17 @@
     </script>
 </head>
 <body>
-    <div class="cv-selector">
-        <select id="cvVersionSelect" onchange="switchCVVersion()">
-            <option value="backend">Backend Engineer</option>
-            <option value="fullstack">Full-Stack Developer</option>
-            <option value="risktech">Risk Technology</option>
-        </select>
+    <div class="control-panel">
+        <div class="cv-selector">
+            <select id="cvVersionSelect" onchange="switchCVVersion()">
+                <option value="backend">Backend Engineer</option>
+                <option value="fullstack">Full-Stack Developer</option>
+                <option value="risktech">Risk Technology</option>
+            </select>
+        </div>
+        <button class="dark-mode-toggle" onclick="toggleDarkMode()">🌙 Dark Mode</button>
+        <button class="download-btn" onclick="downloadPDF()">📄 Download PDF</button>
     </div>
-    <button class="dark-mode-toggle" onclick="toggleDarkMode()">🌙 Dark Mode</button>
-    <button class="download-btn" onclick="downloadPDF()">Download PDF</button>
     <div class="container">
         <!-- CV content will be loaded dynamically -->
     </div>
