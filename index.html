@@ -311,6 +311,35 @@
             background: var(--button-hover);
         }
         
+        .cv-selector {
+            position: fixed;
+            top: 20px;
+            right: 320px;
+            z-index: 1000;
+        }
+        
+        .cv-selector select {
+            background: var(--button-bg);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-weight: 600;
+            box-shadow: 0 2px 8px var(--shadow-strong);
+            cursor: pointer;
+            border: none;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+        
+        .cv-selector select:hover {
+            background: var(--button-hover);
+        }
+        
+        .cv-selector select option {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+        
         .dark-mode-toggle {
             position: fixed;
             top: 20px;
@@ -334,7 +363,7 @@
         }
         
         @media print {
-            .download-btn, .dark-mode-toggle {
+            .download-btn, .dark-mode-toggle, .cv-selector {
                 display: none;
             }
         }
@@ -343,12 +372,25 @@
         @media (max-width: 768px) {
             body {
                 padding: 10px;
-                padding-top: 110px;
+                padding-top: 160px;
+            }
+            
+            .cv-selector {
+                position: fixed;
+                top: 10px;
+                left: 10px;
+                right: 10px;
+                width: calc(100% - 20px);
+            }
+            
+            .cv-selector select {
+                width: 100%;
+                text-align: center;
             }
             
             .download-btn {
                 position: fixed;
-                top: 60px;
+                top: 110px;
                 left: 10px;
                 right: 10px;
                 width: calc(100% - 20px);
@@ -357,7 +399,7 @@
             
             .dark-mode-toggle {
                 position: fixed;
-                top: 10px;
+                top: 60px;
                 left: 10px;
                 right: 10px;
                 width: calc(100% - 20px);
@@ -373,6 +415,17 @@
         @media (max-width: 768px) and (orientation: landscape) {
             body {
                 padding-top: 10px;
+            }
+            
+            .cv-selector {
+                position: static;
+                display: block;
+                margin: 10px;
+                width: calc(100% - 20px);
+            }
+            
+            .cv-selector select {
+                width: 100%;
             }
             
             .download-btn {
@@ -396,6 +449,11 @@
                 font-size: 13px;
                 padding: 8px 16px;
             }
+            
+            .cv-selector select {
+                font-size: 13px;
+                padding: 8px 12px;
+            }
         }
     </style>
     <script>
@@ -405,72 +463,65 @@
             window.print();
         }
         
-        // Dark mode toggle functionality
-        function toggleDarkMode() {
-            const body = document.body;
-            const isDarkMode = body.classList.toggle('dark-mode');
+        // CV version switching functionality
+        function switchCVVersion() {
+            const select = document.getElementById('cvVersionSelect');
+            const selectedVersion = select.value;
             
             // Save preference to localStorage
-            localStorage.setItem('darkMode', isDarkMode ? 'enabled' : 'disabled');
+            localStorage.setItem('cvVersion', selectedVersion);
             
-            // Update button text
-            updateDarkModeButton(isDarkMode);
+            // Load the selected CV content
+            loadCVContent(selectedVersion);
+            
+            // Update page title and meta tags
+            updatePageMeta(selectedVersion);
         }
         
-        function updateDarkModeButton(isDarkMode) {
-            const button = document.querySelector('.dark-mode-toggle');
-            if (button) {
-                button.textContent = isDarkMode ? '☀️ Light Mode' : '🌙 Dark Mode';
-            }
-        }
-        
-        // Initialize dark mode on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            // Check localStorage for saved preference
-            const darkModePreference = localStorage.getItem('darkMode');
-            const isDarkMode = darkModePreference === 'enabled';
-            
-            if (isDarkMode) {
-                document.body.classList.add('dark-mode');
-            }
-            
-            updateDarkModeButton(isDarkMode);
-            
-            // Wrap job sections to prevent page breaks within them
+        function loadCVContent(version) {
             const container = document.querySelector('.container');
-            const h3Elements = container.querySelectorAll('h3');
+            const cvContent = getCVContent(version);
+            container.innerHTML = cvContent;
             
-            h3Elements.forEach(function(h3) {
-                // Create wrapper div
-                const wrapper = document.createElement('div');
-                wrapper.className = 'job-section';
-                
-                // Insert wrapper before h3
-                h3.parentNode.insertBefore(wrapper, h3);
-                
-                // Move h3 into wrapper
-                wrapper.appendChild(h3);
-                
-                // Move all following siblings until next h3 or hr
-                let nextElement = wrapper.nextSibling;
-                while (nextElement && nextElement.tagName !== 'H3' && nextElement.tagName !== 'HR' && nextElement.tagName !== 'H2') {
-                    const current = nextElement;
-                    nextElement = nextElement.nextSibling;
-                    wrapper.appendChild(current);
-                }
-            });
-        });
-    </script>
-</head>
-<body>
-    <button class="dark-mode-toggle" onclick="toggleDarkMode()">🌙 Dark Mode</button>
-    <button class="download-btn" onclick="downloadPDF()">Download PDF</button>
-    <div class="container">
-<h1>Robertas Rudys</h1>
+            // Re-wrap job sections for print formatting
+            wrapJobSections();
+        }
+        
+        function updatePageMeta(version) {
+            const titles = {
+                'backend': 'Robertas Rudys - Backend Software Engineer',
+                'fullstack': 'Robertas Rudys - Full-Stack Developer', 
+                'risktech': 'Robertas Rudys - Risk Technology Developer'
+            };
+            
+            const descriptions = {
+                'backend': 'Backend software engineer with 6+ years building high-performance systems using .NET/C#, microservices, and data processing.',
+                'fullstack': 'Full-stack developer with 7 years building high-performance applications using Angular and .NET/C#. Specialized in financial services, analytics platforms, and enterprise systems.',
+                'risktech': 'Full-stack developer specializing in risk technology and financial systems using Angular and .NET/C#.'
+            };
+            
+            const keywords = {
+                'backend': 'Backend Engineer, .NET, C#, Microservices, Azure, Software Engineer, Data Processing',
+                'fullstack': 'Full-Stack Developer, Angular, ASP.NET, C#, Azure, Microservices, Software Engineer',
+                'risktech': 'Risk Technology, Full-Stack Developer, Angular, ASP.NET, C#, Financial Systems'
+            };
+            
+            document.title = titles[version];
+            document.querySelector('meta[name="description"]').content = descriptions[version];
+            document.querySelector('meta[name="keywords"]').content = keywords[version];
+            document.querySelector('meta[property="og:title"]').content = titles[version];
+            document.querySelector('meta[property="og:description"]').content = descriptions[version];
+            document.querySelector('meta[name="twitter:title"]').content = titles[version];
+            document.querySelector('meta[name="twitter:description"]').content = descriptions[version];
+        }
+        
+        function getCVContent(version) {
+            const cvData = {
+                'backend': `<h1>Robertas Rudys</h1>
 
 <strong>Backend Software Engineer | .NET/C# • Microservices • High-Volume Data Systems</strong>
 
-<p>robertas.rudys@gmail.com | Kaunas, Lithuania | [LinkedIn](https://www.linkedin.com/in/robertasr/) | [GitHub](https://github.com/bitkojine)</p>
+<p>robertas.rudys@gmail.com | Kaunas, Lithuania | <a href="https://www.linkedin.com/in/robertasr/">LinkedIn</a> | <a href="https://github.com/bitkojine">GitHub</a></p>
 
 <h2>Summary</h2>
 
@@ -502,7 +553,7 @@
 <h3>Software Engineer | SUPER HOW? Group | <em>2023 - 2024</em></h3>
 <strong>Tech Stack:</strong> TypeScript, .NET/C#, Node.js, React, PostgreSQL
 
-<p>Full-stack development for blockchain-enabled education platform and digital infrastructure projects.</p>
+<p>Backend development for blockchain-enabled education platform and digital infrastructure projects.</p>
 
 <p>- Contributed to 3 production releases over 6 months using agile development practices</p>
 <p>- Developed REST APIs and backend services for blockchain wallet integration and digital credentials</p>
@@ -530,6 +581,102 @@
 <h3>Software Engineer | Euromonitor International | <em>2019 - 2021</em></h3>
 <strong>Tech Stack:</strong> Angular, TypeScript, .NET Core, Python, MS SQL Server, ElasticSearch, Redis
 
+<p>Backend development for Passport, a global market intelligence platform covering 210 countries.</p>
+
+<p>- Developed REST APIs with Redis caching to improve performance</p>
+<p>- Optimized SQL queries to improve dashboard load times</p>
+<p>- Worked on ElasticSearch implementation for faster data retrieval</p>
+<p>- Built Python ETL pipelines to process daily data feeds from multiple countries</p>
+
+<h3>Database Developer | Euromonitor International | <em>2018 - 2019</em></h3>
+<strong>Tech Stack:</strong> MS SQL Server, ElasticSearch, Python, ETL
+
+<p>Database optimization and search infrastructure for global market intelligence platform.</p>
+
+<p>- Optimized database queries and indexes for analytics processing large datasets</p>
+<p>- Contributed to ElasticSearch implementation for improved search functionality</p>
+<p>- Built Python ETL pipelines to ingest and transform market data feeds</p>
+<p>- Supported data warehouse architecture for analytics teams</p>
+
+<h2>Technical Skills</h2>
+
+<strong>Languages:</strong> C#, .NET Core/ASP.NET Core, TypeScript, JavaScript, Python, Java, Scala
+
+<strong>Backend:</strong> Microservices, REST APIs, Entity Framework, Kafka, event-driven architecture, distributed systems
+
+<strong>Data:</strong> Azure SQL Server, MS SQL Server, PostgreSQL, ElasticSearch, Redis, ETL pipelines
+
+<strong>Cloud:</strong> Azure (SQL Server, Synapse, IoT Hub, DevOps), Docker
+
+<strong>DevOps:</strong> CI/CD, Azure DevOps, Git, automated testing, monitoring
+
+<strong>Domains:</strong> AdTech, energy/utilities, financial systems, market intelligence, ERP integrations`,
+
+                'fullstack': `<h1>Robertas Rudys</h1>
+
+<strong>Full-Stack Developer | Angular • ASP.NET/C# • Enterprise Applications</strong>
+
+<p>robertas.rudys@gmail.com | Kaunas, Lithuania | <a href="https://www.linkedin.com/in/robertasr/">LinkedIn</a> | <a href="https://github.com/bitkojine">GitHub</a></p>
+
+<h2>Summary</h2>
+
+<p>Full-stack developer with 6+ years of experience building enterprise applications and data platforms. Specialized in Angular frontend development and .NET/C# backend services for financial services, analytics platforms, and enterprise systems.</p>
+
+<strong>Core Stack:</strong> Angular • TypeScript • .NET/C# • Azure • Microservices • SQL Server
+
+<h2>Experience</h2>
+
+<h3>Software Engineer | Adform | <em>2025</em></h3>
+<strong>Tech Stack:</strong> .NET/C#, Java, Kafka, Kubernetes, PostgreSQL, Redis
+
+<p>Worked on microservices for Adform FLOW, a global adtech platform handling high-volume programmatic advertising.</p>
+
+<p>- Contributed to Kafka event streaming pipelines for real-time bidding transactions</p>
+<p>- Improved performance of .NET Core microservices through async processing and connection pooling</p>
+<p>- Helped implement distributed tracing using ELK and Prometheus for better observability</p>
+
+<h3>Software Engineer | Ignitis Group | <em>2024 - 2025</em></h3>
+<strong>Tech Stack:</strong> .NET/C#, Azure SQL Server, Azure Synapse, Python, Power BI, Azure IoT Hub
+
+<p>Full-stack development for billing and metering systems for the Baltic region's largest energy company serving customers across multiple countries.</p>
+
+<p>- Developed features for billing system handling enterprise transactions and invoice generation</p>
+<p>- Built ETL pipelines to process smart meter readings from Azure IoT Hub into Synapse data warehouse</p>
+<p>- Optimized SQL stored procedures to improve billing cycle performance</p>
+<p>- Contributed to Power BI dashboards for energy consumption analytics</p>
+
+<h3>Software Engineer | SUPER HOW? Group | <em>2023 - 2024</em></h3>
+<strong>Tech Stack:</strong> TypeScript, .NET/C#, Node.js, React, PostgreSQL
+
+<p>Full-stack development for blockchain-enabled education platform and digital infrastructure projects.</p>
+
+<p>- Contributed to 3 production releases over 6 months using agile development practices</p>
+<p>- Developed REST APIs and backend services for blockchain wallet integration and digital credentials</p>
+<p>- Built React frontend components for user authentication and digital credential management</p>
+<p>- Implemented automated testing to improve code quality and reduce bugs</p>
+
+<h3>Software Engineer | Baltic Amadeus | <em>2022 - 2023</em></h3>
+<strong>Tech Stack:</strong> .NET/C#, Azure, MS SQL Server, REST APIs
+
+<p>Full-stack enterprise software development and cloud modernization projects for clients in banking, logistics, and manufacturing.</p>
+
+<p>- Developed .NET microservices for logistics tracking platform handling API requests</p>
+<p>- Participated in migrating legacy applications to Azure cloud infrastructure</p>
+<p>- Built integration middleware connecting ERP systems with third-party APIs</p>
+<p>- Set up CI/CD pipelines using Azure DevOps to streamline deployments</p>
+
+<h3>Software Engineer | Simplanova | <em>2021 - 2022</em></h3>
+<strong>Tech Stack:</strong> .NET/C#, Microsoft Dynamics NAV/BC, SQL Server
+
+<p>Full-stack Microsoft Dynamics NAV/Business Central development and ERP implementations.</p>
+
+<p>- Worked on automated migration tools to streamline NAV to Business Central upgrades</p>
+<p>- Developed custom .NET extensions for client ERP implementations</p>
+<p>- Optimized SQL queries to improve report generation performance</p>
+
+<h3>Software Engineer | Euromonitor International | <em>2019 - 2021</em></h3>
+<strong>Tech Stack:</strong> Angular, TypeScript, .NET Core, Python, MS SQL Server, ElasticSearch, Redis
+
 <p>Full-stack development for Passport, a global market intelligence platform covering 210 countries.</p>
 
 <p>- Developed Angular dashboards for visualizing market data and economic indicators</p>
@@ -548,22 +695,11 @@
 <p>- Built Python ETL pipelines to ingest and transform market data feeds</p>
 <p>- Supported data warehouse architecture for analytics teams</p>
 
-<h3>Freelance Indie Game Developer | <em>2015 - 2017</em></h3>
-<strong>Tech Stack:</strong> C#, Unity
-
-<p>Independent game development using Unity engine for mobile and desktop platforms.</p>
-
-<p>- Started professional career as Unity Game Developer at Invenis (2015)</p>
-<p>- Worked on small-scale game projects including web strategy and arcade games</p>
-<p>- Self-taught C# and game development, which led to transition into backend software engineering</p>
-
 <h2>Technical Skills</h2>
 
-<strong>Languages:</strong> C#, .NET Core/ASP.NET Core, TypeScript, JavaScript, Python, Java, Scala
+<strong>Frontend:</strong> Angular, TypeScript, RxJS, HTML5, CSS3, JavaScript, React, data visualization
 
-<strong>Backend:</strong> Microservices, REST APIs, Entity Framework, Kafka, event-driven architecture, distributed systems
-
-<strong>Frontend:</strong> Angular, TypeScript, RxJS, data visualization
+<strong>Backend:</strong> .NET Core/ASP.NET Core, C#, REST APIs, Entity Framework, microservices
 
 <strong>Data:</strong> Azure SQL Server, MS SQL Server, PostgreSQL, ElasticSearch, Redis, ETL pipelines
 
@@ -571,9 +707,174 @@
 
 <strong>DevOps:</strong> CI/CD, Azure DevOps, Git, automated testing, monitoring
 
-<strong>Domains:</strong> AdTech, energy/utilities, financial systems, market intelligence, ERP integrations
+<strong>Domains:</strong> Financial services, analytics platforms, enterprise systems, market intelligence`,
 
+                'risktech': `<h1>Robertas Rudys</h1>
 
+<strong>Full-Stack Developer | Angular • ASP.NET/C# • Risk Technology</strong>
+
+<p>robertas.rudys@gmail.com | Kaunas, Lithuania | <a href="https://www.linkedin.com/in/robertasr/">LinkedIn</a> | <a href="https://github.com/bitkojine">GitHub</a></p>
+
+<h2>Summary</h2>
+
+<p>Full-stack developer with 6+ years of experience in financial services and risk technology. Specialized in building enterprise applications for banking, financial analytics, and risk management systems using Angular and .NET/C#.</p>
+
+<strong>Core Stack:</strong> Angular • TypeScript • .NET/C# • Azure • Financial Systems • Risk Analytics
+
+<h2>Experience</h2>
+
+<h3>Software Engineer | Ignitis Group | <em>2024 - 2025</em></h3>
+<strong>Tech Stack:</strong> .NET/C#, Azure SQL Server, Azure Synapse, Python, Power BI, Azure IoT Hub
+
+<p>Full-stack development for billing and financial systems for the Baltic region's largest energy company serving enterprise customers across multiple countries.</p>
+
+<p>- Developed features for enterprise billing system handling high-volume financial transactions and invoice generation</p>
+<p>- Built ETL pipelines to process financial data from Azure IoT Hub into Synapse data warehouse</p>
+<p>- Optimized SQL stored procedures to improve billing cycle performance and financial reporting</p>
+<p>- Contributed to Power BI dashboards for financial analytics and risk monitoring</p>
+
+<h3>Software Engineer | Baltic Amadeus | <em>2022 - 2023</em></h3>
+<strong>Tech Stack:</strong> .NET/C#, Azure, MS SQL Server, REST APIs
+
+<p>Enterprise software development and cloud modernization projects for clients in banking, logistics, and manufacturing.</p>
+
+<p>- Developed .NET microservices for banking clients handling financial transactions and risk assessment</p>
+<p>- Participated in migrating legacy banking applications to Azure cloud infrastructure</p>
+<p>- Built integration middleware connecting banking ERP systems with third-party financial APIs</p>
+<p>- Set up CI/CD pipelines using Azure DevOps to streamline deployments for financial institutions</p>
+
+<h3>Software Engineer | Simplanova | <em>2021 - 2022</em></h3>
+<strong>Tech Stack:</strong> .NET/C#, Microsoft Dynamics NAV/BC, SQL Server
+
+<p>Microsoft Dynamics NAV/Business Central development and ERP implementations for financial services clients.</p>
+
+<p>- Worked on automated migration tools to streamline NAV to Business Central upgrades for financial institutions</p>
+<p>- Developed custom .NET extensions for client financial ERP implementations</p>
+<p>- Optimized SQL queries to improve financial report generation performance</p>
+
+<h3>Software Engineer | Euromonitor International | <em>2019 - 2021</em></h3>
+<strong>Tech Stack:</strong> Angular, TypeScript, .NET Core, Python, MS SQL Server, ElasticSearch, Redis
+
+<p>Full-stack development for Passport, a global market intelligence and financial analytics platform covering 210 countries.</p>
+
+<p>- Developed Angular dashboards for visualizing financial market data and economic risk indicators</p>
+<p>- Optimized SQL queries to improve financial dashboard load times and risk calculation performance</p>
+<p>- Worked on ElasticSearch implementation for faster financial data retrieval and risk analysis</p>
+<p>- Built Python ETL pipelines to process daily financial data feeds from multiple countries</p>
+<p>- Developed REST APIs with Redis caching to improve performance of financial analytics</p>
+
+<h3>Database Developer | Euromonitor International | <em>2018 - 2019</em></h3>
+<strong>Tech Stack:</strong> MS SQL Server, ElasticSearch, Python, ETL
+
+<p>Database optimization and search infrastructure for global financial market intelligence platform.</p>
+
+<p>- Optimized database queries and indexes for financial analytics processing large datasets</p>
+<p>- Contributed to ElasticSearch implementation for improved financial data search functionality</p>
+<p>- Built Python ETL pipelines to ingest and transform financial market data feeds</p>
+<p>- Supported data warehouse architecture for financial analytics and risk assessment teams</p>
+
+<h2>Technical Skills</h2>
+
+<strong>Frontend:</strong> Angular, TypeScript, RxJS, HTML5, CSS3, JavaScript, financial data visualization
+
+<strong>Backend:</strong> .NET Core/ASP.NET Core, C#, REST APIs, Entity Framework, microservices
+
+<strong>Financial Systems:</strong> Microsoft Dynamics NAV/BC, ERP integrations, financial reporting, risk analytics
+
+<strong>Data:</strong> Azure SQL Server, MS SQL Server, PostgreSQL, ElasticSearch, Redis, financial ETL pipelines
+
+<strong>Cloud:</strong> Azure (SQL Server, Synapse, IoT Hub, DevOps), Docker
+
+<strong>DevOps:</strong> CI/CD, Azure DevOps, Git, automated testing, monitoring
+
+<strong>Domains:</strong> Banking, financial services, risk technology, market intelligence, ERP systems`
+            };
+            
+            return cvData[version] || cvData['backend'];
+        }
+
+        // Dark mode toggle functionality
+        function toggleDarkMode() {
+            const body = document.body;
+            const isDarkMode = body.classList.toggle('dark-mode');
+            
+            // Save preference to localStorage
+            localStorage.setItem('darkMode', isDarkMode ? 'enabled' : 'disabled');
+            
+            // Update button text
+            updateDarkModeButton(isDarkMode);
+        }
+        
+        function updateDarkModeButton(isDarkMode) {
+            const button = document.querySelector('.dark-mode-toggle');
+            if (button) {
+                button.textContent = isDarkMode ? '☀️ Light Mode' : '🌙 Dark Mode';
+            }
+        }
+        
+        function wrapJobSections() {
+            // Wrap job sections to prevent page breaks within them
+            const container = document.querySelector('.container');
+            const h3Elements = container.querySelectorAll('h3');
+            
+            h3Elements.forEach(function(h3) {
+                // Skip if already wrapped
+                if (h3.parentNode.classList.contains('job-section')) {
+                    return;
+                }
+                
+                // Create wrapper div
+                const wrapper = document.createElement('div');
+                wrapper.className = 'job-section';
+                
+                // Insert wrapper before h3
+                h3.parentNode.insertBefore(wrapper, h3);
+                
+                // Move h3 into wrapper
+                wrapper.appendChild(h3);
+                
+                // Move all following siblings until next h3 or hr
+                let nextElement = wrapper.nextSibling;
+                while (nextElement && nextElement.tagName !== 'H3' && nextElement.tagName !== 'HR' && nextElement.tagName !== 'H2') {
+                    const current = nextElement;
+                    nextElement = nextElement.nextSibling;
+                    wrapper.appendChild(current);
+                }
+            });
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check localStorage for saved preferences
+            const darkModePreference = localStorage.getItem('darkMode');
+            const isDarkMode = darkModePreference === 'enabled';
+            
+            if (isDarkMode) {
+                document.body.classList.add('dark-mode');
+            }
+            
+            updateDarkModeButton(isDarkMode);
+            
+            // Load saved CV version or default to backend
+            const savedCVVersion = localStorage.getItem('cvVersion') || 'backend';
+            document.getElementById('cvVersionSelect').value = savedCVVersion;
+            loadCVContent(savedCVVersion);
+            updatePageMeta(savedCVVersion);
+        });
+    </script>
+</head>
+<body>
+    <div class="cv-selector">
+        <select id="cvVersionSelect" onchange="switchCVVersion()">
+            <option value="backend">Backend Engineer</option>
+            <option value="fullstack">Full-Stack Developer</option>
+            <option value="risktech">Risk Technology</option>
+        </select>
+    </div>
+    <button class="dark-mode-toggle" onclick="toggleDarkMode()">🌙 Dark Mode</button>
+    <button class="download-btn" onclick="downloadPDF()">Download PDF</button>
+    <div class="container">
+        <!-- CV content will be loaded dynamically -->
     </div>
 </body>
 </html>
