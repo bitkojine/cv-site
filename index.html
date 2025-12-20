@@ -3,23 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Senior .NET Software Engineer - Lithuania/EU Remote</title>
+    <title>Senior .NET Software Engineer - Full-Stack Developer</title>
     
     <!-- SEO Meta Tags -->
-    <meta name="description" content="Senior .NET Software Engineer with ~7 years experience in backend development, C#, MS SQL Server, and full-stack web development. Open to remote work in EU time zones.">
-    <meta name="author" content="Senior .NET Software Engineer">
-    <meta name="keywords" content="Senior .NET Engineer, C#, Backend Developer, MS SQL Server, Full-Stack, Remote EU, Lithuania">
+    <meta name="description" content="Full-stack developer with 7 years building high-performance applications using Angular and .NET/C#. Specialized in financial services, analytics platforms, and enterprise systems.">
+    <meta name="author" content="Robertas Rudys">
+    <meta name="keywords" content="Full-Stack Developer, Angular, ASP.NET, C#, Azure, Microservices, Software Engineer">
     
     <!-- Open Graph Meta Tags -->
-    <meta property="og:title" content="Senior .NET Software Engineer - Lithuania/EU Remote">
-    <meta property="og:description" content="Senior .NET Software Engineer with ~7 years experience in backend development, C#, MS SQL Server, and full-stack web development.">
+    <meta property="og:title" content="Robertas Rudys - Full-Stack Developer">
+    <meta property="og:description" content="Full-stack developer with 7 years building high-performance applications using Angular and .NET/C#">
     <meta property="og:type" content="profile">
     <meta property="og:url" content="https://robertasrudys.com">
     
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Senior .NET Software Engineer - Lithuania/EU Remote">
-    <meta name="twitter:description" content="Senior .NET Software Engineer with ~7 years experience in backend development, C#, MS SQL Server, and full-stack web development.">
+    <meta name="twitter:title" content="Robertas Rudys - Full-Stack Developer">
+    <meta name="twitter:description" content="Full-stack developer with 7 years building high-performance applications using Angular and .NET/C#">
     
     <style>
         :root {
@@ -289,161 +289,112 @@
             }
         }
         
-        /* Control Panel - Mobile First Design */
-        .control-panel {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 1000;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            align-items: flex-end;
-            opacity: 0.9;
-            transition: opacity 0.3s ease;
-        }
-        
-        .control-panel:hover {
-            opacity: 1;
-        }
-        
-        .control-panel .cv-selector {
-            order: 1;
-        }
-        
-        .control-panel .dark-mode-toggle {
-            order: 2;
-        }
-        
-        .control-panel .download-btn {
-            order: 3;
-        }
-        
-        .cv-selector select {
-            background: var(--button-bg);
-            color: white;
-            padding: 8px 12px;
-            border-radius: 5px;
-            font-weight: 600;
-            box-shadow: 0 2px 8px var(--shadow-strong);
-            cursor: pointer;
-            border: none;
-            font-size: 13px;
-            transition: background 0.2s;
-            min-width: 140px;
-        }
-        
-        .cv-selector select:hover {
-            background: var(--button-hover);
-        }
-        
-        .cv-selector select option {
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-        }
-        
-        .dark-mode-toggle {
-            background: var(--button-bg);
-            color: white;
-            padding: 8px 12px;
-            border-radius: 5px;
-            text-decoration: none;
-            font-weight: 600;
-            box-shadow: 0 2px 8px var(--shadow-strong);
-            cursor: pointer;
-            border: none;
-            font-size: 13px;
-            transition: background 0.2s;
-            min-width: 140px;
-            text-align: center;
-        }
-        
-        .dark-mode-toggle:hover {
-            background: var(--button-hover);
-        }
-        
         .download-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
             background: var(--button-bg);
             color: white;
-            padding: 8px 12px;
+            padding: 10px 20px;
             border-radius: 5px;
             text-decoration: none;
             font-weight: 600;
             box-shadow: 0 2px 8px var(--shadow-strong);
             cursor: pointer;
             border: none;
-            font-size: 13px;
+            font-size: 14px;
+            z-index: 1000;
             transition: background 0.2s;
-            min-width: 140px;
-            text-align: center;
         }
         
         .download-btn:hover {
             background: var(--button-hover);
         }
         
+        .dark-mode-toggle {
+            position: fixed;
+            top: 20px;
+            right: 170px;
+            background: var(--button-bg);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            box-shadow: 0 2px 8px var(--shadow-strong);
+            cursor: pointer;
+            border: none;
+            font-size: 14px;
+            z-index: 1000;
+            transition: background 0.2s;
+        }
+        
+        .dark-mode-toggle:hover {
+            background: var(--button-hover);
+        }
+        
         @media print {
-            .control-panel {
+            .download-btn, .dark-mode-toggle {
                 display: none;
             }
         }
         
-        /* Tablet and larger screens */
-        @media (min-width: 769px) {
-            .control-panel {
-                bottom: 20px;
-                right: 20px;
+        /* Mobile portrait and small screens */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+                padding-top: 110px;
+            }
+            
+            .download-btn {
+                position: fixed;
+                top: 60px;
+                left: 10px;
+                right: 10px;
+                width: calc(100% - 20px);
+                text-align: center;
+            }
+            
+            .dark-mode-toggle {
+                position: fixed;
+                top: 10px;
+                left: 10px;
+                right: 10px;
+                width: calc(100% - 20px);
+                text-align: center;
+            }
+            
+            .container {
+                padding: 15px;
             }
         }
         
-        /* Mobile screens */
-        @media (max-width: 768px) {
-            .control-panel {
-                bottom: 15px;
-                right: 15px;
-                gap: 10px;
+        /* Mobile landscape */
+        @media (max-width: 768px) and (orientation: landscape) {
+            body {
+                padding-top: 10px;
             }
             
-            .cv-selector select,
-            .dark-mode-toggle,
             .download-btn {
-                font-size: 14px;
-                padding: 12px 16px;
-                min-width: 160px;
+                position: static;
+                display: block;
+                margin: 10px;
+                width: calc(100% - 20px);
+            }
+            
+            .dark-mode-toggle {
+                position: static;
+                display: block;
+                margin: 10px;
+                width: calc(100% - 20px);
             }
         }
         
         /* Very small screens */
         @media (max-width: 480px) {
-            .control-panel {
-                bottom: 10px;
-                right: 10px;
-                gap: 8px;
-            }
-            
-            .cv-selector select,
-            .dark-mode-toggle,
-            .download-btn {
+            .download-btn, .dark-mode-toggle {
                 font-size: 13px;
-                padding: 10px 14px;
-                min-width: 140px;
-            }
-        }
-        
-        /* Landscape mobile - move to left side to avoid thumb area */
-        @media (max-width: 768px) and (orientation: landscape) {
-            .control-panel {
-                bottom: 15px;
-                left: 15px;
-                right: auto;
-            }
-        }
-        
-        /* Extra wide screens - move panel further from edge */
-        @media (min-width: 1200px) {
-            .control-panel {
-                right: 40px;
-                bottom: 40px;
+                padding: 8px 16px;
             }
         }
     </style>
@@ -473,17 +424,23 @@
             }
         }
         
-        function wrapJobSections() {
+        // Initialize dark mode on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check localStorage for saved preference
+            const darkModePreference = localStorage.getItem('darkMode');
+            const isDarkMode = darkModePreference === 'enabled';
+            
+            if (isDarkMode) {
+                document.body.classList.add('dark-mode');
+            }
+            
+            updateDarkModeButton(isDarkMode);
+            
             // Wrap job sections to prevent page breaks within them
             const container = document.querySelector('.container');
             const h3Elements = container.querySelectorAll('h3');
             
             h3Elements.forEach(function(h3) {
-                // Skip if already wrapped
-                if (h3.parentNode.classList.contains('job-section')) {
-                    return;
-                }
-                
                 // Create wrapper div
                 const wrapper = document.createElement('div');
                 wrapper.className = 'job-section';
@@ -502,34 +459,16 @@
                     wrapper.appendChild(current);
                 }
             });
-        }
-
-        // Initialize on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            // Check localStorage for saved preferences
-            const darkModePreference = localStorage.getItem('darkMode');
-            const isDarkMode = darkModePreference === 'enabled';
-            
-            if (isDarkMode) {
-                document.body.classList.add('dark-mode');
-            }
-            
-            updateDarkModeButton(isDarkMode);
-            
-            // Wrap job sections for print formatting
-            wrapJobSections();
         });
     </script>
 </head>
 <body>
-    <div class="control-panel">
-        <button class="dark-mode-toggle" onclick="toggleDarkMode()">🌙 Dark Mode</button>
-        <button class="download-btn" onclick="downloadPDF()">📄 Download PDF</button>
-    </div>
+    <button class="dark-mode-toggle" onclick="toggleDarkMode()">🌙 Dark Mode</button>
+    <button class="download-btn" onclick="downloadPDF()">Download PDF</button>
     <div class="container">
 <h1>Senior .NET Software Engineer</h1>
 
-<p><strong>📍 Lithuania / EU | 🌍 Open to Remote (EU time zones) | 💻 Backend & Full-Stack (.NET, SQL, Web)</strong></p>
+<strong>📍 Lithuania / EU | 🌍 Open to Remote (EU time zones) | 💻 Backend & Full-Stack (.NET, SQL, Web)</strong>
 
 <h2>PROFILE</h2>
 
@@ -539,17 +478,17 @@
 
 <h2>CORE SKILLS</h2>
 
-<p><strong>Backend:</strong> C#, .NET (Framework / Core / modern .NET), REST APIs</p>
-<p><strong>Databases:</strong> MS SQL Server, T-SQL, data modeling, performance tuning</p>
-<p><strong>Frontend:</strong> Angular (working knowledge), HTML/CSS, JavaScript/TypeScript</p>
-<p><strong>Architecture:</strong> Monoliths, modular systems, integrations</p>
-<p><strong>Practices:</strong> Code reviews, debugging legacy systems, collaboration in cross-functional teams</p>
-<p><strong>Other:</strong> Git, CI/CD basics, cloud fundamentals (Azure – working knowledge)</p>
+<strong>Backend:</strong> C#, .NET (Framework / Core / modern .NET), REST APIs
+<strong>Databases:</strong> MS SQL Server, T-SQL, data modeling, performance tuning
+<strong>Frontend:</strong> Angular (working knowledge), HTML/CSS, JavaScript/TypeScript
+<strong>Architecture:</strong> Monoliths, modular systems, integrations
+<strong>Practices:</strong> Code reviews, debugging legacy systems, collaboration in cross-functional teams
+<strong>Other:</strong> Git, CI/CD basics, cloud fundamentals (Azure – working knowledge)
 
 <h2>PROFESSIONAL EXPERIENCE</h2>
 
 <h3>Senior .NET Software Engineer</h3>
-<p><strong>Adform Lithuania | 2025</strong></p>
+<strong>Adform Lithuania | 2025</strong>
 
 <p>Worked on large-scale AdTech systems in a high-performance environment</p>
 <p>Contributed to backend services and existing production codebases</p>
@@ -557,21 +496,21 @@
 <p>Role ended by mutual agreement due to role fit</p>
 
 <h3>Senior / Software Engineer (.NET)</h3>
-<p><strong>Ignitis Group Services Center | 2023</strong></p>
+<strong>Ignitis Group Services Center | 2023</strong>
 
 <p>Worked on internal enterprise systems using .NET</p>
 <p>Maintained and extended existing codebases in a large organization</p>
 <p>Gained experience navigating legacy systems and corporate development processes</p>
 
 <h3>Full-Stack Software Engineer (.NET / Blockchain)</h3>
-<p><strong>Super How | 2021 – 2022</strong></p>
+<strong>Super How | 2021 – 2022</strong>
 
 <p>Developed full-stack solutions in a Web3/blockchain-focused product</p>
 <p>Worked closely with a small, fast-moving team</p>
 <p>Gained experience shipping features end-to-end in an early-stage environment</p>
 
 <h3>Software Engineer (.NET / SQL / Full-Stack)</h3>
-<p><strong>Euromonitor International | 2018 – 2020</strong></p>
+<strong>Euromonitor International | 2018 – 2020</strong>
 
 <p>Started as MS SQL Server Developer, working with data-heavy systems</p>
 <p>Transitioned into a Full-Stack Developer role (.NET + Angular)</p>
@@ -579,7 +518,7 @@
 <p>This role represents my strongest long-term product experience</p>
 
 <h3>Software Engineer (C# / Unity)</h3>
-<p><strong>Invenis | 2015</strong></p>
+<strong>Invenis | 2015</strong>
 
 <p>Entry-level role as a Unity3D / C# developer</p>
 <p>Built early professional experience with C# and software development fundamentals</p>
@@ -587,7 +526,7 @@
 <h2>INDEPENDENT PROJECT / STARTUP ATTEMPT</h2>
 
 <h3>Founder / Product & Engineering</h3>
-<p><strong>Early-Stage Startup (Self-Initiated) | 2024</strong></p>
+<strong>Early-Stage Startup (Self-Initiated) | 2024</strong>
 
 <p>Initiated a startup project based on accumulated product, marketing, and technical knowledge</p>
 <p>Worked on early product definition, validation ideas, and technical direction</p>
@@ -601,6 +540,7 @@
 <p>Long-term collaboration and clear expectations</p>
 <p>English-first engineering environment</p>
 <p>Sustainable pace and ownership over time</p>
+
 
     </div>
 </body>
