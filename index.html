@@ -340,7 +340,7 @@
         }
         
         /* Mobile portrait and small screens */
-        @media (max-width: 768px) {
+        @media (max-width: 768px) and (orientation: portrait) {
             body {
                 padding: 10px;
                 padding-top: 110px;
@@ -353,8 +353,8 @@
                 right: 10px;
                 width: calc(100% - 20px);
                 text-align: center;
-                font-size: 14px; /* Ensure consistent font size */
-                padding: 10px 20px;
+                font-size: 14px !important;
+                padding: 10px 20px !important;
             }
             
             .dark-mode-toggle {
@@ -364,8 +364,8 @@
                 right: 10px;
                 width: calc(100% - 20px);
                 text-align: center;
-                font-size: 14px; /* Ensure consistent font size */
-                padding: 10px 20px;
+                font-size: 14px !important;
+                padding: 10px 20px !important;
             }
             
             .container {
@@ -384,8 +384,8 @@
                 display: block;
                 margin: 10px;
                 width: calc(100% - 20px);
-                font-size: 14px; /* Explicit font size for landscape */
-                padding: 10px 20px;
+                font-size: 14px !important;
+                padding: 10px 20px !important;
             }
             
             .dark-mode-toggle {
@@ -393,14 +393,21 @@
                 display: block;
                 margin: 10px;
                 width: calc(100% - 20px);
-                font-size: 14px; /* Explicit font size for landscape */
-                padding: 10px 20px;
+                font-size: 14px !important;
+                padding: 10px 20px !important;
             }
         }
         
-        /* Very small screens - only apply to portrait or when orientation is not specified */
-        @media (max-width: 480px) and (orientation: portrait), 
-               (max-width: 480px) and (not (orientation: landscape)) {
+        /* Very small screens in portrait */
+        @media (max-width: 480px) and (orientation: portrait) {
+            .download-btn, .dark-mode-toggle {
+                font-size: 13px !important;
+                padding: 8px 16px !important;
+            }
+        }
+        
+        /* Very small screens in landscape */
+        @media (max-width: 480px) and (orientation: landscape) {
             .download-btn, .dark-mode-toggle {
                 font-size: 13px !important;
                 padding: 8px 16px !important;
@@ -572,7 +579,7 @@
 
 
         <div class="last-updated">
-            Last updated: December 20, 2025 at 17:01 EET
+            Last updated: December 20, 2025 at 17:10 EET
         </div>
     </div>
 </body>
