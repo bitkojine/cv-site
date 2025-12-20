@@ -397,6 +397,24 @@
                 padding: 8px 16px;
             }
         }
+        
+        .last-updated {
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-hr);
+            text-align: center;
+            font-size: 9pt;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+        
+        @media print {
+            .last-updated {
+                margin-top: 20px;
+                padding-top: 10px;
+                font-size: 8pt;
+            }
+        }
     </style>
     <script>
         function downloadPDF() {
@@ -542,6 +560,9 @@
 <p>Sustainable pace and ownership over time</p>
 
 
+        <div class="last-updated">
+            Last updated: December 20, 2025
+        </div>
     </div>
 </body>
 </html>
