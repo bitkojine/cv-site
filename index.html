@@ -458,6 +458,40 @@
             }
         }
         
+        // Fix mobile button sizing on orientation change
+        function fixButtonSizes() {
+            const downloadBtn = document.querySelector('.download-btn');
+            const darkModeBtn = document.querySelector('.dark-mode-toggle');
+            
+            // Force recalculation by temporarily removing and re-adding styles
+            [downloadBtn, darkModeBtn].forEach(btn => {
+                if (btn) {
+                    // Store current styles
+                    const currentFontSize = window.getComputedStyle(btn).fontSize;
+                    const currentPadding = window.getComputedStyle(btn).padding;
+                    
+                    // Force style recalculation
+                    btn.style.fontSize = '';
+                    btn.style.padding = '';
+                    
+                    // Use setTimeout to ensure the browser processes the change
+                    setTimeout(() => {
+                        // Apply correct sizes based on screen width
+                        if (window.innerWidth <= 480) {
+                            btn.style.fontSize = '13px';
+                            btn.style.padding = '8px 16px';
+                        } else if (window.innerWidth <= 768) {
+                            btn.style.fontSize = '14px';
+                            btn.style.padding = '10px 20px';
+                        } else {
+                            btn.style.fontSize = '14px';
+                            btn.style.padding = '10px 20px';
+                        }
+                    }, 10);
+                }
+            });
+        }
+        
         // Initialize dark mode on page load
         document.addEventListener('DOMContentLoaded', function() {
             // Check localStorage for saved preference
@@ -469,6 +503,9 @@
             }
             
             updateDarkModeButton(isDarkMode);
+            
+            // Fix button sizes on initial load
+            fixButtonSizes();
             
             // Wrap job sections to prevent page breaks within them
             const container = document.querySelector('.container');
@@ -493,6 +530,19 @@
                     wrapper.appendChild(current);
                 }
             });
+        });
+        
+        // Handle orientation changes
+        window.addEventListener('orientationchange', function() {
+            // Use setTimeout to wait for the orientation change to complete
+            setTimeout(fixButtonSizes, 100);
+        });
+        
+        // Also handle resize events as a fallback
+        window.addEventListener('resize', function() {
+            // Debounce resize events
+            clearTimeout(window.resizeTimeout);
+            window.resizeTimeout = setTimeout(fixButtonSizes, 100);
         });
     </script>
 </head>
@@ -579,7 +629,7 @@
 
 
         <div class="last-updated">
-            Last updated: December 20, 2025 at 17:10 EET
+            Last updated: December 20, 2025 at 17:22 EET
         </div>
     </div>
 </body>
