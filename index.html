@@ -560,6 +560,31 @@ CORE SKILLS
             
             updateDarkModeButton(isDarkMode);
             
+            // Populate LinkedIn copy box
+            const linkedInTextElement = document.getElementById('linkedin-text');
+            if (linkedInTextElement) {
+                linkedInTextElement.textContent = `PROFILE
+
+Senior .NET Software Engineer with ~7 years of professional experience working on data-driven and product-focused systems. Strong background in backend development with .NET, C#, MS SQL Server, and web development experience with modern frameworks.
+
+I've worked across stable product teams and fast-changing environments, which helped me become adaptable and pragmatic. I'm now intentionally focused on a long-term role in a stable product company, where I can take ownership, grow steadily, and deliver consistent value.
+
+CORE SKILLS
+
+• Backend: C#, .NET (Framework / Core / modern .NET), REST APIs
+
+• Databases: MS SQL Server, T-SQL, data modeling, performance tuning
+
+• Frontend: Angular (working knowledge), HTML/CSS, JavaScript/TypeScript
+
+• Architecture: Monoliths, modular systems, integrations
+
+• Practices: Code reviews, debugging legacy systems, collaboration in cross-functional teams
+
+• Other: Git, CI/CD basics, cloud fundamentals (Azure – working knowledge)`;
+                linkedInTextElement.parentElement.style.display = 'block';
+            }
+            
             
             // Wrap job sections to prevent page breaks within them
             const container = document.querySelector('.container');
@@ -597,34 +622,28 @@ CORE SKILLS
 
 <h2>Senior .NET Software Engineer</h2>
 
+
 <strong>📧 robertas.rudys+www@gmail.com | 📍 Lithuania / EU | 🌍 Open to Remote (EU time zones) | 💻 Backend (.NET, SQL, Web)</strong>
 
-<h2>PROFILE & CORE SKILLS</h2>
+<h2>PROFILE</h2>
 
-<div class="linkedin-copy-box">
-    <button class="copy-linkedin-btn" onclick="copyLinkedInText()">📋</button>
-    <pre>PROFILE
 
-Senior .NET Software Engineer with ~7 years of professional experience working on data-driven and product-focused systems. Strong background in backend development with .NET, C#, MS SQL Server, and web development experience with modern frameworks.
+<p>Senior .NET Software Engineer with ~7 years of professional experience working on data-driven and product-focused systems. Strong background in backend development with .NET, C#, MS SQL Server, and web development experience with modern frameworks.</p>
 
-I've worked across stable product teams and fast-changing environments, which helped me become adaptable and pragmatic. I'm now intentionally focused on a long-term role in a stable product company, where I can take ownership, grow steadily, and deliver consistent value.
+<p>I've worked across stable product teams and fast-changing environments, which helped me become adaptable and pragmatic. I'm now intentionally focused on a long-term role in a stable product company, where I can take ownership, grow steadily, and deliver consistent value.</p>
 
-CORE SKILLS
+<h2>CORE SKILLS</h2>
 
-• Backend: C#, .NET (Framework / Core / modern .NET), REST APIs
 
-• Databases: MS SQL Server, T-SQL, data modeling, performance tuning
-
-• Frontend: Angular (working knowledge), HTML/CSS, JavaScript/TypeScript
-
-• Architecture: Monoliths, modular systems, integrations
-
-• Practices: Code reviews, debugging legacy systems, collaboration in cross-functional teams
-
-• Other: Git, CI/CD basics, cloud fundamentals (Azure – working knowledge)</pre>
-</div>
+<p>• <strong>Backend:</strong> C#, .NET (Framework / Core / modern .NET), REST APIs</p>
+<p>• <strong>Databases:</strong> MS SQL Server, T-SQL, data modeling, performance tuning</p>
+<p>• <strong>Frontend:</strong> Angular (working knowledge), HTML/CSS, JavaScript/TypeScript</p>
+<p>• <strong>Architecture:</strong> Monoliths, modular systems, integrations</p>
+<p>• <strong>Practices:</strong> Code reviews, debugging legacy systems, collaboration in cross-functional teams</p>
+<p>• <strong>Other:</strong> Git, CI/CD basics, cloud fundamentals (Azure – working knowledge)</p>
 
 <h2>PROFESSIONAL EXPERIENCE</h2>
+
 
 <h3>Senior .NET Software Engineer</h3>
 <strong>Adform Lithuania | 2025</strong>
@@ -664,6 +683,7 @@ CORE SKILLS
 
 <h2>INDEPENDENT PROJECT / STARTUP ATTEMPT</h2>
 
+
 <h3>Founder / Product & Engineering</h3>
 <strong>Early-Stage Startup (Self-Initiated) | 2024</strong>
 
@@ -674,6 +694,7 @@ CORE SKILLS
 
 <h2>WHAT I'M LOOKING FOR NEXT</h2>
 
+
 <p>Stable product company</p>
 <p>Backend or .NET role</p>
 <p>Long-term collaboration and clear expectations</p>
@@ -682,7 +703,7 @@ CORE SKILLS
 
 
         <div class="last-updated">
-            Last updated: December 21, 2025 at 13:32 EET
+            Last updated: December 21, 2025 at 13:42 EET
         </div>
     </div>
 </body>
