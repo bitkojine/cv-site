@@ -460,9 +460,15 @@
         }
         
         function copyLinkedInText() {
-            const h2s = Array.from(document.querySelectorAll('h2'));
-            const startH2 = h2s.find(h => h.textContent.trim().toUpperCase().includes('PROFILE') && h.textContent.toUpperCase().includes('CORE SKILLS'))
-                           || h2s.find(h => h.textContent.trim().toUpperCase() === 'PROFILE');
+            // Prefer the button's parent heading as the anchor
+            const btn = document.querySelector('.copy-linkedin-btn');
+            const anchorH2 = btn ? btn.closest('h2') : null;
+            let startH2 = anchorH2;
+            if (!startH2) {
+                const h2s = Array.from(document.querySelectorAll('h2'));
+                startH2 = h2s.find(h => h.textContent.trim().toUpperCase().includes('PROFILE') && h.textContent.toUpperCase().includes('CORE SKILLS'))
+                       || h2s.find(h => h.textContent.trim().toUpperCase() === 'PROFILE');
+            }
             if (!startH2) {
                 alert('Could not find the PROFILE & CORE SKILLS section to copy.');
                 return;
@@ -476,7 +482,6 @@
             }
             const textToCopy = lines.join('\n\n');
             navigator.clipboard.writeText(textToCopy).then(function() {
-                const btn = document.querySelector('.copy-linkedin-btn');
                 if (btn) {
                     const originalText = btn.textContent;
                     btn.textContent = '✓';
