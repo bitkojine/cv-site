@@ -420,7 +420,7 @@
         
         .copy-linkedin-btn {
             display: inline-block;
-            margin-left: 8px;
+            float: right;
             background: var(--button-bg);
             color: white;
             border: none;
@@ -460,25 +460,39 @@
         }
         
         function copyLinkedInText() {
-            // Prefer the button's parent heading as the anchor
             const btn = document.querySelector('.copy-linkedin-btn');
             const anchorH2 = btn ? btn.closest('h2') : null;
-            let startH2 = anchorH2;
-            if (!startH2) {
-                const h2s = Array.from(document.querySelectorAll('h2'));
-                startH2 = h2s.find(h => h.textContent.trim().toUpperCase().includes('PROFILE') && h.textContent.toUpperCase().includes('CORE SKILLS'))
-                       || h2s.find(h => h.textContent.trim().toUpperCase() === 'PROFILE');
-            }
-            if (!startH2) {
-                alert('Could not find the PROFILE & CORE SKILLS section to copy.');
+            const h2s = Array.from(document.querySelectorAll('h2'));
+            let profileH2 = anchorH2 || h2s.find(h => h.textContent.trim().toUpperCase().includes('PROFILE'));
+            if (!profileH2) {
+                alert('Could not find the PROFILE section to copy.');
                 return;
             }
+            const profileText = profileH2.textContent.toUpperCase();
+            const combinedHeading = profileText.includes('CORE SKILLS');
             let lines = [];
-            let el = startH2.nextElementSibling;
+            let el = profileH2.nextElementSibling;
             while (el && el.tagName !== 'H2') {
                 const text = el.textContent.trim();
                 if (text) lines.push(text);
                 el = el.nextElementSibling;
+            }
+            if (!combinedHeading) {
+                let coreH2 = null;
+                if (el && el.tagName === 'H2' && el.textContent.trim().toUpperCase() === 'CORE SKILLS') {
+                    coreH2 = el;
+                } else {
+                    coreH2 = h2s.find(h => h.textContent.trim().toUpperCase() === 'CORE SKILLS');
+                }
+                if (coreH2) {
+                    // lines.push(coreH2.textContent.trim());
+                    let cur = coreH2.nextElementSibling;
+                    while (cur && cur.tagName !== 'H2') {
+                        const t = cur.textContent.trim();
+                        if (t) lines.push(t);
+                        cur = cur.nextElementSibling;
+                    }
+                }
             }
             const textToCopy = lines.join('\n\n');
             navigator.clipboard.writeText(textToCopy).then(function() {
