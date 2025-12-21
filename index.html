@@ -418,6 +418,47 @@
             }
         }
         
+        .copy-linkedin-btn {
+            display: inline-block;
+            float: right;
+            background: var(--button-bg);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 2px 8px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .copy-linkedin-btn:hover { background: var(--button-hover); }
+        .copy-linkedin-btn.copied { background: #28a745; }
+        @media print { .copy-linkedin-btn { display: none; } }
+        
+        .last-updated {
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-hr);
+            text-align: center;
+            font-size: 9pt;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+        
+        @media print {
+            .last-updated {
+                margin-top: 20px;
+                padding-top: 10px;
+                font-size: 8pt;
+            }
+        }
+    </style>
+    <script>
+        function downloadPDF() {
+            // Show instructions, then open print dialog
+            alert('In the print dialog:\n\n1. Select "Save as PDF" as the destination\n2. Click "Save"\n3. Choose where to save your PDF file');
+            window.print();
+        }
+        
         function copyLinkedInText() {
             const btn = document.querySelector('.copy-linkedin-btn');
             const anchorH2 = btn ? btn.closest('h2') : null;
@@ -461,51 +502,6 @@
                 }
             }
             const textToCopy = corePart ? (profilePart + '\n\n' + corePart) : profilePart;
-            navigator.clipboard.writeText(textToCopy).then(function() {
-                if (btn) {
-                    const originalText = btn.textContent;
-                    btn.textContent = '✓';
-                    btn.classList.add('copied');
-                    setTimeout(function() {
-                        btn.textContent = originalText;
-                        btn.classList.remove('copied');
-                    }, 2000);
-                }
-            }).catch(function() {
-                alert('Failed to copy text. Please select and copy manually.');
-            });
-        }
-            }
-            const profileText = profileH2.textContent.toUpperCase();
-            const combinedHeading = profileText.includes('CORE SKILLS');
-            let lines = [];
-            // Collect after PROFILE heading until next H2
-            let el = profileH2.nextElementSibling;
-            while (el && el.tagName !== 'H2') {
-                const text = el.textContent.trim();
-                if (text) lines.push(text);
-                el = el.nextElementSibling;
-            }
-            // If headings are separate, include CORE SKILLS section too
-            if (!combinedHeading) {
-                let coreH2 = null;
-                if (el && el.tagName === 'H2' && el.textContent.trim().toUpperCase() === 'CORE SKILLS') {
-                    coreH2 = el;
-                } else {
-                    coreH2 = h2s.find(h => h.textContent.trim().toUpperCase() === 'CORE SKILLS');
-                }
-                if (coreH2) {
-                    // Optionally include the heading label
-                    // lines.push(coreH2.textContent.trim());
-                    let cur = coreH2.nextElementSibling;
-                    while (cur && cur.tagName !== 'H2') {
-                        const t = cur.textContent.trim();
-                        if (t) lines.push(t);
-                        cur = cur.nextElementSibling;
-                    }
-                }
-            }
-            const textToCopy = lines.join('\n\n');
             navigator.clipboard.writeText(textToCopy).then(function() {
                 if (btn) {
                     const originalText = btn.textContent;
@@ -679,7 +675,7 @@
 
 
         <div class="last-updated">
-            Last updated: December 21, 2025 at 14:01 EET
+            Last updated: December 21, 2025 at 14:03 EET
         </div>
     </div>
 </body>
