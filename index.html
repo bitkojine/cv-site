@@ -463,6 +463,7 @@
             const btn = document.querySelector('.copy-linkedin-btn');
             const anchorH2 = btn ? btn.closest('h2') : null;
             const h2s = Array.from(document.querySelectorAll('h2'));
+            // Determine start and whether headings are separate or combined
             let profileH2 = anchorH2 || h2s.find(h => h.textContent.trim().toUpperCase().includes('PROFILE'));
             if (!profileH2) {
                 alert('Could not find the PROFILE section to copy.');
@@ -471,12 +472,14 @@
             const profileText = profileH2.textContent.toUpperCase();
             const combinedHeading = profileText.includes('CORE SKILLS');
             let lines = [];
+            // Collect after PROFILE heading until next H2
             let el = profileH2.nextElementSibling;
             while (el && el.tagName !== 'H2') {
                 const text = el.textContent.trim();
                 if (text) lines.push(text);
                 el = el.nextElementSibling;
             }
+            // If headings are separate, include CORE SKILLS section too
             if (!combinedHeading) {
                 let coreH2 = null;
                 if (el && el.tagName === 'H2' && el.textContent.trim().toUpperCase() === 'CORE SKILLS') {
@@ -485,6 +488,7 @@
                     coreH2 = h2s.find(h => h.textContent.trim().toUpperCase() === 'CORE SKILLS');
                 }
                 if (coreH2) {
+                    // Optionally include the heading label
                     // lines.push(coreH2.textContent.trim());
                     let cur = coreH2.nextElementSibling;
                     while (cur && cur.tagName !== 'H2') {
@@ -668,7 +672,7 @@
 
 
         <div class="last-updated">
-            Last updated: December 21, 2025 at 13:57 EET
+            Last updated: December 21, 2025 at 14:01 EET
         </div>
     </div>
 </body>
