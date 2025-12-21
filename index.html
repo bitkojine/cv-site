@@ -418,6 +418,55 @@
             }
         }
         
+        .linkedin-copy-box {
+            background: var(--code-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            position: relative;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+        }
+        
+        .linkedin-copy-box pre {
+            margin: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: inherit;
+            font-size: 10pt;
+            line-height: 1.5;
+            color: var(--text-primary);
+        }
+        
+        .copy-linkedin-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--button-bg);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 16px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .copy-linkedin-btn:hover {
+            background: var(--button-hover);
+        }
+        
+        .copy-linkedin-btn.copied {
+            background: #28a745;
+        }
+        
+        @media print {
+            .linkedin-copy-box {
+                display: none;
+            }
+        }
+        
         .last-updated {
             margin-top: 30px;
             padding-top: 15px;
@@ -441,6 +490,42 @@
             // Show instructions, then open print dialog
             alert('In the print dialog:\n\n1. Select "Save as PDF" as the destination\n2. Click "Save"\n3. Choose where to save your PDF file');
             window.print();
+        }
+        
+        function copyLinkedInText() {
+            const textToCopy = `PROFILE
+
+Senior .NET Software Engineer with ~7 years of professional experience working on data-driven and product-focused systems. Strong background in backend development with .NET, C#, MS SQL Server, and web development experience with modern frameworks.
+
+I've worked across stable product teams and fast-changing environments, which helped me become adaptable and pragmatic. I'm now intentionally focused on a long-term role in a stable product company, where I can take ownership, grow steadily, and deliver consistent value.
+
+CORE SKILLS
+
+• Backend: C#, .NET (Framework / Core / modern .NET), REST APIs
+
+• Databases: MS SQL Server, T-SQL, data modeling, performance tuning
+
+• Frontend: Angular (working knowledge), HTML/CSS, JavaScript/TypeScript
+
+• Architecture: Monoliths, modular systems, integrations
+
+• Practices: Code reviews, debugging legacy systems, collaboration in cross-functional teams
+
+• Other: Git, CI/CD basics, cloud fundamentals (Azure – working knowledge)`;
+            
+            navigator.clipboard.writeText(textToCopy).then(function() {
+                const btn = document.querySelector('.copy-linkedin-btn');
+                const originalText = btn.textContent;
+                btn.textContent = '✓ Copied!';
+                btn.classList.add('copied');
+                
+                setTimeout(function() {
+                    btn.textContent = originalText;
+                    btn.classList.remove('copied');
+                }, 2000);
+            }).catch(function(err) {
+                alert('Failed to copy text. Please select and copy manually.');
+            });
         }
         
         // Dark mode toggle functionality
@@ -528,6 +613,29 @@
 <p>• <strong>Architecture:</strong> Monoliths, modular systems, integrations</p>
 <p>• <strong>Practices:</strong> Code reviews, debugging legacy systems, collaboration in cross-functional teams</p>
 <p>• <strong>Other:</strong> Git, CI/CD basics, cloud fundamentals (Azure – working knowledge)</p>
+
+<div class="linkedin-copy-box">
+    <button class="copy-linkedin-btn" onclick="copyLinkedInText()">📋 Copy for LinkedIn</button>
+    <pre>PROFILE
+
+Senior .NET Software Engineer with ~7 years of professional experience working on data-driven and product-focused systems. Strong background in backend development with .NET, C#, MS SQL Server, and web development experience with modern frameworks.
+
+I've worked across stable product teams and fast-changing environments, which helped me become adaptable and pragmatic. I'm now intentionally focused on a long-term role in a stable product company, where I can take ownership, grow steadily, and deliver consistent value.
+
+CORE SKILLS
+
+• Backend: C#, .NET (Framework / Core / modern .NET), REST APIs
+
+• Databases: MS SQL Server, T-SQL, data modeling, performance tuning
+
+• Frontend: Angular (working knowledge), HTML/CSS, JavaScript/TypeScript
+
+• Architecture: Monoliths, modular systems, integrations
+
+• Practices: Code reviews, debugging legacy systems, collaboration in cross-functional teams
+
+• Other: Git, CI/CD basics, cloud fundamentals (Azure – working knowledge)</pre>
+</div>
 
 <h2>PROFESSIONAL EXPERIENCE</h2>
 
