@@ -418,54 +418,21 @@
             }
         }
         
-        .linkedin-copy-box {
-            background: var(--code-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 20px;
-            margin: 20px 0;
-            position: relative;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
-        }
-        
-        .linkedin-copy-box pre {
-            margin: 0;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            font-family: inherit;
-            font-size: 10pt;
-            line-height: 1.5;
-            color: var(--text-primary);
-        }
-        
         .copy-linkedin-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
+            display: inline-block;
+            margin-left: 8px;
             background: var(--button-bg);
             color: white;
             border: none;
-            border-radius: 5px;
-            padding: 8px 16px;
+            border-radius: 4px;
+            padding: 2px 8px;
             font-size: 12px;
-            font-weight: 600;
             cursor: pointer;
             transition: background 0.2s;
         }
-        
-        .copy-linkedin-btn:hover {
-            background: var(--button-hover);
-        }
-        
-        .copy-linkedin-btn.copied {
-            background: #28a745;
-        }
-        
-        @media print {
-            .linkedin-copy-box {
-                display: none;
-            }
-        }
+        .copy-linkedin-btn:hover { background: var(--button-hover); }
+        .copy-linkedin-btn.copied { background: #28a745; }
+        @media print { .copy-linkedin-btn { display: none; } }
         
         .last-updated {
             margin-top: 30px;
@@ -493,37 +460,33 @@
         }
         
         function copyLinkedInText() {
-            const textToCopy = `PROFILE
-
-Senior .NET Software Engineer with ~7 years of professional experience working on data-driven and product-focused systems. Strong background in backend development with .NET, C#, MS SQL Server, and web development experience with modern frameworks.
-
-I've worked across stable product teams and fast-changing environments, which helped me become adaptable and pragmatic. I'm now intentionally focused on a long-term role in a stable product company, where I can take ownership, grow steadily, and deliver consistent value.
-
-CORE SKILLS
-
-• Backend: C#, .NET (Framework / Core / modern .NET), REST APIs
-
-• Databases: MS SQL Server, T-SQL, data modeling, performance tuning
-
-• Frontend: Angular (working knowledge), HTML/CSS, JavaScript/TypeScript
-
-• Architecture: Monoliths, modular systems, integrations
-
-• Practices: Code reviews, debugging legacy systems, collaboration in cross-functional teams
-
-• Other: Git, CI/CD basics, cloud fundamentals (Azure – working knowledge)`;
-            
+            const h2s = Array.from(document.querySelectorAll('h2'));
+            const startH2 = h2s.find(h => h.textContent.trim().toUpperCase().includes('PROFILE') && h.textContent.toUpperCase().includes('CORE SKILLS'))
+                           || h2s.find(h => h.textContent.trim().toUpperCase() === 'PROFILE');
+            if (!startH2) {
+                alert('Could not find the PROFILE & CORE SKILLS section to copy.');
+                return;
+            }
+            let lines = [];
+            let el = startH2.nextElementSibling;
+            while (el && el.tagName !== 'H2') {
+                const text = el.textContent.trim();
+                if (text) lines.push(text);
+                el = el.nextElementSibling;
+            }
+            const textToCopy = lines.join('\n\n');
             navigator.clipboard.writeText(textToCopy).then(function() {
                 const btn = document.querySelector('.copy-linkedin-btn');
-                const originalText = btn.textContent;
-                btn.textContent = '✓';
-                btn.classList.add('copied');
-                
-                setTimeout(function() {
-                    btn.textContent = originalText;
-                    btn.classList.remove('copied');
-                }, 2000);
-            }).catch(function(err) {
+                if (btn) {
+                    const originalText = btn.textContent;
+                    btn.textContent = '✓';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.textContent = originalText;
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }
+            }).catch(function() {
                 alert('Failed to copy text. Please select and copy manually.');
             });
         }
@@ -560,29 +523,18 @@ CORE SKILLS
             
             updateDarkModeButton(isDarkMode);
             
-            // Populate LinkedIn copy box
-            const linkedInTextElement = document.getElementById('linkedin-text');
-            if (linkedInTextElement) {
-                linkedInTextElement.textContent = `PROFILE
-
-Senior .NET Software Engineer with ~7 years of professional experience working on data-driven and product-focused systems. Strong background in backend development with .NET, C#, MS SQL Server, and web development experience with modern frameworks.
-
-I've worked across stable product teams and fast-changing environments, which helped me become adaptable and pragmatic. I'm now intentionally focused on a long-term role in a stable product company, where I can take ownership, grow steadily, and deliver consistent value.
-
-CORE SKILLS
-
-• Backend: C#, .NET (Framework / Core / modern .NET), REST APIs
-
-• Databases: MS SQL Server, T-SQL, data modeling, performance tuning
-
-• Frontend: Angular (working knowledge), HTML/CSS, JavaScript/TypeScript
-
-• Architecture: Monoliths, modular systems, integrations
-
-• Practices: Code reviews, debugging legacy systems, collaboration in cross-functional teams
-
-• Other: Git, CI/CD basics, cloud fundamentals (Azure – working knowledge)`;
-                linkedInTextElement.parentElement.style.display = 'block';
+            // Add copy button to the PROFILE & CORE SKILLS heading
+            const headings = Array.from(document.querySelectorAll('h2'));
+            const targetHeading = headings.find(h => h.textContent.trim().toUpperCase().includes('PROFILE') && h.textContent.toUpperCase().includes('CORE SKILLS'))
+                                 || headings.find(h => h.textContent.trim().toUpperCase() === 'PROFILE');
+            if (targetHeading) {
+                const btn = document.createElement('button');
+                btn.className = 'copy-linkedin-btn';
+                btn.type = 'button';
+                btn.title = 'Copy section';
+                btn.textContent = '📋';
+                btn.addEventListener('click', copyLinkedInText);
+                targetHeading.appendChild(btn);
             }
             
             
@@ -627,28 +579,18 @@ CORE SKILLS
 
 <h2>PROFILE & CORE SKILLS</h2>
 
-<div class="linkedin-copy-box">
-    <button class="copy-linkedin-btn" onclick="copyLinkedInText()">📋</button>
-    <pre>PROFILE
+<p>Senior .NET Software Engineer with ~7 years of professional experience working on data-driven and product-focused systems. Strong background in backend development with .NET, C#, MS SQL Server, and web development experience with modern frameworks.</p>
 
-Senior .NET Software Engineer with ~7 years of professional experience working on data-driven and product-focused systems. Strong background in backend development with .NET, C#, MS SQL Server, and web development experience with modern frameworks.
+<p>I've worked across stable product teams and fast-changing environments, which helped me become adaptable and pragmatic. I'm now intentionally focused on a long-term role in a stable product company, where I can take ownership, grow steadily, and deliver consistent value.</p>
 
-I've worked across stable product teams and fast-changing environments, which helped me become adaptable and pragmatic. I'm now intentionally focused on a long-term role in a stable product company, where I can take ownership, grow steadily, and deliver consistent value.
+<p><strong>CORE SKILLS</strong></p>
 
-CORE SKILLS
-
-• Backend: C#, .NET (Framework / Core / modern .NET), REST APIs
-
-• Databases: MS SQL Server, T-SQL, data modeling, performance tuning
-
-• Frontend: Angular (working knowledge), HTML/CSS, JavaScript/TypeScript
-
-• Architecture: Monoliths, modular systems, integrations
-
-• Practices: Code reviews, debugging legacy systems, collaboration in cross-functional teams
-
-• Other: Git, CI/CD basics, cloud fundamentals (Azure – working knowledge)</pre>
-</div>
+<p>• Backend: C#, .NET (Framework / Core / modern .NET), REST APIs</p>
+<p>• Databases: MS SQL Server, T-SQL, data modeling, performance tuning</p>
+<p>• Frontend: Angular (working knowledge), HTML/CSS, JavaScript/TypeScript</p>
+<p>• Architecture: Monoliths, modular systems, integrations</p>
+<p>• Practices: Code reviews, debugging legacy systems, collaboration in cross-functional teams</p>
+<p>• Other: Git, CI/CD basics, cloud fundamentals (Azure – working knowledge)</p>
 
 <h2>PROFESSIONAL EXPERIENCE</h2>
 
