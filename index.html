@@ -459,6 +459,25 @@
             window.print();
         }
         
+        // Get heading text without the copy button emoji
+        function getHeadingText(h2) {
+            if (!h2) return '';
+            let text = '';
+            h2.childNodes.forEach(function(node) {
+                if (node.nodeType === Node.TEXT_NODE) {
+                    text += node.textContent;
+                } else if (node.nodeType === Node.ELEMENT_NODE) {
+                    var el = node;
+                    if (el.classList && el.classList.contains('copy-linkedin-btn')) {
+                        // skip the copy button content
+                    } else {
+                        text += el.textContent;
+                    }
+                }
+            });
+            return text.trim();
+        }
+        
         function copyLinkedInText() {
             const btn = document.querySelector('.copy-linkedin-btn');
             const anchorH2 = btn ? btn.closest('h2') : null;
@@ -469,7 +488,7 @@
                 alert('Could not find the PROFILE section to copy.');
                 return;
             }
-            const profileHeadingText = profileH2.textContent.trim();
+            const profileHeadingText = getHeadingText(profileH2);
             const combinedHeading = profileHeadingText.toUpperCase().includes('CORE SKILLS');
             // Build PROFILE part (include heading + content)
             let profileLines = [profileHeadingText];
@@ -490,7 +509,7 @@
                     coreH2 = h2s.find(h => h.textContent.trim().toUpperCase() === 'CORE SKILLS');
                 }
                 if (coreH2) {
-                    const coreHeadingText = coreH2.textContent.trim();
+                    const coreHeadingText = getHeadingText(coreH2);
                     let coreLines = [coreHeadingText];
                     let cur = coreH2.nextElementSibling;
                     while (cur && cur.tagName !== 'H2') {
