@@ -22,6 +22,10 @@ const jsonLd = {
     "addressLocality": personalInfo.contact.location
   },
   "email": personalInfo.contact.email,
+  "sameAs": [
+    "https://github.com/bitkojine",
+    "https://www.linkedin.com/in/robertasr/"
+  ],
   "knowsAbout": cvData.coreSkills.map(s => s.value).join(", ")
 };
 ---
@@ -35,7 +39,9 @@ const jsonLd = {
 		
 		<!-- SEO Meta Tags -->
 		<meta name="description" content={description} />
+		<link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
 		<meta name="author" content={personalInfo.name} />
+		<meta name="robots" content="index, follow" />
 		<meta name="keywords" content="Software Engineer, .NET, ASP.NET, C#, Backend Developer, Azure, Microservices" />
 		
 		<!-- Dark Mode Initialization Script (Prevents FOUC) -->
@@ -65,12 +71,14 @@ const jsonLd = {
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description} />
 		<meta property="og:type" content="profile" />
-		<meta property="og:url" content="https://robertasrudys.com" />
+		<meta property="og:url" content={new URL(Astro.url.pathname, Astro.site)} />
+		<meta property="og:image" content={new URL('og-image.png', Astro.site)} />
 		
 		<!-- Twitter Card Meta Tags -->
-		<meta name="twitter:card" content="summary" />
+		<meta name="twitter:card" content="summary_large_image" />
 		<meta name="twitter:title" content={title} />
 		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={new URL('og-image.png', Astro.site)} />
 
 		<!-- JSON-LD Structured Data -->
 		<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
