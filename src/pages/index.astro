@@ -4,6 +4,7 @@ import Header from '../components/Header.astro';
 import Section from '../components/Section.astro';
 import ExperienceItem from '../components/ExperienceItem.astro';
 import Controls from '../components/Controls.astro';
+import { Github } from '@lucide/astro';
 import cvDataRaw from '../data/cv.json';
 import { CVSchema } from '../data/schema';
 
@@ -78,9 +79,67 @@ const lastUpdated = `${datePart}d. ${timePart}`;
 
 		<footer class="last-updated">
 			<p>Last updated: <time datetime={new Date().toISOString()}>{lastUpdated}</time></p>
+			<div class="github-actions-link no-print">
+				<a href="https://github.com/bitkojine/cv-site/actions" target="_blank" rel="noopener noreferrer" aria-label="View Build Status on GitHub" id="build-status-link">
+					<div class="status-icon" id="build-status-icon">
+						<Github size={16} />
+					</div>
+					<div class="status-text">
+						<span id="build-status-label">Check Build Status</span>
+						<span id="latest-commit" class="commit-msg"></span>
+					</div>
+				</a>
+			</div>
 		</footer>
 	</main>
 </Layout>
+
+<script>
+	// Fetch latest GitHub Action run
+	(async function fetchBuildStatus() {
+		try {
+			const response = await fetch('https://api.github.com/repos/bitkojine/cv-site/actions/runs?per_page=1');
+			if (!response.ok) return;
+			
+			const data = await response.json();
+			if (data.workflow_runs && data.workflow_runs.length > 0) {
+				const latestRun = data.workflow_runs[0];
+				
+				const statusLabel = document.getElementById('build-status-label');
+				const statusIcon = document.getElementById('build-status-icon');
+				const commitMsg = document.getElementById('latest-commit');
+				const link = document.getElementById('build-status-link') as HTMLAnchorElement;
+
+				if (statusLabel && statusIcon && commitMsg && link) {
+					// Update link to the specific run
+					link.href = latestRun.html_url;
+
+					// Set status text and color
+					if (latestRun.status === 'in_progress' || latestRun.status === 'queued') {
+						statusLabel.textContent = 'Building...';
+						statusIcon.classList.add('status-running');
+					} else if (latestRun.conclusion === 'success') {
+						statusLabel.textContent = 'Build Passing';
+						statusIcon.classList.add('status-success');
+					} else if (latestRun.conclusion === 'failure') {
+						statusLabel.textContent = 'Build Failed';
+						statusIcon.classList.add('status-failure');
+					} else {
+						statusLabel.textContent = `Build ${latestRun.conclusion}`;
+					}
+					
+					// Set commit message
+					if (latestRun.head_commit) {
+						commitMsg.textContent = latestRun.head_commit.message.split('\n')[0]; // First line only
+						commitMsg.title = latestRun.head_commit.message; 
+					}
+				}
+			}
+		} catch (e) {
+			console.error('Failed to fetch build status', e);
+		}
+	})();
+</script>
 
 <style>
 	.skills-list, .next-list {
@@ -113,5 +172,96 @@ const lastUpdated = `${datePart}d. ${timePart}`;
 		.container {
 			padding: 4rem 2rem;
 		}
+	}
+
+	.github-actions-link {
+		display: flex;
+		justify-content: center;
+		margin-top: 0.75rem;
+	}
+
+	.github-actions-link a {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		color: var(--text-muted);
+		font-size: 0.875rem;
+		text-decoration: none;
+		transition: all 0.2s;
+		padding: 0.5rem 1rem;
+		background: var(--bg-card);
+		border: 1px solid var(--border-subtle);
+		border-radius: var(--radius-md);
+		box-shadow: var(--shadow-sm);
+		max-width: 100%;
+	}
+
+	.github-actions-link a:hover {
+		color: var(--text-primary);
+		border-color: var(--accent-600);
+		transform: translateY(-1px);
+		box-shadow: var(--shadow-md);
+	}
+
+	.status-text {
+		display: flex;
+		flex-direction: column;
+		line-height: 1.3;
+		align-items: flex-start;
+		min-width: 0; /* Enable text truncation/wrapping in flex item */
+	}
+	
+	.commit-msg {
+		font-size: 0.75rem;
+		opacity: 0.7;
+		font-family: monospace;
+		white-space: normal; /* Allow wrapping */
+		word-break: break-word;
+	}
+
+	.status-icon {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 24px;
+		height: 24px;
+		border-radius: 50%;
+		background: var(--bg-app);
+		color: var(--text-muted);
+		transition: all 0.3s;
+	}
+
+	.status-success {
+		color: #10b981; /* Green */
+		background: #ecfdf5;
+	}
+
+	:global(.dark-mode) .status-success {
+		background: #064e3b;
+	}
+
+	.status-failure {
+		color: #ef4444; /* Red */
+		background: #fef2f2;
+	}
+
+	:global(.dark-mode) .status-failure {
+		background: #7f1d1d;
+	}
+
+	.status-running {
+		color: #f59e0b; /* Amber */
+		background: #fffbeb;
+		animation: pulse 2s infinite;
+	}
+	
+	:global(.dark-mode) .status-running {
+		background: #78350f;
+	}
+
+	@keyframes pulse {
+		0% { opacity: 1; }
+		50% { opacity: 0.5; }
+		100% { opacity: 1; }
 	}
 </style>
