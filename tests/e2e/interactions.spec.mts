@@ -40,7 +40,8 @@ test.describe('User Interactions', () => {
         });
 
         await page.addInitScript(() => {
-            window.print = (window as any).mockPrint;
+            const customWindow = window as unknown as { mockPrint: () => void; print: () => void };
+            customWindow.print = customWindow.mockPrint;
         });
 
         await page.goto('/');
