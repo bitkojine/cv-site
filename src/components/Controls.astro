@@ -3,107 +3,115 @@ import { Sun, Moon, FileText } from '@lucide/astro';
 ---
 
 <script>
-	function downloadPDF() {
-		// Professional notice before printing
-		console.log('Preparing PDF export...');
-		window.print();
-	}
+  function downloadPDF() {
+    // Professional notice before printing
+    console.log('Preparing PDF export...');
+    window.print();
+  }
 
-	function toggleDarkMode() {
-		const isDark = document.documentElement.classList.toggle('dark-mode');
-		localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
-		updateThemeAssets(isDark);
-	}
+  function toggleDarkMode() {
+    const isDark = document.documentElement.classList.toggle('dark-mode');
+    localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
+    updateThemeAssets(isDark);
+  }
 
-	function updateThemeAssets(isDark: boolean) {
-		const sunIcon = document.querySelector('.sun-icon');
-		const moonIcon = document.querySelector('.moon-icon');
-		const toggleText = document.querySelector('.toggle-text');
+  function updateThemeAssets(isDark: boolean) {
+    const sunIcon = document.querySelector('.sun-icon');
+    const moonIcon = document.querySelector('.moon-icon');
+    const toggleText = document.querySelector('.toggle-text');
 
-		if (sunIcon && moonIcon && toggleText) {
-			if (isDark) {
-				sunIcon.classList.remove('hidden');
-				moonIcon.classList.add('hidden');
-				toggleText.textContent = 'Light';
-			} else {
-				sunIcon.classList.add('hidden');
-				moonIcon.classList.remove('hidden');
-				toggleText.textContent = 'Dark';
-			}
-		}
-	}
+    if (sunIcon && moonIcon && toggleText) {
+      if (isDark) {
+        sunIcon.classList.remove('hidden');
+        moonIcon.classList.add('hidden');
+        toggleText.textContent = 'Light';
+      } else {
+        sunIcon.classList.add('hidden');
+        moonIcon.classList.remove('hidden');
+        toggleText.textContent = 'Dark';
+      }
+    }
+  }
 
-	function copySectionText(e: Event) {
-		const btn = e.currentTarget as HTMLButtonElement;
-		const section = btn?.closest('.cv-section');
-		if (!section) return;
+  function copySectionText(e: Event) {
+    const btn = e.currentTarget as HTMLButtonElement;
+    const section = btn?.closest('.cv-section');
+    if (!section) return;
 
-		let textToCopy = heading?.textContent?.replace(/[📋✓]/gu, '').trim() + '\n\n';
-		
-		section.querySelectorAll('p, strong, li').forEach(el => {
-			textToCopy += el.textContent?.trim() + '\n';
-		});
+    let textToCopy =
+      heading?.textContent?.replace(/[📋✓]/gu, '').trim() + '\n\n';
 
-		navigator.clipboard.writeText(textToCopy).then(() => {
-			const originalHtml = btn.innerHTML;
-			btn.innerHTML = '<span>✓</span>';
-			btn.classList.add('success');
-			
-			setTimeout(() => {
-				btn.innerHTML = originalHtml;
-				btn.classList.remove('success');
-			}, 2000);
-		}).catch(() => {
-			console.error('Failed to copy text.');
-		});
-	}
+    section.querySelectorAll('p, strong, li').forEach((el) => {
+      textToCopy += el.textContent?.trim() + '\n';
+    });
 
-	// Initialization logic
-	document.addEventListener('DOMContentLoaded', () => {
-		const isDark = document.documentElement.classList.contains('dark-mode');
-		updateThemeAssets(isDark);
+    navigator.clipboard
+      .writeText(textToCopy)
+      .then(() => {
+        const originalHtml = btn.innerHTML;
+        btn.innerHTML = '<span>✓</span>';
+        btn.classList.add('success');
 
-		document.querySelector('.dark-mode-toggle')?.addEventListener('click', toggleDarkMode);
-		document.querySelector('.download-btn')?.addEventListener('click', downloadPDF);
-		document.querySelectorAll('.copy-section-btn').forEach(btn => {
-			btn.addEventListener('click', copySectionText);
-		});
-	});
+        setTimeout(() => {
+          btn.innerHTML = originalHtml;
+          btn.classList.remove('success');
+        }, 2000);
+      })
+      .catch(() => {
+        console.error('Failed to copy text.');
+      });
+  }
+
+  // Initialization logic
+  document.addEventListener('DOMContentLoaded', () => {
+    const isDark = document.documentElement.classList.contains('dark-mode');
+    updateThemeAssets(isDark);
+
+    document
+      .querySelector('.dark-mode-toggle')
+      ?.addEventListener('click', toggleDarkMode);
+    document
+      .querySelector('.download-btn')
+      ?.addEventListener('click', downloadPDF);
+    document.querySelectorAll('.copy-section-btn').forEach((btn) => {
+      btn.addEventListener('click', copySectionText);
+    });
+  });
 </script>
 
 <div class="controls-dock no-print">
-	<button 
-		class="btn-primary dark-mode-toggle" 
-		type="button" 
-		aria-label="Toggle dark mode"
-	>
-		<Sun class="sun-icon hidden" size={20} />
-		<Moon class="moon-icon" size={20} />
-		<span class="toggle-text">Dark</span>
-	</button>
-	<button 
-		class="btn-primary download-btn" 
-		type="button"
-		aria-label="Download CV as PDF"
-	>
-		<FileText size={20} />
-		<span>PDF</span>
-	</button>
+  <button
+    class="btn-primary dark-mode-toggle"
+    type="button"
+    aria-label="Toggle dark mode"
+  >
+    <Sun class="sun-icon hidden" size={20} />
+    <Moon class="moon-icon" size={20} />
+    <span class="toggle-text">Dark</span>
+  </button>
+  <button
+    class="btn-primary download-btn"
+    type="button"
+    aria-label="Download CV as PDF"
+  >
+    <FileText size={20} />
+    <span>PDF</span>
+  </button>
 </div>
 
 <style>
-	.hidden {
-		display: none;
-	}
+  .hidden {
+    display: none;
+  }
 
-	.success {
-		color: #10b981 !important;
-		border-color: #10b981 !important;
-	}
+  .success {
+    color: #10b981 !important;
+    border-color: #10b981 !important;
+  }
 
-	@media print {
-		.no-print {
-			display: none !important;
-		}
-	}
+  @media print {
+    .no-print {
+      display: none !important;
+    }
+  }
 </style>

@@ -1,108 +1,108 @@
 {
-    "personalInfo": {
-        "name": "Robertas Rudys",
-        "title": "Senior .NET Software Engineer",
-        "contact": {
-            "email": "robertas.rudys+www@gmail.com",
-            "location": "Lithuania / EU",
-            "remote": "Open to Remote (EU time zones)",
-            "stack": "Backend (.NET, SQL, Web)"
-        },
-        "profile": "Senior .NET Software Engineer with ~7 years of professional experience working on data-driven and product-focused systems. Strong background in backend development with .NET, C#, MS SQL Server, and web development experience with modern frameworks.\n\nI've worked across stable product teams and fast-changing environments, which helped me become adaptable and pragmatic. I'm now intentionally focused on a long-term role in a stable product company, where I can take ownership, grow steadily, and deliver consistent value."
+  "personalInfo": {
+    "name": "Robertas Rudys",
+    "title": "Senior .NET Software Engineer",
+    "contact": {
+      "email": "robertas.rudys+www@gmail.com",
+      "location": "Lithuania / EU",
+      "remote": "Open to Remote (EU time zones)",
+      "stack": "Backend (.NET, SQL, Web)"
     },
-    "coreSkills": [
-        {
-            "label": "Backend",
-            "value": "C#, .NET (Framework / Core / modern .NET), REST APIs"
-        },
-        {
-            "label": "Databases",
-            "value": "MS SQL Server, T-SQL, data modeling, performance tuning"
-        },
-        {
-            "label": "Frontend",
-            "value": "Angular (working knowledge), HTML/CSS, JavaScript/TypeScript"
-        },
-        {
-            "label": "Architecture",
-            "value": "Monoliths, modular systems, integrations"
-        },
-        {
-            "label": "Practices",
-            "value": "Code reviews, debugging legacy systems, collaboration in cross-functional teams"
-        },
-        {
-            "label": "Other",
-            "value": "Git, CI/CD basics, cloud fundamentals (Azure – working knowledge)"
-        }
-    ],
-    "experience": [
-        {
-            "title": "Senior .NET Software Engineer",
-            "company": "Adform Lithuania",
-            "period": "2025",
-            "description": [
-                "Engineered scalable AdTech backend services in a high-concurrency environment",
-                "Developed and optimized mission-critical features in existing production codebases",
-                "Collaborated within a mature engineering organization to uphold strict technical standards"
-            ]
-        },
-        {
-            "title": "Senior / Software Engineer (.NET)",
-            "company": "Ignitis Group Services Center",
-            "period": "2023",
-            "description": [
-                "Refactored and maintained enterprise-grade .NET internal systems",
-                "Extended complex codebases while ensuring stability and performance"
-            ]
-        },
-        {
-            "title": "Software Engineer (.NET / Blockchain)",
-            "company": "Super How",
-            "period": "2021 – 2022",
-            "description": [
-                "Developed and deployed decentralized applications (dApps) and smart contract integrations",
-                "Delivered end-to-end features in a fast-paced, early-stage product environment"
-            ]
-        },
-        {
-            "title": "Software Engineer (.NET / SQL)",
-            "company": "Euromonitor International",
-            "period": "2018 – 2020",
-            "description": [
-                "Engineered data-heavy MS SQL Server solutions for international market research",
-                "Led full-stack development initiatives using .NET and Angular for key product modules",
-                "Maintained long-term stability of core business systems used globally"
-            ]
-        },
-        {
-            "title": "Software Engineer (C# / Unity)",
-            "company": "Invenis",
-            "period": "2015",
-            "description": [
-                "Developed interactive 3D applications using C# and Unity3D",
-                "Implemented core game logic and UI systems for client projects"
-            ]
-        }
-    ],
-    "independentProjects": [
-        {
-            "title": "Founder / Product & Engineering",
-            "company": "Early-Stage Startup (Self-Initiated)",
-            "period": "2024",
-            "description": [
-                "Initiated a startup project based on accumulated product, marketing, and technical knowledge",
-                "Worked on early product definition, validation ideas, and technical direction",
-                "Explored go-to-market strategy and team formation",
-                "Closed the legal entity after the team did not fully materialize, retaining lessons learned around product scope, execution, and risk"
-            ]
-        }
-    ],
-    "lookingFor": [
-        "Stable product company",
-        "Backend or .NET role",
-        "Long-term collaboration and clear expectations",
-        "English-first engineering environment",
-        "Sustainable pace and ownership over time"
-    ]
+    "profile": "Senior .NET Software Engineer with ~7 years of professional experience working on data-driven and product-focused systems. Strong background in backend development with .NET, C#, MS SQL Server, and web development experience with modern frameworks.\n\nI've worked across stable product teams and fast-changing environments, which helped me become adaptable and pragmatic. I'm now intentionally focused on a long-term role in a stable product company, where I can take ownership, grow steadily, and deliver consistent value."
+  },
+  "coreSkills": [
+    {
+      "label": "Backend",
+      "value": "C#, .NET (Framework / Core / modern .NET), REST APIs"
+    },
+    {
+      "label": "Databases",
+      "value": "MS SQL Server, T-SQL, data modeling, performance tuning"
+    },
+    {
+      "label": "Frontend",
+      "value": "Angular (working knowledge), HTML/CSS, JavaScript/TypeScript"
+    },
+    {
+      "label": "Architecture",
+      "value": "Monoliths, modular systems, integrations"
+    },
+    {
+      "label": "Practices",
+      "value": "Code reviews, debugging legacy systems, collaboration in cross-functional teams"
+    },
+    {
+      "label": "Other",
+      "value": "Git, CI/CD basics, cloud fundamentals (Azure – working knowledge)"
+    }
+  ],
+  "experience": [
+    {
+      "title": "Senior .NET Software Engineer",
+      "company": "Adform Lithuania",
+      "period": "2025",
+      "description": [
+        "Engineered scalable AdTech backend services in a high-concurrency environment",
+        "Developed and optimized mission-critical features in existing production codebases",
+        "Collaborated within a mature engineering organization to uphold strict technical standards"
+      ]
+    },
+    {
+      "title": "Senior / Software Engineer (.NET)",
+      "company": "Ignitis Group Services Center",
+      "period": "2023",
+      "description": [
+        "Refactored and maintained enterprise-grade .NET internal systems",
+        "Extended complex codebases while ensuring stability and performance"
+      ]
+    },
+    {
+      "title": "Software Engineer (.NET / Blockchain)",
+      "company": "Super How",
+      "period": "2021 – 2022",
+      "description": [
+        "Developed and deployed decentralized applications (dApps) and smart contract integrations",
+        "Delivered end-to-end features in a fast-paced, early-stage product environment"
+      ]
+    },
+    {
+      "title": "Software Engineer (.NET / SQL)",
+      "company": "Euromonitor International",
+      "period": "2018 – 2020",
+      "description": [
+        "Engineered data-heavy MS SQL Server solutions for international market research",
+        "Led full-stack development initiatives using .NET and Angular for key product modules",
+        "Maintained long-term stability of core business systems used globally"
+      ]
+    },
+    {
+      "title": "Software Engineer (C# / Unity)",
+      "company": "Invenis",
+      "period": "2015",
+      "description": [
+        "Developed interactive 3D applications using C# and Unity3D",
+        "Implemented core game logic and UI systems for client projects"
+      ]
+    }
+  ],
+  "independentProjects": [
+    {
+      "title": "Founder / Product & Engineering",
+      "company": "Early-Stage Startup (Self-Initiated)",
+      "period": "2024",
+      "description": [
+        "Initiated a startup project based on accumulated product, marketing, and technical knowledge",
+        "Worked on early product definition, validation ideas, and technical direction",
+        "Explored go-to-market strategy and team formation",
+        "Closed the legal entity after the team did not fully materialize, retaining lessons learned around product scope, execution, and risk"
+      ]
+    }
+  ],
+  "lookingFor": [
+    "Stable product company",
+    "Backend or .NET role",
+    "Long-term collaboration and clear expectations",
+    "English-first engineering environment",
+    "Sustainable pace and ownership over time"
+  ]
 }

@@ -11,258 +11,289 @@ import { CVSchema } from '../data/schema';
 // Validate data at build time
 const cvData = CVSchema.parse(cvDataRaw);
 
-const { personalInfo, coreSkills, experience, independentProjects, lookingFor } = cvData;
+const {
+  personalInfo,
+  coreSkills,
+  experience,
+  independentProjects,
+  lookingFor,
+} = cvData;
 
 const now = new Date();
-const datePart = now.toLocaleDateString('lt-LT', { 
-	year: 'numeric',
-	month: '2-digit',
-	day: '2-digit',
-	timeZone: 'Europe/Vilnius'
+const datePart = now.toLocaleDateString('lt-LT', {
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+  timeZone: 'Europe/Vilnius',
 });
 const timePart = now.toLocaleTimeString('lt-LT', {
-	hour: '2-digit',
-	minute: '2-digit',
-	timeZone: 'Europe/Vilnius',
-	hour12: false,
-	timeZoneName: 'short'
+  hour: '2-digit',
+  minute: '2-digit',
+  timeZone: 'Europe/Vilnius',
+  hour12: false,
+  timeZoneName: 'short',
 });
 const lastUpdated = `${datePart}d. ${timePart}`;
 ---
 
-<Layout 
-	title={`${personalInfo.name} - ${personalInfo.title}`}
-	description={`Software engineer specializing in ${personalInfo.contact.stack}. ${personalInfo.profile.slice(0, 150)}...`}
+<Layout
+  title={`${personalInfo.name} - ${personalInfo.title}`}
+  description={`Software engineer specializing in ${personalInfo.contact.stack}. ${personalInfo.profile.slice(0, 150)}...`}
 >
-	<Controls />
-	
-	<main class="container">
-		<Header 
-			name={personalInfo.name}
-			title={personalInfo.title}
-			contact={personalInfo.contact}
-		/>
+  <Controls />
 
-		<hr aria-hidden="true" />
+  <main class="container">
+    <Header
+      name={personalInfo.name}
+      title={personalInfo.title}
+      contact={personalInfo.contact}
+    />
 
-		<Section title="PROFILE" showCopy={true}>
-			{personalInfo.profile.split('\n\n').map(p => <p>{p}</p>)}
-		</Section>
+    <hr aria-hidden="true" />
 
-		<Section title="CORE SKILLS">
-			<ul class="skills-list">
-				{coreSkills.map(skill => (
-					<li>
-						<strong>{skill.label}:</strong> {skill.value}
-					</li>
-				))}
-			</ul>
-		</Section>
+    <Section title="PROFILE" showCopy={true}>
+      {personalInfo.profile.split('\n\n').map((p) => <p>{p}</p>)}
+    </Section>
 
-		<Section title="PROFESSIONAL EXPERIENCE">
-			{experience.map(item => (
-				<ExperienceItem {...item} />
-			))}
-		</Section>
+    <Section title="CORE SKILLS">
+      <ul class="skills-list">
+        {
+          coreSkills.map((skill) => (
+            <li>
+              <strong>{skill.label}:</strong> {skill.value}
+            </li>
+          ))
+        }
+      </ul>
+    </Section>
 
-		<Section title="INDEPENDENT PROJECT / STARTUP ATTEMPT">
-			{independentProjects.map(item => (
-				<ExperienceItem {...item} />
-			))}
-		</Section>
+    <Section title="PROFESSIONAL EXPERIENCE">
+      {experience.map((item) => <ExperienceItem {...item} />)}
+    </Section>
 
-		<Section title="WHAT I'M LOOKING FOR NEXT">
-			<ul class="next-list">
-				{lookingFor.map(item => <li>{item}</li>)}
-			</ul>
-		</Section>
+    <Section title="INDEPENDENT PROJECT / STARTUP ATTEMPT">
+      {independentProjects.map((item) => <ExperienceItem {...item} />)}
+    </Section>
 
-		<footer class="last-updated">
-			<p>Last updated: <time datetime={new Date().toISOString()}>{lastUpdated}</time></p>
-			<div class="github-actions-link no-print">
-				<a href="https://github.com/bitkojine/cv-site/actions" target="_blank" rel="noopener noreferrer" aria-label="View Build Status on GitHub" id="build-status-link">
-					<div class="status-icon" id="build-status-icon">
-						<Github size={16} />
-					</div>
-					<div class="status-text">
-						<span id="build-status-label">Check Build Status</span>
-						<span id="latest-commit" class="commit-msg"></span>
-					</div>
-				</a>
-			</div>
-		</footer>
-	</main>
+    <Section title="WHAT I'M LOOKING FOR NEXT">
+      <ul class="next-list">
+        {lookingFor.map((item) => <li>{item}</li>)}
+      </ul>
+    </Section>
+
+    <footer class="last-updated">
+      <p>
+        Last updated: <time datetime={new Date().toISOString()}
+          >{lastUpdated}</time
+        >
+      </p>
+      <div class="github-actions-link no-print">
+        <a
+          href="https://github.com/bitkojine/cv-site/actions"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="View Build Status on GitHub"
+          id="build-status-link"
+        >
+          <div class="status-icon" id="build-status-icon">
+            <Github size={16} />
+          </div>
+          <div class="status-text">
+            <span id="build-status-label">Check Build Status</span>
+            <span id="latest-commit" class="commit-msg"></span>
+          </div>
+        </a>
+      </div>
+    </footer>
+  </main>
 </Layout>
 
 <script>
-	// Fetch latest GitHub Action run
-	(async function fetchBuildStatus() {
-		try {
-			const response = await fetch('https://api.github.com/repos/bitkojine/cv-site/actions/runs?per_page=1');
-			if (!response.ok) return;
-			
-			const data = await response.json();
-			if (data.workflow_runs && data.workflow_runs.length > 0) {
-				const latestRun = data.workflow_runs[0];
-				
-				const statusLabel = document.getElementById('build-status-label');
-				const statusIcon = document.getElementById('build-status-icon');
-				const commitMsg = document.getElementById('latest-commit');
-				const link = document.getElementById('build-status-link') as HTMLAnchorElement;
+  // Fetch latest GitHub Action run
+  (async function fetchBuildStatus() {
+    try {
+      const response = await fetch(
+        'https://api.github.com/repos/bitkojine/cv-site/actions/runs?per_page=1'
+      );
+      if (!response.ok) return;
 
-				if (statusLabel && statusIcon && commitMsg && link) {
-					// Update link to the specific run
-					link.href = latestRun.html_url;
+      const data = await response.json();
+      if (data.workflow_runs && data.workflow_runs.length > 0) {
+        const latestRun = data.workflow_runs[0];
 
-					// Set status text and color
-					if (latestRun.status === 'in_progress' || latestRun.status === 'queued') {
-						statusLabel.textContent = 'Building...';
-						statusIcon.classList.add('status-running');
-					} else if (latestRun.conclusion === 'success') {
-						statusLabel.textContent = 'Build Passing';
-						statusIcon.classList.add('status-success');
-					} else if (latestRun.conclusion === 'failure') {
-						statusLabel.textContent = 'Build Failed';
-						statusIcon.classList.add('status-failure');
-					} else {
-						statusLabel.textContent = `Build ${latestRun.conclusion}`;
-					}
-					
-					// Set commit message
-					if (latestRun.head_commit) {
-						commitMsg.textContent = latestRun.head_commit.message.split('\n')[0]; // First line only
-						commitMsg.title = latestRun.head_commit.message; 
-					}
-				}
-			}
-		} catch (e) {
-			console.error('Failed to fetch build status', e);
-		}
-	})();
+        const statusLabel = document.getElementById('build-status-label');
+        const statusIcon = document.getElementById('build-status-icon');
+        const commitMsg = document.getElementById('latest-commit');
+        const link = document.getElementById(
+          'build-status-link'
+        ) as HTMLAnchorElement;
+
+        if (statusLabel && statusIcon && commitMsg && link) {
+          // Update link to the specific run
+          link.href = latestRun.html_url;
+
+          // Set status text and color
+          if (
+            latestRun.status === 'in_progress' ||
+            latestRun.status === 'queued'
+          ) {
+            statusLabel.textContent = 'Building...';
+            statusIcon.classList.add('status-running');
+          } else if (latestRun.conclusion === 'success') {
+            statusLabel.textContent = 'Build Passing';
+            statusIcon.classList.add('status-success');
+          } else if (latestRun.conclusion === 'failure') {
+            statusLabel.textContent = 'Build Failed';
+            statusIcon.classList.add('status-failure');
+          } else {
+            statusLabel.textContent = `Build ${latestRun.conclusion}`;
+          }
+
+          // Set commit message
+          if (latestRun.head_commit) {
+            commitMsg.textContent =
+              latestRun.head_commit.message.split('\n')[0]; // First line only
+            commitMsg.title = latestRun.head_commit.message;
+          }
+        }
+      }
+    } catch (e) {
+      console.error('Failed to fetch build status', e);
+    }
+  })();
 </script>
 
 <style>
-	.skills-list, .next-list {
-		list-style: none;
-		margin: 0;
-		padding: 0;
-	}
+  .skills-list,
+  .next-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
 
-	.skills-list li, .next-list li {
-		margin-bottom: 0.75rem;
-		position: relative;
-		padding-left: 1.25rem;
-	}
+  .skills-list li,
+  .next-list li {
+    margin-bottom: 0.75rem;
+    position: relative;
+    padding-left: 1.25rem;
+  }
 
-	.skills-list li::before, .next-list li::before {
-		content: "→";
-		position: absolute;
-		left: 0;
-		color: var(--accent-600);
-		font-weight: bold;
-	}
+  .skills-list li::before,
+  .next-list li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--accent-600);
+    font-weight: bold;
+  }
 
-	.container {
-		max-width: 800px;
-		margin: 0 auto;
-		padding: 2rem 1.5rem;
-	}
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+  }
 
-	@media (min-width: 768px) {
-		.container {
-			padding: 4rem 2rem;
-		}
-	}
+  @media (min-width: 768px) {
+    .container {
+      padding: 4rem 2rem;
+    }
+  }
 
-	.github-actions-link {
-		display: flex;
-		justify-content: center;
-		margin-top: 0.75rem;
-	}
+  .github-actions-link {
+    display: flex;
+    justify-content: center;
+    margin-top: 0.75rem;
+  }
 
-	.github-actions-link a {
-		display: flex;
-		align-items: center;
-		gap: 0.75rem;
-		color: var(--text-muted);
-		font-size: 0.875rem;
-		text-decoration: none;
-		transition: all 0.2s;
-		padding: 0.5rem 1rem;
-		background: var(--bg-card);
-		border: 1px solid var(--border-subtle);
-		border-radius: var(--radius-md);
-		box-shadow: var(--shadow-sm);
-		max-width: 100%;
-	}
+  .github-actions-link a {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    text-decoration: none;
+    transition: all 0.2s;
+    padding: 0.5rem 1rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    max-width: 100%;
+  }
 
-	.github-actions-link a:hover {
-		color: var(--text-primary);
-		border-color: var(--accent-600);
-		transform: translateY(-1px);
-		box-shadow: var(--shadow-md);
-	}
+  .github-actions-link a:hover {
+    color: var(--text-primary);
+    border-color: var(--accent-600);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+  }
 
-	.status-text {
-		display: flex;
-		flex-direction: column;
-		line-height: 1.3;
-		align-items: flex-start;
-		min-width: 0; /* Enable text truncation/wrapping in flex item */
-		text-align: left;
-	}
-	
-	.commit-msg {
-		font-size: 0.75rem;
-		opacity: 0.7;
-		font-family: monospace;
-		white-space: normal; /* Allow wrapping */
-		word-break: break-word;
-	}
+  .status-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.3;
+    align-items: flex-start;
+    min-width: 0; /* Enable text truncation/wrapping in flex item */
+    text-align: left;
+  }
 
-	.status-icon {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 24px;
-		height: 24px;
-		border-radius: 50%;
-		background: var(--bg-app);
-		color: var(--text-muted);
-		transition: all 0.3s;
-	}
+  .commit-msg {
+    font-size: 0.75rem;
+    opacity: 0.7;
+    font-family: monospace;
+    white-space: normal; /* Allow wrapping */
+    word-break: break-word;
+  }
 
-	.status-success {
-		color: #10b981; /* Green */
-		background: #ecfdf5;
-	}
+  .status-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--bg-app);
+    color: var(--text-muted);
+    transition: all 0.3s;
+  }
 
-	:global(.dark-mode) .status-success {
-		background: #064e3b;
-	}
+  .status-success {
+    color: #10b981; /* Green */
+    background: #ecfdf5;
+  }
 
-	.status-failure {
-		color: #ef4444; /* Red */
-		background: #fef2f2;
-	}
+  :global(.dark-mode) .status-success {
+    background: #064e3b;
+  }
 
-	:global(.dark-mode) .status-failure {
-		background: #7f1d1d;
-	}
+  .status-failure {
+    color: #ef4444; /* Red */
+    background: #fef2f2;
+  }
 
-	.status-running {
-		color: #f59e0b; /* Amber */
-		background: #fffbeb;
-		animation: pulse 2s infinite;
-	}
-	
-	:global(.dark-mode) .status-running {
-		background: #78350f;
-	}
+  :global(.dark-mode) .status-failure {
+    background: #7f1d1d;
+  }
 
-	@keyframes pulse {
-		0% { opacity: 1; }
-		50% { opacity: 0.5; }
-		100% { opacity: 1; }
-	}
+  .status-running {
+    color: #f59e0b; /* Amber */
+    background: #fffbeb;
+    animation: pulse 2s infinite;
+  }
+
+  :global(.dark-mode) .status-running {
+    background: #78350f;
+  }
+
+  @keyframes pulse {
+    0% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
 </style>

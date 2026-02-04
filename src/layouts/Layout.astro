@@ -3,87 +3,95 @@ import '../styles/global.css';
 import cvData from '../data/cv.json';
 
 interface Props {
-	title: string;
-	description: string;
+  title: string;
+  description: string;
 }
 
 const { title, description } = Astro.props;
 const { personalInfo } = cvData;
 
 const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "Person",
-  "name": personalInfo.name,
-  "jobTitle": personalInfo.title,
-  "description": description,
-  "url": "https://robertasrudys.com",
-  "address": {
-    "@type": "PostalAddress",
-    "addressLocality": personalInfo.contact.location
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: personalInfo.name,
+  jobTitle: personalInfo.title,
+  description: description,
+  url: 'https://robertasrudys.com',
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: personalInfo.contact.location,
   },
-  "email": personalInfo.contact.email,
-  "sameAs": [
-    "https://github.com/bitkojine",
-    "https://www.linkedin.com/in/robertasr/"
+  email: personalInfo.contact.email,
+  sameAs: [
+    'https://github.com/bitkojine',
+    'https://www.linkedin.com/in/robertasr/',
   ],
-  "knowsAbout": cvData.coreSkills.map(s => s.value).join(", ")
+  knowsAbout: cvData.coreSkills.map((s) => s.value).join(', '),
 };
 ---
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>{title}</title>
-		
-		<!-- SEO Meta Tags -->
-		<meta name="description" content={description} />
-		<link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
-		<meta name="author" content={personalInfo.name} />
-		<meta name="robots" content="index, follow" />
-		<meta name="keywords" content="Software Engineer, .NET, ASP.NET, C#, Backend Developer, Azure, Microservices" />
-		
-		<!-- Dark Mode Initialization Script (Prevents FOUC) -->
-		<script is:inline>
-			const theme = (() => {
-				if (typeof localStorage !== 'undefined' && localStorage.getItem('darkMode')) {
-					return localStorage.getItem('darkMode') === 'enabled' ? 'dark' : 'light';
-				}
-				if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-					return 'dark';
-				}
-				return 'light';
-			})();
-		
-			if (theme === 'dark') {
-				document.documentElement.classList.add('dark-mode');
-			} else {
-				document.documentElement.classList.remove('dark-mode');
-			}
-		</script>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
 
-		<!-- Fonts -->
-		<link rel="preconnect" href="https://rsms.me/">
-		<link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    <!-- SEO Meta Tags -->
+    <meta name="description" content={description} />
+    <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
+    <meta name="author" content={personalInfo.name} />
+    <meta name="robots" content="index, follow" />
+    <meta
+      name="keywords"
+      content="Software Engineer, .NET, ASP.NET, C#, Backend Developer, Azure, Microservices"
+    />
 
-		<!-- Open Graph Meta Tags -->
-		<meta property="og:title" content={title} />
-		<meta property="og:description" content={description} />
-		<meta property="og:type" content="profile" />
-		<meta property="og:url" content={new URL(Astro.url.pathname, Astro.site)} />
-		<meta property="og:image" content={new URL('og-image.png', Astro.site)} />
-		
-		<!-- Twitter Card Meta Tags -->
-		<meta name="twitter:card" content="summary_large_image" />
-		<meta name="twitter:title" content={title} />
-		<meta name="twitter:description" content={description} />
-		<meta name="twitter:image" content={new URL('og-image.png', Astro.site)} />
+    <!-- Dark Mode Initialization Script (Prevents FOUC) -->
+    <script is:inline>
+      const theme = (() => {
+        if (
+          typeof localStorage !== 'undefined' &&
+          localStorage.getItem('darkMode')
+        ) {
+          return localStorage.getItem('darkMode') === 'enabled'
+            ? 'dark'
+            : 'light';
+        }
+        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          return 'dark';
+        }
+        return 'light';
+      })();
 
-		<!-- JSON-LD Structured Data -->
-		<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
-	</head>
-	<body>
-		<slot />
-	</body>
+      if (theme === 'dark') {
+        document.documentElement.classList.add('dark-mode');
+      } else {
+        document.documentElement.classList.remove('dark-mode');
+      }
+    </script>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://rsms.me/" />
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="profile" />
+    <meta property="og:url" content={new URL(Astro.url.pathname, Astro.site)} />
+    <meta property="og:image" content={new URL('og-image.png', Astro.site)} />
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={new URL('og-image.png', Astro.site)} />
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  </head>
+  <body>
+    <slot />
+  </body>
 </html>
