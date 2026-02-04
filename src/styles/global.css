@@ -213,9 +213,20 @@ hr {
   transform: translateZ(0);
 }
 
+.controls-dock::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(-1 * var(--controls-dock-offset));
+  height: var(--controls-dock-offset);
+  background: inherit;
+  pointer-events: none;
+}
+
 /* Standalone (iOS Add to Home Screen / PWA) */
 :root.standalone {
-  --controls-dock-offset: 0px;
+  --controls-dock-offset: 0.3rem;
 }
 
 :root.standalone .controls-dock {
