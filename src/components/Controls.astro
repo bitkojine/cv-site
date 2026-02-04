@@ -1,0 +1,72 @@
+---
+---
+
+<script>
+	function downloadPDF() {
+		alert('In the print dialog:\n\n1. Select "Save as PDF" as the destination\n2. Click "Save"\n3. Choose where to save your PDF file');
+		window.print();
+	}
+
+	function toggleDarkMode() {
+		const body = document.body;
+		const isDarkMode = body.classList.toggle('dark-mode');
+		localStorage.setItem('darkMode', isDarkMode ? 'enabled' : 'disabled');
+		updateDarkModeButton(isDarkMode);
+	}
+
+	function updateDarkModeButton(isDarkMode: boolean) {
+		const button = document.querySelector('.dark-mode-toggle');
+		if (button) {
+			button.innerHTML = isDarkMode ? '<span>☀️</span> Light' : '<span>🌙</span> Dark';
+		}
+	}
+
+	function copyLinkedInText() {
+		const btn = document.querySelector('.copy-linkedin-btn') as HTMLButtonElement;
+		const section = btn?.closest('.cv-section');
+		if (!section) return;
+
+		const heading = section.querySelector('h2');
+		let textToCopy = heading?.textContent?.replace('📋', '').trim() + '\n\n';
+		
+		section.querySelectorAll('p, strong, li').forEach(el => {
+			textToCopy += el.textContent?.trim() + '\n';
+		});
+
+		navigator.clipboard.writeText(textToCopy).then(() => {
+			if (btn) {
+				const originalText = btn.textContent;
+				btn.textContent = '✓';
+				setTimeout(() => {
+					btn.textContent = originalText;
+				}, 2000);
+			}
+		}).catch(() => {
+			alert('Failed to copy text. Please select and copy manually.');
+		});
+	}
+
+	// Initialization
+	const darkModePreference = localStorage.getItem('darkMode');
+	const isDarkMode = darkModePreference === 'enabled';
+	if (isDarkMode) {
+		document.body.classList.add('dark-mode');
+	}
+	updateDarkModeButton(isDarkMode);
+
+	// Event Listeners
+	document.querySelector('.dark-mode-toggle')?.addEventListener('click', toggleDarkMode);
+	document.querySelector('.download-btn')?.addEventListener('click', downloadPDF);
+	document.querySelectorAll('.copy-linkedin-btn').forEach(btn => {
+		btn.addEventListener('click', copyLinkedInText);
+	});
+</script>
+
+<div class="controls-dock">
+	<button class="btn-primary dark-mode-toggle" type="button">
+		<span>🌙</span> Dark
+	</button>
+	<button class="btn-primary download-btn" type="button">
+		<span>📄</span> PDF
+	</button>
+</div>

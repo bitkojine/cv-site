@@ -1,0 +1,25 @@
+---
+interface Props {
+	title: string;
+	company: string;
+	period: string;
+	description: string[];
+}
+
+const { title, company, period, description } = Astro.props;
+---
+
+<div class="job-section">
+	<div class="job-header">
+		<div>
+			<h3>{title}</h3>
+			<strong>{company}</strong>
+		</div>
+		<span class="job-period">{period}</span>
+	</div>
+	<div class="job-content">
+		{description.map((item) => (
+			<p>{item}</p>
+		))}
+	</div>
+</div>

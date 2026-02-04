@@ -1,0 +1,16 @@
+---
+interface Props {
+	title: string;
+	showCopy?: boolean;
+}
+
+const { title, showCopy = false } = Astro.props;
+---
+
+<section class="cv-section">
+	<h2>
+		{title}
+		{showCopy && <button class="copy-linkedin-btn" type="button" title="Copy section">📋</button>}
+	</h2>
+	<slot />
+</section>
