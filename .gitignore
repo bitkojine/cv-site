@@ -24,6 +24,7 @@ Thumbs.db
 
 # Astro
 .astro/
+.cache/
 
 # IDEs
 .vscode/

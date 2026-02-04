@@ -99,7 +99,16 @@ const jsonLd = {
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://rsms.me/" />
-    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+    <link rel="preload" href="https://rsms.me/inter/inter.css" as="style" />
+    <link
+      rel="stylesheet"
+      href="https://rsms.me/inter/inter.css"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript>
+      <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+    </noscript>
 
     <!-- Open Graph Meta Tags -->
     <meta property="og:title" content={title} />
