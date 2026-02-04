@@ -196,7 +196,7 @@ const lastUpdated = `${datePart}d. ${timePart}`;
       const container = document.getElementById('github-commits-container');
       if (!container) return;
 
-      container.innerHTML = '<h4>Latest Commits</h4>';
+      container.innerHTML = '<h2>LATEST COMMITS</h2>';
       const list = document.createElement('ul');
       list.className = 'commits-list';
 
@@ -344,13 +344,8 @@ const lastUpdated = `${datePart}d. ${timePart}`;
     text-align: left;
   }
 
-  .github-commits-container h4 {
-    font-size: 1.1rem;
-    color: var(--text-primary);
-    margin-bottom: 1.25rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+  .github-commits-container h2 {
+    /* Use global h2 styling - no overrides needed */
   }
 
   :global(.commits-list) {
