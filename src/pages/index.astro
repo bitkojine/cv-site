@@ -12,11 +12,20 @@ const cvData = CVSchema.parse(cvDataRaw);
 
 const { personalInfo, coreSkills, experience, independentProjects, lookingFor } = cvData;
 
-const lastUpdated = new Date().toLocaleString('en-US', { 
-	month: 'long', 
-	day: 'numeric', 
-	year: 'numeric'
+const now = new Date();
+const datePart = now.toLocaleDateString('lt-LT', { 
+	year: 'numeric',
+	month: '2-digit',
+	day: '2-digit',
+	timeZone: 'Europe/Vilnius'
 });
+const timePart = now.toLocaleTimeString('lt-LT', {
+	hour: '2-digit',
+	minute: '2-digit',
+	timeZone: 'Europe/Vilnius',
+	hour12: false
+});
+const lastUpdated = `${datePart}d. ${timePart}`;
 ---
 
 <Layout 
