@@ -291,7 +291,7 @@ const lastUpdated = `${datePart}d. ${timePart}`;
   .github-actions-container {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 1rem;
     margin-top: 0.75rem;
   }
@@ -341,14 +341,14 @@ const lastUpdated = `${datePart}d. ${timePart}`;
     padding-top: 1.5rem;
     border-top: 1px solid var(--border-subtle);
     font-size: 0.8rem;
-    text-align: center;
+    text-align: left;
   }
 
   .github-commits-container h4 {
-    font-size: 0.9rem;
-    color: var(--text-muted);
-    margin-bottom: 0.75rem;
-    font-weight: 500;
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    margin-bottom: 1.25rem;
+    font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
@@ -389,7 +389,7 @@ const lastUpdated = `${datePart}d. ${timePart}`;
     opacity: 0.7;
   }
 
-  .status-icon {
+  :global(.status-icon) {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -401,31 +401,34 @@ const lastUpdated = `${datePart}d. ${timePart}`;
     transition: all 0.3s;
   }
 
-  .status-success {
+  :global(.status-success) {
     color: #10b981; /* Green */
-    background: #ecfdf5;
+    background: #d1fae5;
   }
 
-  :global(.dark-mode) .status-success {
+  :global(.dark-mode .status-success) {
+    color: #34d399;
     background: #064e3b;
   }
 
-  .status-failure {
+  :global(.status-failure) {
     color: #ef4444; /* Red */
-    background: #fef2f2;
+    background: #fee2e2;
   }
 
-  :global(.dark-mode) .status-failure {
+  :global(.dark-mode .status-failure) {
+    color: #f87171;
     background: #7f1d1d;
   }
 
-  .status-running {
+  :global(.status-running) {
     color: #f59e0b; /* Amber */
-    background: #fffbeb;
+    background: #fef3c7;
     animation: pulse 2s infinite;
   }
 
-  :global(.dark-mode) .status-running {
+  :global(.dark-mode .status-running) {
+    color: #fbbf24;
     background: #78350f;
   }
 
