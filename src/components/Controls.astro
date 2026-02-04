@@ -38,8 +38,7 @@ import { Sun, Moon, FileText } from '@lucide/astro';
 		const section = btn?.closest('.cv-section');
 		if (!section) return;
 
-		const heading = section.querySelector('h2');
-		let textToCopy = heading?.textContent?.replace(/[📋✓]/g, '').trim() + '\n\n';
+		let textToCopy = heading?.textContent?.replace(/[📋✓]/gu, '').trim() + '\n\n';
 		
 		section.querySelectorAll('p, strong, li').forEach(el => {
 			textToCopy += el.textContent?.trim() + '\n';

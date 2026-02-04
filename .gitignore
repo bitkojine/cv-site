@@ -30,3 +30,12 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
+
+# Testing
+playwright-report/
+test-results/
+coverage/
+
+# Misc
+.DS_Store
+*.pem
