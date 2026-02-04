@@ -1,0 +1,96 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import BlogCard from '../../components/BlogCard.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+---
+
+<Layout
+  title="Blog - Robertas Rudys"
+  description="Technical articles, opinions, and thoughts on software engineering, Bitcoin, and technology."
+>
+  <main class="container blog-container">
+    <header class="blog-header">
+      <a href="/" class="back-link">← Back to CV</a>
+      <h1>Blog</h1>
+      <p class="blog-intro">
+        Technical articles, opinions, and thoughts on software engineering,
+        Bitcoin, and technology.
+      </p>
+    </header>
+
+    <section class="posts-list">
+      {
+        posts.length === 0 ? (
+          <p class="no-posts">No posts yet. Check back soon!</p>
+        ) : (
+          posts.map((post) => (
+            <BlogCard
+              title={post.data.title}
+              date={post.data.date}
+              description={post.data.description}
+              slug={post.slug}
+              tags={post.data.tags}
+            />
+          ))
+        )
+      }
+    </section>
+  </main>
+</Layout>
+
+<style>
+  .blog-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .blog-container {
+      padding: 4rem 2rem;
+    }
+  }
+
+  .blog-header {
+    margin-bottom: 3rem;
+  }
+
+  .back-link {
+    display: inline-block;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    margin-bottom: 1rem;
+    transition: color 0.2s;
+  }
+
+  .back-link:hover {
+    color: var(--accent-600);
+  }
+
+  h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    margin-bottom: 0.75rem;
+  }
+
+  .blog-intro {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .posts-list {
+    margin-top: 2rem;
+  }
+
+  .no-posts {
+    color: var(--text-muted);
+    font-style: italic;
+  }
+</style>

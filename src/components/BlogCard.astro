@@ -1,0 +1,93 @@
+---
+interface Props {
+  title: string;
+  date: Date;
+  description: string;
+  slug: string;
+  tags?: string[];
+}
+
+const { title, date, description, slug, tags } = Astro.props;
+
+const formattedDate = date.toLocaleDateString('lt-LT', {
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+  timeZone: 'Europe/Vilnius',
+});
+---
+
+<article class="blog-card">
+  <a href={`/blog/${slug}`} class="blog-card-link">
+    <h3>{title}</h3>
+    <time datetime={date.toISOString()}>{formattedDate}</time>
+    <p>{description}</p>
+    {
+      tags && tags.length > 0 && (
+        <div class="tags">
+          {tags.map((tag) => (
+            <span class="tag">{tag}</span>
+          ))}
+        </div>
+      )
+    }
+  </a>
+</article>
+
+<style>
+  .blog-card {
+    margin-bottom: 1.5rem;
+  }
+
+  .blog-card-link {
+    display: block;
+    padding: 1.25rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .blog-card-link:hover {
+    border-color: var(--accent-600);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+
+  h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+  }
+
+  time {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  p {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.75rem;
+    line-height: 1.5;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .tag {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.5rem;
+    background: var(--accent-100);
+    color: var(--accent-600);
+    border-radius: 0.25rem;
+    font-weight: 500;
+  }
+</style>

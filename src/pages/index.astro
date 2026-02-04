@@ -7,6 +7,7 @@ import Controls from '../components/Controls.astro';
 
 import cvDataRaw from '../data/cv.json';
 import { CVSchema } from '../data/schema';
+import { getCollection } from 'astro:content';
 
 // Validate data at build time
 const cvData = CVSchema.parse(cvDataRaw);
@@ -18,6 +19,12 @@ const {
   independentProjects,
   lookingFor,
 } = cvData;
+
+// Get latest blog posts (max 3)
+const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+const latestPosts = allPosts
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 3);
 
 const now = new Date();
 const datePart = now.toLocaleDateString('lt-LT', {
@@ -79,6 +86,31 @@ const lastUpdated = `${datePart}d. ${timePart}`;
       </ul>
     </Section>
 
+    {
+      latestPosts.length > 0 && (
+        <Section title="LATEST ARTICLES">
+          <div class="articles-preview no-print">
+            {latestPosts.map((post) => (
+              <a href={`/blog/${post.slug}`} class="article-link">
+                <span class="article-title">{post.data.title}</span>
+                <span class="article-date">
+                  {post.data.date.toLocaleDateString('lt-LT', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    timeZone: 'Europe/Vilnius',
+                  })}
+                </span>
+              </a>
+            ))}
+            <a href="/blog" class="view-all-link">
+              View all posts →
+            </a>
+          </div>
+        </Section>
+      )
+    }
+
     <footer class="last-updated">
       <p>
         CV/Resume last updated: <time datetime={new Date().toISOString()}
@@ -112,7 +144,8 @@ const lastUpdated = `${datePart}d. ${timePart}`;
           <a
             href="https://github.com/bitkojine/cv-site/commits"
             target="_blank"
-            rel="noopener noreferrer">View on GitHub →</a>
+            rel="noopener noreferrer">View on GitHub →</a
+          >
         </p>
       </div>
     </footer>
@@ -301,6 +334,50 @@ const lastUpdated = `${datePart}d. ${timePart}`;
     .container {
       padding: 4rem 2rem;
     }
+  }
+
+  .articles-preview {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .article-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .article-link:hover {
+    border-color: var(--accent-600);
+    transform: translateX(4px);
+  }
+
+  .article-title {
+    color: var(--text-primary);
+    font-weight: 500;
+  }
+
+  .article-date {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+  }
+
+  .view-all-link {
+    color: var(--accent-600);
+    font-size: 0.875rem;
+    text-decoration: none;
+    margin-top: 0.5rem;
+  }
+
+  .view-all-link:hover {
+    text-decoration: underline;
   }
 
   .github-actions-container {
