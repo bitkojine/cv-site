@@ -79,6 +79,23 @@ const jsonLd = {
         document.documentElement.classList.add('standalone');
       }
     </script>
+    <script is:inline>
+      window.cvTrack = (eventName, props = {}) => {
+        if (!eventName) return;
+        try {
+          const key = 'cv_events';
+          const raw = localStorage.getItem(key);
+          const events = raw ? JSON.parse(raw) : {};
+          events[eventName] = (events[eventName] || 0) + 1;
+          localStorage.setItem(key, JSON.stringify(events));
+        } catch {
+          // Silent fail for privacy or storage restrictions
+        }
+        if (window.dataLayer && Array.isArray(window.dataLayer)) {
+          window.dataLayer.push({ event: eventName, ...props });
+        }
+      };
+    </script>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://rsms.me/" />

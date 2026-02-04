@@ -168,6 +168,65 @@ const formatVilniusDateTime = (raw: string) => {
       </ul>
     </Section>
 
+    <Section title="ENDORSEMENTS">
+      <p>
+        If we worked together or you reviewed my work, a short public
+        endorsement helps hiring teams move faster.
+      </p>
+      <p class="endorsement-explainer">
+        Clicking "Post Endorsement" opens a prefilled GitHub issue draft in a
+        new tab. You review it and click "Submit new issue" yourself—nothing is
+        posted automatically.
+      </p>
+      <form
+        id="endorsement-form"
+        class="endorsement-form no-print"
+        data-github-owner={githubOwner}
+        data-github-repo={githubRepo}
+      >
+        <label class="endorsement-field">
+          <span>Name</span>
+          <input
+            type="text"
+            name="name"
+            placeholder="Ada Lovelace"
+            autocomplete="name"
+            required
+          />
+        </label>
+        <label class="endorsement-field">
+          <span>Company / Role</span>
+          <input
+            type="text"
+            name="company"
+            placeholder="Acme Corp · Engineering Manager"
+            required
+          />
+        </label>
+        <label class="endorsement-field">
+          <span>Endorsement (1–3 sentences)</span>
+          <textarea
+            name="note"
+            rows="3"
+            placeholder="Robertas shipped critical backend migrations with calm, clear communication."
+            required></textarea>
+        </label>
+        <button type="submit" class="endorsement-submit">
+          Post Endorsement on GitHub
+        </button>
+      </form>
+      <p
+        id="endorsement-success"
+        class="endorsement-success"
+        role="status"
+        aria-live="polite"
+      >
+      </p>
+      <p class="endorsement-help no-print">
+        A draft issue opens in a new tab so you can review before posting.
+      </p>
+    </Section>
+
     {
       latestPosts.length > 0 && (
         <Section title="LATEST ARTICLES">
@@ -310,6 +369,57 @@ const formatVilniusDateTime = (raw: string) => {
   </main>
 </Layout>
 
+<script is:inline>
+  const endorsementForm = document.getElementById('endorsement-form');
+  const endorsementSuccess = document.getElementById('endorsement-success');
+
+  if (endorsementForm) {
+    let started = false;
+    endorsementForm.addEventListener('focusin', () => {
+      if (!started) {
+        started = true;
+        window.cvTrack?.('endorsement_started');
+      }
+    });
+
+    endorsementForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const formData = new FormData(endorsementForm);
+      const name = (formData.get('name') || '').toString().trim();
+      const company = (formData.get('company') || '').toString().trim();
+      const note = (formData.get('note') || '').toString().trim();
+
+      if (!name || !company || !note) {
+        return;
+      }
+
+      const owner = endorsementForm.dataset.githubOwner || 'bitkojine';
+      const repo = endorsementForm.dataset.githubRepo || 'cv-site';
+      const issueUrl = new URL(
+        `https://github.com/${owner}/${repo}/issues/new`
+      );
+      issueUrl.searchParams.set(
+        'title',
+        `Endorsement from ${name} (${company})`
+      );
+      issueUrl.searchParams.set(
+        'body',
+        `**Endorser**: ${name}\n**Company/Role**: ${company}\n\n${note}\n\n---\nSubmitted via ${window.location.origin}`
+      );
+      issueUrl.searchParams.set('labels', 'endorsement');
+
+      window.cvTrack?.('endorsement_submitted', { channel: 'github_issue' });
+      window.open(issueUrl.toString(), '_blank', 'noopener,noreferrer');
+
+      endorsementForm.reset();
+      if (endorsementSuccess) {
+        endorsementSuccess.textContent =
+          'Thanks! A GitHub issue draft opened in a new tab.';
+      }
+    });
+  }
+</script>
+
 <style>
   .skills-list,
   .next-list {
@@ -350,6 +460,80 @@ const formatVilniusDateTime = (raw: string) => {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
+  }
+
+  .endorsement-form {
+    display: grid;
+    gap: 0.9rem;
+    padding: 1rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background: var(--bg-card);
+    box-shadow: var(--shadow-sm);
+    margin: 1rem 0 0.5rem;
+  }
+
+  .endorsement-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+  }
+
+  .endorsement-field input,
+  .endorsement-field textarea {
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 0.6rem 0.75rem;
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    background: var(--bg-app);
+  }
+
+  .endorsement-field textarea {
+    resize: vertical;
+    min-height: 84px;
+  }
+
+  .endorsement-submit {
+    border: none;
+    border-radius: 999px;
+    padding: 0.65rem 1.1rem;
+    font-weight: 600;
+    background: var(--accent-600);
+    color: #fff;
+    cursor: pointer;
+    transition:
+      transform 0.15s ease,
+      box-shadow 0.15s ease,
+      background 0.2s ease;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .endorsement-submit:hover {
+    background: var(--accent-700);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+  }
+
+  .endorsement-success {
+    margin-top: 0.75rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+
+  .endorsement-help {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+  }
+
+  .endorsement-explainer {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: -0.25rem;
   }
 
   .article-link {
