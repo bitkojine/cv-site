@@ -4,43 +4,48 @@ import Header from '../components/Header.astro';
 import Section from '../components/Section.astro';
 import ExperienceItem from '../components/ExperienceItem.astro';
 import Controls from '../components/Controls.astro';
-import cvData from '../data/cv.json';
+import cvDataRaw from '../data/cv.json';
+import { CVSchema } from '../data/schema';
+
+// Validate data at build time
+const cvData = CVSchema.parse(cvDataRaw);
 
 const { personalInfo, coreSkills, experience, independentProjects, lookingFor } = cvData;
 
 const lastUpdated = new Date().toLocaleString('en-US', { 
 	month: 'long', 
 	day: 'numeric', 
-	year: 'numeric',
-	hour: '2-digit',
-	minute: '2-digit',
-	timeZoneName: 'short'
+	year: 'numeric'
 });
 ---
 
 <Layout 
 	title={`${personalInfo.name} - ${personalInfo.title}`}
-	description={`Software engineer with experience building high-performance applications. Specialized in ${personalInfo.contact.stack}.`}
+	description={`Software engineer specializing in ${personalInfo.contact.stack}. ${personalInfo.profile.slice(0, 150)}...`}
 >
 	<Controls />
 	
-	<div class="container">
+	<main class="container">
 		<Header 
 			name={personalInfo.name}
 			title={personalInfo.title}
 			contact={personalInfo.contact}
 		/>
 
-		<hr />
+		<hr aria-hidden="true" />
 
 		<Section title="PROFILE" showCopy={true}>
 			{personalInfo.profile.split('\n\n').map(p => <p>{p}</p>)}
 		</Section>
 
 		<Section title="CORE SKILLS">
-			{coreSkills.map(skill => (
-				<p>• <strong>{skill.label}:</strong> {skill.value}</p>
-			))}
+			<ul class="skills-list">
+				{coreSkills.map(skill => (
+					<li>
+						<strong>{skill.label}:</strong> {skill.value}
+					</li>
+				))}
+			</ul>
 		</Section>
 
 		<Section title="PROFESSIONAL EXPERIENCE">
@@ -56,13 +61,47 @@ const lastUpdated = new Date().toLocaleString('en-US', {
 		</Section>
 
 		<Section title="WHAT I'M LOOKING FOR NEXT">
-			<ul>
+			<ul class="next-list">
 				{lookingFor.map(item => <li>{item}</li>)}
 			</ul>
 		</Section>
 
-		<div class="last-updated">
-			Last updated: {lastUpdated}
-		</div>
-	</div>
+		<footer class="last-updated">
+			<p>Last updated: <time datetime={new Date().toISOString()}>{lastUpdated}</time></p>
+		</footer>
+	</main>
 </Layout>
+
+<style>
+	.skills-list, .next-list {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	.skills-list li, .next-list li {
+		margin-bottom: 0.75rem;
+		position: relative;
+		padding-left: 1.25rem;
+	}
+
+	.skills-list li::before, .next-list li::before {
+		content: "→";
+		position: absolute;
+		left: 0;
+		color: var(--accent-600);
+		font-weight: bold;
+	}
+
+	.container {
+		max-width: 800px;
+		margin: 0 auto;
+		padding: 2rem 1.5rem;
+	}
+
+	@media (min-width: 768px) {
+		.container {
+			padding: 4rem 2rem;
+		}
+	}
+</style>

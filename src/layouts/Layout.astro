@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import cvData from '../data/cv.json';
 
 interface Props {
 	title: string;
@@ -7,6 +8,22 @@ interface Props {
 }
 
 const { title, description } = Astro.props;
+const { personalInfo } = cvData;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": personalInfo.name,
+  "jobTitle": personalInfo.title,
+  "description": description,
+  "url": "https://robertasrudys.com",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": personalInfo.contact.location
+  },
+  "email": personalInfo.contact.email,
+  "knowsAbout": cvData.coreSkills.map(s => s.value).join(", ")
+};
 ---
 
 <!DOCTYPE html>
@@ -18,9 +35,28 @@ const { title, description } = Astro.props;
 		
 		<!-- SEO Meta Tags -->
 		<meta name="description" content={description} />
-		<meta name="author" content="Robertas Rudys" />
+		<meta name="author" content={personalInfo.name} />
 		<meta name="keywords" content="Software Engineer, .NET, ASP.NET, C#, Backend Developer, Azure, Microservices" />
 		
+		<!-- Dark Mode Initialization Script (Prevents FOUC) -->
+		<script is:inline>
+			const theme = (() => {
+				if (typeof localStorage !== 'undefined' && localStorage.getItem('darkMode')) {
+					return localStorage.getItem('darkMode') === 'enabled' ? 'dark' : 'light';
+				}
+				if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+					return 'dark';
+				}
+				return 'light';
+			})();
+		
+			if (theme === 'dark') {
+				document.documentElement.classList.add('dark-mode');
+			} else {
+				document.documentElement.classList.remove('dark-mode');
+			}
+		</script>
+
 		<!-- Fonts -->
 		<link rel="preconnect" href="https://rsms.me/">
 		<link rel="stylesheet" href="https://rsms.me/inter/inter.css">
@@ -35,6 +71,9 @@ const { title, description } = Astro.props;
 		<meta name="twitter:card" content="summary" />
 		<meta name="twitter:title" content={title} />
 		<meta name="twitter:description" content={description} />
+
+		<!-- JSON-LD Structured Data -->
+		<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
 	</head>
 	<body>
 		<slot />

@@ -25,7 +25,7 @@
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-body.dark-mode {
+:root.dark-mode {
     --bg-app: #0f172a;
     --bg-card: #1e293b;
     --text-primary: #f1f5f9;
@@ -37,6 +37,24 @@ body.dark-mode {
     --accent-100: #312e81;
     --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
     --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4);
+}
+
+/* Accessibility Utilities */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+:focus-visible {
+    outline: 2px solid var(--accent-600);
+    outline-offset: 4px;
 }
 
 * {
@@ -146,36 +164,6 @@ hr {
     animation: fadeIn 0.6s ease-out;
 }
 
-.job-section {
-    padding: 1.25rem;
-    background: var(--bg-card);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-sm);
-    margin-bottom: 1rem;
-    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
-}
-
-.job-section:hover {
-    border-color: var(--accent-600);
-    box-shadow: var(--shadow-md);
-}
-
-.job-header {
-    margin-bottom: 1rem;
-}
-
-.job-period {
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: var(--accent-600);
-    background: var(--accent-100);
-    padding: 0.2rem 0.6rem;
-    border-radius: 9999px;
-    display: inline-block;
-    margin-top: 0.25rem;
-}
-
 /* Controls - Fixed Mobile Bottom */
 .controls-dock {
     position: fixed;
@@ -208,15 +196,6 @@ hr {
     gap: 0.5rem;
 }
 
-.copy-linkedin-btn {
-    padding: 0.2rem 0.5rem;
-    font-size: 0.7rem;
-    color: var(--text-muted);
-    background: transparent;
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-md);
-    cursor: pointer;
-}
 
 .last-updated {
     margin-top: 4rem;
@@ -244,21 +223,6 @@ hr {
         font-size: 3rem;
     }
 
-    .job-section {
-        padding: 2rem;
-        margin-bottom: 1.5rem;
-    }
-
-    .job-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        margin-bottom: 1.25rem;
-    }
-
-    .job-period {
-        margin-top: 0;
-    }
 
     .controls-dock {
         position: fixed;
@@ -297,16 +261,8 @@ hr {
         max-width: 100%;
     }
 
-    .job-section {
-        box-shadow: none;
-        border-bottom: 1px solid #eee;
-        border-radius: 0;
-        padding: 1rem 0;
-        margin-bottom: 0;
-    }
 
-    .controls-dock,
-    .copy-linkedin-btn {
+    .controls-dock {
         display: none;
     }
 

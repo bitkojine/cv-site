@@ -1,4 +1,6 @@
 ---
+import { Copy } from '@lucide/astro';
+
 interface Props {
 	title: string;
 	showCopy?: boolean;
@@ -10,7 +12,44 @@ const { title, showCopy = false } = Astro.props;
 <section class="cv-section">
 	<h2>
 		{title}
-		{showCopy && <button class="copy-linkedin-btn" type="button" title="Copy section">📋</button>}
+		{showCopy && (
+			<button 
+				class="copy-section-btn no-print" 
+				type="button" 
+				title={`Copy ${title} section`}
+				aria-label={`Copy ${title} section content`}
+			>
+				<Copy size={14} />
+			</button>
+		)}
 	</h2>
 	<slot />
 </section>
+
+<style>
+	.copy-section-btn {
+		padding: 0.35rem;
+		font-size: 0.7rem;
+		color: var(--text-muted);
+		background: transparent;
+		border: 1px solid var(--border-subtle);
+		border-radius: var(--radius-md);
+		cursor: pointer;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		transition: all 0.2s;
+	}
+
+	.copy-section-btn:hover {
+		color: var(--accent-600);
+		border-color: var(--accent-600);
+		background: var(--bg-app);
+	}
+
+	@media print {
+		.no-print {
+			display: none !important;
+		}
+	}
+</style>
