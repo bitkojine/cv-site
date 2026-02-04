@@ -52,7 +52,8 @@ test.describe('User Interactions', () => {
     await page.goto('/');
 
     const printBtn = page.getByRole('button', { name: /Download CV as PDF/i });
-    await printBtn.click();
+    // Use force to bypass Astro dev toolbar overlay that intercepts clicks on mobile viewports
+    await printBtn.click({ force: true });
 
     await expect.poll(() => printCalled).toBe(true);
   });

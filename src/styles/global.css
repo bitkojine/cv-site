@@ -6,6 +6,8 @@
 
   /* Dedicated text accent for better contrast on dark backgrounds */
   --accent-text: var(--accent-600);
+  /* Tag text color - same as accent-600 in light mode */
+  --accent-tag-text: var(--accent-600);
 
   --bg-app-rgb: 248, 250, 252;
   --bg-app: rgb(var(--bg-app-rgb));
@@ -44,10 +46,12 @@
   --border-subtle: #334155;
   --border-strong: #475569;
 
-  /* Lighter indigo for better readability in dark mode */
-  --accent-100: #312e81;
+  /* Lighter indigo background for tags - provides contrast with light text */
+  --accent-100: #3730a3;
   /* Using a lighter shade of indigo (Indigo 400) for text in dark mode */
   --accent-text: #818cf8;
+  /* Light indigo for tag text - ensures 4.5:1 contrast on accent-100 background */
+  --accent-tag-text: #c7d2fe;
 
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4);
@@ -228,7 +232,6 @@ hr {
 .last-updated {
   margin-top: 4rem;
   padding-top: 2rem;
-  border-top: 1px solid var(--border-subtle);
   text-align: center;
   font-size: 0.75rem;
   color: var(--text-muted);
