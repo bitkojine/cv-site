@@ -250,24 +250,187 @@ hr {
 
 /* Print Overrides */
 @media print {
+
+    :root,
+    :root.dark-mode {
+        --bg-app: #ffffff;
+        --bg-card: #ffffff;
+        --text-primary: #000000;
+        --text-secondary: #000000;
+        --text-muted: #333333;
+        --border-subtle: #eeeeee;
+        --border-strong: #000000;
+        --accent-600: #000000;
+        --accent-100: #ffffff;
+    }
+
+    @page {
+        margin: 1.5cm;
+        size: auto;
+    }
+
+    html {
+        height: auto !important;
+        min-height: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    * {
+        animation: none !important;
+        transition: none !important;
+        box-shadow: none !important;
+        text-shadow: none !important;
+    }
+
     body {
-        background: white;
-        padding: 0;
-        color: black;
+        background: white !important;
+        color: black !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+        height: auto !important;
+        min-height: auto !important;
+        font-size: 10pt;
+        line-height: 1.4;
+        overflow: visible !important;
     }
 
     .container {
-        padding: 0;
+        padding: 0 !important;
         max-width: 100%;
+        margin: 0;
+        overflow: visible !important;
     }
 
+    .no-print,
+    #astro-dev-toolbar,
+    .astro-dev-toolbar {
+        display: none !important;
+    }
 
-    .controls-dock {
-        display: none;
+    h1 {
+        font-size: 18pt;
+        margin-bottom: 0.25rem;
+    }
+
+    h1,
+    h2,
+    h3 {
+        page-break-after: avoid;
+        break-after: avoid;
+    }
+
+    h2 {
+        font-size: 9pt;
+        margin-bottom: 0.5rem;
+        margin-top: 1rem;
+        color: black !important;
+        border-bottom: none;
+        text-decoration: underline;
     }
 
     h2::after {
-        background: #eee;
+        display: none;
+    }
+
+    h3 {
+        font-size: 11pt;
+        margin-top: 0.5rem;
+        margin-bottom: 0.1rem;
+    }
+
+    a {
+        color: black !important;
+        text-decoration: none;
+        border-bottom: 1px dotted #000;
+    }
+
+    hr {
+        display: none;
+    }
+
+    .cv-section {
+        margin-bottom: 1rem;
+        page-break-inside: auto;
+    }
+
+    .job-item {
+        page-break-inside: avoid;
+        break-inside: avoid;
+        margin-bottom: 0.75rem;
+        padding: 0 !important;
+        background: transparent !important;
+        border: none !important;
+    }
+
+    .job-header {
+        margin-bottom: 0.25rem !important;
+    }
+
+    .job-period {
+        background: transparent !important;
+        border: none !important;
+        padding: 0 !important;
+        color: #000 !important;
+        font-weight: normal !important;
+        font-style: italic !important;
+    }
+
+    .last-updated {
+        margin-top: 1.5rem;
+        border-top: 1px solid #eee;
+        font-size: 7pt;
+    }
+
+    .last-updated p {
+        margin-bottom: 0 !important;
+    }
+
+    /* Prevent trailing empty page */
+    .container>*:last-child,
+    .cv-section:last-of-type,
+    .job-item:last-child,
+    footer:last-of-type {
+        margin-bottom: 0 !important;
+    }
+
+    /* Force NO extra space at bottom */
+    html,
+    body {
+        height: auto !important;
+        min-height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow-x: hidden !important;
+    }
+
+    .container {
+        padding: 0 !important;
+        margin: 0 !important;
+        min-height: 0 !important;
+        height: auto !important;
+        width: 100% !important;
+    }
+
+    /* Target any possible hidden script or dev tags at the end */
+    body> :not(.container):not(.no-print):not(script) {
+        display: none !important;
+    }
+
+    /* Ensure first element has no top margin if it's hitting the page top */
+    .container>*:first-child {
+        margin-top: 0 !important;
+    }
+
+    /* List compactness */
+    ul,
+    ol {
+        margin-bottom: 0.5rem !important;
+    }
+
+    li {
+        margin-bottom: 0.1rem !important;
     }
 }
 

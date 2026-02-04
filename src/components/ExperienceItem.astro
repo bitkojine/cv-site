@@ -89,25 +89,4 @@ const { title, company, period, description } = Astro.props;
 		}
 	}
 
-	@media print {
-		.job-item {
-			box-shadow: none;
-			border: none;
-			border-left: 2px solid var(--border-subtle);
-			border-radius: 0;
-			padding: 0 0 0 1.5rem;
-			margin-bottom: 2rem;
-			page-break-inside: avoid;
-		}
-
-		.job-item:hover {
-			transform: none;
-		}
-
-		.job-period {
-			background: #f1f5f9;
-			color: #475569;
-			border: 1px solid #e2e8f0;
-		}
-	}
 </style>
