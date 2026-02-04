@@ -33,8 +33,6 @@ import { Sun, Moon, FileText } from '@lucide/astro';
     }
   }
 
-
-
   // Initialization logic
   document.addEventListener('DOMContentLoaded', () => {
     const isDark = document.documentElement.classList.contains('dark-mode');
@@ -46,7 +44,6 @@ import { Sun, Moon, FileText } from '@lucide/astro';
     document
       .querySelector('.download-btn')
       ?.addEventListener('click', downloadPDF);
-
   });
 </script>
 
@@ -74,8 +71,6 @@ import { Sun, Moon, FileText } from '@lucide/astro';
   .hidden {
     display: none;
   }
-
-
 
   @media print {
     .no-print {
