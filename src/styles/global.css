@@ -4,6 +4,9 @@
     --accent-700: #4338ca;
     --accent-100: #e0e7ff;
 
+    /* Dedicated text accent for better contrast on dark backgrounds */
+    --accent-text: var(--accent-600);
+
     --bg-app-rgb: 248, 250, 252;
     --bg-app: rgb(var(--bg-app-rgb));
     --bg-card: #ffffff;
@@ -36,7 +39,11 @@
     --border-subtle: #334155;
     --border-strong: #475569;
 
+    /* Lighter indigo for better readability in dark mode */
     --accent-100: #312e81;
+    /* Using a lighter shade of indigo (Indigo 400) for text in dark mode */
+    --accent-text: #818cf8;
+
     --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
     --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4);
 }
@@ -55,7 +62,7 @@
 }
 
 :focus-visible {
-    outline: 2px solid var(--accent-600);
+    outline: 2px solid var(--accent-text);
     outline-offset: 4px;
 }
 
@@ -104,7 +111,7 @@ h2 {
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.15em;
-    color: var(--accent-600);
+    color: var(--accent-text);
     margin-bottom: 1.5rem;
     display: flex;
     align-items: center;
@@ -145,7 +152,7 @@ strong {
 }
 
 a {
-    color: var(--accent-600);
+    color: var(--accent-text);
     text-decoration: none;
     transition: color 0.2s;
 }
