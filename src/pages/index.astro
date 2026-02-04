@@ -49,8 +49,6 @@ const lastUpdated = `${datePart}d. ${timePart}`;
       contact={personalInfo.contact}
     />
 
-    <hr aria-hidden="true" />
-
     <Section title="PROFILE">
       {personalInfo.profile.split('\n\n').map((p) => <p>{p}</p>)}
     </Section>
@@ -91,14 +89,31 @@ const lastUpdated = `${datePart}d. ${timePart}`;
         id="github-actions-container"
         class="github-actions-container no-print"
       >
-        <!-- Statuses will be injected here -->
+        <a
+          href="https://github.com/bitkojine/cv-site/actions"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="workflow-status-link fallback-link"
+        >
+          <div class="status-icon">⚡</div>
+          <div class="status-text">
+            <span class="workflow-name">View Build Status</span>
+            <span class="workflow-status">on GitHub</span>
+          </div>
+        </a>
       </div>
 
       <div
         id="github-commits-container"
         class="github-commits-container no-print"
       >
-        <!-- Commits will be injected here -->
+        <h2>LATEST COMMITS</h2>
+        <p class="fallback-text">
+          <a
+            href="https://github.com/bitkojine/cv-site/commits"
+            target="_blank"
+            rel="noopener noreferrer">View on GitHub →</a>
+        </p>
       </div>
     </footer>
   </main>
@@ -344,6 +359,11 @@ const lastUpdated = `${datePart}d. ${timePart}`;
 
   .github-commits-container h2 {
     /* Use global h2 styling - no overrides needed */
+  }
+
+  .fallback-text {
+    color: var(--text-muted);
+    font-style: italic;
   }
 
   :global(.commits-list) {
