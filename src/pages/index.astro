@@ -218,7 +218,21 @@ const lastUpdated = `${datePart}d. ${timePart}`;
         link.rel = 'noopener noreferrer';
 
         const msg = commit.commit.message.split('\n')[0]; // First line
-        const date = new Date(commit.commit.author.date).toLocaleDateString();
+        const commitDate = new Date(commit.commit.author.date);
+        const datePart = commitDate.toLocaleDateString('lt-LT', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          timeZone: 'Europe/Vilnius',
+        });
+        const timePart = commitDate.toLocaleTimeString('lt-LT', {
+          hour: '2-digit',
+          minute: '2-digit',
+          timeZone: 'Europe/Vilnius',
+          hour12: false,
+          timeZoneName: 'short',
+        });
+        const date = `${datePart}d. ${timePart}`;
 
         link.textContent = msg;
 
