@@ -213,11 +213,18 @@ hr {
   z-index: 1000;
   will-change: transform;
   /* Promote to own layer for scroll stability */
+  transform: translateZ(0);
 }
 
 /* Standalone (iOS Add to Home Screen / PWA) */
 :root.standalone {
   --controls-dock-offset: 0px;
+}
+
+:root.standalone .controls-dock {
+  background: var(--bg-app);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 .btn-primary {
