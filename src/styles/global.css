@@ -4,7 +4,8 @@
     --accent-700: #4338ca;
     --accent-100: #e0e7ff;
 
-    --bg-app: #f8fafc;
+    --bg-app-rgb: 248, 250, 252;
+    --bg-app: rgb(var(--bg-app-rgb));
     --bg-card: #ffffff;
     --text-primary: #1e293b;
     --text-secondary: #475569;
@@ -26,7 +27,8 @@
 }
 
 :root.dark-mode {
-    --bg-app: #0f172a;
+    --bg-app-rgb: 15, 23, 42;
+    --bg-app: rgb(var(--bg-app-rgb));
     --bg-card: #1e293b;
     --text-primary: #f1f5f9;
     --text-secondary: #cbd5e1;
@@ -170,13 +172,19 @@ hr {
     bottom: 0;
     left: 0;
     right: 0;
+    width: 100%;
+    box-sizing: border-box;
     display: flex;
     padding: 1rem;
+    padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
     gap: 0.75rem;
-    background: rgba(var(--bg-app), 0.8);
-    backdrop-filter: blur(12px);
+    background: rgba(var(--bg-app-rgb), 0.9);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border-top: 1px solid var(--border-subtle);
-    z-index: 100;
+    z-index: 1000;
+    will-change: transform;
+    /* Promote to own layer for scroll stability */
 }
 
 .btn-primary {
