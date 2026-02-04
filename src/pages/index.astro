@@ -86,7 +86,7 @@ if (shouldFetchGithub) {
         latestWorkflowRuns = Array.from(latestRuns.values());
       }
     }
-  } catch (e) {
+  } catch {
     // Fail silently and keep fallback links
   }
 
@@ -103,7 +103,7 @@ if (shouldFetchGithub) {
         latestCommits = data as GitHubCommit[];
       }
     }
-  } catch (e) {
+  } catch {
     // Fail silently and keep fallback links
   }
 }

@@ -201,10 +201,7 @@ hr {
   padding: 0.75rem;
   padding-left: max(0.75rem, env(safe-area-inset-left, 0px));
   padding-right: max(0.75rem, env(safe-area-inset-right, 0px));
-  padding-bottom: max(
-    0.9rem,
-    calc(env(safe-area-inset-bottom, 0px) + 0.35rem)
-  );
+  padding-bottom: max(0.9rem, calc(env(safe-area-inset-bottom, 0px) + 0.35rem));
   gap: 0.5rem;
   background: rgba(var(--bg-app-rgb), 0.95);
   backdrop-filter: blur(20px);
