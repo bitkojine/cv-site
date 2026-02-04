@@ -42,10 +42,9 @@
             "company": "Adform Lithuania",
             "period": "2025",
             "description": [
-                "Worked on large-scale AdTech systems in a high-performance environment",
-                "Contributed to backend services and existing production codebases",
-                "Collaborated in a mature engineering organization with strong technical standards",
-                "Role ended by mutual agreement due to role fit"
+                "Engineered scalable AdTech backend services in a high-concurrency environment",
+                "Developed and optimized mission-critical features in existing production codebases",
+                "Collaborated within a mature engineering organization to uphold strict technical standards"
             ]
         },
         {
@@ -53,9 +52,8 @@
             "company": "Ignitis Group Services Center",
             "period": "2023",
             "description": [
-                "Worked on internal enterprise systems using .NET",
-                "Maintained and extended existing codebases in a large organization",
-                "Gained experience navigating legacy systems and corporate development processes"
+                "Refactored and maintained enterprise-grade .NET internal systems",
+                "Extended complex codebases while ensuring stability and performance"
             ]
         },
         {
@@ -63,9 +61,8 @@
             "company": "Super How",
             "period": "2021 – 2022",
             "description": [
-                "Developed solutions in a Web3/blockchain-focused product",
-                "Worked closely with a small, fast-moving team",
-                "Gained experience shipping features end-to-end in an early-stage environment"
+                "Developed and deployed decentralized applications (dApps) and smart contract integrations",
+                "Delivered end-to-end features in a fast-paced, early-stage product environment"
             ]
         },
         {
@@ -73,10 +70,9 @@
             "company": "Euromonitor International",
             "period": "2018 – 2020",
             "description": [
-                "Started as MS SQL Server Developer, working with data-heavy systems",
-                "Transitioned into a Software Developer role (.NET + Angular)",
-                "Worked on long-term product systems used by international clients",
-                "This role represents my strongest long-term product experience"
+                "Engineered data-heavy MS SQL Server solutions for international market research",
+                "Led full-stack development initiatives using .NET and Angular for key product modules",
+                "Maintained long-term stability of core business systems used globally"
             ]
         },
         {
@@ -84,8 +80,8 @@
             "company": "Invenis",
             "period": "2015",
             "description": [
-                "Entry-level role as a Unity3D / C# developer",
-                "Built early professional experience with C# and software development fundamentals"
+                "Developed interactive 3D applications using C# and Unity3D",
+                "Implemented core game logic and UI systems for client projects"
             ]
         }
     ],
