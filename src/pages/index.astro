@@ -610,6 +610,8 @@ const formatVilniusDateTime = (raw: string) => {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 0.4rem 0.75rem;
     padding: 0.75rem 1rem;
     background: var(--bg-card);
     border: 1px solid var(--border-subtle);
@@ -626,6 +628,8 @@ const formatVilniusDateTime = (raw: string) => {
   .article-title {
     color: var(--text-primary);
     font-weight: 500;
+    min-width: 0;
+    overflow-wrap: anywhere;
   }
 
   .article-date {
@@ -656,6 +660,8 @@ const formatVilniusDateTime = (raw: string) => {
     display: inline-flex;
     align-items: center;
     gap: 0.6rem;
+    flex-wrap: wrap;
+    max-width: 100%;
     color: var(--text-muted);
     font-size: 0.825rem;
     text-decoration: none;
@@ -690,6 +696,7 @@ const formatVilniusDateTime = (raw: string) => {
     flex-direction: column;
     line-height: 1.25;
     text-align: left;
+    min-width: 0;
   }
 
   .github-commits-container {
@@ -730,6 +737,8 @@ const formatVilniusDateTime = (raw: string) => {
     color: var(--text-muted);
     text-decoration: none;
     font-family: monospace;
+    overflow-wrap: anywhere;
+    word-break: break-word;
   }
 
   :global(.commits-list a:hover) {

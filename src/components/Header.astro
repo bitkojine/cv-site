@@ -64,6 +64,13 @@ const { name, title, contact } = Astro.props;
     align-items: center;
     gap: 0.6rem;
     color: var(--text-secondary);
+    min-width: 0;
+  }
+
+  .contact-item a,
+  .contact-item span {
+    overflow-wrap: anywhere;
+    word-break: break-word;
   }
 
   .icon {

@@ -97,6 +97,7 @@ body {
   min-height: 100vh;
   padding-bottom: calc(6rem + var(--controls-dock-offset));
   /* Space for fixed controls */
+  overflow-x: hidden;
 }
 
 /* Mobile-First Layout */
@@ -200,6 +201,7 @@ hr {
   width: 100%;
   box-sizing: border-box;
   display: flex;
+  flex-wrap: wrap;
   padding: 0.75rem;
   padding-left: max(0.75rem, env(safe-area-inset-left, 0px));
   padding-right: max(0.75rem, env(safe-area-inset-right, 0px));
@@ -243,7 +245,7 @@ hr {
 }
 
 .btn-primary {
-  flex: 1;
+  flex: 1 1 45%;
   background: var(--accent-600);
   color: white;
   padding: 0.625rem 0.5rem;
@@ -259,6 +261,14 @@ hr {
   gap: 0.4rem;
   text-decoration: none;
   transition: all 0.2s;
+  min-width: 0;
+}
+
+img,
+svg,
+video {
+  max-width: 100%;
+  height: auto;
 }
 
 .btn-primary:active {
@@ -301,6 +311,7 @@ hr {
     backdrop-filter: none;
     border-top: none;
     padding: 0;
+    flex-wrap: nowrap;
   }
 
   .btn-primary {
