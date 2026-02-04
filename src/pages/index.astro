@@ -3,7 +3,6 @@ import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Section from '../components/Section.astro';
 import ExperienceItem from '../components/ExperienceItem.astro';
-import Controls from '../components/Controls.astro';
 
 import cvDataRaw from '../data/cv.json';
 import { CVSchema } from '../data/schema';
@@ -47,8 +46,6 @@ const lastUpdated = `${datePart}d. ${timePart}`;
   title={`${personalInfo.name} - ${personalInfo.title}`}
   description={`Software engineer specializing in ${personalInfo.contact.stack}. ${personalInfo.profile.slice(0, 150)}...`}
 >
-  <Controls />
-
   <main class="container">
     <Header
       name={personalInfo.name}

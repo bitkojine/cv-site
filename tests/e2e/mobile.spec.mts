@@ -33,3 +33,47 @@ test.describe('Mobile Responsiveness', () => {
     expect(scrollWidth).toBeLessThanOrEqual(clientWidth + 1);
   });
 });
+
+test.describe('Standalone (iOS Add to Home Screen)', () => {
+  test('Controls dock is lifted off the bottom in standalone mode', async ({
+    page,
+  }) => {
+    await page.addInitScript(() => {
+      const originalMatchMedia = window.matchMedia.bind(window);
+      window.matchMedia = (query: string) => {
+        if (query.includes('display-mode: standalone')) {
+          return {
+            matches: true,
+            media: query,
+            onchange: null,
+            addEventListener: () => {},
+            removeEventListener: () => {},
+            addListener: () => {},
+            removeListener: () => {},
+            dispatchEvent: () => false,
+          } as MediaQueryList;
+        }
+        return originalMatchMedia(query);
+      };
+
+      Object.defineProperty(window.navigator, 'standalone', {
+        configurable: true,
+        get: () => true,
+      });
+    });
+
+    await page.goto('/');
+
+    await expect(page.locator('html')).toHaveClass(/standalone/);
+
+    const bottomPx = await page.evaluate(() => {
+      const dock = document.querySelector('.controls-dock');
+      if (!dock) return 0;
+      const bottom = window.getComputedStyle(dock).bottom;
+      return Number.parseFloat(bottom);
+    });
+
+    // Base is 0px; standalone should be > 0
+    expect(bottomPx).toBeGreaterThan(0);
+  });
+});

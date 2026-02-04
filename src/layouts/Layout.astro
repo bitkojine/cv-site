@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import Controls from '../components/Controls.astro';
 import cvData from '../data/cv.json';
 
 interface Props {
@@ -69,6 +70,14 @@ const jsonLd = {
       } else {
         document.documentElement.classList.remove('dark-mode');
       }
+
+      // Standalone mode detection (iOS + PWA)
+      const isStandalone =
+        window.matchMedia('(display-mode: standalone)').matches ||
+        window.navigator.standalone === true;
+      if (isStandalone) {
+        document.documentElement.classList.add('standalone');
+      }
     </script>
 
     <!-- Fonts -->
@@ -92,6 +101,7 @@ const jsonLd = {
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
   </head>
   <body>
+    <Controls />
     <slot />
   </body>
 </html>

@@ -1,8 +1,76 @@
 ---
-import { Sun, Moon, FileText, NotebookPen } from '@lucide/astro';
+import { Sun, Moon, FileText, NotebookPen, Share2 } from '@lucide/astro';
 ---
 
 <script>
+  function trackEvent(name: string, data: Record<string, unknown> = {}) {
+    try {
+      const key = 'cv_event_counts';
+      const raw = localStorage.getItem(key);
+      const payload = raw ? JSON.parse(raw) : { counts: {}, last: {} };
+      payload.counts[name] = (payload.counts[name] || 0) + 1;
+      payload.last[name] = { ts: Date.now(), ...data };
+      localStorage.setItem(key, JSON.stringify(payload));
+      if (window.location.search.includes('debug=1')) {
+        console.info('[track]', name, data);
+      }
+    } catch (e) {
+      console.warn('Tracking failed', e);
+    }
+  }
+
+  function showToast(message: string) {
+    const toast = document.querySelector('.share-toast');
+    if (!toast) return;
+    toast.textContent = message;
+    toast.classList.remove('hidden');
+    toast.classList.add('visible');
+    window.setTimeout(() => {
+      toast.classList.remove('visible');
+      toast.classList.add('hidden');
+    }, 2200);
+  }
+
+  async function shareProfile() {
+    const url = new URL(window.location.href);
+    if (!url.searchParams.get('ref')) {
+      url.searchParams.set('ref', 'share');
+    }
+    const title =
+      document.title || document.querySelector('h1')?.textContent || 'CV';
+    const description =
+      document
+        .querySelector('meta[name="description"]')
+        ?.getAttribute('content') || 'Professional CV';
+    const shareData = {
+      title,
+      text: description,
+      url: url.toString(),
+    };
+
+    trackEvent('share_clicked');
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+        trackEvent('share_completed', { method: 'web_share' });
+        showToast('Share sent');
+        return;
+      } catch (err) {
+        console.warn('Share canceled or failed', err);
+      }
+    }
+
+    try {
+      await navigator.clipboard.writeText(shareData.url);
+      trackEvent('share_completed', { method: 'copy_link' });
+      showToast('Link copied');
+    } catch (err) {
+      console.warn('Copy failed', err);
+      showToast('Copy failed');
+    }
+  }
+
   function downloadPDF() {
     // Professional notice before printing
     console.log('Preparing PDF export...');
@@ -44,6 +112,9 @@ import { Sun, Moon, FileText, NotebookPen } from '@lucide/astro';
     document
       .querySelector('.download-btn')
       ?.addEventListener('click', downloadPDF);
+    document
+      .querySelector('.share-btn')
+      ?.addEventListener('click', shareProfile);
   });
 </script>
 
@@ -65,15 +136,44 @@ import { Sun, Moon, FileText, NotebookPen } from '@lucide/astro';
     <FileText size={20} />
     <span>PDF</span>
   </button>
+  <button class="btn-primary share-btn" type="button" aria-label="Share CV">
+    <Share2 size={20} />
+    <span>Share</span>
+  </button>
   <a href="/blog" class="btn-primary blog-btn" aria-label="Read my blog">
     <NotebookPen size={20} />
     <span>Blog</span>
   </a>
 </div>
+<div class="share-toast hidden" role="status" aria-live="polite"></div>
 
 <style>
   .hidden {
     display: none;
+  }
+
+  .share-toast {
+    position: fixed;
+    left: 50%;
+    bottom: 5.5rem;
+    transform: translateX(-50%) translateY(8px);
+    background: var(--bg-card);
+    color: var(--text-primary);
+    border: 1px solid var(--border-subtle);
+    border-radius: 999px;
+    padding: 0.5rem 0.9rem;
+    font-size: 0.8rem;
+    box-shadow: var(--shadow-md);
+    opacity: 0;
+    transition:
+      opacity 0.2s ease,
+      transform 0.2s ease;
+    z-index: 1100;
+  }
+
+  .share-toast.visible {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
   }
 
   @media print {

@@ -27,6 +27,7 @@
   --radius-lg: 0.75rem;
 
   --container-width: 860px;
+  --controls-dock-offset: 0px;
   --font-sans:
     'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI',
     Roboto, sans-serif;
@@ -94,7 +95,7 @@ body {
   color: var(--text-primary);
   background: var(--bg-app);
   min-height: 100vh;
-  padding-bottom: 6rem;
+  padding-bottom: calc(6rem + var(--controls-dock-offset));
   /* Space for fixed controls */
 }
 
@@ -185,7 +186,7 @@ hr {
 /* Controls - Fixed Mobile Bottom */
 .controls-dock {
   position: fixed;
-  bottom: 0;
+  bottom: var(--controls-dock-offset);
   left: 0;
   right: 0;
   width: 100%;
@@ -203,6 +204,11 @@ hr {
   z-index: 1000;
   will-change: transform;
   /* Promote to own layer for scroll stability */
+}
+
+/* Standalone (iOS Add to Home Screen / PWA) */
+:root.standalone {
+  --controls-dock-offset: 0.6rem;
 }
 
 .btn-primary {
