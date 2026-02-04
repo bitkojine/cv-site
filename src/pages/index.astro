@@ -23,7 +23,8 @@ const timePart = now.toLocaleTimeString('lt-LT', {
 	hour: '2-digit',
 	minute: '2-digit',
 	timeZone: 'Europe/Vilnius',
-	hour12: false
+	hour12: false,
+	timeZoneName: 'short'
 });
 const lastUpdated = `${datePart}d. ${timePart}`;
 ---
