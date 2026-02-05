@@ -26,14 +26,6 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Cache GitHub API responses
-        uses: actions/cache@v4
-        with:
-          path: .cache/github.json
-          key: github-api-cache-${{ runner.os }}-${{ github.ref_name }}
-          restore-keys: |
-            github-api-cache-${{ runner.os }}-
-
       - name: Build Astro
         run: npm run build
 

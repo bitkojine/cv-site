@@ -1,22 +1,34 @@
 import { test, expect } from '@playwright/test';
-import { promises as fs } from 'node:fs';
-import path from 'node:path';
 
-const readCacheMessages = async () => {
-  const cachePath = path.join(process.cwd(), '.cache', 'github.json');
-  const raw = await fs.readFile(cachePath, 'utf-8');
-  const payload = JSON.parse(raw) as {
-    latestCommits?: Array<{ commit?: { message?: string } }>;
-  };
-  const messages = payload.latestCommits
-    ?.map((commit) => commit.commit?.message?.split('\n')[0] || '')
+const owner = 'bitkojine';
+const repo = 'cv-site';
+
+const fetchLatestCommitMessages = async () => {
+  const response = await fetch(
+    `https://api.github.com/repos/${owner}/${repo}/commits?per_page=5`,
+    {
+      headers: {
+        Accept: 'application/vnd.github+json',
+      },
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error(`GitHub API error ${response.status}`);
+  }
+
+  const data = (await response.json()) as Array<{
+    commit?: { message?: string };
+  }>;
+
+  return (data || [])
+    .map((commit) => commit.commit?.message?.split('\n')[0] || '')
     .filter(Boolean);
-  return messages || [];
 };
 
 // Bug: Latest commits list rendered stale/fallback data after deploy.
-test('latest commits list renders from live GitHub cache', async ({ page }) => {
-  const expectedMessages = await readCacheMessages();
+test('latest commits list renders from live GitHub API', async ({ page }) => {
+  const expectedMessages = await fetchLatestCommitMessages();
   expect(expectedMessages.length).toBeGreaterThan(0);
 
   await page.goto('/');

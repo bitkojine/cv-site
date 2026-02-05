@@ -8,10 +8,8 @@ import WorkflowStatusBadge from '../components/WorkflowStatusBadge.astro';
 import cvDataRaw from '../data/cv.json';
 import { CVSchema } from '../data/schema';
 import { getCollection } from 'astro:content';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { getGithubData } from '../lib/github-cache.mts';
-import type { GitHubCommit, WorkflowRun } from '../lib/github-cache.mts';
+import { getGithubData } from '../lib/github-actions.mts';
+import type { GitHubCommit, WorkflowRun } from '../lib/github-actions.mts';
 
 // Validate data at build time
 const cvData = CVSchema.parse(cvDataRaw);
@@ -49,10 +47,6 @@ const lastUpdated = `${datePart}d. ${timePart}`;
 const githubOwner = 'bitkojine';
 const githubRepo = 'cv-site';
 const shouldFetchGithub = !import.meta.env.DEV;
-const CACHE_TTL_MS = 6 * 60 * 60 * 1000;
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const cachePath = path.resolve(__dirname, '../../.cache/github.json');
-
 let latestWorkflowRuns: WorkflowRun[] = [];
 let latestCommits: GitHubCommit[] = [];
 
@@ -61,10 +55,6 @@ if (shouldFetchGithub) {
     owner: githubOwner,
     repo: githubRepo,
     branch: 'main',
-    cachePath,
-    ttlMs: CACHE_TTL_MS,
-    revalidateFresh: Boolean(process.env.GITHUB_ACTIONS),
-    bypassCache: false,
   });
   latestWorkflowRuns = cacheData.latestWorkflowRuns;
   latestCommits = cacheData.latestCommits;
@@ -496,9 +486,7 @@ const timelineYears = Array.from(
       const owner = actionsContainer.dataset.githubOwner;
       const repo = actionsContainer.dataset.githubRepo;
       const branch = actionsContainer.dataset.githubBranch;
-      const cacheKey = 'cv-gh-actions-cache-v1';
-      const now = Date.now();
-      const ttlMs = 2 * 60 * 1000;
+      const revalidateDelayMs = 2 * 60 * 1000;
 
       const resolveBadge = (status, conclusion) => {
         if (status === 'in_progress' || status === 'queued') {
@@ -541,58 +529,30 @@ const timelineYears = Array.from(
         });
       };
 
-      const readCache = () => {
-        try {
-          const raw = localStorage.getItem(cacheKey);
-          if (!raw) return null;
-          const parsed = JSON.parse(raw);
-          if (
-            parsed &&
-            typeof parsed === 'object' &&
-            typeof parsed.fetchedAt === 'number' &&
-            Array.isArray(parsed.runs) &&
-            now - parsed.fetchedAt < ttlMs
-          ) {
-            return parsed.runs;
-          }
-        } catch {}
-        return null;
-      };
-
-      const writeCache = (runs) => {
-        try {
-          localStorage.setItem(
-            cacheKey,
-            JSON.stringify({ fetchedAt: now, runs })
+      if (owner && repo && !window.__cvWorkflowRevalidated) {
+        window.__cvWorkflowRevalidated = true;
+        window.setTimeout(() => {
+          const runsUrl = new URL(
+            `https://api.github.com/repos/${owner}/${repo}/actions/runs`
           );
-        } catch {}
-      };
+          runsUrl.searchParams.set('per_page', '30');
+          if (branch) {
+            runsUrl.searchParams.set('branch', branch);
+          }
 
-      const cachedRuns = readCache();
-      if (cachedRuns) {
-        applyRuns(cachedRuns);
-      } else if (owner && repo) {
-        const runsUrl = new URL(
-          `https://api.github.com/repos/${owner}/${repo}/actions/runs`
-        );
-        runsUrl.searchParams.set('per_page', '30');
-        if (branch) {
-          runsUrl.searchParams.set('branch', branch);
-        }
-
-        fetch(runsUrl.toString(), {
-          headers: {
-            Accept: 'application/vnd.github+json',
-          },
-        })
-          .then((response) => (response.ok ? response.json() : null))
-          .then((data) => {
-            if (data && Array.isArray(data.workflow_runs)) {
-              writeCache(data.workflow_runs);
-              applyRuns(data.workflow_runs);
-            }
+          fetch(runsUrl.toString(), {
+            headers: {
+              Accept: 'application/vnd.github+json',
+            },
           })
-          .catch(() => {});
+            .then((response) => (response.ok ? response.json() : null))
+            .then((data) => {
+              if (data && Array.isArray(data.workflow_runs)) {
+                applyRuns(data.workflow_runs);
+              }
+            })
+            .catch(() => {});
+        }, revalidateDelayMs);
       }
     }
   }

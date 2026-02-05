@@ -34,8 +34,7 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command:
-      'node ./tests/e2e/setup-cache.mjs && npm run build && npm run preview',
+    command: 'npm run build && npm run preview',
     url: 'http://localhost:4321',
     reuseExistingServer: false,
   },

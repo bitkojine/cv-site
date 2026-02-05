@@ -1,25 +1,42 @@
 import { test, expect } from '@playwright/test';
-import { promises as fs } from 'node:fs';
-import path from 'node:path';
 
-const readCacheRuns = async () => {
-  const cachePath = path.join(process.cwd(), '.cache', 'github.json');
-  const raw = await fs.readFile(cachePath, 'utf-8');
-  const payload = JSON.parse(raw) as {
-    latestWorkflowRuns?: Array<{
-      name?: string;
-      status?: string;
-      conclusion?: string | null;
-    }>;
+const owner = 'bitkojine';
+const repo = 'cv-site';
+
+const fetchLatestRuns = async () => {
+  const runsUrl = new URL(
+    `https://api.github.com/repos/${owner}/${repo}/actions/runs`
+  );
+  runsUrl.searchParams.set('per_page', '30');
+  runsUrl.searchParams.set('branch', 'main');
+
+  const response = await fetch(runsUrl.toString(), {
+    headers: {
+      Accept: 'application/vnd.github+json',
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`GitHub API error ${response.status}`);
+  }
+
+  const data = (await response.json()) as {
+    workflow_runs?: Array<{ workflow_id: number; name?: string }>;
   };
-  return payload.latestWorkflowRuns || [];
+
+  const latestRuns = new Map<number, { workflow_id: number; name?: string }>();
+  for (const run of data.workflow_runs || []) {
+    if (!latestRuns.has(run.workflow_id)) {
+      latestRuns.set(run.workflow_id, run);
+    }
+  }
+
+  return Array.from(latestRuns.values());
 };
 
 // Bug: Workflow status badges did not update after deploy and showed stale data.
-test('workflow status badges render from live GitHub cache', async ({
-  page,
-}) => {
-  const expectedRuns = await readCacheRuns();
+test('workflow status badges render from live GitHub API', async ({ page }) => {
+  const expectedRuns = await fetchLatestRuns();
   expect(expectedRuns.length).toBeGreaterThan(0);
 
   await page.goto('/');
