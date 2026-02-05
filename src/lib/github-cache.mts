@@ -104,8 +104,12 @@ export const getGithubData = async (
     Array.isArray(cache?.latestCommits);
   const cacheFresh =
     Number.isFinite(cacheUpdatedAt) && nowMs - cacheUpdatedAt < ttlMs;
+  const hasRunningWorkflow =
+    cache?.latestWorkflowRuns?.some(
+      (run) => run.status === 'in_progress' || run.status === 'queued'
+    ) || false;
 
-  if (cacheFresh && hasCachedData && !revalidateFresh) {
+  if (cacheFresh && hasCachedData && !revalidateFresh && !hasRunningWorkflow) {
     return {
       latestWorkflowRuns: cache?.latestWorkflowRuns || [],
       latestCommits: cache?.latestCommits || [],

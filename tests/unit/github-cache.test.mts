@@ -453,6 +453,63 @@ describe('getGithubData cache behavior', () => {
     expect(result.latestCommits).toEqual(stalePayload.latestCommits);
   });
 
+  // Bug: Running workflow status stayed forever because fresh cache skipped revalidation.
+  it('revalidates when cached workflows are still running', async () => {
+    tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'cv-site-cache-'));
+    const cachePath = path.join(tempDir, 'github.json');
+    const nowMs = Date.UTC(2026, 0, 18, 12, 0, 0);
+    const freshPayload: GitHubCachePayload = {
+      updatedAt: new Date(nowMs - 60_000).toISOString(),
+      latestWorkflowRuns: [
+        {
+          workflow_id: 501,
+          name: 'CI',
+          html_url: 'https://example.com/run-501',
+          status: 'in_progress',
+          conclusion: null,
+        },
+      ],
+      latestCommits: [],
+    };
+
+    await fs.writeFile(cachePath, JSON.stringify(freshPayload), 'utf-8');
+
+    const fetchImpl = vi
+      .fn()
+      .mockResolvedValueOnce(
+        createResponse({
+          status: 200,
+          ok: true,
+          json: async () => ({
+            workflow_runs: [
+              {
+                workflow_id: 501,
+                name: 'CI',
+                html_url: 'https://example.com/run-501',
+                status: 'completed',
+                conclusion: 'success',
+              },
+            ],
+          }),
+        })
+      )
+      .mockResolvedValueOnce(
+        createResponse({ status: 200, ok: true, json: async () => [] })
+      );
+
+    const result = await getGithubData({
+      owner: 'owner',
+      repo: 'repo',
+      cachePath,
+      ttlMs: 6 * 60 * 60 * 1000,
+      nowMs,
+      fetchImpl,
+    });
+
+    expect(fetchImpl).toHaveBeenCalledTimes(2);
+    expect(result.latestWorkflowRuns[0]?.status).toBe('completed');
+  });
+
   // Bug: Corrupt cache files caused crashes or empty UI without refetch.
   it('handles invalid cache files by refetching', async () => {
     tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'cv-site-cache-'));
