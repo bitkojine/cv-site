@@ -635,10 +635,12 @@ const timelineYears = Array.from(
     );
     background-size: 100% 2px;
     background-repeat: no-repeat;
-    background-position: 0 48px;
+    background-position: 0 var(--timeline-line-y, 48px);
     scrollbar-gutter: stable;
     scroll-snap-type: x mandatory;
     scroll-padding-inline: 0.75rem;
+    --timeline-line-y: 48px;
+    --timeline-year-height: 28px;
   }
 
   .timeline-scroll:focus-within {
@@ -659,8 +661,10 @@ const timelineYears = Array.from(
   @media (min-width: 768px) {
     .timeline-scroll {
       padding: 1rem 1.5rem 1.25rem;
-      background-position: 0 56px;
+      background-position: 0 var(--timeline-line-y, 56px);
       scroll-padding-inline: 1.5rem;
+      --timeline-line-y: 56px;
+      --timeline-year-height: 32px;
     }
 
     .timeline-anchor {
