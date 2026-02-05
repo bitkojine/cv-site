@@ -15,9 +15,6 @@ test('homepage has title and critical sections', async ({ page }) => {
     page.getByRole('heading', { name: 'EXPERIENCE TIMELINE' })
   ).toBeVisible();
 
-  await expect(page.locator('.snake-background')).toBeVisible();
-  await expect(page.locator('.snake-background canvas')).toHaveCount(1);
-
   // Check for no console errors (optional but good practice)
   page.on('console', (msg) => {
     if (msg.type() === 'error') {

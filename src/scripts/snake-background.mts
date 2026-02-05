@@ -29,6 +29,7 @@ let cellHeight = 16;
 let state = createState({ gridWidth, gridHeight });
 let offsetX = 0;
 let offsetY = 0;
+let manualOverrideUntil = 0;
 let restartAt = 0;
 let lastTick = 0;
 
@@ -183,8 +184,10 @@ const tick = (now: number) => {
         restartAt = 0;
       }
     } else {
-      const autoDir = chooseAutoDirection(state);
-      state = setNextDirection(state, autoDir);
+      if (now >= manualOverrideUntil) {
+        const autoDir = chooseAutoDirection(state);
+        state = setNextDirection(state, autoDir);
+      }
       state = step(state);
       ensureFoodVisible();
     }
@@ -193,7 +196,46 @@ const tick = (now: number) => {
   requestAnimationFrame(tick);
 };
 
+const handleDirection = (dir: 'up' | 'down' | 'left' | 'right') => {
+  state = setNextDirection(state, dir);
+  manualOverrideUntil = performance.now() + 1200;
+};
+
 window.addEventListener('resize', resize, { passive: true });
+window.addEventListener('keydown', (event) => {
+  switch (event.key) {
+    case 'ArrowUp':
+    case 'w':
+    case 'W':
+      handleDirection('up');
+      break;
+    case 'ArrowDown':
+    case 's':
+    case 'S':
+      handleDirection('down');
+      break;
+    case 'ArrowLeft':
+    case 'a':
+    case 'A':
+      handleDirection('left');
+      break;
+    case 'ArrowRight':
+    case 'd':
+    case 'D':
+      handleDirection('right');
+      break;
+    default:
+      break;
+  }
+});
+
+wrapper.querySelectorAll('[data-dir]').forEach((button) => {
+  button.addEventListener('click', () => {
+    const dir = button.getAttribute('data-dir');
+    if (!dir) return;
+    handleDirection(dir as 'up' | 'down' | 'left' | 'right');
+  });
+});
 
 resize();
 draw();
