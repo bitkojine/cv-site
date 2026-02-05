@@ -1,7 +1,6 @@
 ---
 import '../styles/global.css';
 import Controls from '../components/Controls.astro';
-import SnakeBackground from '../components/SnakeBackground.astro';
 import cvData from '../data/cv.json';
 
 interface Props {
@@ -128,7 +127,6 @@ const jsonLd = {
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
   </head>
   <body>
-    <SnakeBackground />
     <slot />
     <Controls />
   </body>
