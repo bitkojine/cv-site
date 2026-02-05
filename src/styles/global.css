@@ -608,6 +608,12 @@ video {
     display: none !important;
   }
 
+  .timeline-year span {
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+
   .timeline-card {
     padding: 0 !important;
     background: transparent !important;
