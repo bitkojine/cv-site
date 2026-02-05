@@ -85,6 +85,7 @@
 html {
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 body {
@@ -98,6 +99,36 @@ body {
   padding-bottom: calc(6rem + var(--controls-dock-offset));
   /* Space for fixed controls */
   overflow-x: hidden;
+}
+
+/* Prevent accidental horizontal page scroll */
+img,
+svg,
+video,
+iframe {
+  max-width: 100%;
+  height: auto;
+}
+
+pre,
+code {
+  max-width: 100%;
+}
+
+pre {
+  overflow-x: auto;
+}
+
+table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+p,
+li,
+a {
+  overflow-wrap: anywhere;
 }
 
 /* Mobile-First Layout */
