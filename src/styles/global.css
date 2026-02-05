@@ -129,6 +129,10 @@ body {
   max-width: 100vw;
 }
 
+body.debug-grid * {
+  outline: 1px solid rgba(255, 0, 0, 0.35);
+}
+
 button,
 label,
 .btn-primary,

@@ -85,6 +85,11 @@ const isCvPage = Astro.url.pathname === '/' || Astro.url.pathname === '';
     updateThemeAssets(isDark);
   }
 
+  function toggleDebugGrid() {
+    const isOn = document.body.classList.toggle('debug-grid');
+    localStorage.setItem('debugGrid', isOn ? 'enabled' : 'disabled');
+  }
+
   function updateThemeAssets(isDark: boolean) {
     const sunIcon = document.querySelector('.sun-icon');
     const moonIcon = document.querySelector('.moon-icon');
@@ -105,6 +110,10 @@ const isCvPage = Astro.url.pathname === '/' || Astro.url.pathname === '';
 
   // Initialization logic
   document.addEventListener('DOMContentLoaded', () => {
+    if (localStorage.getItem('debugGrid') === 'enabled') {
+      document.body.classList.add('debug-grid');
+    }
+
     const isDark = document.documentElement.classList.contains('dark-mode');
     updateThemeAssets(isDark);
     const isCvPage =
@@ -125,6 +134,9 @@ const isCvPage = Astro.url.pathname === '/' || Astro.url.pathname === '';
     document
       .querySelector('.share-btn')
       ?.addEventListener('click', shareProfile);
+    document
+      .querySelector('.debug-grid-toggle')
+      ?.addEventListener('click', toggleDebugGrid);
   });
 </script>
 
@@ -163,6 +175,8 @@ const isCvPage = Astro.url.pathname === '/' || Astro.url.pathname === '';
     <span>Blog</span>
   </a>
 </div>
+<button class="debug-grid-toggle" type="button" aria-label="Toggle debug grid"
+></button>
 <div class="share-toast hidden" role="status" aria-live="polite"></div>
 
 <style>
@@ -195,6 +209,21 @@ const isCvPage = Astro.url.pathname === '/' || Astro.url.pathname === '';
   .share-toast.visible {
     opacity: 1;
     transform: translateX(-50%) translateY(0);
+  }
+
+  .debug-grid-toggle {
+    position: fixed;
+    bottom: 8px;
+    left: 8px;
+    width: 36px;
+    height: 36px;
+    opacity: 0;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    z-index: 1200;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
 
   @media print {
