@@ -514,6 +514,12 @@ video {
     border-bottom: 1px dotted #000;
   }
 
+  /* Header cleanup for print */
+  .cv-header .icon,
+  .domain-suffix {
+    display: none !important;
+  }
+
   hr {
     display: none;
   }
