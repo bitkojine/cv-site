@@ -39,6 +39,7 @@ interface FetchResponse {
 interface GetGithubDataOptions {
   owner: string;
   repo: string;
+  branch?: string;
   cachePath: string;
   ttlMs: number;
   revalidateFresh?: boolean;
@@ -85,6 +86,7 @@ export const getGithubData = async (
   const {
     owner,
     repo,
+    branch,
     cachePath,
     ttlMs,
     revalidateFresh = false,
@@ -123,15 +125,19 @@ export const getGithubData = async (
     });
 
   try {
-    const runsResponse = await fetchImpl(
-      `https://api.github.com/repos/${owner}/${repo}/actions/runs?per_page=30`,
-      {
-        headers: {
-          Accept: 'application/vnd.github+json',
-          ...(cache?.etagRuns ? { 'If-None-Match': cache.etagRuns } : {}),
-        },
-      }
+    const runsUrl = new URL(
+      `https://api.github.com/repos/${owner}/${repo}/actions/runs`
     );
+    runsUrl.searchParams.set('per_page', '30');
+    if (branch) {
+      runsUrl.searchParams.set('branch', branch);
+    }
+    const runsResponse = await fetchImpl(runsUrl.toString(), {
+      headers: {
+        Accept: 'application/vnd.github+json',
+        ...(cache?.etagRuns ? { 'If-None-Match': cache.etagRuns } : {}),
+      },
+    });
     if (runsResponse.status === 304 && cache?.latestWorkflowRuns) {
       latestWorkflowRuns = cache.latestWorkflowRuns;
       await refreshCache({

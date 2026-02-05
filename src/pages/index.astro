@@ -59,6 +59,7 @@ if (shouldFetchGithub) {
   const cacheData = await getGithubData({
     owner: githubOwner,
     repo: githubRepo,
+    branch: 'main',
     cachePath,
     ttlMs: CACHE_TTL_MS,
     revalidateFresh: Boolean(process.env.GITHUB_ACTIONS),

@@ -22,9 +22,12 @@ const fetchJson = async (url) => {
   return response.json();
 };
 
-const runsData = await fetchJson(
-  `https://api.github.com/repos/${owner}/${repo}/actions/runs?per_page=30`
+const runsUrl = new URL(
+  `https://api.github.com/repos/${owner}/${repo}/actions/runs`
 );
+runsUrl.searchParams.set('per_page', '30');
+runsUrl.searchParams.set('branch', 'main');
+const runsData = await fetchJson(runsUrl.toString());
 const commitsData = await fetchJson(
   `https://api.github.com/repos/${owner}/${repo}/commits?per_page=5`
 );

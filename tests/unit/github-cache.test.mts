@@ -402,6 +402,48 @@ describe('getGithubData cache behavior', () => {
     ]);
   });
 
+  // Bug: Workflow status showed running from non-main branches; must query main only.
+  it('requests workflow runs for the main branch only', async () => {
+    tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'cv-site-cache-'));
+    const cachePath = path.join(tempDir, 'github.json');
+    const nowMs = Date.UTC(2026, 0, 19, 12, 0, 0);
+    const stalePayload: GitHubCachePayload = {
+      updatedAt: new Date(nowMs - 8 * 60 * 60 * 1000).toISOString(),
+    };
+
+    await fs.writeFile(cachePath, JSON.stringify(stalePayload), 'utf-8');
+
+    const fetchImpl = vi
+      .fn()
+      .mockResolvedValueOnce(
+        createResponse({
+          status: 200,
+          ok: true,
+          json: async () => ({ workflow_runs: [] }),
+        })
+      )
+      .mockResolvedValueOnce(
+        createResponse({
+          status: 200,
+          ok: true,
+          json: async () => [],
+        })
+      );
+
+    await getGithubData({
+      owner: 'owner',
+      repo: 'repo',
+      branch: 'main',
+      cachePath,
+      ttlMs: 6 * 60 * 60 * 1000,
+      nowMs,
+      fetchImpl,
+    });
+
+    const firstCallUrl = fetchImpl.mock.calls[0]?.[0] as string;
+    expect(firstCallUrl).toContain('branch=main');
+  });
+
   // Bug: GitHub rate limits (403) should fall back to cache instead of empty data.
   it('falls back to cache when GitHub responds with 403', async () => {
     tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'cv-site-cache-'));
