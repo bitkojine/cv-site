@@ -25,7 +25,7 @@ test('workflow status badges render from live GitHub cache', async ({
   await page.goto('/');
 
   const actionsSection = page.locator('#github-actions-container');
-  const workflowLinks = actionsSection.locator('a.workflow-status-link');
+  const workflowLinks = actionsSection.locator('a.workflow-badge');
 
   await expect(workflowLinks).toHaveCount(expectedRuns.length);
 

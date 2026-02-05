@@ -112,6 +112,7 @@ export const getGithubData = async (
     cache?.latestWorkflowRuns?.some(
       (run) => run.status === 'in_progress' || run.status === 'queued'
     ) || false;
+  const forceRunsRevalidate = hasRunningWorkflow && !bypassCache;
 
   if (
     cacheFresh &&
@@ -140,11 +141,18 @@ export const getGithubData = async (
     if (branch) {
       runsUrl.searchParams.set('branch', branch);
     }
+    const runsHeaders: Record<string, string> = {
+      Accept: 'application/vnd.github+json',
+    };
+    if (cache?.etagRuns && !forceRunsRevalidate) {
+      runsHeaders['If-None-Match'] = cache.etagRuns;
+    }
+    if (forceRunsRevalidate) {
+      runsHeaders['Cache-Control'] = 'no-cache';
+    }
+
     const runsResponse = await fetchImpl(runsUrl.toString(), {
-      headers: {
-        Accept: 'application/vnd.github+json',
-        ...(cache?.etagRuns ? { 'If-None-Match': cache.etagRuns } : {}),
-      },
+      headers: runsHeaders,
     });
     if (runsResponse.status === 304 && cache?.latestWorkflowRuns) {
       latestWorkflowRuns = cache.latestWorkflowRuns;

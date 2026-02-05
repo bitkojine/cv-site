@@ -603,6 +603,57 @@ describe('getGithubData cache behavior', () => {
     expect(result.latestWorkflowRuns[0]?.status).toBe('completed');
   });
 
+  it('forces runs revalidation without If-None-Match when cached runs are running', async () => {
+    tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'cv-site-cache-'));
+    const cachePath = path.join(tempDir, 'github.json');
+    const nowMs = Date.UTC(2026, 0, 21, 12, 0, 0);
+    const freshPayload: GitHubCachePayload = {
+      updatedAt: new Date(nowMs - 60_000).toISOString(),
+      etagRuns: 'etag-running',
+      latestWorkflowRuns: [
+        {
+          workflow_id: 701,
+          name: 'CI',
+          html_url: 'https://example.com/run-701',
+          status: 'queued',
+          conclusion: null,
+        },
+      ],
+    };
+
+    await fs.writeFile(cachePath, JSON.stringify(freshPayload), 'utf-8');
+
+    const fetchImpl = vi
+      .fn()
+      .mockResolvedValueOnce(
+        createResponse({
+          status: 200,
+          ok: true,
+          json: async () => ({ workflow_runs: [] }),
+        })
+      )
+      .mockResolvedValueOnce(
+        createResponse({ status: 200, ok: true, json: async () => [] })
+      );
+
+    await getGithubData({
+      owner: 'owner',
+      repo: 'repo',
+      cachePath,
+      ttlMs: 6 * 60 * 60 * 1000,
+      nowMs,
+      fetchImpl,
+    });
+
+    const runsHeaders = (fetchImpl.mock.calls[0]?.[1]?.headers || {}) as Record<
+      string,
+      string
+    >;
+
+    expect(runsHeaders['If-None-Match']).toBeUndefined();
+    expect(runsHeaders['Cache-Control']).toBe('no-cache');
+  });
+
   // Bug: Corrupt cache files caused crashes or empty UI without refetch.
   it('handles invalid cache files by refetching', async () => {
     tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'cv-site-cache-'));

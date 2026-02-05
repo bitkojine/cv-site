@@ -64,7 +64,7 @@ if (shouldFetchGithub) {
     cachePath,
     ttlMs: CACHE_TTL_MS,
     revalidateFresh: Boolean(process.env.GITHUB_ACTIONS),
-    bypassCache: true,
+    bypassCache: false,
   });
   latestWorkflowRuns = cacheData.latestWorkflowRuns;
   latestCommits = cacheData.latestCommits;
@@ -275,13 +275,14 @@ const timelineYears = Array.from(
               href="https://github.com/bitkojine/cv-site/actions"
               target="_blank"
               rel="noopener noreferrer"
-              class="workflow-status-link fallback-link"
+              class="workflow-badge workflow-badge--fallback"
+              data-status="unknown"
             >
-              <div class="status-icon">↯</div>
-              <div class="status-text">
-                <span class="workflow-name">View Build Status</span>
-                <span class="workflow-status">on GitHub</span>
-              </div>
+              <span class="workflow-badge__dot" aria-hidden="true" />
+              <span class="workflow-badge__meta">
+                <span class="workflow-badge__name">View Build Status</span>
+                <span class="workflow-badge__status">on GitHub</span>
+              </span>
             </a>
           )
         }
@@ -761,47 +762,77 @@ const timelineYears = Array.from(
     margin-top: 0.75rem;
   }
 
-  :global(.workflow-status-link) {
+  :global(.workflow-badge) {
     display: inline-flex;
     align-items: center;
-    gap: 0.6rem;
-    flex-wrap: wrap;
+    gap: 0.7rem;
     max-width: 100%;
-    color: var(--text-muted);
-    font-size: var(--fs-sm);
-    text-decoration: none;
-    transition: all 0.2s;
-    padding: 0.5rem 0.8rem;
+    padding: 0.55rem 0.85rem;
+    border-radius: 999px;
     background: var(--bg-card);
     border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-md);
     box-shadow: var(--shadow-sm);
+    color: var(--text-primary);
+    text-decoration: none;
+    font-size: var(--fs-sm);
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease,
+      border-color 0.2s ease;
   }
 
-  :global(.workflow-status-link:hover) {
-    color: var(--text-primary);
-    border-color: var(--accent-600);
+  :global(.workflow-badge:hover) {
     transform: translateY(-1px);
+    border-color: var(--accent-600);
     box-shadow: var(--shadow-md);
   }
 
-  :global(.workflow-name) {
-    font-weight: 600;
-    font-size: var(--fs-sm);
+  :global(.workflow-badge__dot) {
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    background: var(--border-subtle);
+    box-shadow: inset 0 0 0 2px var(--bg-app);
   }
 
-  :global(.workflow-status) {
-    font-size: var(--fs-xs);
-    opacity: 0.8;
-    text-transform: capitalize;
-  }
-
-  :global(.status-text) {
+  :global(.workflow-badge__meta) {
     display: flex;
     flex-direction: column;
-    line-height: 1.25;
-    text-align: left;
+    line-height: 1.15;
     min-width: 0;
+  }
+
+  :global(.workflow-badge__name) {
+    font-weight: 600;
+    font-size: var(--fs-sm);
+    color: var(--text-primary);
+  }
+
+  :global(.workflow-badge__status) {
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+    letter-spacing: 0.01em;
+  }
+
+  :global(.workflow-badge[data-status='running'] .workflow-badge__dot) {
+    background: #f59e0b;
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+    animation: workflowPulse 1.2s ease-in-out infinite;
+  }
+
+  :global(.workflow-badge[data-status='success'] .workflow-badge__dot) {
+    background: #10b981;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+  }
+
+  :global(.workflow-badge[data-status='failure'] .workflow-badge__dot) {
+    background: #ef4444;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+  }
+
+  :global(.workflow-badge[data-status='unknown'] .workflow-badge__dot) {
+    background: #94a3b8;
+    box-shadow: 0 0 0 3px rgba(148, 163, 184, 0.2);
   }
 
   .github-commits-container {
@@ -854,48 +885,23 @@ const timelineYears = Array.from(
     opacity: 0.7;
   }
 
-  :global(.status-icon) {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    background: var(--bg-app);
-    color: var(--text-muted);
-    transition: all 0.3s;
-  }
-
-  :global(.status-success),
-  :global(.status-failure),
-  :global(.status-running) {
-    color: var(--accent-text);
-    background: var(--bg-card);
-    border: 1px solid var(--border-subtle);
-  }
-
-  :global(.dark-mode .status-success),
-  :global(.dark-mode .status-failure),
-  :global(.dark-mode .status-running) {
-    color: var(--accent-text);
-    background: var(--bg-card);
-    border: 1px solid var(--border-subtle);
-  }
-
-  @keyframes pulse {
+  @keyframes workflowPulse {
     0% {
-      opacity: 1;
+      transform: scale(1);
+      opacity: 0.9;
     }
     50% {
+      transform: scale(1.15);
       opacity: 0.5;
     }
     100% {
-      opacity: 1;
+      transform: scale(1);
+      opacity: 0.9;
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    :global(.status-running) {
+    :global(.workflow-badge[data-status='running'] .workflow-badge__dot) {
       animation: none;
     }
   }

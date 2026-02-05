@@ -17,6 +17,20 @@ const runs: WorkflowRun[] = [
     status: 'in_progress',
     conclusion: null,
   },
+  {
+    workflow_id: 3,
+    name: 'Publish',
+    html_url: 'https://example.com/publish',
+    status: 'completed',
+    conclusion: 'failure',
+  },
+  {
+    workflow_id: 4,
+    name: 'Docs',
+    html_url: 'https://example.com/docs',
+    status: 'completed',
+    conclusion: 'cancelled',
+  },
 ];
 ---
 
