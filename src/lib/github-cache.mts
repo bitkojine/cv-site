@@ -41,6 +41,7 @@ interface GetGithubDataOptions {
   repo: string;
   cachePath: string;
   ttlMs: number;
+  revalidateFresh?: boolean;
   nowMs?: number;
   fetchImpl?: (url: string, init?: RequestInit) => Promise<FetchResponse>;
   fsImpl?: typeof fs;
@@ -86,14 +87,15 @@ export const getGithubData = async (
     repo,
     cachePath,
     ttlMs,
+    revalidateFresh = false,
     nowMs = Date.now(),
     fetchImpl = fetch,
     fsImpl = fs,
   } = options;
 
   const cache = await readCache(fsImpl, cachePath);
-  let latestWorkflowRuns: WorkflowRun[] = [];
-  let latestCommits: GitHubCommit[] = [];
+  let latestWorkflowRuns: WorkflowRun[] = cache?.latestWorkflowRuns || [];
+  let latestCommits: GitHubCommit[] = cache?.latestCommits || [];
   let etagRuns = cache?.etagRuns;
   let etagCommits = cache?.etagCommits;
   const cacheUpdatedAt = cache?.updatedAt ? Date.parse(cache.updatedAt) : 0;
@@ -103,7 +105,7 @@ export const getGithubData = async (
   const cacheFresh =
     Number.isFinite(cacheUpdatedAt) && nowMs - cacheUpdatedAt < ttlMs;
 
-  if (cacheFresh && hasCachedData) {
+  if (cacheFresh && hasCachedData && !revalidateFresh) {
     return {
       latestWorkflowRuns: cache?.latestWorkflowRuns || [],
       latestCommits: cache?.latestCommits || [],
