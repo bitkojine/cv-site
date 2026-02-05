@@ -2,8 +2,10 @@ import { describe, expect, it } from 'vitest';
 import {
   createState,
   placeFood,
+  placeFoodAvoiding,
   setNextDirection,
   step,
+  chooseAutoDirection,
 } from '../../src/lib/snake.mts';
 
 describe('snake game logic', () => {
@@ -96,5 +98,41 @@ describe('snake game logic', () => {
 
     const placed = placeFood(state);
     expect(placed.state.food).toEqual({ x: 1, y: 1 });
+  });
+
+  it('avoids forbidden cells when placing food', () => {
+    const state = createState({
+      gridWidth: 3,
+      gridHeight: 3,
+      snake: [
+        { x: 1, y: 1 },
+        { x: 1, y: 2 },
+      ],
+      direction: 'right',
+      food: { x: 0, y: 0 },
+      rngSeed: 7,
+    });
+
+    const forbidden = new Set<string>(['0,0', '0,1', '1,0']);
+    const placed = placeFoodAvoiding(state, forbidden);
+    const key = `${placed.state.food.x},${placed.state.food.y}`;
+    expect(forbidden.has(key)).toBe(false);
+  });
+
+  it('moves directly toward food when safe', () => {
+    const state = createState({
+      gridWidth: 6,
+      gridHeight: 6,
+      snake: [
+        { x: 2, y: 2 },
+        { x: 1, y: 2 },
+      ],
+      direction: 'right',
+      food: { x: 5, y: 2 },
+      rngSeed: 1,
+    });
+
+    const dir = chooseAutoDirection(state);
+    expect(dir).toBe('right');
   });
 });
