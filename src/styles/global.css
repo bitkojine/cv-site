@@ -20,6 +20,15 @@
   --border-subtle: #111;
   --border-strong: #111;
 
+  --workflow-dot-bg: #fff;
+  --workflow-dot-border: #000;
+  --workflow-dot-running: #000;
+  --workflow-dot-running-glow: rgba(0, 0, 0, 0.2);
+  --workflow-dot-success: #000;
+  --workflow-dot-failure-bg: #fff;
+  --workflow-dot-failure-text: #000;
+  --workflow-dot-unknown-border: #000;
+
   --shadow-rgb: 0, 0, 0;
 
   --shadow-sm: none;
@@ -65,6 +74,15 @@
   --accent-100: #f7f7f7;
   --accent-text: var(--text-primary);
   --accent-tag-text: var(--text-inverse);
+
+  --workflow-dot-bg: #f7f7f7;
+  --workflow-dot-border: #f7f7f7;
+  --workflow-dot-running: #f7f7f7;
+  --workflow-dot-running-glow: rgba(247, 247, 247, 0.35);
+  --workflow-dot-success: #f7f7f7;
+  --workflow-dot-failure-bg: #f7f7f7;
+  --workflow-dot-failure-text: #111;
+  --workflow-dot-unknown-border: #f7f7f7;
 }
 
 /* Accessibility Utilities */

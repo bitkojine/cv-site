@@ -863,8 +863,8 @@ const timelineYears = Array.from(
     width: 12px;
     height: 12px;
     border-radius: 999px;
-    background: #fff;
-    border: 2px solid #000;
+    background: var(--workflow-dot-bg);
+    border: 2px solid var(--workflow-dot-border);
     box-shadow: none;
     flex: 0 0 auto;
   }
@@ -890,21 +890,21 @@ const timelineYears = Array.from(
   }
 
   :global(.workflow-badge[data-status='running'] .workflow-badge__dot) {
-    background: #000;
-    border-color: #000;
-    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.2);
+    background: var(--workflow-dot-running);
+    border-color: var(--workflow-dot-running);
+    box-shadow: 0 0 0 3px var(--workflow-dot-running-glow);
     animation: workflowPulse 1.2s ease-in-out infinite;
   }
 
   :global(.workflow-badge[data-status='success'] .workflow-badge__dot) {
-    background: #000;
+    background: var(--workflow-dot-success);
     border-radius: 3px;
-    border-color: #000;
+    border-color: var(--workflow-dot-success);
   }
 
   :global(.workflow-badge[data-status='failure'] .workflow-badge__dot) {
-    background: #fff;
-    border-color: #000;
+    background: var(--workflow-dot-failure-bg);
+    border-color: var(--workflow-dot-border);
     transform: rotate(45deg);
   }
 
@@ -917,13 +917,13 @@ const timelineYears = Array.from(
     justify-content: center;
     font-size: 8px;
     font-weight: 700;
-    color: #000;
+    color: var(--workflow-dot-failure-text);
     transform: rotate(-45deg);
   }
 
   :global(.workflow-badge[data-status='unknown'] .workflow-badge__dot) {
-    background: #fff;
-    border: 2px dotted #000;
+    background: var(--workflow-dot-bg);
+    border: 2px dotted var(--workflow-dot-unknown-border);
   }
 
   .github-commits-container {
