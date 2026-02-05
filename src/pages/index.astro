@@ -482,82 +482,72 @@ const timelineYears = Array.from(
     const badges = Array.from(
       actionsContainer.querySelectorAll('.workflow-badge[data-workflow-id]')
     );
-    const hasRunning = badges.some(
-      (badge) => badge.dataset.status === 'running'
-    );
+    const owner = actionsContainer.dataset.githubOwner;
+    const repo = actionsContainer.dataset.githubRepo;
+    const branch = actionsContainer.dataset.githubBranch;
 
-    if (hasRunning) {
-      const owner = actionsContainer.dataset.githubOwner;
-      const repo = actionsContainer.dataset.githubRepo;
-      const branch = actionsContainer.dataset.githubBranch;
-      const revalidateDelayMs = 2 * 60 * 1000;
-
-      const resolveBadge = (status, conclusion) => {
-        if (status === 'in_progress' || status === 'queued') {
-          return { state: 'running', label: 'Running' };
-        }
-        if (status === 'completed' && conclusion === 'success') {
-          return { state: 'success', label: 'success' };
-        }
-        if (status === 'completed' && conclusion === 'failure') {
-          return { state: 'failure', label: 'failure' };
-        }
-        return { state: 'unknown', label: 'Unknown' };
-      };
-
-      const applyRuns = (runs) => {
-        const latestRuns = new Map();
-        for (const run of runs || []) {
-          if (run && !latestRuns.has(run.workflow_id)) {
-            latestRuns.set(run.workflow_id, run);
-          }
-        }
-        badges.forEach((badge) => {
-          const workflowId = Number(badge.dataset.workflowId);
-          const run = latestRuns.get(workflowId);
-          if (!run) {
-            return;
-          }
-          const resolved = resolveBadge(run.status, run.conclusion);
-          badge.dataset.status = resolved.state;
-          const statusEl = badge.querySelector('.workflow-badge__status');
-          if (statusEl) {
-            statusEl.textContent = resolved.label;
-          }
-          const nameEl = badge.querySelector('.workflow-badge__name');
-          const nameText = nameEl ? nameEl.textContent : 'Workflow';
-          badge.setAttribute(
-            'aria-label',
-            `${nameText} workflow status: ${resolved.label}`
-          );
-        });
-      };
-
-      if (owner && repo && !window.__cvWorkflowRevalidated) {
-        window.__cvWorkflowRevalidated = true;
-        window.setTimeout(() => {
-          const runsUrl = new URL(
-            `https://api.github.com/repos/${owner}/${repo}/actions/runs`
-          );
-          runsUrl.searchParams.set('per_page', '30');
-          if (branch) {
-            runsUrl.searchParams.set('branch', branch);
-          }
-
-          fetch(runsUrl.toString(), {
-            headers: {
-              Accept: 'application/vnd.github+json',
-            },
-          })
-            .then((response) => (response.ok ? response.json() : null))
-            .then((data) => {
-              if (data && Array.isArray(data.workflow_runs)) {
-                applyRuns(data.workflow_runs);
-              }
-            })
-            .catch(() => {});
-        }, revalidateDelayMs);
+    const resolveBadge = (status, conclusion) => {
+      if (status === 'in_progress' || status === 'queued') {
+        return { state: 'running', label: 'Running' };
       }
+      if (status === 'completed' && conclusion === 'success') {
+        return { state: 'success', label: 'success' };
+      }
+      if (status === 'completed' && conclusion === 'failure') {
+        return { state: 'failure', label: 'failure' };
+      }
+      return { state: 'unknown', label: 'Unknown' };
+    };
+
+    const applyRuns = (runs) => {
+      const latestRuns = new Map();
+      for (const run of runs || []) {
+        if (run && !latestRuns.has(run.workflow_id)) {
+          latestRuns.set(run.workflow_id, run);
+        }
+      }
+      badges.forEach((badge) => {
+        const workflowId = Number(badge.dataset.workflowId);
+        const run = latestRuns.get(workflowId);
+        if (!run) {
+          return;
+        }
+        const resolved = resolveBadge(run.status, run.conclusion);
+        badge.dataset.status = resolved.state;
+        const statusEl = badge.querySelector('.workflow-badge__status');
+        if (statusEl) {
+          statusEl.textContent = resolved.label;
+        }
+        const nameEl = badge.querySelector('.workflow-badge__name');
+        const nameText = nameEl ? nameEl.textContent : 'Workflow';
+        badge.setAttribute(
+          'aria-label',
+          `${nameText} workflow status: ${resolved.label}`
+        );
+      });
+    };
+
+    if (owner && repo) {
+      const runsUrl = new URL(
+        `https://api.github.com/repos/${owner}/${repo}/actions/runs`
+      );
+      runsUrl.searchParams.set('per_page', '30');
+      if (branch) {
+        runsUrl.searchParams.set('branch', branch);
+      }
+
+      fetch(runsUrl.toString(), {
+        headers: {
+          Accept: 'application/vnd.github+json',
+        },
+      })
+        .then((response) => (response.ok ? response.json() : null))
+        .then((data) => {
+          if (data && Array.isArray(data.workflow_runs)) {
+            applyRuns(data.workflow_runs);
+          }
+        })
+        .catch(() => {});
     }
   }
 </script>
