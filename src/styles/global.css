@@ -281,8 +281,6 @@ hr {
 .cv-section {
   margin-bottom: 3rem;
   animation: fadeIn 0.6s ease-out;
-  content-visibility: auto;
-  contain-intrinsic-size: 600px;
 }
 
 @media (prefers-reduced-motion: reduce) {
