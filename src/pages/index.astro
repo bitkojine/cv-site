@@ -247,24 +247,28 @@ const timelineYears = Array.from(
 
     <Section title="EXPERIENCE TIMELINE">
       <div class="timeline-selector" role="tablist" aria-label="Jump to year">
-        {timelineYears.map((year, index) => (
-          <button
-            class={`year-chip ${index === 0 ? 'is-active' : ''}`}
-            type="button"
-            data-year={year}
-            aria-pressed={index === 0 ? 'true' : 'false'}
-          >
-            {year}
-          </button>
-        ))}
+        {
+          timelineYears.map((year, index) => (
+            <button
+              class={`year-chip ${index === 0 ? 'is-active' : ''}`}
+              type="button"
+              data-year={year}
+              aria-pressed={index === 0 ? 'true' : 'false'}
+            >
+              {year}
+            </button>
+          ))
+        }
       </div>
       <div class="timeline-scroll" role="list">
         <div class="timeline-spacer" aria-hidden="true"></div>
-        {combinedExperience.map((item) => (
-          <div id={`year-${item.year}`} class="timeline-anchor">
-            <ExperienceTimelineItem {...item} />
-          </div>
-        ))}
+        {
+          combinedExperience.map((item) => (
+            <div id={`year-${item.year}`} class="timeline-anchor">
+              <ExperienceTimelineItem {...item} />
+            </div>
+          ))
+        }
         <div class="timeline-spacer" aria-hidden="true"></div>
       </div>
     </Section>
