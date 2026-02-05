@@ -535,6 +535,8 @@ const timelineYears = Array.from(
   const timelineAnchors = Array.from(
     document.querySelectorAll('.timeline-anchor')
   );
+  let isProgrammaticScroll = false;
+  let programmaticScrollTimer;
 
   const setActiveYear = (year) => {
     yearChips.forEach((chip) => {
@@ -553,12 +555,20 @@ const timelineYears = Array.from(
         }
         const target = document.getElementById(`year-${targetYear}`);
         if (target) {
+          isProgrammaticScroll = true;
+          if (programmaticScrollTimer) {
+            window.clearTimeout(programmaticScrollTimer);
+          }
+          setActiveYear(targetYear);
           target.scrollIntoView({
             behavior: 'smooth',
             block: 'nearest',
             inline: 'start',
           });
-          setActiveYear(targetYear);
+          programmaticScrollTimer = window.setTimeout(() => {
+            isProgrammaticScroll = false;
+            updateActiveFromScroll();
+          }, 300);
         }
       });
     });
@@ -599,6 +609,16 @@ const timelineYears = Array.from(
     updateActiveFromScroll();
 
     timeline.addEventListener('scroll', () => {
+      if (isProgrammaticScroll) {
+        if (programmaticScrollTimer) {
+          window.clearTimeout(programmaticScrollTimer);
+        }
+        programmaticScrollTimer = window.setTimeout(() => {
+          isProgrammaticScroll = false;
+          updateActiveFromScroll();
+        }, 120);
+        return;
+      }
       if (ticking) {
         return;
       }
@@ -651,7 +671,7 @@ const timelineYears = Array.from(
   .year-chip {
     border: 1px solid var(--border-subtle);
     background: var(--bg-card);
-    color: var(--text-near-white);
+    color: var(--text-primary);
     padding: 0.35rem 0.75rem;
     border-radius: 999px;
     font-weight: 600;
@@ -665,23 +685,31 @@ const timelineYears = Array.from(
   }
 
   .year-chip:hover {
-    color: var(--text-near-white);
+    color: var(--text-primary);
     border-color: var(--accent-600);
     transform: translateY(-1px);
   }
 
   .year-chip.is-active {
-    color: var(--text-near-white);
+    color: var(--text-inverse);
     background: var(--accent-600);
     border-color: var(--accent-600);
   }
 
   :root:not(.dark-mode) .year-chip {
-    background: var(--text-primary);
-    border-color: var(--text-primary);
+    background: var(--bg-card);
+    border-color: var(--border-subtle);
+    color: var(--text-primary);
   }
 
   :root:not(.dark-mode) .year-chip:hover {
+    background: var(--accent-100);
+    border-color: var(--accent-300);
+    color: var(--text-primary);
+  }
+
+  :root:not(.dark-mode) .year-chip.is-active {
+    color: var(--text-near-white);
     background: var(--accent-600);
     border-color: var(--accent-600);
   }

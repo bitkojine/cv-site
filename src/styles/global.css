@@ -337,6 +337,13 @@ hr {
   min-width: 0;
 }
 
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:focus-visible {
+  color: var(--text-near-white);
+  text-decoration: none;
+}
+
 img,
 svg,
 video {
