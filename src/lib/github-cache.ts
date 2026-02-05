@@ -1,0 +1,190 @@
+import { promises as fs } from 'node:fs';
+import path from 'node:path';
+
+export interface WorkflowRun {
+  workflow_id: number;
+  name: string;
+  html_url: string;
+  status: 'completed' | 'in_progress' | 'queued';
+  conclusion: string | null;
+}
+
+export interface GitHubCommit {
+  html_url: string;
+  commit: {
+    message: string;
+    author: {
+      date: string;
+    };
+  };
+}
+
+export interface GitHubCachePayload {
+  updatedAt?: string;
+  etagRuns?: string;
+  etagCommits?: string;
+  latestWorkflowRuns?: WorkflowRun[];
+  latestCommits?: GitHubCommit[];
+}
+
+interface FetchResponse {
+  status: number;
+  ok: boolean;
+  json(): Promise<unknown>;
+  headers: {
+    get(name: string): string | null;
+  };
+}
+
+interface GetGithubDataOptions {
+  owner: string;
+  repo: string;
+  cachePath: string;
+  ttlMs: number;
+  nowMs?: number;
+  fetchImpl?: (url: string, init?: RequestInit) => Promise<FetchResponse>;
+  fsImpl?: typeof fs;
+}
+
+const readCache = async (
+  fsImpl: typeof fs,
+  cachePath: string
+): Promise<GitHubCachePayload | null> => {
+  try {
+    const raw = await fsImpl.readFile(cachePath, 'utf-8');
+    return JSON.parse(raw) as GitHubCachePayload;
+  } catch {
+    return null;
+  }
+};
+
+const writeCache = async (
+  fsImpl: typeof fs,
+  cachePath: string,
+  payload: GitHubCachePayload
+) => {
+  try {
+    await fsImpl.mkdir(path.dirname(cachePath), { recursive: true });
+    await fsImpl.writeFile(
+      cachePath,
+      JSON.stringify(payload, null, 2),
+      'utf-8'
+    );
+  } catch {
+    // Ignore cache write failures
+  }
+};
+
+export const getGithubData = async (
+  options: GetGithubDataOptions
+): Promise<{ latestWorkflowRuns: WorkflowRun[]; latestCommits: GitHubCommit[] }> => {
+  const {
+    owner,
+    repo,
+    cachePath,
+    ttlMs,
+    nowMs = Date.now(),
+    fetchImpl = fetch,
+    fsImpl = fs,
+  } = options;
+
+  let latestWorkflowRuns: WorkflowRun[] = [];
+  let latestCommits: GitHubCommit[] = [];
+
+  const cache = await readCache(fsImpl, cachePath);
+  const cacheUpdatedAt = cache?.updatedAt ? Date.parse(cache.updatedAt) : 0;
+  const cacheFresh =
+    Number.isFinite(cacheUpdatedAt) && nowMs - cacheUpdatedAt < ttlMs;
+
+  if (cacheFresh) {
+    return {
+      latestWorkflowRuns: cache?.latestWorkflowRuns || [],
+      latestCommits: cache?.latestCommits || [],
+    };
+  }
+
+  const refreshCache = async (payload: GitHubCachePayload) =>
+    writeCache(fsImpl, cachePath, {
+      ...payload,
+      updatedAt: new Date(nowMs).toISOString(),
+    });
+
+  try {
+    const runsResponse = await fetchImpl(
+      `https://api.github.com/repos/${owner}/${repo}/actions/runs?per_page=30`,
+      {
+        headers: {
+          Accept: 'application/vnd.github+json',
+          ...(cache?.etagRuns ? { 'If-None-Match': cache.etagRuns } : {}),
+        },
+      }
+    );
+    if (runsResponse.status === 304 && cache?.latestWorkflowRuns) {
+      latestWorkflowRuns = cache.latestWorkflowRuns;
+      await refreshCache({
+        etagRuns: cache.etagRuns,
+        etagCommits: cache.etagCommits,
+        latestWorkflowRuns: cache.latestWorkflowRuns,
+        latestCommits: cache.latestCommits,
+      });
+    } else if (runsResponse.ok) {
+      const data = await runsResponse.json();
+      if (data && typeof data === 'object' && 'workflow_runs' in data) {
+        const runs = (data as { workflow_runs?: WorkflowRun[] }).workflow_runs;
+        if (Array.isArray(runs) && runs.length) {
+          const latestRuns = new Map<number, WorkflowRun>();
+          for (const run of runs) {
+            if (!latestRuns.has(run.workflow_id)) {
+              latestRuns.set(run.workflow_id, run);
+            }
+          }
+          latestWorkflowRuns = Array.from(latestRuns.values());
+        }
+      }
+      await refreshCache({
+        etagRuns: runsResponse.headers.get('etag') || cache?.etagRuns,
+        etagCommits: cache?.etagCommits,
+        latestWorkflowRuns,
+        latestCommits: cache?.latestCommits || latestCommits,
+      });
+    }
+  } catch {
+    // Fail silently and keep fallback links
+  }
+
+  try {
+    const commitsResponse = await fetchImpl(
+      `https://api.github.com/repos/${owner}/${repo}/commits?per_page=5`,
+      {
+        headers: {
+          Accept: 'application/vnd.github+json',
+          ...(cache?.etagCommits ? { 'If-None-Match': cache.etagCommits } : {}),
+        },
+      }
+    );
+    if (commitsResponse.status === 304 && cache?.latestCommits) {
+      latestCommits = cache.latestCommits;
+      await refreshCache({
+        etagRuns: cache.etagRuns,
+        etagCommits: cache.etagCommits,
+        latestWorkflowRuns: cache.latestWorkflowRuns,
+        latestCommits: cache.latestCommits,
+      });
+    } else if (commitsResponse.ok) {
+      const data = await commitsResponse.json();
+      if (Array.isArray(data) && data.length) {
+        latestCommits = data as GitHubCommit[];
+      }
+      await refreshCache({
+        etagRuns: cache?.etagRuns,
+        etagCommits: commitsResponse.headers.get('etag') || cache?.etagCommits,
+        latestWorkflowRuns: cache?.latestWorkflowRuns || latestWorkflowRuns,
+        latestCommits,
+      });
+    }
+  } catch {
+    // Fail silently and keep fallback links
+  }
+
+  return { latestWorkflowRuns, latestCommits };
+};
