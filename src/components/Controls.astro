@@ -1,5 +1,8 @@
 ---
 import { Sun, Moon, FileText, NotebookPen, Share2 } from '@lucide/astro';
+
+const isCvPage =
+  Astro.url.pathname === '/' || Astro.url.pathname === '';
 ---
 
 <script>
@@ -137,14 +140,18 @@ import { Sun, Moon, FileText, NotebookPen, Share2 } from '@lucide/astro';
     <span class="toggle-text">Dark</span>
   </button>
   <button
-    class="btn-primary download-btn cv-only"
+    class={`btn-primary download-btn cv-only${isCvPage ? '' : ' hidden'}`}
     type="button"
     aria-label="Download CV as PDF"
   >
     <FileText size={20} />
     <span>PDF</span>
   </button>
-  <a href="/" class="btn-primary cv-btn non-cv-only" aria-label="Back to CV">
+  <a
+    href="/"
+    class={`btn-primary cv-btn non-cv-only${isCvPage ? ' hidden' : ''}`}
+    aria-label="Back to CV"
+  >
     <FileText size={20} />
     <span>CV</span>
   </a>

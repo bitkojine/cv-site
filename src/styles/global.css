@@ -356,6 +356,10 @@ video {
   opacity: 0.9;
 }
 
+.controls-dock .btn-primary:active {
+  opacity: 1;
+}
+
 .last-updated {
   margin-top: 4rem;
   padding-top: 2rem;
