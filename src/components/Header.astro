@@ -45,6 +45,14 @@ const { name, title, contact } = Astro.props;
     margin-bottom: 2rem;
   }
 
+  .cv-header h1 {
+    display: inline-flex;
+    align-items: baseline;
+    white-space: nowrap;
+    max-width: 100%;
+    font-size: clamp(1.6rem, 6vw, var(--fs-2xl));
+  }
+
   .role-title {
     font-size: var(--fs-lg);
     font-weight: 600;
