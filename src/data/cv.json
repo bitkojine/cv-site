@@ -39,6 +39,16 @@
   "experience": [
     {
       "title": "Senior .NET Software Engineer",
+      "company": "Product Company (EU, Remote)",
+      "period": "2026 – Present",
+      "description": [
+        "Building and maintaining backend services for a stable product platform",
+        "Improving performance and reliability of core .NET services",
+        "Partnering with product and data teams to deliver long-term roadmap work"
+      ]
+    },
+    {
+      "title": "Senior .NET Software Engineer",
       "company": "Adform Lithuania",
       "period": "2025",
       "description": [
