@@ -1,0 +1,34 @@
+---
+import WorkflowStatusBadge from '../../components/WorkflowStatusBadge.astro';
+import type { WorkflowRun } from '../../lib/github-cache.mts';
+
+const runs: WorkflowRun[] = [
+  {
+    workflow_id: 1,
+    name: 'CI',
+    html_url: 'https://example.com/ci',
+    status: 'completed',
+    conclusion: 'success',
+  },
+  {
+    workflow_id: 2,
+    name: 'Deploy',
+    html_url: 'https://example.com/deploy',
+    status: 'in_progress',
+    conclusion: null,
+  },
+];
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Workflow Badge Test</title>
+  </head>
+  <body>
+    <main>
+      {runs.map((run) => <WorkflowStatusBadge run={run} />)}
+    </main>
+  </body>
+</html>
