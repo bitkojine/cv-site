@@ -14,6 +14,7 @@ const readCacheMessages = async () => {
   return messages || [];
 };
 
+// Bug: Latest commits list rendered stale/fallback data after deploy.
 test('latest commits list renders from live GitHub cache', async ({ page }) => {
   const expectedMessages = await readCacheMessages();
   expect(expectedMessages.length).toBeGreaterThan(0);

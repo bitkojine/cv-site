@@ -15,6 +15,7 @@ const readCacheRuns = async () => {
   return payload.latestWorkflowRuns || [];
 };
 
+// Bug: Workflow status badges did not update after deploy and showed stale data.
 test('workflow status badges render from live GitHub cache', async ({
   page,
 }) => {
