@@ -424,7 +424,7 @@ const timelineYears = Array.from(
               rel="noopener noreferrer"
               class="workflow-status-link fallback-link"
             >
-              <div class="status-icon">⚡</div>
+              <div class="status-icon">↯</div>
               <div class="status-text">
                 <span class="workflow-name">View Build Status</span>
                 <span class="workflow-status">on GitHub</span>
@@ -768,11 +768,9 @@ const timelineYears = Array.from(
     flex-direction: column;
     gap: 0.5rem;
     font-size: var(--fs-sm);
-    color: var(--text-near-white);
-  }
-
-  :root:not(.dark-mode) .endorsement-field {
-    background: var(--text-primary);
+    color: var(--text-primary);
+    background: transparent;
+    border: 1px solid var(--border-subtle);
     border-radius: var(--radius-md);
     padding: 0.5rem 0.6rem;
   }
