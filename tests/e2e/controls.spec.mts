@@ -14,9 +14,7 @@ test.describe('Controls Dock Coverage', () => {
     await expect(
       page.getByRole('button', { name: /Download CV as PDF/i })
     ).toBeVisible();
-    await expect(
-      page.getByRole('button', { name: /Share CV/i })
-    ).toBeVisible();
+    await expect(page.getByRole('button', { name: /Share CV/i })).toBeVisible();
     await expect(
       page.getByRole('link', { name: /Read my blog/i })
     ).toBeVisible();
