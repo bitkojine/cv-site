@@ -63,6 +63,7 @@ if (shouldFetchGithub) {
     cachePath,
     ttlMs: CACHE_TTL_MS,
     revalidateFresh: Boolean(process.env.GITHUB_ACTIONS),
+    bypassCache: true,
   });
   latestWorkflowRuns = cacheData.latestWorkflowRuns;
   latestCommits = cacheData.latestCommits;

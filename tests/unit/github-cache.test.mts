@@ -444,6 +444,57 @@ describe('getGithubData cache behavior', () => {
     expect(firstCallUrl).toContain('branch=main');
   });
 
+  // Bug: Local debugging needed to bypass cache for live verification.
+  it('bypasses cache when bypass flag is set', async () => {
+    tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'cv-site-cache-'));
+    const cachePath = path.join(tempDir, 'github.json');
+    const nowMs = Date.UTC(2026, 0, 20, 12, 0, 0);
+    const freshPayload: GitHubCachePayload = {
+      updatedAt: new Date(nowMs - 60_000).toISOString(),
+      latestWorkflowRuns: [
+        {
+          workflow_id: 601,
+          name: 'Cached Build',
+          html_url: 'https://example.com/run-601',
+          status: 'completed',
+          conclusion: 'success',
+        },
+      ],
+    };
+
+    await fs.writeFile(cachePath, JSON.stringify(freshPayload), 'utf-8');
+
+    const fetchImpl = vi
+      .fn()
+      .mockResolvedValueOnce(
+        createResponse({
+          status: 200,
+          ok: true,
+          json: async () => ({ workflow_runs: [] }),
+        })
+      )
+      .mockResolvedValueOnce(
+        createResponse({
+          status: 200,
+          ok: true,
+          json: async () => [],
+        })
+      );
+
+    const result = await getGithubData({
+      owner: 'owner',
+      repo: 'repo',
+      cachePath,
+      ttlMs: 6 * 60 * 60 * 1000,
+      nowMs,
+      bypassCache: true,
+      fetchImpl,
+    });
+
+    expect(fetchImpl).toHaveBeenCalledTimes(2);
+    expect(result.latestWorkflowRuns).toEqual([]);
+  });
+
   // Bug: GitHub rate limits (403) should fall back to cache instead of empty data.
   it('falls back to cache when GitHub responds with 403', async () => {
     tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'cv-site-cache-'));
