@@ -238,17 +238,19 @@ describe('getGithubData cache behavior', () => {
   });
 
   // Bug: Missing If-None-Match headers forced full downloads every time.
-  it('sends If-None-Match headers when etags exist', async () => {
+  it('sends If-None-Match headers when etags exist (fresh revalidate)', async () => {
     tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'cv-site-cache-'));
     const cachePath = path.join(tempDir, 'github.json');
     const nowMs = Date.UTC(2026, 0, 4, 12, 0, 0);
-    const stalePayload: GitHubCachePayload = {
-      updatedAt: new Date(nowMs - 7 * 60 * 60 * 1000).toISOString(),
+    const freshPayload: GitHubCachePayload = {
+      updatedAt: new Date(nowMs - 60_000).toISOString(),
       etagRuns: 'etag-runs',
       etagCommits: 'etag-commits',
+      latestWorkflowRuns: [],
+      latestCommits: [],
     };
 
-    await fs.writeFile(cachePath, JSON.stringify(stalePayload), 'utf-8');
+    await fs.writeFile(cachePath, JSON.stringify(freshPayload), 'utf-8');
 
     const fetchImpl = vi
       .fn()
@@ -261,6 +263,7 @@ describe('getGithubData cache behavior', () => {
       cachePath,
       ttlMs: 6 * 60 * 60 * 1000,
       nowMs,
+      revalidateFresh: true,
       fetchImpl,
     });
 
@@ -277,6 +280,177 @@ describe('getGithubData cache behavior', () => {
 
     expect(firstHeaders['If-None-Match']).toBe('etag-runs');
     expect(secondHeaders['If-None-Match']).toBe('etag-commits');
+  });
+
+  // Bug: Non-success conclusions (cancelled/skipped/neutral) were not mapped and should still render.
+  it('returns latest workflow runs for cancelled/skipped conclusions', async () => {
+    tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'cv-site-cache-'));
+    const cachePath = path.join(tempDir, 'github.json');
+    const nowMs = Date.UTC(2026, 0, 15, 12, 0, 0);
+    const stalePayload: GitHubCachePayload = {
+      updatedAt: new Date(nowMs - 8 * 60 * 60 * 1000).toISOString(),
+    };
+
+    await fs.writeFile(cachePath, JSON.stringify(stalePayload), 'utf-8');
+
+    const runsPayload = {
+      workflow_runs: [
+        {
+          workflow_id: 201,
+          name: 'Build',
+          html_url: 'https://example.com/run-201',
+          status: 'completed',
+          conclusion: 'cancelled',
+        },
+        {
+          workflow_id: 202,
+          name: 'Deploy',
+          html_url: 'https://example.com/run-202',
+          status: 'completed',
+          conclusion: 'skipped',
+        },
+      ],
+    };
+
+    const fetchImpl = vi
+      .fn()
+      .mockResolvedValueOnce(
+        createResponse({
+          status: 200,
+          ok: true,
+          json: async () => runsPayload,
+        })
+      )
+      .mockResolvedValueOnce(
+        createResponse({
+          status: 200,
+          ok: true,
+          json: async () => [],
+        })
+      );
+
+    const result = await getGithubData({
+      owner: 'owner',
+      repo: 'repo',
+      cachePath,
+      ttlMs: 6 * 60 * 60 * 1000,
+      nowMs,
+      fetchImpl,
+    });
+
+    expect(result.latestWorkflowRuns).toEqual(runsPayload.workflow_runs);
+  });
+
+  // Bug: API order changes should not break deterministic display order.
+  it('preserves API order when selecting latest runs per workflow', async () => {
+    tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'cv-site-cache-'));
+    const cachePath = path.join(tempDir, 'github.json');
+    const nowMs = Date.UTC(2026, 0, 16, 12, 0, 0);
+    const stalePayload: GitHubCachePayload = {
+      updatedAt: new Date(nowMs - 8 * 60 * 60 * 1000).toISOString(),
+    };
+
+    await fs.writeFile(cachePath, JSON.stringify(stalePayload), 'utf-8');
+
+    const runsPayload = {
+      workflow_runs: [
+        {
+          workflow_id: 302,
+          name: 'Deploy',
+          html_url: 'https://example.com/run-302',
+          status: 'completed',
+          conclusion: 'success',
+        },
+        {
+          workflow_id: 301,
+          name: 'Build',
+          html_url: 'https://example.com/run-301',
+          status: 'completed',
+          conclusion: 'success',
+        },
+      ],
+    };
+
+    const fetchImpl = vi
+      .fn()
+      .mockResolvedValueOnce(
+        createResponse({
+          status: 200,
+          ok: true,
+          json: async () => runsPayload,
+        })
+      )
+      .mockResolvedValueOnce(
+        createResponse({
+          status: 200,
+          ok: true,
+          json: async () => [],
+        })
+      );
+
+    const result = await getGithubData({
+      owner: 'owner',
+      repo: 'repo',
+      cachePath,
+      ttlMs: 6 * 60 * 60 * 1000,
+      nowMs,
+      fetchImpl,
+    });
+
+    expect(result.latestWorkflowRuns.map((run) => run.workflow_id)).toEqual([
+      302, 301,
+    ]);
+  });
+
+  // Bug: GitHub rate limits (403) should fall back to cache instead of empty data.
+  it('falls back to cache when GitHub responds with 403', async () => {
+    tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'cv-site-cache-'));
+    const cachePath = path.join(tempDir, 'github.json');
+    const nowMs = Date.UTC(2026, 0, 17, 12, 0, 0);
+    const stalePayload: GitHubCachePayload = {
+      updatedAt: new Date(nowMs - 8 * 60 * 60 * 1000).toISOString(),
+      latestWorkflowRuns: [
+        {
+          workflow_id: 401,
+          name: 'Build',
+          html_url: 'https://example.com/run-401',
+          status: 'completed',
+          conclusion: 'success',
+        },
+      ],
+      latestCommits: [
+        {
+          html_url: 'https://example.com/commit-401',
+          commit: {
+            message: 'cached commit',
+            author: { date: new Date(nowMs - 5_000).toISOString() },
+          },
+        },
+      ],
+    };
+
+    await fs.writeFile(cachePath, JSON.stringify(stalePayload), 'utf-8');
+
+    const fetchImpl = vi
+      .fn()
+      .mockResolvedValueOnce(
+        createResponse({ status: 403, ok: false, json: async () => ({}) })
+      )
+      .mockResolvedValueOnce(
+        createResponse({ status: 403, ok: false, json: async () => ({}) })
+      );
+
+    const result = await getGithubData({
+      owner: 'owner',
+      repo: 'repo',
+      cachePath,
+      ttlMs: 6 * 60 * 60 * 1000,
+      nowMs,
+      fetchImpl,
+    });
+
+    expect(result.latestWorkflowRuns).toEqual(stalePayload.latestWorkflowRuns);
+    expect(result.latestCommits).toEqual(stalePayload.latestCommits);
   });
 
   // Bug: Corrupt cache files caused crashes or empty UI without refetch.
