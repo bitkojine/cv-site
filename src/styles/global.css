@@ -388,7 +388,7 @@ video {
 
 .last-updated {
   margin-top: 4rem;
-  padding-top: 2rem;
+  padding-top: 0;
   text-align: center;
   font-size: var(--fs-xs);
   color: var(--text-muted);
