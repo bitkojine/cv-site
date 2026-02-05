@@ -54,22 +54,23 @@ const { title, company, period, description, year, kind } = Astro.props;
     z-index: 1;
   }
 
-  .timeline-year::before {
+  .timeline-year span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
+    background: var(--bg-app);
+    box-shadow: 0 0 0 4px var(--bg-app);
+  }
+
+  .timeline-year span::before {
     content: '';
     width: 8px;
     height: 8px;
     border-radius: 999px;
     background: var(--accent-600);
     flex: 0 0 auto;
-  }
-
-  .timeline-year span {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.1rem 0.45rem;
-    border-radius: 999px;
-    background: var(--bg-app);
-    box-shadow: 0 0 0 4px var(--bg-app);
   }
 
   .timeline-card {

@@ -614,6 +614,10 @@ video {
     padding: 0 !important;
   }
 
+  .timeline-year span::before {
+    display: none !important;
+  }
+
   .timeline-card {
     padding: 0 !important;
     background: transparent !important;
