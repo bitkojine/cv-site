@@ -2,7 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Section from '../components/Section.astro';
-import ExperienceItem from '../components/ExperienceItem.astro';
+import ExperienceTimelineItem from '../components/ExperienceTimelineItem.astro';
 
 import cvDataRaw from '../data/cv.json';
 import { CVSchema } from '../data/schema';
@@ -195,6 +195,27 @@ const formatVilniusDateTime = (raw: string) => {
   });
   return `${datePart}d. ${timePart}`;
 };
+
+const extractStartYear = (period: string) => {
+  const match = period.match(/\d{4}/);
+  return match ? Number.parseInt(match[0], 10) : 0;
+};
+
+const combinedExperience = [
+  ...experience.map((item) => ({ ...item, kind: 'Company' as const })),
+  ...independentProjects.map((item) => ({ ...item, kind: 'Startup' as const })),
+]
+  .map((item) => ({
+    ...item,
+    year: extractStartYear(item.period),
+  }))
+  .sort((a, b) => b.year - a.year);
+
+const timelineYears = Array.from(
+  new Set(combinedExperience.map((item) => item.year))
+)
+  .filter((year) => year > 0)
+  .sort((a, b) => b - a);
 ---
 
 <Layout
@@ -224,12 +245,28 @@ const formatVilniusDateTime = (raw: string) => {
       </ul>
     </Section>
 
-    <Section title="PROFESSIONAL EXPERIENCE">
-      {experience.map((item) => <ExperienceItem {...item} />)}
-    </Section>
-
-    <Section title="INDEPENDENT PROJECT / STARTUP ATTEMPT">
-      {independentProjects.map((item) => <ExperienceItem {...item} />)}
+    <Section title="EXPERIENCE TIMELINE">
+      <div class="timeline-selector" role="tablist" aria-label="Jump to year">
+        {timelineYears.map((year, index) => (
+          <button
+            class={`year-chip ${index === 0 ? 'is-active' : ''}`}
+            type="button"
+            data-year={year}
+            aria-pressed={index === 0 ? 'true' : 'false'}
+          >
+            {year}
+          </button>
+        ))}
+      </div>
+      <div class="timeline-scroll" role="list">
+        <div class="timeline-spacer" aria-hidden="true"></div>
+        {combinedExperience.map((item) => (
+          <div id={`year-${item.year}`} class="timeline-anchor">
+            <ExperienceTimelineItem {...item} />
+          </div>
+        ))}
+        <div class="timeline-spacer" aria-hidden="true"></div>
+      </div>
     </Section>
 
     <Section title="WHAT I'M LOOKING FOR NEXT">
@@ -488,6 +525,86 @@ const formatVilniusDateTime = (raw: string) => {
       }
     });
   }
+
+  const timeline = document.querySelector('.timeline-scroll');
+  const yearChips = Array.from(document.querySelectorAll('.year-chip'));
+  const timelineAnchors = Array.from(
+    document.querySelectorAll('.timeline-anchor')
+  );
+
+  const setActiveYear = (year) => {
+    yearChips.forEach((chip) => {
+      const isActive = chip.dataset.year === year;
+      chip.classList.toggle('is-active', isActive);
+      chip.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+    });
+  };
+
+  if (timeline && yearChips.length && timelineAnchors.length) {
+    yearChips.forEach((chip) => {
+      chip.addEventListener('click', () => {
+        const targetYear = chip.dataset.year;
+        if (!targetYear) {
+          return;
+        }
+        const target = document.getElementById(`year-${targetYear}`);
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'nearest',
+            inline: 'start',
+          });
+          setActiveYear(targetYear);
+        }
+      });
+    });
+
+    let ticking = false;
+    const updateActiveFromScroll = () => {
+      const timelineRect = timeline.getBoundingClientRect();
+      const maxScrollLeft = timeline.scrollWidth - timeline.clientWidth;
+
+      if (timeline.scrollLeft <= 1) {
+        setActiveYear(yearChips[0].dataset.year);
+        return;
+      }
+
+      if (timeline.scrollLeft >= maxScrollLeft - 1) {
+        setActiveYear(yearChips[yearChips.length - 1].dataset.year);
+        return;
+      }
+
+      let closest = null;
+      let closestDistance = Number.POSITIVE_INFINITY;
+
+      timelineAnchors.forEach((anchor) => {
+        const rect = anchor.getBoundingClientRect();
+        const distance = Math.abs(rect.left - timelineRect.left);
+        if (distance < closestDistance) {
+          closestDistance = distance;
+          closest = anchor;
+        }
+      });
+
+      if (closest && closest.id) {
+        const year = closest.id.replace('year-', '');
+        setActiveYear(year);
+      }
+    };
+
+    updateActiveFromScroll();
+
+    timeline.addEventListener('scroll', () => {
+      if (ticking) {
+        return;
+      }
+      ticking = true;
+      window.requestAnimationFrame(() => {
+        updateActiveFromScroll();
+        ticking = false;
+      });
+    });
+  }
 </script>
 
 <style>
@@ -518,6 +635,94 @@ const formatVilniusDateTime = (raw: string) => {
     max-width: 800px;
     margin: 0 auto;
     padding: 2rem 1.5rem;
+  }
+
+  .timeline-selector {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+  }
+
+  .year-chip {
+    border: 1px solid var(--border-subtle);
+    background: var(--bg-card);
+    color: var(--text-secondary);
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition:
+      color 0.2s ease,
+      border-color 0.2s ease,
+      background 0.2s ease,
+      transform 0.2s ease;
+  }
+
+  .year-chip:hover {
+    color: var(--accent-text);
+    border-color: var(--accent-600);
+    transform: translateY(-1px);
+  }
+
+  .year-chip.is-active {
+    color: #fff;
+    background: var(--accent-600);
+    border-color: var(--accent-600);
+  }
+
+  .timeline-scroll {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    gap: 1.5rem;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 0.75rem 0.75rem 1rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background-color: var(--bg-app);
+    background-image: linear-gradient(
+      to right,
+      var(--border-subtle),
+      var(--border-subtle)
+    );
+    background-size: 100% 2px;
+    background-repeat: no-repeat;
+    background-position: 0 42px;
+    scrollbar-gutter: stable;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 0.75rem;
+  }
+
+  .timeline-scroll:focus-within {
+    box-shadow: 0 0 0 2px var(--accent-100);
+  }
+
+  .timeline-anchor {
+    scroll-snap-align: start;
+    min-width: min(320px, 80vw);
+  }
+
+  .timeline-spacer {
+    flex: 0 0 1.25rem;
+  }
+
+  @media (min-width: 768px) {
+    .timeline-scroll {
+      padding: 1rem 1.5rem 1.25rem;
+      background-position: 0 52px;
+      scroll-padding-inline: 1.5rem;
+    }
+
+    .timeline-anchor {
+      min-width: 420px;
+    }
+
+    .timeline-spacer {
+      flex-basis: 1.75rem;
+    }
   }
 
   @media (min-width: 768px) {
