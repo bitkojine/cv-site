@@ -105,6 +105,14 @@ import { Sun, Moon, FileText, NotebookPen, Share2 } from '@lucide/astro';
   document.addEventListener('DOMContentLoaded', () => {
     const isDark = document.documentElement.classList.contains('dark-mode');
     updateThemeAssets(isDark);
+    const isCvPage =
+      window.location.pathname === '/' || window.location.pathname === '';
+    document
+      .querySelectorAll('.cv-only')
+      .forEach((el) => el.classList.toggle('hidden', !isCvPage));
+    document
+      .querySelectorAll('.non-cv-only')
+      .forEach((el) => el.classList.toggle('hidden', isCvPage));
 
     document
       .querySelector('.dark-mode-toggle')
@@ -129,13 +137,17 @@ import { Sun, Moon, FileText, NotebookPen, Share2 } from '@lucide/astro';
     <span class="toggle-text">Dark</span>
   </button>
   <button
-    class="btn-primary download-btn"
+    class="btn-primary download-btn cv-only"
     type="button"
     aria-label="Download CV as PDF"
   >
     <FileText size={20} />
     <span>PDF</span>
   </button>
+  <a href="/" class="btn-primary cv-btn non-cv-only" aria-label="Back to CV">
+    <FileText size={20} />
+    <span>CV</span>
+  </a>
   <button class="btn-primary share-btn" type="button" aria-label="Share CV">
     <Share2 size={20} />
     <span>Share</span>

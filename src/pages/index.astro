@@ -647,7 +647,7 @@ const timelineYears = Array.from(
   .year-chip {
     border: 1px solid var(--border-subtle);
     background: var(--bg-card);
-    color: var(--text-secondary);
+    color: var(--text-near-white);
     padding: 0.35rem 0.75rem;
     border-radius: 999px;
     font-weight: 600;
@@ -661,13 +661,23 @@ const timelineYears = Array.from(
   }
 
   .year-chip:hover {
-    color: var(--accent-text);
+    color: var(--text-near-white);
     border-color: var(--accent-600);
     transform: translateY(-1px);
   }
 
   .year-chip.is-active {
-    color: var(--text-inverse);
+    color: var(--text-near-white);
+    background: var(--accent-600);
+    border-color: var(--accent-600);
+  }
+
+  :root:not(.dark-mode) .year-chip {
+    background: var(--text-primary);
+    border-color: var(--text-primary);
+  }
+
+  :root:not(.dark-mode) .year-chip:hover {
     background: var(--accent-600);
     border-color: var(--accent-600);
   }
@@ -758,7 +768,13 @@ const timelineYears = Array.from(
     flex-direction: column;
     gap: 0.5rem;
     font-size: var(--fs-sm);
-    color: var(--text-secondary);
+    color: var(--text-near-white);
+  }
+
+  :root:not(.dark-mode) .endorsement-field {
+    background: var(--text-primary);
+    border-radius: var(--radius-md);
+    padding: 0.5rem 0.6rem;
   }
 
   .endorsement-field input,
@@ -783,7 +799,7 @@ const timelineYears = Array.from(
     padding: 0.65rem 1.1rem;
     font-weight: 600;
     background: var(--accent-600);
-    color: var(--text-inverse);
+    color: var(--text-near-white);
     cursor: pointer;
     transition:
       transform 0.15s ease,
