@@ -192,38 +192,10 @@ table {
   display: block;
 }
 
-.snake-controls {
-  position: absolute;
-  right: 1rem;
-  bottom: 5.5rem;
-  display: none;
-  gap: 0.4rem;
-  align-items: center;
-  flex-direction: column;
-  pointer-events: auto;
-  z-index: 2;
-}
-
-.snake-controls-row {
-  display: flex;
-  gap: 0.4rem;
-}
-
+/* Safety: hide any legacy snake controls that might be cached */
+.snake-controls,
 .snake-control {
-  appearance: none;
-  border: 1px solid var(--border-strong);
-  background: var(--bg-card);
-  color: var(--text-primary);
-  font-size: var(--fs-xs);
-  text-transform: uppercase;
-  padding: 0.35rem 0.45rem;
-  border-radius: 0.35rem;
-}
-
-@media (max-width: 720px) {
-  .snake-controls {
-    display: flex;
-  }
+  display: none !important;
 }
 
 p,
