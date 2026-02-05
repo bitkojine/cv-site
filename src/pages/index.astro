@@ -28,22 +28,6 @@ const latestPosts = allPosts
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 3);
 
-const now = new Date();
-const datePart = now.toLocaleDateString('lt-LT', {
-  year: 'numeric',
-  month: '2-digit',
-  day: '2-digit',
-  timeZone: 'Europe/Vilnius',
-});
-const timePart = now.toLocaleTimeString('lt-LT', {
-  hour: '2-digit',
-  minute: '2-digit',
-  timeZone: 'Europe/Vilnius',
-  hour12: false,
-  timeZoneName: 'short',
-});
-const lastUpdated = `${datePart}d. ${timePart}`;
-
 const githubOwner = 'bitkojine';
 const githubRepo = 'cv-site';
 const shouldFetchGithub = !import.meta.env.DEV;
@@ -250,11 +234,6 @@ const timelineYears = Array.from(
     }
 
     <footer class="last-updated no-print">
-      <p>
-        CV/Resume last updated: <time datetime={new Date().toISOString()}
-          >{lastUpdated}</time
-        >
-      </p>
       <div
         id="github-actions-container"
         class="github-actions-container no-print"
