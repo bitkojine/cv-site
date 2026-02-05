@@ -39,24 +39,24 @@ test(
   'workflow status badges render from live GitHub API',
   { tag: ['@github-api'] },
   async ({ page }) => {
-  const expectedRuns = await fetchLatestRuns();
-  expect(expectedRuns.length).toBeGreaterThan(0);
+    const expectedRuns = await fetchLatestRuns();
+    expect(expectedRuns.length).toBeGreaterThan(0);
 
-  await page.goto('/');
+    await page.goto('/');
 
-  const actionsSection = page.locator('#github-actions-container');
-  const workflowLinks = actionsSection.locator('a.workflow-badge');
+    const actionsSection = page.locator('#github-actions-container');
+    const workflowLinks = actionsSection.locator('a.workflow-badge');
 
-  await expect(workflowLinks).toHaveCount(expectedRuns.length);
+    await expect(workflowLinks).toHaveCount(expectedRuns.length);
 
-  for (let index = 0; index < expectedRuns.length; index += 1) {
-    const run = expectedRuns[index];
-    const expectedName = run.name || '';
-    if (expectedName) {
-      await expect(workflowLinks.nth(index)).toContainText(expectedName);
+    for (let index = 0; index < expectedRuns.length; index += 1) {
+      const run = expectedRuns[index];
+      const expectedName = run.name || '';
+      if (expectedName) {
+        await expect(workflowLinks.nth(index)).toContainText(expectedName);
+      }
     }
-  }
 
-  await expect(actionsSection.getByText('View Build Status')).toHaveCount(0);
+    await expect(actionsSection.getByText('View Build Status')).toHaveCount(0);
   }
 );

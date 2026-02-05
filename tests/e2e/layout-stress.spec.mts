@@ -167,7 +167,7 @@ async function collectLayoutShifts(page): Promise<LayoutShiftReport> {
         return { el, mode, selector };
       });
 
-    let frame = 0;
+      let frame = 0;
       const lastPositions = new Map<Element, number>();
 
       const sample = () => {
@@ -200,8 +200,8 @@ async function collectLayoutShifts(page): Promise<LayoutShiftReport> {
           lastPositions.set(info.el, pos);
         }
 
-      frame += 1;
-    };
+        frame += 1;
+      };
 
       const scrollSteps = [];
       let current = 0;

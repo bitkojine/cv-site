@@ -31,23 +31,25 @@ test(
   'latest commits list renders from live GitHub API',
   { tag: ['@github-api'] },
   async ({ page }) => {
-  const expectedMessages = await fetchLatestCommitMessages();
-  expect(expectedMessages.length).toBeGreaterThan(0);
+    const expectedMessages = await fetchLatestCommitMessages();
+    expect(expectedMessages.length).toBeGreaterThan(0);
 
-  await page.goto('/');
+    await page.goto('/');
 
-  const commitsSection = page.locator('#github-commits-container');
-  await expect(
-    commitsSection.getByRole('heading', { name: 'LATEST COMMITS' })
-  ).toBeVisible();
+    const commitsSection = page.locator('#github-commits-container');
+    await expect(
+      commitsSection.getByRole('heading', { name: 'LATEST COMMITS' })
+    ).toBeVisible();
 
-  const commitLinks = commitsSection.locator('ul.commits-list li a');
-  await expect(commitLinks).toHaveCount(expectedMessages.length);
+    const commitLinks = commitsSection.locator('ul.commits-list li a');
+    await expect(commitLinks).toHaveCount(expectedMessages.length);
 
-  for (let index = 0; index < expectedMessages.length; index += 1) {
-    await expect(commitLinks.nth(index)).toContainText(expectedMessages[index]);
-  }
+    for (let index = 0; index < expectedMessages.length; index += 1) {
+      await expect(commitLinks.nth(index)).toContainText(
+        expectedMessages[index]
+      );
+    }
 
-  await expect(commitsSection.getByText('View on GitHub →')).toHaveCount(0);
+    await expect(commitsSection.getByText('View on GitHub →')).toHaveCount(0);
   }
 );
