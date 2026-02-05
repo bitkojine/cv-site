@@ -880,6 +880,7 @@ const timelineYears = Array.from(
     flex-direction: column;
     line-height: 1.15;
     min-width: 0;
+    text-align: left;
   }
 
   :global(.workflow-badge__name) {
@@ -889,27 +890,9 @@ const timelineYears = Array.from(
   }
 
   :global(.workflow-badge__status) {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
     font-size: var(--fs-xs);
     color: var(--text-muted);
     letter-spacing: 0.01em;
-  }
-
-  :global(.workflow-badge__status::before) {
-    content: '';
-    width: 0.65rem;
-    height: 0.65rem;
-    border: 1.5px solid #000;
-    background: #fff;
-    color: #000;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.45rem;
-    font-weight: 700;
-    line-height: 1;
   }
 
   :global(.workflow-badge[data-status='running'] .workflow-badge__dot) {
@@ -947,30 +930,6 @@ const timelineYears = Array.from(
   :global(.workflow-badge[data-status='unknown'] .workflow-badge__dot) {
     background: #fff;
     border: 2px dotted #000;
-  }
-
-  :global(
-    .workflow-badge[data-status='running'] .workflow-badge__status::before
-  ) {
-    content: 'R';
-  }
-
-  :global(
-    .workflow-badge[data-status='success'] .workflow-badge__status::before
-  ) {
-    content: 'S';
-  }
-
-  :global(
-    .workflow-badge[data-status='failure'] .workflow-badge__status::before
-  ) {
-    content: 'F';
-  }
-
-  :global(
-    .workflow-badge[data-status='unknown'] .workflow-badge__status::before
-  ) {
-    content: '?';
   }
 
   .github-commits-container {
