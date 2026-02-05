@@ -51,7 +51,7 @@ const { title, company, period, description, year, kind } = Astro.props;
     gap: 0.5rem;
     height: 48px;
     font-weight: 700;
-    color: var(--accent-text);
+    color: var(--text-primary);
   }
 
   .timeline-year::before {
@@ -88,21 +88,21 @@ const { title, company, period, description, year, kind } = Astro.props;
   }
 
   .timeline-tag {
-    font-size: 0.7rem;
+    font-size: var(--fs-xs);
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    color: var(--accent-tag-text);
-    background: var(--accent-100);
+    color: var(--text-inverse);
+    background: var(--accent-600);
     padding: 0.25rem 0.6rem;
     border-radius: 9999px;
   }
 
   .timeline-period {
-    font-size: 0.75rem;
+    font-size: var(--fs-xs);
     font-weight: 600;
-    color: var(--accent-text);
-    background: var(--accent-100);
+    color: var(--text-inverse);
+    background: var(--accent-600);
     padding: 0.25rem 0.75rem;
     border-radius: 9999px;
     width: fit-content;

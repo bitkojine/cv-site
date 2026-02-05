@@ -75,14 +75,14 @@ const formattedDate = post.data.date.toLocaleDateString('lt-LT', {
   }
 
   .back-link {
-    font-size: 0.875rem;
+    font-size: var(--fs-sm);
     color: var(--text-muted);
     text-decoration: none;
     transition: color 0.2s;
   }
 
   .back-link:hover {
-    color: var(--accent-600);
+    color: var(--accent-text);
   }
 
   .article-header {
@@ -92,21 +92,15 @@ const formattedDate = post.data.date.toLocaleDateString('lt-LT', {
   }
 
   .article-header h1 {
-    font-size: 2rem;
+    font-size: var(--fs-2xl);
     font-weight: 800;
     letter-spacing: -0.03em;
     line-height: 1.2;
     margin-bottom: 0.5rem;
   }
 
-  @media (min-width: 768px) {
-    .article-header h1 {
-      font-size: 2.5rem;
-    }
-  }
-
   time {
-    font-size: 0.875rem;
+    font-size: var(--fs-sm);
     color: var(--text-muted);
     display: block;
     margin-bottom: 1rem;
@@ -119,7 +113,7 @@ const formattedDate = post.data.date.toLocaleDateString('lt-LT', {
   }
 
   .tag {
-    font-size: 0.75rem;
+    font-size: var(--fs-xs);
     padding: 0.25rem 0.6rem;
     background: var(--accent-100);
     color: var(--accent-tag-text);
@@ -129,7 +123,7 @@ const formattedDate = post.data.date.toLocaleDateString('lt-LT', {
 
   /* Prose styling for article content */
   .prose {
-    font-size: 1rem;
+    font-size: var(--fs-md);
     line-height: 1.75;
     color: var(--text-secondary);
   }
@@ -145,11 +139,11 @@ const formattedDate = post.data.date.toLocaleDateString('lt-LT', {
   }
 
   .prose :global(h1) {
-    font-size: 1.75rem;
+    font-size: var(--fs-xl);
   }
 
   .prose :global(h2) {
-    font-size: 1.5rem;
+    font-size: var(--fs-xl);
     border-bottom: none;
   }
 
@@ -158,7 +152,7 @@ const formattedDate = post.data.date.toLocaleDateString('lt-LT', {
   }
 
   .prose :global(h3) {
-    font-size: 1.25rem;
+    font-size: var(--fs-lg);
   }
 
   .prose :global(p) {
@@ -166,12 +160,12 @@ const formattedDate = post.data.date.toLocaleDateString('lt-LT', {
   }
 
   .prose :global(a) {
-    color: var(--accent-600);
+    color: var(--accent-text);
     text-decoration: underline;
   }
 
   .prose :global(a:hover) {
-    color: var(--accent-700);
+    color: var(--accent-text);
   }
 
   .prose :global(ul),
@@ -198,8 +192,8 @@ const formattedDate = post.data.date.toLocaleDateString('lt-LT', {
   }
 
   .prose :global(code) {
-    font-family: monospace;
-    font-size: 0.9em;
+    font-family: var(--font-sans);
+    font-size: 1em;
     background: var(--bg-card);
     padding: 0.15rem 0.4rem;
     border-radius: 0.25rem;
@@ -232,13 +226,13 @@ const formattedDate = post.data.date.toLocaleDateString('lt-LT', {
   }
 
   .cv-link {
-    font-size: 0.875rem;
+    font-size: var(--fs-sm);
     color: var(--text-muted);
     text-decoration: none;
     transition: color 0.2s;
   }
 
   .cv-link:hover {
-    color: var(--accent-600);
+    color: var(--accent-text);
   }
 </style>

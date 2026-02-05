@@ -627,7 +627,7 @@ const timelineYears = Array.from(
     content: '→';
     position: absolute;
     left: 0;
-    color: var(--accent-600);
+    color: var(--accent-text);
     font-weight: bold;
   }
 
@@ -651,7 +651,7 @@ const timelineYears = Array.from(
     padding: 0.35rem 0.75rem;
     border-radius: 999px;
     font-weight: 600;
-    font-size: 0.8rem;
+    font-size: var(--fs-sm);
     cursor: pointer;
     transition:
       color 0.2s ease,
@@ -667,7 +667,7 @@ const timelineYears = Array.from(
   }
 
   .year-chip.is-active {
-    color: #fff;
+    color: var(--text-inverse);
     background: var(--accent-600);
     border-color: var(--accent-600);
   }
@@ -757,7 +757,7 @@ const timelineYears = Array.from(
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    font-size: 0.85rem;
+    font-size: var(--fs-sm);
     color: var(--text-secondary);
   }
 
@@ -767,7 +767,7 @@ const timelineYears = Array.from(
     border-radius: var(--radius-md);
     padding: 0.6rem 0.75rem;
     font-family: inherit;
-    font-size: 0.95rem;
+    font-size: var(--fs-md);
     color: var(--text-primary);
     background: var(--bg-app);
   }
@@ -783,7 +783,7 @@ const timelineYears = Array.from(
     padding: 0.65rem 1.1rem;
     font-weight: 600;
     background: var(--accent-600);
-    color: #fff;
+    color: var(--text-inverse);
     cursor: pointer;
     transition:
       transform 0.15s ease,
@@ -800,18 +800,18 @@ const timelineYears = Array.from(
 
   .endorsement-success {
     margin-top: 0.75rem;
-    font-size: 0.85rem;
+    font-size: var(--fs-sm);
     color: var(--text-muted);
   }
 
   .endorsement-help {
-    font-size: 0.8rem;
+    font-size: var(--fs-sm);
     color: var(--text-muted);
     margin-top: 0.25rem;
   }
 
   .endorsement-explainer {
-    font-size: 0.85rem;
+    font-size: var(--fs-sm);
     color: var(--text-muted);
     margin-top: -0.25rem;
   }
@@ -844,12 +844,12 @@ const timelineYears = Array.from(
 
   .article-date {
     color: var(--text-muted);
-    font-size: 0.8rem;
+    font-size: var(--fs-sm);
   }
 
   .view-all-link {
-    color: var(--accent-600);
-    font-size: 0.875rem;
+    color: var(--accent-text);
+    font-size: var(--fs-sm);
     text-decoration: none;
     margin-top: 0.5rem;
   }
@@ -873,7 +873,7 @@ const timelineYears = Array.from(
     flex-wrap: wrap;
     max-width: 100%;
     color: var(--text-muted);
-    font-size: 0.825rem;
+    font-size: var(--fs-sm);
     text-decoration: none;
     transition: all 0.2s;
     padding: 0.5rem 0.8rem;
@@ -892,11 +892,11 @@ const timelineYears = Array.from(
 
   :global(.workflow-name) {
     font-weight: 600;
-    font-size: 0.8rem;
+    font-size: var(--fs-sm);
   }
 
   :global(.workflow-status) {
-    font-size: 0.7rem;
+    font-size: var(--fs-xs);
     opacity: 0.8;
     text-transform: capitalize;
   }
@@ -911,7 +911,7 @@ const timelineYears = Array.from(
 
   .github-commits-container {
     margin-top: 2rem;
-    font-size: 0.8rem;
+    font-size: var(--fs-sm);
     text-align: left;
   }
 
@@ -946,13 +946,12 @@ const timelineYears = Array.from(
   :global(.commits-list a) {
     color: var(--text-muted);
     text-decoration: none;
-    font-family: monospace;
     overflow-wrap: anywhere;
     word-break: break-word;
   }
 
   :global(.commits-list a:hover) {
-    color: var(--accent-600);
+    color: var(--accent-text);
     text-decoration: underline;
   }
 
@@ -973,35 +972,20 @@ const timelineYears = Array.from(
     transition: all 0.3s;
   }
 
-  :global(.status-success) {
-    color: #10b981; /* Green */
-    background: #d1fae5;
-  }
-
-  :global(.dark-mode .status-success) {
-    color: #34d399;
-    background: #064e3b;
-  }
-
-  :global(.status-failure) {
-    color: #ef4444; /* Red */
-    background: #fee2e2;
-  }
-
-  :global(.dark-mode .status-failure) {
-    color: #f87171;
-    background: #7f1d1d;
-  }
-
+  :global(.status-success),
+  :global(.status-failure),
   :global(.status-running) {
-    color: #f59e0b; /* Amber */
-    background: #fef3c7;
-    animation: pulse 2s infinite;
+    color: var(--accent-text);
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
   }
 
+  :global(.dark-mode .status-success),
+  :global(.dark-mode .status-failure),
   :global(.dark-mode .status-running) {
-    color: #fbbf24;
-    background: #78350f;
+    color: var(--accent-text);
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
   }
 
   @keyframes pulse {

@@ -61,7 +61,7 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
 
   .back-link {
     display: inline-block;
-    font-size: 0.875rem;
+    font-size: var(--fs-sm);
     color: var(--text-muted);
     text-decoration: none;
     margin-bottom: 1rem;
@@ -69,18 +69,18 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
   }
 
   .back-link:hover {
-    color: var(--accent-600);
+    color: var(--accent-text);
   }
 
   h1 {
-    font-size: 2.5rem;
+    font-size: var(--fs-2xl);
     font-weight: 800;
     letter-spacing: -0.04em;
     margin-bottom: 0.75rem;
   }
 
   .blog-intro {
-    font-size: 1rem;
+    font-size: var(--fs-md);
     color: var(--text-secondary);
     line-height: 1.6;
   }

@@ -6,8 +6,8 @@
 
   /* Dedicated text accent for better contrast on dark backgrounds */
   --accent-text: var(--accent-600);
-  /* Tag text color - same as accent-600 in light mode */
-  --accent-tag-text: var(--accent-600);
+  /* Tag text color - keep in sync with accent text for minimal palette */
+  --accent-tag-text: var(--accent-text);
 
   --bg-app-rgb: 248, 250, 252;
   --bg-app: rgb(var(--bg-app-rgb));
@@ -15,6 +15,7 @@
   --text-primary: #1e293b;
   --text-secondary: #475569;
   --text-muted: #64748b;
+  --text-inverse: #ffffff;
   --border-subtle: #e2e8f0;
   --border-strong: #cbd5e1;
 
@@ -31,6 +32,12 @@
   --font-sans:
     'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI',
     Roboto, sans-serif;
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.875rem;
+  --fs-md: 1rem;
+  --fs-lg: 1.25rem;
+  --fs-xl: 1.75rem;
+  --fs-2xl: 2.5rem;
 
   transition:
     background-color 0.3s ease,
@@ -42,8 +49,9 @@
   --bg-app: rgb(var(--bg-app-rgb));
   --bg-card: #1e293b;
   --text-primary: #f1f5f9;
-  --text-secondary: #cbd5e1;
-  --text-muted: #94a3b8;
+  --text-secondary: #f8fafc;
+  --text-muted: #e2e8f0;
+  --text-inverse: #ffffff;
   --border-subtle: #334155;
   --border-strong: #475569;
 
@@ -51,8 +59,8 @@
   --accent-100: #3730a3;
   /* Using a lighter shade of indigo (Indigo 400) for text in dark mode */
   --accent-text: #818cf8;
-  /* Light indigo for tag text - ensures 4.5:1 contrast on accent-100 background */
-  --accent-tag-text: #c7d2fe;
+  /* Keep tag text aligned with accent text for minimal palette */
+  --accent-tag-text: var(--accent-text);
 
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4);
@@ -90,7 +98,7 @@ html {
 
 body {
   font-family: var(--font-sans);
-  font-size: 15px;
+  font-size: var(--fs-md);
   /* Slightly smaller base for mobile */
   line-height: 1.6;
   color: var(--text-primary);
@@ -135,6 +143,7 @@ iframe {
 pre,
 code {
   max-width: 100%;
+  font-family: var(--font-sans);
 }
 
 pre {
@@ -162,7 +171,7 @@ a {
 
 /* Typography */
 h1 {
-  font-size: 2.25rem;
+  font-size: var(--fs-2xl);
   font-weight: 800;
   letter-spacing: -0.04em;
   line-height: 1.1;
@@ -171,7 +180,7 @@ h1 {
 }
 
 h2 {
-  font-size: 0.8rem;
+  font-size: var(--fs-sm);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.15em;
@@ -190,7 +199,7 @@ h2::after {
 }
 
 h3 {
-  font-size: 1.15rem;
+  font-size: var(--fs-lg);
   font-weight: 700;
   color: var(--text-primary);
   margin-bottom: 0.25rem;
@@ -222,7 +231,8 @@ a {
 }
 
 a:hover {
-  color: var(--accent-700);
+  color: var(--accent-text);
+  text-decoration: underline;
 }
 
 hr {
@@ -300,11 +310,11 @@ hr {
 .btn-primary {
   flex: 1 1 45%;
   background: var(--accent-600);
-  color: white;
+  color: var(--text-inverse);
   padding: 0.625rem 0.5rem;
   border-radius: var(--radius-lg);
   font-weight: 600;
-  font-size: 0.8rem;
+  font-size: var(--fs-sm);
   border: none;
   cursor: pointer;
   box-shadow: var(--shadow-sm);
@@ -333,7 +343,7 @@ video {
   margin-top: 4rem;
   padding-top: 2rem;
   text-align: center;
-  font-size: 0.75rem;
+  font-size: var(--fs-xs);
   color: var(--text-muted);
   font-style: italic;
 }
@@ -341,7 +351,6 @@ video {
 /* DESKTOP ENHANCEMENTS */
 @media (min-width: 768px) {
   body {
-    font-size: 16px;
     padding-bottom: 2rem;
   }
 
@@ -351,7 +360,7 @@ video {
   }
 
   h1 {
-    font-size: 3rem;
+    font-size: var(--fs-2xl);
   }
 
   .controls-dock {
@@ -381,6 +390,15 @@ video {
 
 /* Print Overrides */
 @media print {
+  :root,
+  :root.dark-mode {
+    --fs-print-base: 10pt;
+    --fs-print-h1: 18pt;
+    --fs-print-h2: 9pt;
+    --fs-print-h3: 11pt;
+    --fs-print-muted: 9pt;
+  }
+
   :root,
   :root.dark-mode {
     --bg-app: #ffffff;
@@ -421,7 +439,7 @@ video {
     width: 100% !important;
     height: auto !important;
     min-height: auto !important;
-    font-size: 10pt;
+    font-size: var(--fs-print-base);
     line-height: 1.4;
     overflow: visible !important;
   }
@@ -440,7 +458,7 @@ video {
   }
 
   h1 {
-    font-size: 18pt;
+    font-size: var(--fs-print-h1);
     margin-bottom: 0.25rem;
   }
 
@@ -452,7 +470,7 @@ video {
   }
 
   h2 {
-    font-size: 9pt;
+    font-size: var(--fs-print-h2);
     margin-bottom: 0.5rem;
     margin-top: 1rem;
     color: black !important;
@@ -465,7 +483,7 @@ video {
   }
 
   h3 {
-    font-size: 11pt;
+    font-size: var(--fs-print-h3);
     margin-top: 0.5rem;
     margin-bottom: 0.1rem;
   }
@@ -570,7 +588,7 @@ video {
   .last-updated {
     margin-top: 1.5rem;
     border-top: 1px solid #eee;
-    font-size: 7pt;
+    font-size: var(--fs-print-muted);
   }
 
   .last-updated p {
