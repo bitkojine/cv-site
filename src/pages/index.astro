@@ -860,16 +860,19 @@ const timelineYears = Array.from(
 
   :global(.workflow-badge:hover) {
     transform: translateY(-1px);
-    border-color: var(--accent-600);
+    border-color: #000;
     box-shadow: var(--shadow-md);
   }
 
   :global(.workflow-badge__dot) {
-    width: 10px;
-    height: 10px;
+    position: relative;
+    width: 12px;
+    height: 12px;
     border-radius: 999px;
-    background: var(--border-subtle);
-    box-shadow: inset 0 0 0 2px var(--bg-app);
+    background: #fff;
+    border: 2px solid #000;
+    box-shadow: none;
+    flex: 0 0 auto;
   }
 
   :global(.workflow-badge__meta) {
@@ -886,30 +889,88 @@ const timelineYears = Array.from(
   }
 
   :global(.workflow-badge__status) {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
     font-size: var(--fs-xs);
     color: var(--text-muted);
     letter-spacing: 0.01em;
   }
 
+  :global(.workflow-badge__status::before) {
+    content: '';
+    width: 0.65rem;
+    height: 0.65rem;
+    border: 1.5px solid #000;
+    background: #fff;
+    color: #000;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.45rem;
+    font-weight: 700;
+    line-height: 1;
+  }
+
   :global(.workflow-badge[data-status='running'] .workflow-badge__dot) {
-    background: #f59e0b;
-    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+    background: #000;
+    border-color: #000;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.2);
     animation: workflowPulse 1.2s ease-in-out infinite;
   }
 
   :global(.workflow-badge[data-status='success'] .workflow-badge__dot) {
-    background: #10b981;
-    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+    background: #000;
+    border-radius: 3px;
+    border-color: #000;
   }
 
   :global(.workflow-badge[data-status='failure'] .workflow-badge__dot) {
-    background: #ef4444;
-    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+    background: #fff;
+    border-color: #000;
+    transform: rotate(45deg);
+  }
+
+  :global(.workflow-badge[data-status='failure'] .workflow-badge__dot)::after {
+    content: '!';
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8px;
+    font-weight: 700;
+    color: #000;
+    transform: rotate(-45deg);
   }
 
   :global(.workflow-badge[data-status='unknown'] .workflow-badge__dot) {
-    background: #94a3b8;
-    box-shadow: 0 0 0 3px rgba(148, 163, 184, 0.2);
+    background: #fff;
+    border: 2px dotted #000;
+  }
+
+  :global(
+    .workflow-badge[data-status='running'] .workflow-badge__status::before
+  ) {
+    content: 'R';
+  }
+
+  :global(
+    .workflow-badge[data-status='success'] .workflow-badge__status::before
+  ) {
+    content: 'S';
+  }
+
+  :global(
+    .workflow-badge[data-status='failure'] .workflow-badge__status::before
+  ) {
+    content: 'F';
+  }
+
+  :global(
+    .workflow-badge[data-status='unknown'] .workflow-badge__status::before
+  ) {
+    content: '?';
   }
 
   .github-commits-container {
