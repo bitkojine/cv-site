@@ -41,7 +41,7 @@ const { title, company, period, description, year, kind } = Astro.props;
     gap: 1.25rem;
     align-items: start;
     padding-top: calc(
-      var(--timeline-line-y, 48px) - (var(--timeline-year-height, 28px) * 0.5)
+      var(--timeline-line-y) - (var(--timeline-year-height, 28px) * 0.5)
     );
     padding-bottom: 1.5rem;
   }

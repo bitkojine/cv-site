@@ -635,12 +635,15 @@ const timelineYears = Array.from(
     );
     background-size: 100% 2px;
     background-repeat: no-repeat;
-    background-position: 0 var(--timeline-line-y, 48px);
+    background-position: 0 var(--timeline-line-y);
     scrollbar-gutter: stable;
     scroll-snap-type: x mandatory;
     scroll-padding-inline: 0.75rem;
-    --timeline-line-y: 48px;
+    --timeline-padding-top: 0.75rem;
     --timeline-year-height: 28px;
+    --timeline-line-y: calc(
+      var(--timeline-padding-top) + (var(--timeline-year-height) * 0.5)
+    );
   }
 
   .timeline-scroll:focus-within {
@@ -661,10 +664,13 @@ const timelineYears = Array.from(
   @media (min-width: 768px) {
     .timeline-scroll {
       padding: 1rem 1.5rem 1.25rem;
-      background-position: 0 var(--timeline-line-y, 56px);
+      background-position: 0 var(--timeline-line-y);
       scroll-padding-inline: 1.5rem;
-      --timeline-line-y: 56px;
+      --timeline-padding-top: 1rem;
       --timeline-year-height: 32px;
+      --timeline-line-y: calc(
+        var(--timeline-padding-top) + (var(--timeline-year-height) * 0.5)
+      );
     }
 
     .timeline-anchor {
