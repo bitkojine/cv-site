@@ -35,7 +35,10 @@ const fetchLatestRuns = async () => {
 };
 
 // Bug: Workflow status badges did not update after deploy and showed stale data.
-test('workflow status badges render from live GitHub API', async ({ page }) => {
+test(
+  'workflow status badges render from live GitHub API',
+  { tag: ['@github-api'] },
+  async ({ page }) => {
   const expectedRuns = await fetchLatestRuns();
   expect(expectedRuns.length).toBeGreaterThan(0);
 
@@ -55,4 +58,5 @@ test('workflow status badges render from live GitHub API', async ({ page }) => {
   }
 
   await expect(actionsSection.getByText('View Build Status')).toHaveCount(0);
-});
+  }
+);

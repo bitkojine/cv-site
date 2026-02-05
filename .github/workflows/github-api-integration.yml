@@ -1,15 +1,13 @@
-name: E2E Tests
+name: GitHub API Integration Tests
 
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+  workflow_dispatch:
 
 jobs:
-  test-e2e:
-    timeout-minutes: 60
+  github-api-integration:
+    timeout-minutes: 30
     runs-on: ubuntu-latest
+    continue-on-error: true
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -29,13 +27,13 @@ jobs:
       - name: Build Project
         run: npm run build
 
-      - name: Run Playwright tests
-        run: npm run test:e2e -- --grep-invert @github-api
+      - name: Run GitHub API Playwright tests
+        run: npm run test:e2e -- --grep @github-api
 
       - name: Upload Playwright Report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report
+          name: playwright-report-github-api
           path: playwright-report/
           retention-days: 30

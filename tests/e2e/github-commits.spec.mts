@@ -27,7 +27,10 @@ const fetchLatestCommitMessages = async () => {
 };
 
 // Bug: Latest commits list rendered stale/fallback data after deploy.
-test('latest commits list renders from live GitHub API', async ({ page }) => {
+test(
+  'latest commits list renders from live GitHub API',
+  { tag: ['@github-api'] },
+  async ({ page }) => {
   const expectedMessages = await fetchLatestCommitMessages();
   expect(expectedMessages.length).toBeGreaterThan(0);
 
@@ -46,4 +49,5 @@ test('latest commits list renders from live GitHub API', async ({ page }) => {
   }
 
   await expect(commitsSection.getByText('View on GitHub →')).toHaveCount(0);
-});
+  }
+);
