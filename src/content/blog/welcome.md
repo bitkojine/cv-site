@@ -1,31 +1,28 @@
 ---
 title: 'Welcome to My Blog'
 date: 2026-02-04
-description: 'My first post on my new self-hosted blog. No more platform risk!'
+description: 'A short note on why I am writing here, on my own site.'
 tags: ['meta', 'blog']
 draft: false
 ---
 
 # Welcome to My Blog
 
-I've decided to host my own blog right here on my personal site. Why? Because I want to **own my content**.
+I have written online for years, but most of it lived on platforms I did not control. One morning I opened a dashboard and saw a post had been removed with no context. It was not a disaster, but it was a reminder: if I care about something, I should host it myself.
 
-## Why Self-Host?
+This blog lives on my own domain, backed by a Git repository. That means the words are mine, the history is mine, and the archive stays intact.
 
-Social platforms can delete your account at any time. Your years of writing, gone in an instant. By hosting my blog on my own domain:
+## Why Self-Host
 
-- **I own the content** - It lives in my Git repository
-- **No censorship risk** - I control what gets published
-- **Permanent URLs** - Links won't break when platforms pivot
-- **Full control** - I can export, backup, and migrate anytime
+Here is what I value most:
 
-## What I'll Write About
+- I control publishing and edits
+- the writing has stable URLs
+- there is a full history of changes
+- I can move it anywhere without losing it
 
-Expect posts on:
+## What I Will Write About
 
-- Software engineering and .NET development
-- Technology opinions and industry thoughts
-- Bitcoin, decentralization, and financial sovereignty
-- Startup experiences and lessons learned
+This is a personal site, so the scope is intentionally broad. Expect posts about software engineering, product building, and the ideas that keep showing up in my work: decentralization, open source, and long‑term thinking. There will also be notes on the projects I am building and the lessons I learn along the way.
 
-Stay tuned for more posts. You can always find my latest writing here at [robertasrudys.com/blog](/blog).
+If you want to follow along, you can always find the latest posts at [robertasrudys.com/blog](/blog).
