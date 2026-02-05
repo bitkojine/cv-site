@@ -264,6 +264,9 @@ const timelineYears = Array.from(
       <div
         id="github-actions-container"
         class="github-actions-container no-print"
+        data-github-owner={githubOwner}
+        data-github-repo={githubRepo}
+        data-github-branch="main"
       >
         {
           latestWorkflowRuns.length > 0 ? (
@@ -478,6 +481,120 @@ const timelineYears = Array.from(
         ticking = false;
       });
     });
+  }
+
+  const actionsContainer = document.getElementById('github-actions-container');
+  if (actionsContainer) {
+    const badges = Array.from(
+      actionsContainer.querySelectorAll('.workflow-badge[data-workflow-id]')
+    );
+    const hasRunning = badges.some(
+      (badge) => badge.dataset.status === 'running'
+    );
+
+    if (hasRunning) {
+      const owner = actionsContainer.dataset.githubOwner;
+      const repo = actionsContainer.dataset.githubRepo;
+      const branch = actionsContainer.dataset.githubBranch;
+      const cacheKey = 'cv-gh-actions-cache-v1';
+      const now = Date.now();
+      const ttlMs = 2 * 60 * 1000;
+
+      const resolveBadge = (status, conclusion) => {
+        if (status === 'in_progress' || status === 'queued') {
+          return { state: 'running', label: 'Running' };
+        }
+        if (status === 'completed' && conclusion === 'success') {
+          return { state: 'success', label: 'success' };
+        }
+        if (status === 'completed' && conclusion === 'failure') {
+          return { state: 'failure', label: 'failure' };
+        }
+        return { state: 'unknown', label: 'Unknown' };
+      };
+
+      const applyRuns = (runs) => {
+        const latestRuns = new Map();
+        for (const run of runs || []) {
+          if (run && !latestRuns.has(run.workflow_id)) {
+            latestRuns.set(run.workflow_id, run);
+          }
+        }
+        badges.forEach((badge) => {
+          const workflowId = Number(badge.dataset.workflowId);
+          const run = latestRuns.get(workflowId);
+          if (!run) {
+            return;
+          }
+          const resolved = resolveBadge(run.status, run.conclusion);
+          badge.dataset.status = resolved.state;
+          const statusEl = badge.querySelector('.workflow-badge__status');
+          if (statusEl) {
+            statusEl.textContent = resolved.label;
+          }
+          const nameEl = badge.querySelector('.workflow-badge__name');
+          const nameText = nameEl ? nameEl.textContent : 'Workflow';
+          badge.setAttribute(
+            'aria-label',
+            `${nameText} workflow status: ${resolved.label}`
+          );
+        });
+      };
+
+      const readCache = () => {
+        try {
+          const raw = localStorage.getItem(cacheKey);
+          if (!raw) return null;
+          const parsed = JSON.parse(raw);
+          if (
+            parsed &&
+            typeof parsed === 'object' &&
+            typeof parsed.fetchedAt === 'number' &&
+            Array.isArray(parsed.runs) &&
+            now - parsed.fetchedAt < ttlMs
+          ) {
+            return parsed.runs;
+          }
+        } catch {}
+        return null;
+      };
+
+      const writeCache = (runs) => {
+        try {
+          localStorage.setItem(
+            cacheKey,
+            JSON.stringify({ fetchedAt: now, runs })
+          );
+        } catch {}
+      };
+
+      const cachedRuns = readCache();
+      if (cachedRuns) {
+        applyRuns(cachedRuns);
+      } else if (owner && repo) {
+        const runsUrl = new URL(
+          `https://api.github.com/repos/${owner}/${repo}/actions/runs`
+        );
+        runsUrl.searchParams.set('per_page', '30');
+        if (branch) {
+          runsUrl.searchParams.set('branch', branch);
+        }
+
+        fetch(runsUrl.toString(), {
+          headers: {
+            Accept: 'application/vnd.github+json',
+          },
+        })
+          .then((response) => (response.ok ? response.json() : null))
+          .then((data) => {
+            if (data && Array.isArray(data.workflow_runs)) {
+              writeCache(data.workflow_runs);
+              applyRuns(data.workflow_runs);
+            }
+          })
+          .catch(() => {});
+      }
+    }
   }
 </script>
 
