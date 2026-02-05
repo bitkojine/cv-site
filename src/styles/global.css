@@ -345,7 +345,6 @@ video {
   text-align: center;
   font-size: var(--fs-xs);
   color: var(--text-muted);
-  font-style: italic;
 }
 
 /* DESKTOP ENHANCEMENTS */
@@ -582,7 +581,6 @@ video {
     padding: 0 !important;
     color: #000 !important;
     font-weight: normal !important;
-    font-style: italic !important;
   }
 
   .last-updated {
