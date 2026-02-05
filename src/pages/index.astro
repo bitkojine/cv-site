@@ -9,8 +9,8 @@ import { CVSchema } from '../data/schema';
 import { getCollection } from 'astro:content';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { getGithubData } from '../lib/github-cache';
-import type { GitHubCommit, WorkflowRun } from '../lib/github-cache';
+import { getGithubData } from '../lib/github-cache.mts';
+import type { GitHubCommit, WorkflowRun } from '../lib/github-cache.mts';
 
 // Validate data at build time
 const cvData = CVSchema.parse(cvDataRaw);

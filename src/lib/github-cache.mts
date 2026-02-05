@@ -77,7 +77,10 @@ const writeCache = async (
 
 export const getGithubData = async (
   options: GetGithubDataOptions
-): Promise<{ latestWorkflowRuns: WorkflowRun[]; latestCommits: GitHubCommit[] }> => {
+): Promise<{
+  latestWorkflowRuns: WorkflowRun[];
+  latestCommits: GitHubCommit[];
+}> => {
   const {
     owner,
     repo,
@@ -88,10 +91,11 @@ export const getGithubData = async (
     fsImpl = fs,
   } = options;
 
+  const cache = await readCache(fsImpl, cachePath);
   let latestWorkflowRuns: WorkflowRun[] = [];
   let latestCommits: GitHubCommit[] = [];
-
-  const cache = await readCache(fsImpl, cachePath);
+  let etagRuns = cache?.etagRuns;
+  let etagCommits = cache?.etagCommits;
   const cacheUpdatedAt = cache?.updatedAt ? Date.parse(cache.updatedAt) : 0;
   const cacheFresh =
     Number.isFinite(cacheUpdatedAt) && nowMs - cacheUpdatedAt < ttlMs;
@@ -122,8 +126,8 @@ export const getGithubData = async (
     if (runsResponse.status === 304 && cache?.latestWorkflowRuns) {
       latestWorkflowRuns = cache.latestWorkflowRuns;
       await refreshCache({
-        etagRuns: cache.etagRuns,
-        etagCommits: cache.etagCommits,
+        etagRuns,
+        etagCommits,
         latestWorkflowRuns: cache.latestWorkflowRuns,
         latestCommits: cache.latestCommits,
       });
@@ -141,9 +145,10 @@ export const getGithubData = async (
           latestWorkflowRuns = Array.from(latestRuns.values());
         }
       }
+      etagRuns = runsResponse.headers.get('etag') || etagRuns;
       await refreshCache({
-        etagRuns: runsResponse.headers.get('etag') || cache?.etagRuns,
-        etagCommits: cache?.etagCommits,
+        etagRuns,
+        etagCommits,
         latestWorkflowRuns,
         latestCommits: cache?.latestCommits || latestCommits,
       });
@@ -165,8 +170,8 @@ export const getGithubData = async (
     if (commitsResponse.status === 304 && cache?.latestCommits) {
       latestCommits = cache.latestCommits;
       await refreshCache({
-        etagRuns: cache.etagRuns,
-        etagCommits: cache.etagCommits,
+        etagRuns,
+        etagCommits,
         latestWorkflowRuns: cache.latestWorkflowRuns,
         latestCommits: cache.latestCommits,
       });
@@ -175,10 +180,11 @@ export const getGithubData = async (
       if (Array.isArray(data) && data.length) {
         latestCommits = data as GitHubCommit[];
       }
+      etagCommits = commitsResponse.headers.get('etag') || etagCommits;
       await refreshCache({
-        etagRuns: cache?.etagRuns,
-        etagCommits: commitsResponse.headers.get('etag') || cache?.etagCommits,
-        latestWorkflowRuns: cache?.latestWorkflowRuns || latestWorkflowRuns,
+        etagRuns,
+        etagCommits,
+        latestWorkflowRuns,
         latestCommits,
       });
     }
