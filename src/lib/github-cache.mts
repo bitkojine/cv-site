@@ -97,10 +97,13 @@ export const getGithubData = async (
   let etagRuns = cache?.etagRuns;
   let etagCommits = cache?.etagCommits;
   const cacheUpdatedAt = cache?.updatedAt ? Date.parse(cache.updatedAt) : 0;
+  const hasCachedData =
+    Array.isArray(cache?.latestWorkflowRuns) ||
+    Array.isArray(cache?.latestCommits);
   const cacheFresh =
     Number.isFinite(cacheUpdatedAt) && nowMs - cacheUpdatedAt < ttlMs;
 
-  if (cacheFresh) {
+  if (cacheFresh && hasCachedData) {
     return {
       latestWorkflowRuns: cache?.latestWorkflowRuns || [],
       latestCommits: cache?.latestCommits || [],
@@ -145,6 +148,9 @@ export const getGithubData = async (
           latestWorkflowRuns = Array.from(latestRuns.values());
         }
       }
+      if (latestWorkflowRuns.length === 0 && cache?.latestWorkflowRuns) {
+        latestWorkflowRuns = cache.latestWorkflowRuns;
+      }
       etagRuns = runsResponse.headers.get('etag') || etagRuns;
       await refreshCache({
         etagRuns,
@@ -154,7 +160,9 @@ export const getGithubData = async (
       });
     }
   } catch {
-    // Fail silently and keep fallback links
+    if (latestWorkflowRuns.length === 0 && cache?.latestWorkflowRuns) {
+      latestWorkflowRuns = cache.latestWorkflowRuns;
+    }
   }
 
   try {
@@ -167,12 +175,16 @@ export const getGithubData = async (
         },
       }
     );
+    const resolvedRuns =
+      latestWorkflowRuns.length > 0
+        ? latestWorkflowRuns
+        : cache?.latestWorkflowRuns || [];
     if (commitsResponse.status === 304 && cache?.latestCommits) {
       latestCommits = cache.latestCommits;
       await refreshCache({
         etagRuns,
         etagCommits,
-        latestWorkflowRuns: cache.latestWorkflowRuns,
+        latestWorkflowRuns: resolvedRuns,
         latestCommits: cache.latestCommits,
       });
     } else if (commitsResponse.ok) {
@@ -180,16 +192,21 @@ export const getGithubData = async (
       if (Array.isArray(data) && data.length) {
         latestCommits = data as GitHubCommit[];
       }
+      if (latestCommits.length === 0 && cache?.latestCommits) {
+        latestCommits = cache.latestCommits;
+      }
       etagCommits = commitsResponse.headers.get('etag') || etagCommits;
       await refreshCache({
         etagRuns,
         etagCommits,
-        latestWorkflowRuns,
+        latestWorkflowRuns: resolvedRuns,
         latestCommits,
       });
     }
   } catch {
-    // Fail silently and keep fallback links
+    if (latestCommits.length === 0 && cache?.latestCommits) {
+      latestCommits = cache.latestCommits;
+    }
   }
 
   return { latestWorkflowRuns, latestCommits };
