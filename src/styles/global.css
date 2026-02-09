@@ -450,6 +450,10 @@ body {
   gap: 0.4rem;
 }
 
+.markdown-body .post-content > h1:first-child {
+  display: none;
+}
+
 .markdown-body .build-status-list {
   display: flex;
   flex-direction: column;
