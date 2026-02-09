@@ -179,3 +179,63 @@ body::after {
   border-top-color: rgba(0, 0, 0, 0.55);
   border-bottom-color: rgba(0, 0, 0, 0.35);
 }
+
+.markdown-body .build-status-list {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.6rem;
+  margin: 0.5rem 0 1rem;
+}
+
+.markdown-body .workflow-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-right: 0;
+  width: fit-content;
+  max-width: 100%;
+  text-decoration: none !important;
+}
+
+.markdown-body .workflow-badge__dot {
+  width: 0.7rem;
+  height: 0.7rem;
+  display: inline-block;
+  border: 1px solid #000;
+  border-radius: 50%;
+  flex: 0 0 auto;
+}
+
+.markdown-body .workflow-badge__meta {
+  display: inline-flex;
+  gap: 0.35rem;
+  align-items: baseline;
+}
+
+.markdown-body .workflow-badge__name {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.markdown-body .workflow-badge__status {
+  font-weight: 700;
+  text-decoration: none !important;
+}
+
+.markdown-body .workflow-badge[data-status='success'] .workflow-badge__dot {
+  background: #000;
+}
+
+.markdown-body .workflow-badge[data-status='running'] .workflow-badge__dot {
+  background: #fff;
+}
+
+.markdown-body .workflow-badge[data-status='failure'] .workflow-badge__dot {
+  background: #000;
+  box-shadow: inset 0 0 0 2px #fff;
+}
+
+.markdown-body .workflow-badge[data-status='unknown'] .workflow-badge__dot {
+  background: #fff;
+}
