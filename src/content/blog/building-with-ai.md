@@ -106,6 +106,19 @@ The biggest pattern is not "AI wrote everything." The pattern is disciplined ite
 
 That is the practical value: faster throughput without losing traceability.
 
+## Latest Update: Redesign And Test Strategy Reset
+
+The most recent iteration was a full markdown-first UI redesign and cleanup pass, followed by a temporary testing strategy change.
+
+Key commits in this update window:
+
+- `2d15cff` redesign the site to a markdown-first mobile-friendly layout
+- `9c40a80` refine that redesign and restore build status
+- `dce2494` expand this post into a complete commit-ledger narrative
+- `4f43606` remove Playwright E2E workflows/tests while the new UI settles
+
+Why remove E2E for now: after the redesign, the old browser assertions were tightly coupled to the previous interface and became noisy. Instead of carrying failing checks, the suite was intentionally retired so CI reflects real signal while unit tests and build checks stay active. The plan is to reintroduce E2E with selectors and flows designed for the new UI.
+
 ## Full Commit Ledger (Chronological)
 
 Below is every non-merge commit hash and message from this repository timeline up to this update.
@@ -280,3 +293,5 @@ Below is every non-merge commit hash and message from this repository timeline u
 - `9c40a80` Refine markdown redesign and restore build status section
 - `85cba28` Update 'How I Built This Website with AI' blog post
 - `3cb8f39` Emphasize commit history in AI build post
+- `dce2494` Expand AI build post with full commit ledger and code-change timeline
+- `4f43606` Remove Playwright E2E suite and workflows
