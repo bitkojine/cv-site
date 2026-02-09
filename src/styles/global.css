@@ -394,9 +394,18 @@ hr {
   min-width: 0;
 }
 
+.btn-primary:any-link,
+.btn-primary:visited {
+  color: var(--text-near-white);
+  text-decoration: none;
+}
+
 .btn-primary:hover,
 .btn-primary:focus,
 .btn-primary:focus-visible,
+.btn-primary:any-link:hover,
+.btn-primary:any-link:focus,
+.btn-primary:any-link:focus-visible,
 .endorsement-submit:hover,
 .endorsement-submit:focus,
 .endorsement-submit:focus-visible {

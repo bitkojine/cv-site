@@ -134,12 +134,6 @@ const isCvPage = Astro.url.pathname === '/' || Astro.url.pathname === '';
     document
       .querySelector('.share-btn')
       ?.addEventListener('click', shareProfile);
-    document.querySelector('.cv-btn')?.addEventListener('click', () => {
-      window.location.href = '/';
-    });
-    document.querySelector('.blog-btn')?.addEventListener('click', () => {
-      window.location.href = '/blog';
-    });
     document
       .querySelector('.debug-grid-toggle')
       ?.addEventListener('click', toggleDebugGrid);
@@ -164,26 +158,22 @@ const isCvPage = Astro.url.pathname === '/' || Astro.url.pathname === '';
     <FileText size={20} />
     <span>PDF</span>
   </button>
-  <button
+  <a
+    href="/"
     class={`btn-primary cv-btn non-cv-only${isCvPage ? ' hidden' : ''}`}
-    type="button"
     aria-label="Back to CV"
   >
     <FileText size={20} />
     <span>CV</span>
-  </button>
+  </a>
   <button class="btn-primary share-btn" type="button" aria-label="Share CV">
     <Share2 size={20} />
     <span>Share</span>
   </button>
-  <button
-    class="btn-primary blog-btn"
-    type="button"
-    aria-label="Read my blog"
-  >
+  <a href="/blog" class="btn-primary blog-btn" aria-label="Read my blog">
     <NotebookPen size={20} />
     <span>Blog</span>
-  </button>
+  </a>
 </div>
 <button class="debug-grid-toggle" type="button" aria-label="Toggle debug grid"
 ></button>
