@@ -1,5 +1,6 @@
 :root {
   --content-width: 980px;
+  --sketch-line: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 10' preserveAspectRatio='none'%3E%3Cpath d='M1 5.3 C11 2.1 25 8.1 38 5.1 S63 2.4 79 5.5 S102 8.5 119 4.6' stroke='%231f2328' stroke-opacity='.68' stroke-width='2.5' fill='none' stroke-linecap='round'/%3E%3Cpath d='M2 6.8 C15 3.8 27 8.7 41 6.4 S67 3.1 83 6.6 S106 8.7 118 5.9' stroke='%231f2328' stroke-opacity='.46' stroke-width='1.9' fill='none' stroke-linecap='round'/%3E%3Cpath d='M4 4.4 C17 2.3 30 6.9 45 4.9 S70 2.6 87 4.8 S109 6.6 117 4.1' stroke='%231f2328' stroke-opacity='.25' stroke-width='1.2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
 }
 
 * {
@@ -109,8 +110,38 @@ body {
 
 .markdown-body hr {
   border: 0;
-  border-top: 1px solid #d0d7de;
-  background: transparent;
+  height: 10px;
+  margin: 1.6rem 0;
+  background-image: var(--sketch-line);
+  background-size: 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.markdown-body hr::before,
+.markdown-body hr::after {
+  content: none;
+}
+
+.markdown-body h1,
+.markdown-body h2 {
+  position: relative;
+  border-bottom: 0;
+  padding-bottom: 0.42em;
+}
+
+.markdown-body h1::after,
+.markdown-body h2::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0.04em;
+  height: 8px;
+  background-image: var(--sketch-line);
+  background-size: 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .markdown-body .build-status-list {
