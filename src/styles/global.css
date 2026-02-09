@@ -328,7 +328,6 @@ body {
 .markdown-body .profile-sketch__row:last-child::after {
   content: none;
 }
-
 .markdown-body .profile-sketch__label,
 .markdown-body .profile-sketch__value {
   margin: 0;
