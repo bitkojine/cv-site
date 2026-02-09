@@ -98,10 +98,6 @@ body {
     max(14px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom))
     max(14px, env(safe-area-inset-left));
   background-color: var(--surface);
-  background-image:
-    linear-gradient(rgba(0, 0, 0, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 0, 0, 0.035) 1px, transparent 1px);
-  background-size: 18px 18px;
   color: var(--text-main);
   overflow-wrap: anywhere;
 }
@@ -121,6 +117,10 @@ body {
     width: min(100%, var(--content-width));
     max-width: var(--content-width);
     padding: 1.5rem 1.25rem 2.5rem;
+    background-image:
+      linear-gradient(rgba(0, 0, 0, 0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 0, 0, 0.02) 1px, transparent 1px);
+    background-size: 18px 18px;
   }
 }
 
@@ -511,12 +511,12 @@ body {
 
 .markdown-body .site-footer-note {
   margin-top: 2.2rem;
-  padding-top: 0.9rem;
+  padding-top: 0.7rem;
 }
 
 .markdown-body .site-footer-note p {
   margin: 0;
-  font-size: 0.95rem;
+  font-size: 0.88rem;
   color: var(--text-muted);
 }
 
@@ -534,4 +534,10 @@ body {
 
 .markdown-body .site-utility {
   margin-top: 1.4rem;
+  opacity: 0.9;
+}
+
+.markdown-body .site-utility h2 {
+  font-size: clamp(1rem, 3.5vw, 1.2rem);
+  color: var(--text-muted);
 }
