@@ -88,7 +88,7 @@ const timelineYears = Array.from(
   title={`${personalInfo.name} - ${personalInfo.title}`}
   description={`Software engineer specializing in ${personalInfo.contact.stack}. ${personalInfo.profile.slice(0, 150)}...`}
 >
-  <main class="container">
+  <main class="container resume-page">
     <Header
       name={personalInfo.name}
       title={personalInfo.title}
@@ -553,6 +553,134 @@ const timelineYears = Array.from(
     left: 0;
     color: var(--accent-text);
     font-weight: bold;
+  }
+
+  .resume-page {
+    background: #fff;
+    border: 1px solid var(--border-subtle);
+    box-shadow: none;
+  }
+
+  .resume-page h2 {
+    text-transform: none;
+    letter-spacing: 0.08em;
+    font-weight: 700;
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border-subtle);
+    padding-bottom: 0.25rem;
+  }
+
+  .resume-page h2::after {
+    display: none;
+  }
+
+  .resume-page .cv-header {
+    border-bottom: 1px solid var(--border-subtle);
+    padding-bottom: 1.5rem;
+  }
+
+  .resume-page .cv-header .icon,
+  .resume-page .domain-suffix {
+    display: none;
+  }
+
+  .resume-page .role-title {
+    color: var(--text-primary);
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+  }
+
+  .resume-page .contact-grid {
+    gap: 0.5rem 1.5rem;
+  }
+
+  .resume-page .skills-list,
+  .resume-page .next-list {
+    margin-left: 0;
+  }
+
+  .resume-page .skills-list li,
+  .resume-page .next-list li {
+    padding-left: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .resume-page .skills-list li::before,
+  .resume-page .next-list li::before {
+    content: '•';
+    color: var(--text-primary);
+  }
+
+  .resume-page .timeline-selector {
+    display: none;
+  }
+
+  .resume-page .timeline-scroll {
+    display: block;
+    overflow: visible;
+    padding: 0;
+    border: none;
+    background: transparent;
+    scroll-snap-type: none;
+  }
+
+  .resume-page .timeline-spacer {
+    display: none;
+  }
+
+  .resume-page .timeline-item {
+    grid-template-columns: minmax(70px, 90px) 1fr;
+    padding-top: 0;
+    padding-bottom: 1rem;
+  }
+
+  .resume-page .timeline-year span {
+    background: transparent;
+    box-shadow: none;
+    padding: 0;
+  }
+
+  .resume-page .timeline-year span::before {
+    display: none;
+  }
+
+  .resume-page .timeline-card {
+    padding: 0;
+    border: none;
+    border-radius: 0;
+  }
+
+  .resume-page .timeline-meta {
+    gap: 0.35rem;
+  }
+
+  .resume-page .timeline-tag,
+  .resume-page .timeline-period {
+    border: none;
+    padding: 0;
+    font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  .resume-page .timeline-content {
+    gap: 0.25rem;
+  }
+
+  .resume-page .articles-preview,
+  .resume-page .endorsement-form {
+    border: 1px solid var(--border-subtle);
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .resume-page .article-link {
+    border-radius: 0;
+  }
+
+  @media (min-width: 768px) {
+    .resume-page {
+      padding: 3.5rem 3rem;
+    }
   }
 
   .container {
