@@ -19,10 +19,14 @@ export const SkillSchema = z.object({
   value: z.string(),
 });
 
+const NormalizedDateSchema = z.string().regex(/^\d{4}(-\d{2})?$/);
+
 export const ExperienceSchema = z.object({
   title: z.string(),
   company: z.string(),
-  period: z.string(),
+  location: z.string().optional(),
+  startDate: NormalizedDateSchema,
+  endDate: NormalizedDateSchema.nullable().optional(),
   description: z.array(z.string()),
 });
 

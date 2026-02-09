@@ -71,6 +71,18 @@ body {
   min-height: 100vh;
 }
 
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .markdown-body {
   position: relative;
   color-scheme: light;
@@ -174,66 +186,17 @@ body {
 }
 
 .markdown-body a {
-  position: relative;
-  display: inline-flex;
-  isolation: isolate;
-  align-items: center;
-  min-height: var(--tap-target);
+  display: inline;
   color: inherit;
   text-decoration: underline;
-  text-underline-offset: 2px;
-  background: var(--surface);
-  border: 0;
-  padding: 0.45rem 0.8rem;
-  line-height: 1.25;
-  margin-right: 0;
-  max-width: 100%;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
   overflow-wrap: anywhere;
-}
-
-.markdown-body a::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image:
-    var(--sketch-link-edge-h), var(--sketch-link-edge-h),
-    var(--sketch-link-edge-v), var(--sketch-link-edge-v);
-  background-size:
-    var(--sketch-link-wave-length) var(--sketch-link-border-thickness),
-    var(--sketch-link-wave-length) var(--sketch-link-border-thickness),
-    var(--sketch-link-border-thickness) var(--sketch-link-wave-length),
-    var(--sketch-link-border-thickness) var(--sketch-link-wave-length);
-  background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
-  background-position:
-    left top,
-    left bottom,
-    left top,
-    right top;
-  pointer-events: none;
-}
-
-.markdown-body a:hover::before,
-.markdown-body a:focus-visible::before {
-  background-image:
-    var(--sketch-link-edge-h), var(--sketch-link-edge-h),
-    var(--sketch-link-edge-v), var(--sketch-link-edge-v);
-}
-
-.markdown-body a::after {
-  content: '👈';
-  position: absolute;
-  left: calc(100% + 0.24rem);
-  top: 50%;
-  transform: translateY(-50%);
-  line-height: 1;
-  text-decoration: none !important;
-  pointer-events: none;
 }
 
 .markdown-body a:hover,
 .markdown-body a:focus-visible {
-  background: var(--surface);
-  color: inherit;
+  text-decoration-thickness: 2px;
 }
 
 .markdown-body a:focus-visible,
@@ -252,7 +215,11 @@ body {
   align-items: center;
   gap: 0.35rem;
   min-height: var(--tap-target);
-  padding: 0.45rem 0.95rem;
+  padding: 0.45rem 0.75rem;
+  border: 1px solid var(--stroke-soft);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  background: #fff;
 }
 
 .markdown-body .site-nav a {
@@ -452,17 +419,13 @@ body {
 
 .markdown-body .post-link {
   align-items: flex-start;
-  width: calc(100% - 1.4rem);
-  margin-right: 1.4rem;
+  width: 100%;
+  margin-right: 0;
   text-decoration-thickness: 1px;
 }
 
 .markdown-body .post-link::after {
-  left: calc(100% + 0.24rem);
-  top: 50%;
-  transform: translateY(-50%);
-  text-decoration: none !important;
-  text-decoration-line: none !important;
+  content: none;
 }
 
 .markdown-body .post-date {
@@ -555,4 +518,20 @@ body {
   margin: 0;
   font-size: 0.95rem;
   color: var(--text-muted);
+}
+
+.markdown-body .experience-item {
+  margin-bottom: 1.2rem;
+}
+
+.markdown-body .experience-item__header p {
+  margin: 0 0 0.6rem;
+}
+
+.markdown-body .experience-item__company {
+  font-weight: 700;
+}
+
+.markdown-body .site-utility {
+  margin-top: 1.4rem;
 }

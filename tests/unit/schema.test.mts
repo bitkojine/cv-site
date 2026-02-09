@@ -16,7 +16,16 @@ describe('CVSchema', () => {
         profile: 'A passionate developer.',
       },
       coreSkills: [{ label: 'Languages', value: 'TypeScript, Rust' }],
-      experience: [],
+      experience: [
+        {
+          title: '.NET Engineer',
+          company: 'Example Corp',
+          location: 'EU Remote',
+          startDate: '2024-06',
+          endDate: null,
+          description: ['Built API services'],
+        },
+      ],
       independentProjects: [],
       lookingFor: ['Remote work'],
     };

@@ -1,6 +1,29 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import BuildStatus from '../components/BuildStatus.astro';
+import cvData from '../data/cv.json';
+
+const {
+  personalInfo,
+  coreSkills,
+  experience,
+  independentProjects,
+  lookingFor,
+} = cvData;
+
+const [currentRole, ...previousRoles] = experience;
+const profileParagraphs = personalInfo.profile
+  .split('\n\n')
+  .map((paragraph) => paragraph.trim())
+  .filter(Boolean);
+
+function toIsoDate(value: string) {
+  return value.length === 4 ? `${value}-01-01` : `${value}-01`;
+}
+
+function toHumanDate(value: string) {
+  return value;
+}
 ---
 
 <BaseLayout
@@ -9,186 +32,183 @@ import BuildStatus from '../components/BuildStatus.astro';
 >
   <h1>Robertas Rudys</h1>
 
-  <section class="profile-sketch" aria-label="Profile summary">
+  <section class="profile-sketch" aria-labelledby="profile-overview-heading">
+    <h2 id="profile-overview-heading" class="sr-only">Profile Overview</h2>
     <div class="profile-sketch__row">
       <p class="profile-sketch__label">Role</p>
-      <p class="profile-sketch__value">Senior .NET Software Engineer</p>
+      <p class="profile-sketch__value">{personalInfo.title}</p>
     </div>
     <div class="profile-sketch__row">
       <p class="profile-sketch__label">Email</p>
       <p class="profile-sketch__value">
-        <a href="mailto:robertas.rudys+www@gmail.com"
-          >robertas.rudys+www@gmail.com</a
-        >
+        <a href={`mailto:${personalInfo.contact.email}`}>
+          {personalInfo.contact.email}
+        </a>
       </p>
     </div>
     <div class="profile-sketch__row">
       <p class="profile-sketch__label">Location</p>
-      <p class="profile-sketch__value">Lithuania / EU</p>
+      <p class="profile-sketch__value">{personalInfo.contact.location}</p>
     </div>
     <div class="profile-sketch__row">
       <p class="profile-sketch__label">Remote</p>
-      <p class="profile-sketch__value">Open to Remote (EU time zones)</p>
+      <p class="profile-sketch__value">{personalInfo.contact.remote}</p>
     </div>
     <div class="profile-sketch__row">
       <p class="profile-sketch__label">Stack</p>
-      <p class="profile-sketch__value">Backend (.NET, SQL, Web)</p>
+      <p class="profile-sketch__value">{personalInfo.contact.stack}</p>
     </div>
   </section>
 
-  <h2>Profile</h2>
+  <section aria-labelledby="summary-heading">
+    <h2 id="summary-heading">Professional Summary</h2>
+    {profileParagraphs.map((paragraph) => <p>{paragraph}</p>)}
+  </section>
 
-  <p>
-    Senior .NET Software Engineer with ~7 years of professional experience
-    working on data-driven and product-focused systems. Strong background in
-    backend development with .NET, C#, MS SQL Server, and web development
-    experience with modern frameworks.
-  </p>
+  {
+    currentRole && (
+      <section aria-labelledby="current-role-heading">
+        <h2 id="current-role-heading">Current Role</h2>
+        <article class="experience-item">
+          <header class="experience-item__header">
+            <h3>{currentRole.title}</h3>
+            <p>
+              <span class="experience-item__company">
+                {currentRole.company}
+              </span>
+              {currentRole.location && (
+                <>
+                  {' '}
+                  <span aria-hidden="true">-</span> {currentRole.location}
+                </>
+              )}
+              <br />
+              <time datetime={toIsoDate(currentRole.startDate)}>
+                {toHumanDate(currentRole.startDate)}
+              </time>{' '}
+              -{' '}
+              {currentRole.endDate ? (
+                <time datetime={toIsoDate(currentRole.endDate)}>
+                  {toHumanDate(currentRole.endDate)}
+                </time>
+              ) : (
+                'Present'
+              )}
+            </p>
+          </header>
+          <ul>
+            {currentRole.description.map((item) => (
+              <li>{item}</li>
+            ))}
+          </ul>
+        </article>
+      </section>
+    )
+  }
 
-  <p>
-    I've worked across stable product teams and fast-changing environments,
-    which helped me become adaptable and pragmatic. I'm now intentionally
-    focused on a long-term role in a stable product company, where I can take
-    ownership, grow steadily, and deliver consistent value.
-  </p>
+  <section aria-labelledby="experience-heading">
+    <h2 id="experience-heading">Professional Experience</h2>
+    {
+      previousRoles.map((role) => (
+        <article class="experience-item">
+          <header class="experience-item__header">
+            <h3>{role.title}</h3>
+            <p>
+              <span class="experience-item__company">{role.company}</span>
+              {role.location && (
+                <>
+                  {' '}
+                  <span aria-hidden="true">-</span> {role.location}
+                </>
+              )}
+              <br />
+              <time datetime={toIsoDate(role.startDate)}>{role.startDate}</time>
+              {' - '}
+              <time datetime={toIsoDate(role.endDate ?? role.startDate)}>
+                {role.endDate ?? role.startDate}
+              </time>
+            </p>
+          </header>
+          <ul>
+            {role.description.map((item) => (
+              <li>{item}</li>
+            ))}
+          </ul>
+        </article>
+      ))
+    }
+  </section>
 
-  <h2>Core Skills</h2>
+  {
+    independentProjects.length > 0 && (
+      <section aria-labelledby="independent-work-heading">
+        <h2 id="independent-work-heading">Independent Work</h2>
+        {independentProjects.map((project) => (
+          <article class="experience-item">
+            <header class="experience-item__header">
+              <h3>{project.title}</h3>
+              <p>
+                <span class="experience-item__company">{project.company}</span>
+                {project.location && (
+                  <>
+                    {' '}
+                    <span aria-hidden="true">-</span> {project.location}
+                  </>
+                )}
+                <br />
+                <time datetime={toIsoDate(project.startDate)}>
+                  {project.startDate}
+                </time>
+                {project.endDate && (
+                  <>
+                    {' - '}
+                    <time datetime={toIsoDate(project.endDate)}>
+                      {project.endDate}
+                    </time>
+                  </>
+                )}
+              </p>
+            </header>
+            <ul>
+              {project.description.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+          </article>
+        ))}
+      </section>
+    )
+  }
 
-  <ul class="skills-list">
-    <li>
-      <strong>Backend:</strong> C#, .NET (Framework / Core / modern .NET), REST APIs
-    </li>
-    <li>
-      <strong>Databases:</strong> MS SQL Server, T-SQL, data modeling, performance
-      tuning
-    </li>
-    <li>
-      <strong>Frontend:</strong> Angular (working knowledge), HTML/CSS, JavaScript/TypeScript
-    </li>
-    <li>
-      <strong>Architecture:</strong> Monoliths, modular systems, integrations
-    </li>
-    <li>
-      <strong>Practices:</strong> Code reviews, debugging legacy systems, collaboration
-      in cross-functional teams
-    </li>
-    <li>
-      <strong>Other:</strong> Git, CI/CD basics, cloud fundamentals (Azure - working
-      knowledge)
-    </li>
-  </ul>
+  <section aria-labelledby="skills-heading">
+    <h2 id="skills-heading">Technical Skills</h2>
+    <ul class="skills-list">
+      {
+        coreSkills.map((skill) => (
+          <li>
+            <strong>{skill.label}:</strong> {skill.value}
+          </li>
+        ))
+      }
+    </ul>
+  </section>
 
-  <h2>Experience</h2>
+  <section aria-labelledby="target-role-heading">
+    <h2 id="target-role-heading">Target Role</h2>
+    <ul>
+      {lookingFor.map((item) => <li>{item}</li>)}
+    </ul>
+  </section>
 
-  <h3>Senior .NET Software Engineer</h3>
-  <p>Product Company (EU, Remote)<br />2026 - Present</p>
-  <ul>
-    <li>
-      Building and maintaining backend services for a stable product platform
-    </li>
-    <li>Improving performance and reliability of core .NET services</li>
-    <li>
-      Partnering with product and data teams to deliver long-term roadmap work
-    </li>
-  </ul>
+  <section aria-labelledby="writing-heading">
+    <h2 id="writing-heading">Writing</h2>
+    <ul class="writing-list">
+      <li><a class="touch-link" href="/blog">Blog index</a></li>
+    </ul>
+  </section>
 
-  <h3>Senior .NET Software Engineer</h3>
-  <p>Adform Lithuania<br />2025</p>
-  <ul>
-    <li>
-      Engineered scalable AdTech backend services in a high-concurrency
-      environment
-    </li>
-    <li>
-      Developed and optimized mission-critical features in existing production
-      codebases
-    </li>
-    <li>
-      Collaborated within a mature engineering organization to uphold strict
-      technical standards
-    </li>
-  </ul>
-
-  <h3>Senior / Software Engineer (.NET)</h3>
-  <p>Ignitis Group Services Center<br />2023</p>
-  <ul>
-    <li>Refactored and maintained enterprise-grade .NET internal systems</li>
-    <li>Extended complex codebases while ensuring stability and performance</li>
-  </ul>
-
-  <h3>Software Engineer (.NET / Blockchain)</h3>
-  <p>Super How<br />2021 - 2022</p>
-  <ul>
-    <li>
-      Developed and deployed decentralized applications (dApps) and smart
-      contract integrations
-    </li>
-    <li>
-      Delivered end-to-end features in a fast-paced, early-stage product
-      environment
-    </li>
-  </ul>
-
-  <h3>Software Engineer (.NET / SQL)</h3>
-  <p>Euromonitor International<br />2018 - 2020</p>
-  <ul>
-    <li>
-      Engineered data-heavy MS SQL Server solutions for international market
-      research
-    </li>
-    <li>
-      Led full-stack development initiatives using .NET and Angular for key
-      product modules
-    </li>
-    <li>
-      Maintained long-term stability of core business systems used globally
-    </li>
-  </ul>
-
-  <h3>Software Engineer (C# / Unity)</h3>
-  <p>Invenis<br />2015</p>
-  <ul>
-    <li>Developed interactive 3D applications using C# and Unity3D</li>
-    <li>Implemented core game logic and UI systems for client projects</li>
-  </ul>
-
-  <h2>Independent Projects</h2>
-
-  <h3>Founder / Product &amp; Engineering</h3>
-  <p>Early-Stage Startup (Self-Initiated)<br />2024</p>
-  <ul>
-    <li>
-      Initiated a startup project based on accumulated product, marketing, and
-      technical knowledge
-    </li>
-    <li>
-      Worked on early product definition, validation ideas, and technical
-      direction
-    </li>
-    <li>Explored go-to-market strategy and team formation</li>
-    <li>
-      Closed the legal entity after the team did not fully materialize,
-      retaining lessons learned around product scope, execution, and risk
-    </li>
-  </ul>
-
-  <h2>What I'm Looking For Next</h2>
-
-  <ul>
-    <li>Stable product company</li>
-    <li>Backend or .NET role</li>
-    <li>Long-term collaboration and clear expectations</li>
-    <li>English-first engineering environment</li>
-    <li>Sustainable pace and ownership over time</li>
-  </ul>
-
-  <h2>Writing</h2>
-
-  <ul class="writing-list">
-    <li><a class="touch-link" href="/blog">Blog index</a></li>
-  </ul>
-
-  <h2>Build Status</h2>
-
-  <BuildStatus />
+  <section class="site-utility" aria-labelledby="build-heading">
+    <h2 id="build-heading">Site Build</h2>
+    <BuildStatus />
+  </section>
 </BaseLayout>
