@@ -14,7 +14,53 @@
   --radius-md: 0.5rem;
   --radius-lg: 0.75rem;
   --tap-target: 2.75rem;
-  --sketch-line: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 10' preserveAspectRatio='none'%3E%3Cpath d='M1 5.3 C11 2.1 25 8.1 38 5.1 S63 2.4 79 5.5 S102 8.5 119 4.6' stroke='%231f2328' stroke-opacity='.68' stroke-width='2.5' fill='none' stroke-linecap='round'/%3E%3Cpath d='M2 6.8 C15 3.8 27 8.7 41 6.4 S67 3.1 83 6.6 S106 8.7 118 5.9' stroke='%231f2328' stroke-opacity='.46' stroke-width='1.9' fill='none' stroke-linecap='round'/%3E%3Cpath d='M4 4.4 C17 2.3 30 6.9 45 4.9 S70 2.6 87 4.8 S109 6.6 117 4.1' stroke='%231f2328' stroke-opacity='.25' stroke-width='1.2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  --sketch-line-static: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 10' preserveAspectRatio='none'%3E%3Cpath d='M1 5.3 C11 2.1 25 8.1 38 5.1 S63 2.4 79 5.5 S102 8.5 119 4.6' stroke='%231f2328' stroke-opacity='.68' stroke-width='2.5' fill='none' stroke-linecap='round'/%3E%3Cpath d='M2 6.8 C15 3.8 27 8.7 41 6.4 S67 3.1 83 6.6 S106 8.7 118 5.9' stroke='%231f2328' stroke-opacity='.46' stroke-width='1.9' fill='none' stroke-linecap='round'/%3E%3Cpath d='M4 4.4 C17 2.3 30 6.9 45 4.9 S70 2.6 87 4.8 S109 6.6 117 4.1' stroke='%231f2328' stroke-opacity='.25' stroke-width='1.2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  --sketch-line: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 10' preserveAspectRatio='none'%3E%3Cpath d='M1,5.2C6,2.5,12,8,18,5.2S30,2.4,36,5.6S48,8.1,54,5.0S66,2.3,72,5.7S84,8,90,5.1S102,2.5,108,5.6S116,7.4,119,5.0' stroke='%231f2328' stroke-opacity='.68' stroke-width='2.5' fill='none' stroke-linecap='round'%3E%3Canimate attributeName='d' dur='4.4s' repeatCount='indefinite' values='M1,5.2C6,2.5,12,8,18,5.2S30,2.4,36,5.6S48,8.1,54,5.0S66,2.3,72,5.7S84,8,90,5.1S102,2.5,108,5.6S116,7.4,119,5.0;M1,4.8C6,7.8,12,2.6,18,5.4S30,7.9,36,4.9S48,2.2,54,5.8S66,7.8,72,4.8S84,2.3,90,5.7S102,7.7,108,4.9S116,2.8,119,5.4;M1,5.6C6,3.1,12,7.6,18,5.0S30,2.8,36,5.8S48,7.8,54,4.7S66,2.7,72,6.0S84,7.7,90,4.9S102,2.9,108,5.8S116,7.2,119,4.7;M1,4.9C6,7.5,12,2.9,18,5.3S30,7.5,36,5.0S48,2.7,54,5.6S66,7.6,72,5.0S84,2.8,90,5.5S102,7.6,108,5.1S116,3.1,119,5.2;M1,5.2C6,2.5,12,8,18,5.2S30,2.4,36,5.6S48,8.1,54,5.0S66,2.3,72,5.7S84,8,90,5.1S102,2.5,108,5.6S116,7.4,119,5.0'/%3E%3C/path%3E%3Cpath d='M2,6.6C7,4.1,13,8.8,19,6.4S31,3.9,37,6.8S49,8.9,55,6.3S67,3.8,73,6.9S85,8.8,91,6.2S103,4,109,6.7S116,8.3,118,6.0' stroke='%231f2328' stroke-opacity='.46' stroke-width='1.9' fill='none' stroke-linecap='round'%3E%3Canimate attributeName='d' dur='4.4s' repeatCount='indefinite' values='M2,6.6C7,4.1,13,8.8,19,6.4S31,3.9,37,6.8S49,8.9,55,6.3S67,3.8,73,6.9S85,8.8,91,6.2S103,4,109,6.7S116,8.3,118,6.0;M2,6.1C7,8.5,13,3.8,19,6.7S31,8.4,37,6.0S49,3.5,55,6.9S67,8.5,73,6.0S85,3.6,91,6.8S103,8.3,109,6.1S116,4.1,118,6.5;M2,6.9C7,4.4,13,8.5,19,6.2S31,4.1,37,7.1S49,8.7,55,6.1S67,4,73,7.1S85,8.7,91,6.0S103,4.2,109,6.9S116,8,118,5.8;M2,6.2C7,8.2,13,4.2,19,6.6S31,8.1,37,6.2S49,3.9,55,6.8S67,8.2,73,6.1S85,3.9,91,6.6S103,8.1,109,6.3S116,4.4,118,6.2;M2,6.6C7,4.1,13,8.8,19,6.4S31,3.9,37,6.8S49,8.9,55,6.3S67,3.8,73,6.9S85,8.8,91,6.2S103,4,109,6.7S116,8.3,118,6.0'/%3E%3C/path%3E%3Cpath d='M4,4.4C9,2.8,15,6.8,21,4.5S33,2.7,39,4.9S51,6.7,57,4.4S69,2.6,75,5.0S87,6.8,93,4.4S105,2.8,111,4.8S116,6.2,117,4.3' stroke='%231f2328' stroke-opacity='.25' stroke-width='1.2' fill='none' stroke-linecap='round'%3E%3Canimate attributeName='d' dur='4.4s' repeatCount='indefinite' values='M4,4.4C9,2.8,15,6.8,21,4.5S33,2.7,39,4.9S51,6.7,57,4.4S69,2.6,75,5.0S87,6.8,93,4.4S105,2.8,111,4.8S116,6.2,117,4.3;M4,4.0C9,6.3,15,2.9,21,4.8S33,6.4,39,4.2S51,2.6,57,5.1S69,6.3,75,4.2S87,2.7,93,5.0S105,6.2,111,4.3S116,3.2,117,4.7;M4,4.7C9,3.1,15,6.4,21,4.3S33,3,39,5.1S51,6.4,57,4.1S69,2.9,75,5.3S87,6.5,93,4.1S105,3,111,5.0S116,6,117,4.1;M4,4.1C9,6.1,15,3.2,21,4.7S33,6,39,4.4S51,3.1,57,5.0S69,6.1,75,4.3S87,3.1,93,4.9S105,6,111,4.5S116,3.4,117,4.5;M4,4.4C9,2.8,15,6.8,21,4.5S33,2.7,39,4.9S51,6.7,57,4.4S69,2.6,75,5.0S87,6.8,93,4.4S105,2.8,111,4.8S116,6.2,117,4.3'/%3E%3C/path%3E%3C/svg%3E");
+  --sketch-link-edge-h: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 6' preserveAspectRatio='none'%3E%3Cpath d='M0.5,3.1C2.5,1.1,4.6,5,6.7,3S9,1,11.3,3.1S13.9,5,16.2,3S18.4,1.1,20.7,3.2S22.8,4.5,23.5,3' stroke='%23111' stroke-opacity='.82' stroke-width='1.2' fill='none' stroke-linecap='round'%3E%3Canimate attributeName='d' dur='4.4s' repeatCount='indefinite' values='M0.5,3.1C2.5,1.1,4.6,5,6.7,3S9,1,11.3,3.1S13.9,5,16.2,3S18.4,1.1,20.7,3.2S22.8,4.5,23.5,3;M0.5,2.7C2.5,4.9,4.6,1.1,6.7,3.3S9,5,11.3,2.8S13.9,1.1,16.2,3.3S18.4,5,20.7,2.9S22.8,1.5,23.5,3.2;M0.5,3.4C2.5,1.4,4.6,4.8,6.7,2.8S9,1.3,11.3,3.5S13.9,4.8,16.2,2.8S18.4,1.4,20.7,3.4S22.8,4.3,23.5,2.8;M0.5,2.9C2.5,4.7,4.6,1.4,6.7,3.2S9,4.8,11.3,2.9S13.9,1.4,16.2,3.2S18.4,4.8,20.7,3S22.8,1.8,23.5,3.1;M0.5,3.1C2.5,1.1,4.6,5,6.7,3S9,1,11.3,3.1S13.9,5,16.2,3S18.4,1.1,20.7,3.2S22.8,4.5,23.5,3'/%3E%3C/path%3E%3C/svg%3E");
+  --sketch-link-edge-v: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 6 24' preserveAspectRatio='none'%3E%3Cpath d='M3,0.5C1.1,2.5,5,4.6,3,6.7S1,9,3.1,11.3S5,13.9,3,16.2S1.1,18.4,3.2,20.7S4.5,22.8,3,23.5' stroke='%23111' stroke-opacity='.82' stroke-width='1.2' fill='none' stroke-linecap='round'%3E%3Canimate attributeName='d' dur='4.4s' repeatCount='indefinite' values='M3,0.5C1.1,2.5,5,4.6,3,6.7S1,9,3.1,11.3S5,13.9,3,16.2S1.1,18.4,3.2,20.7S4.5,22.8,3,23.5;M2.7,0.5C4.9,2.5,1.1,4.6,3.3,6.7S5,9,2.8,11.3S1.1,13.9,3.3,16.2S5,18.4,2.9,20.7S1.5,22.8,3.2,23.5;M3.4,0.5C1.4,2.5,4.8,4.6,2.8,6.7S1.3,9,3.5,11.3S4.8,13.9,2.8,16.2S1.4,18.4,3.4,20.7S4.3,22.8,2.8,23.5;M2.9,0.5C4.7,2.5,1.4,4.6,3.2,6.7S4.8,9,2.9,11.3S1.4,13.9,3.2,16.2S4.8,18.4,3,20.7S1.8,22.8,3.1,23.5;M3,0.5C1.1,2.5,5,4.6,3,6.7S1,9,3.1,11.3S5,13.9,3,16.2S1.1,18.4,3.2,20.7S4.5,22.8,3,23.5'/%3E%3C/path%3E%3C/svg%3E");
+  --sketch-link-border-thickness: 3px;
+  --sketch-link-wave-length: 24px;
+  --sketch-wave-duration: 4.4s;
+  --sketch-wave-ease: linear;
+}
+
+@keyframes sketch-wave {
+  0% {
+    background-position: 49.8% 50%;
+    transform: translate3d(0, 0, 0) rotate(0deg) scaleX(1.001);
+  }
+  11% {
+    background-position: 50.2% 50.4%;
+    transform: translate3d(0, -0.08px, 0) rotate(0.02deg) scaleX(0.999);
+  }
+  23% {
+    background-position: 50.3% 49.7%;
+    transform: translate3d(0, 0.07px, 0) rotate(-0.02deg) scaleX(1.001);
+  }
+  34% {
+    background-position: 49.9% 50.5%;
+    transform: translate3d(0, -0.06px, 0) rotate(0.01deg) scaleX(0.999);
+  }
+  47% {
+    background-position: 49.7% 49.9%;
+    transform: translate3d(0, 0.08px, 0) rotate(-0.02deg) scaleX(1.001);
+  }
+  61% {
+    background-position: 50.2% 49.6%;
+    transform: translate3d(0, -0.05px, 0) rotate(0.01deg) scaleX(1);
+  }
+  74% {
+    background-position: 50.3% 50.3%;
+    transform: translate3d(0, 0.06px, 0) rotate(-0.01deg) scaleX(1.001);
+  }
+  86% {
+    background-position: 49.8% 49.8%;
+    transform: translate3d(0, -0.07px, 0) rotate(0.02deg) scaleX(0.999);
+  }
+  100% {
+    background-position: 49.8% 50%;
+    transform: translate3d(0, 0, 0) rotate(0deg) scaleX(1.001);
+  }
 }
 
 * {
@@ -143,8 +189,12 @@ body {
   height: 8px;
   background-image: var(--sketch-line);
   background-size: 100% 100%;
-  background-position: center;
+  background-position: 48% 50%;
   background-repeat: no-repeat;
+  transform-origin: center;
+  animation: sketch-wave var(--sketch-wave-duration) var(--sketch-wave-ease)
+    infinite;
+  will-change: transform, background-position;
 }
 
 .markdown-body p,
@@ -167,18 +217,47 @@ body {
 .markdown-body a {
   position: relative;
   display: inline-flex;
+  isolation: isolate;
   align-items: center;
   min-height: var(--tap-target);
   color: inherit;
   text-decoration: underline;
   text-underline-offset: 2px;
   background: var(--surface);
-  border: 1px solid var(--stroke);
-  padding: 0.45rem 0.5rem;
+  border: 0;
+  padding: 0.45rem 0.8rem;
   line-height: 1.25;
   margin-right: 0;
   max-width: 100%;
   overflow-wrap: anywhere;
+}
+
+.markdown-body a::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    var(--sketch-link-edge-h), var(--sketch-link-edge-h),
+    var(--sketch-link-edge-v), var(--sketch-link-edge-v);
+  background-size:
+    var(--sketch-link-wave-length) var(--sketch-link-border-thickness),
+    var(--sketch-link-wave-length) var(--sketch-link-border-thickness),
+    var(--sketch-link-border-thickness) var(--sketch-link-wave-length),
+    var(--sketch-link-border-thickness) var(--sketch-link-wave-length);
+  background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
+  background-position:
+    left top,
+    left bottom,
+    left top,
+    right top;
+  pointer-events: none;
+}
+
+.markdown-body a:hover::before,
+.markdown-body a:focus-visible::before {
+  background-image:
+    var(--sketch-link-edge-h), var(--sketch-link-edge-h),
+    var(--sketch-link-edge-v), var(--sketch-link-edge-v);
 }
 
 .markdown-body a::after {
@@ -194,7 +273,7 @@ body {
 
 .markdown-body a:hover,
 .markdown-body a:focus-visible {
-  background: transparent;
+  background: var(--surface);
   color: inherit;
 }
 
@@ -214,7 +293,7 @@ body {
   align-items: center;
   gap: 0.35rem;
   min-height: var(--tap-target);
-  padding: 0.45rem 0.7rem;
+  padding: 0.45rem 0.95rem;
 }
 
 .markdown-body .site-nav a {
@@ -263,8 +342,12 @@ body {
   margin: 1.6rem 0;
   background-image: var(--sketch-line);
   background-size: 100% 100%;
-  background-position: center;
+  background-position: 48% 50%;
   background-repeat: no-repeat;
+  transform-origin: center;
+  animation: sketch-wave var(--sketch-wave-duration) var(--sketch-wave-ease)
+    infinite;
+  will-change: transform, background-position;
 }
 
 .markdown-body hr::before,
@@ -322,7 +405,40 @@ body {
   background-image: var(--sketch-line);
   background-size: 100% 100%;
   background-repeat: no-repeat;
+  background-position: 48% 50%;
   opacity: 0.75;
+  transform-origin: center;
+  animation: sketch-wave var(--sketch-wave-duration) var(--sketch-wave-ease)
+    infinite;
+  will-change: transform, background-position;
+}
+
+.markdown-body h1::after {
+  animation-duration: var(--sketch-wave-duration);
+}
+
+.markdown-body h2::after {
+  animation-duration: var(--sketch-wave-duration);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --sketch-line: var(--sketch-line-static);
+  }
+
+  .markdown-body h1::after,
+  .markdown-body h2::after,
+  .markdown-body hr,
+  .markdown-body .profile-sketch__row::after {
+    animation: none;
+    transform: none;
+    background-position: center;
+  }
+
+  .markdown-body a::before {
+    background-image: none;
+    border: 1px solid var(--stroke);
+  }
 }
 
 .markdown-body .profile-sketch__row:last-child::after {
