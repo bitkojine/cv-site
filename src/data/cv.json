@@ -6,92 +6,104 @@
       "email": "robertas.rudys+www@gmail.com",
       "location": "Lithuania / EU",
       "remote": "Open to Remote (EU time zones)",
-      "stack": "Backend (.NET, SQL, Web)"
+      "stack": "Backend (.NET, C#, SQL Server, REST APIs)"
     },
-    "profile": "Senior .NET Software Engineer with ~7 years of professional experience working on data-driven and product-focused systems. Strong background in backend development with .NET, C#, MS SQL Server, and web development experience with modern frameworks.\n\nI've worked across stable product teams and fast-changing environments, which helped me become adaptable and pragmatic. I'm now intentionally focused on a long-term role in a stable product company, where I can take ownership, grow steadily, and deliver consistent value."
+    "profile": "Senior .NET Software Engineer working as a professional developer since 2015, delivering backend systems for data-heavy and product-focused environments. Core strengths include C#, .NET, ASP.NET Core, REST API design, MS SQL Server, and improving reliability in mature codebases.\n\nI have worked in both stable product teams and fast-changing environments, which built a pragmatic and ownership-driven engineering approach. I am focused on long-term product work with clear expectations, sustainable pace, and consistent delivery."
   },
   "coreSkills": [
     {
       "label": "Backend",
-      "value": "C#, .NET (Framework / Core / modern .NET), REST APIs"
+      "value": "C#, .NET (Framework/Core/modern .NET), ASP.NET Core, REST APIs, backend services"
     },
     {
       "label": "Databases",
-      "value": "MS SQL Server, T-SQL, data modeling, performance tuning"
+      "value": "MS SQL Server, T-SQL, query optimization, data modeling, performance tuning"
     },
     {
       "label": "Frontend",
-      "value": "Angular (working knowledge), HTML/CSS, JavaScript/TypeScript"
+      "value": "Angular (working knowledge), TypeScript, JavaScript, HTML, CSS"
     },
     {
       "label": "Architecture",
-      "value": "Monoliths, modular systems, integrations"
+      "value": "Monoliths, modular systems, service integrations, API-driven design"
     },
     {
       "label": "Practices",
-      "value": "Code reviews, debugging legacy systems, collaboration in cross-functional teams"
+      "value": "Code reviews, debugging legacy systems, production troubleshooting, cross-functional collaboration"
     },
     {
       "label": "Other",
-      "value": "Git, CI/CD basics, cloud fundamentals (Azure – working knowledge)"
+      "value": "Git, CI/CD pipelines, cloud fundamentals (Azure - working knowledge)"
     }
   ],
   "experience": [
     {
       "title": "Senior .NET Software Engineer",
       "company": "Product Company (EU, Remote)",
-      "period": "2026 – Present",
+      "location": "EU, Remote",
+      "startDate": "2026",
+      "endDate": null,
       "description": [
-        "Building and maintaining backend services for a stable product platform",
-        "Improving performance and reliability of core .NET services",
-        "Partnering with product and data teams to deliver long-term roadmap work"
+        "Own and maintain backend services and APIs that support core product workflows",
+        "Improve .NET service performance, reliability, and production stability",
+        "Collaborate with product and data stakeholders to deliver long-term roadmap features"
       ]
     },
     {
       "title": "Senior .NET Software Engineer",
       "company": "Adform Lithuania",
-      "period": "2025",
+      "location": "Lithuania",
+      "startDate": "2025",
+      "endDate": "2025",
       "description": [
-        "Engineered scalable AdTech backend services in a high-concurrency environment",
-        "Developed and optimized mission-critical features in existing production codebases",
-        "Collaborated within a mature engineering organization to uphold strict technical standards"
+        "Built scalable AdTech backend services and API endpoints in a high-concurrency production environment",
+        "Delivered and optimized mission-critical features in large, existing codebases",
+        "Worked in a mature engineering organization with high quality, testing, and reliability standards"
       ]
     },
     {
-      "title": "Senior / Software Engineer (.NET)",
+      "title": "Senior Software Engineer (.NET)",
       "company": "Ignitis Group Services Center",
-      "period": "2023",
+      "location": "Lithuania",
+      "startDate": "2023",
+      "endDate": "2023",
       "description": [
-        "Refactored and maintained enterprise-grade .NET internal systems",
-        "Extended complex codebases while ensuring stability and performance"
+        "Refactored and maintained enterprise .NET internal systems used by business teams",
+        "Extended complex legacy code while preserving stability, performance, and maintainability"
       ]
     },
     {
       "title": "Software Engineer (.NET / Blockchain)",
       "company": "Super How",
-      "period": "2021 – 2022",
+      "location": "Lithuania",
+      "startDate": "2021",
+      "endDate": "2022",
       "description": [
-        "Developed and deployed decentralized applications (dApps) and smart contract integrations",
-        "Delivered end-to-end features in a fast-paced, early-stage product environment"
+        "Developed and shipped decentralized applications and smart-contract integrations",
+        "Delivered end-to-end features in a fast-paced, early-stage product setting"
       ]
     },
     {
       "title": "Software Engineer (.NET / SQL)",
       "company": "Euromonitor International",
-      "period": "2018 – 2020",
+      "location": "Lithuania",
+      "startDate": "2018",
+      "endDate": "2020",
       "description": [
-        "Engineered data-heavy MS SQL Server solutions for international market research",
-        "Led full-stack development initiatives using .NET and Angular for key product modules",
-        "Maintained long-term stability of core business systems used globally"
+        "Designed and implemented data-heavy MS SQL Server solutions for market research products",
+        "Delivered full-stack features with .NET and Angular for key internal modules",
+        "Maintained stability of long-lived business systems used across global teams"
       ]
     },
     {
       "title": "Software Engineer (C# / Unity)",
       "company": "Invenis",
-      "period": "2015",
+      "location": "Lithuania",
+      "startDate": "2015",
+      "endDate": "2015",
       "description": [
         "Developed interactive 3D applications using C# and Unity3D",
-        "Implemented core game logic and UI systems for client projects"
+        "Implemented core gameplay logic and UI systems for client-facing projects"
       ]
     }
   ],
@@ -99,20 +111,20 @@
     {
       "title": "Founder / Product & Engineering",
       "company": "Early-Stage Startup (Self-Initiated)",
-      "period": "2024",
+      "location": "Lithuania",
+      "startDate": "2024",
+      "endDate": "2024",
       "description": [
-        "Initiated a startup project based on accumulated product, marketing, and technical knowledge",
-        "Worked on early product definition, validation ideas, and technical direction",
-        "Explored go-to-market strategy and team formation",
-        "Closed the legal entity after the team did not fully materialize, retaining lessons learned around product scope, execution, and risk"
+        "Founded and operated an early-stage startup initiative from concept to early validation",
+        "Defined product scope, explored market fit, and set technical direction",
+        "Tested go-to-market assumptions and hiring/team options",
+        "Closed the legal entity when team formation stalled, capturing practical lessons on execution and risk"
       ]
     }
   ],
   "lookingFor": [
-    "Stable product company",
-    "Backend or .NET role",
-    "Long-term collaboration and clear expectations",
-    "English-first engineering environment",
-    "Sustainable pace and ownership over time"
+    "Senior .NET Backend Engineer or Senior C# Developer role focused on SQL-heavy systems",
+    "Stable product company with long-term ownership and clear expectations",
+    "English-first engineering team with sustainable pace and strong collaboration"
   ]
 }

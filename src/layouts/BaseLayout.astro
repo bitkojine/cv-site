@@ -1,6 +1,7 @@
 ---
 import 'github-markdown-css/github-markdown.css';
 import '../styles/global.css';
+import cvData from '../data/cv.json';
 
 interface Props {
   title?: string;
@@ -12,6 +13,45 @@ const {
   description = 'Resume and writing by Robertas Rudys.',
 } = Astro.props;
 const currentYear = new Date().getFullYear();
+const { personalInfo, coreSkills, experience, independentProjects } = cvData;
+const metaKeywords = [
+  personalInfo.title,
+  'Senior Backend Engineer',
+  '.NET Developer',
+  'C# Developer',
+  'ASP.NET Core',
+  'REST APIs',
+  'MS SQL Server',
+  'T-SQL',
+  ...coreSkills.map((skill) => `${skill.label}: ${skill.value}`),
+].join(', ');
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: personalInfo.name,
+  jobTitle: personalInfo.title,
+  description,
+  url: 'https://robertasrudys.com',
+  email: personalInfo.contact.email,
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: personalInfo.contact.location,
+  },
+  sameAs: [
+    'https://github.com/bitkojine',
+    'https://www.linkedin.com/in/robertasr/',
+  ],
+  knowsAbout: coreSkills.map((skill) => skill.value),
+  hasOccupation: [...experience, ...independentProjects].map((item) => ({
+    '@type': 'Occupation',
+    name: item.title,
+    occupationalCategory: item.company,
+    startDate: item.startDate,
+    ...(item.endDate ? { endDate: item.endDate } : {}),
+    description: item.description.join(' '),
+  })),
+};
 ---
 
 <!-- Intent: render every page like a plain Markdown document with minimal structure and styling. --><!doctype html>
@@ -23,6 +63,19 @@ const currentYear = new Date().getFullYear();
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
+    <meta name="author" content={personalInfo.name} />
+    <meta name="robots" content="index, follow" />
+    <meta name="keywords" content={metaKeywords} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="profile" />
+    <meta property="og:url" content={new URL(Astro.url.pathname, Astro.site)} />
+    <meta property="og:image" content={new URL('og-image.png', Astro.site)} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={new URL('og-image.png', Astro.site)} />
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
   </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to main content</a>
@@ -34,7 +87,6 @@ const currentYear = new Date().getFullYear();
             I clicked enough cookies in Cookie Clicker; this site uses none.
           </p>
           <p>&copy; {currentYear} Robertas Rudys. All rights reserved.</p>
-          <p>As if AI web scrapers care, lmao.</p>
         </footer>
       </article>
     </main>
