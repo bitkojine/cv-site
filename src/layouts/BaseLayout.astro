@@ -19,7 +19,15 @@ function toIsoMonth(value: string) {
   return value.length === 4 ? `${value}-01` : value;
 }
 
-const experienceTimeline = [...experience, ...independentProjects];
+function toSortableMonth(value: string) {
+  const normalized = toIsoMonth(value);
+  const [year, month] = normalized.split('-').map(Number);
+  return year * 100 + month;
+}
+
+const experienceTimeline = [...experience, ...independentProjects].sort(
+  (a, b) => toSortableMonth(b.startDate) - toSortableMonth(a.startDate)
+);
 const knowsAbout = coreSkills.flatMap((skill) =>
   skill.value
     .split(',')
