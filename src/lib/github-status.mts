@@ -5,7 +5,7 @@ export type WorkflowBadgeState = 'running' | 'success' | 'failure' | 'unknown';
 
 export interface WorkflowBadgeResolved {
   state: WorkflowBadgeState;
-  label: 'Running' | 'success' | 'failure' | 'Unknown';
+  label: 'Running' | 'Success' | 'Failure' | 'Unknown';
 }
 
 export const resolveWorkflowBadge = (
@@ -17,11 +17,11 @@ export const resolveWorkflowBadge = (
   }
 
   if (status === 'completed' && conclusion === 'success') {
-    return { state: 'success', label: 'success' };
+    return { state: 'success', label: 'Success' };
   }
 
   if (status === 'completed' && conclusion === 'failure') {
-    return { state: 'failure', label: 'failure' };
+    return { state: 'failure', label: 'Failure' };
   }
 
   return { state: 'unknown', label: 'Unknown' };
