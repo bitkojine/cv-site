@@ -42,6 +42,19 @@ The workflow was simple and repeatable:
 
 This mattered more than prompt tricks. Tight feedback loops beat giant one-shot prompts.
 
+## The Commit History Is The Real Story
+
+If you want to understand how this site was built, read the commit history from start to finish. That timeline shows every architectural move, every UI polish pass, and every bug fix that survived review.
+
+I treat commits as project documentation:
+
+- Small scoped changes make intent obvious.
+- Commit messages explain why a change exists.
+- Diffs show tradeoffs more honestly than a polished summary.
+- Reverts and follow-up fixes show what did not work the first time.
+
+The post you are reading is a summary, but the repository history is the full transcript.
+
 ## What AI Was Good At
 
 - Generating first drafts of components and styles.
@@ -69,6 +82,6 @@ The project now has a cleaner blog pipeline, stronger metadata handling, and bet
 
 ## Open Source, Open Process
 
-Everything is public on GitHub: [github.com/bitkojine/cv-site](https://github.com/bitkojine/cv-site). You can see the commit history and the decisions that shaped the site.
+Everything is public on GitHub: [github.com/bitkojine/cv-site](https://github.com/bitkojine/cv-site). If you want the unfiltered build process, start with the earliest commit and walk forward. That is where the full decision trail lives.
 
 If you are exploring AI pair-programming, start with a small change. Give clear context, verify every change locally, and iterate in short loops. That is where the practical value compounds.
