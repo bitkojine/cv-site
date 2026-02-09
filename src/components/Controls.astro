@@ -1,5 +1,5 @@
 ---
-import { Sun, Moon, FileText, NotebookPen, Share2 } from '@lucide/astro';
+import { FileText, NotebookPen, Share2 } from '@lucide/astro';
 
 const isCvPage = Astro.url.pathname === '/' || Astro.url.pathname === '';
 ---
@@ -79,33 +79,9 @@ const isCvPage = Astro.url.pathname === '/' || Astro.url.pathname === '';
     window.print();
   }
 
-  function toggleDarkMode() {
-    const isDark = document.documentElement.classList.toggle('dark-mode');
-    localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
-    updateThemeAssets(isDark);
-  }
-
   function toggleDebugGrid() {
     const isOn = document.body.classList.toggle('debug-grid');
     localStorage.setItem('debugGrid', isOn ? 'enabled' : 'disabled');
-  }
-
-  function updateThemeAssets(isDark: boolean) {
-    const sunIcon = document.querySelector('.sun-icon');
-    const moonIcon = document.querySelector('.moon-icon');
-    const toggleText = document.querySelector('.toggle-text');
-
-    if (sunIcon && moonIcon && toggleText) {
-      if (isDark) {
-        sunIcon.classList.remove('hidden');
-        moonIcon.classList.add('hidden');
-        toggleText.textContent = 'Light';
-      } else {
-        sunIcon.classList.add('hidden');
-        moonIcon.classList.remove('hidden');
-        toggleText.textContent = 'Dark';
-      }
-    }
   }
 
   // Initialization logic
@@ -114,8 +90,6 @@ const isCvPage = Astro.url.pathname === '/' || Astro.url.pathname === '';
       document.body.classList.add('debug-grid');
     }
 
-    const isDark = document.documentElement.classList.contains('dark-mode');
-    updateThemeAssets(isDark);
     const isCvPage =
       window.location.pathname === '/' || window.location.pathname === '';
     document
@@ -125,9 +99,6 @@ const isCvPage = Astro.url.pathname === '/' || Astro.url.pathname === '';
       .querySelectorAll('.non-cv-only')
       .forEach((el) => el.classList.toggle('hidden', isCvPage));
 
-    document
-      .querySelector('.dark-mode-toggle')
-      ?.addEventListener('click', toggleDarkMode);
     document
       .querySelector('.download-btn')
       ?.addEventListener('click', downloadPDF);
@@ -141,15 +112,6 @@ const isCvPage = Astro.url.pathname === '/' || Astro.url.pathname === '';
 </script>
 
 <div class="controls-dock no-print">
-  <button
-    class="btn-primary dark-mode-toggle"
-    type="button"
-    aria-label="Toggle dark mode"
-  >
-    <Sun class="sun-icon hidden" size={20} />
-    <Moon class="moon-icon" size={20} />
-    <span class="toggle-text">Dark</span>
-  </button>
   <button
     class={`btn-primary download-btn cv-only${isCvPage ? '' : ' hidden'}`}
     type="button"

@@ -48,28 +48,12 @@ const jsonLd = {
       content="Software Engineer, .NET, ASP.NET, C#, Backend Developer, Azure, Microservices"
     />
 
-    <!-- Dark Mode Initialization Script (Prevents FOUC) -->
+    <meta name="color-scheme" content="light" />
+    <!-- Light mode initialization -->
     <script is:inline>
-      const theme = (() => {
-        if (
-          typeof localStorage !== 'undefined' &&
-          localStorage.getItem('darkMode')
-        ) {
-          return localStorage.getItem('darkMode') === 'enabled'
-            ? 'dark'
-            : 'light';
-        }
-        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-          return 'dark';
-        }
-        return 'light';
-      })();
-
-      if (theme === 'dark') {
-        document.documentElement.classList.add('dark-mode');
-      } else {
-        document.documentElement.classList.remove('dark-mode');
-      }
+      document.documentElement.classList.remove('dark-mode');
+      document.documentElement.style.colorScheme = 'light';
+      localStorage.removeItem('darkMode');
 
       // Standalone mode detection (iOS + PWA)
       const isStandalone =
