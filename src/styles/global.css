@@ -8,6 +8,7 @@
 
 html {
   -webkit-text-size-adjust: 100%;
+  color-scheme: light;
   background: #fff;
   overflow-x: hidden;
   overflow-x: clip;
@@ -27,6 +28,11 @@ body {
 
 .markdown-body {
   position: relative;
+  color-scheme: light;
+  --bgColor-default: #fff;
+  --fgColor-default: #1f2328;
+  --fgColor-muted: #59636e;
+  --borderColor-muted: #d1d9e0b3;
   width: 100%;
   min-width: 0;
   max-width: 100%;
@@ -36,6 +42,7 @@ body {
     max(14px, env(safe-area-inset-left));
   background-color: #fff;
   background-image: none;
+  color: #1f2328;
   overflow-wrap: anywhere;
   word-break: normal;
 }
