@@ -1,0 +1,32 @@
+---
+import 'github-markdown-css/github-markdown.css';
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'Robertas Rudys',
+  description = 'Resume and writing by Robertas Rudys.',
+} = Astro.props;
+---
+
+<!-- Intent: render every page like a plain Markdown document with minimal structure and styling. --><!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
+  </head>
+  <body>
+    <main class="page-shell">
+      <article class="markdown-body">
+        <slot />
+      </article>
+    </main>
+  </body>
+</html>

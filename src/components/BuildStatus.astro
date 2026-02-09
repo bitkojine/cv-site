@@ -1,0 +1,44 @@
+---
+import WorkflowStatusBadge from './WorkflowStatusBadge.astro';
+import { getGithubData } from '../lib/github-actions.mts';
+import type { WorkflowRun } from '../lib/github-actions.mts';
+
+const githubOwner = 'bitkojine';
+const githubRepo = 'cv-site';
+const shouldFetchGithub = true;
+
+let latestWorkflowRuns: WorkflowRun[] = [];
+
+if (shouldFetchGithub) {
+  try {
+    const cacheData = await getGithubData({
+      owner: githubOwner,
+      repo: githubRepo,
+      branch: 'main',
+    });
+    latestWorkflowRuns = cacheData.latestWorkflowRuns;
+  } catch {
+    latestWorkflowRuns = [];
+  }
+}
+---
+
+{
+  latestWorkflowRuns.length > 0 ? (
+    <div class="build-status-list">
+      {latestWorkflowRuns.map((run) => (
+        <WorkflowStatusBadge run={run} />
+      ))}
+    </div>
+  ) : (
+    <p>
+      <a
+        href="https://github.com/bitkojine/cv-site/actions"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        View Build Status on GitHub
+      </a>
+    </p>
+  )
+}

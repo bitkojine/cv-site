@@ -1,988 +1,181 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import Header from '../components/Header.astro';
-import Section from '../components/Section.astro';
-import ExperienceTimelineItem from '../components/ExperienceTimelineItem.astro';
-import WorkflowStatusBadge from '../components/WorkflowStatusBadge.astro';
-
-import cvDataRaw from '../data/cv.json';
-import { CVSchema } from '../data/schema';
-import { getCollection } from 'astro:content';
-import { getGithubData } from '../lib/github-actions.mts';
-import type { GitHubCommit, WorkflowRun } from '../lib/github-actions.mts';
-
-// Validate data at build time
-const cvData = CVSchema.parse(cvDataRaw);
-
-const {
-  personalInfo,
-  coreSkills,
-  experience,
-  independentProjects,
-  lookingFor,
-} = cvData;
-
-// Get latest blog posts (max 3)
-const allPosts = await getCollection('blog', ({ data }) => !data.draft);
-const latestPosts = allPosts
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
-  .slice(0, 3);
-
-const githubOwner = 'bitkojine';
-const githubRepo = 'cv-site';
-const shouldFetchGithub = !import.meta.env.DEV;
-let latestWorkflowRuns: WorkflowRun[] = [];
-let latestCommits: GitHubCommit[] = [];
-
-if (shouldFetchGithub) {
-  const cacheData = await getGithubData({
-    owner: githubOwner,
-    repo: githubRepo,
-    branch: 'main',
-  });
-  latestWorkflowRuns = cacheData.latestWorkflowRuns;
-  latestCommits = cacheData.latestCommits;
-}
-
-const formatVilniusDateTime = (raw: string) => {
-  const date = new Date(raw);
-  const datePart = date.toLocaleDateString('lt-LT', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    timeZone: 'Europe/Vilnius',
-  });
-  const timePart = date.toLocaleTimeString('lt-LT', {
-    hour: '2-digit',
-    minute: '2-digit',
-    timeZone: 'Europe/Vilnius',
-    hour12: false,
-    timeZoneName: 'short',
-  });
-  return `${datePart}d. ${timePart}`;
-};
-
-const extractStartYear = (period: string) => {
-  const match = period.match(/\d{4}/);
-  return match ? Number.parseInt(match[0], 10) : 0;
-};
-
-const combinedExperience = [
-  ...experience.map((item) => ({ ...item, kind: 'Company' as const })),
-  ...independentProjects.map((item) => ({ ...item, kind: 'Startup' as const })),
-]
-  .map((item) => ({
-    ...item,
-    year: extractStartYear(item.period),
-  }))
-  .sort((a, b) => b.year - a.year);
-
-const timelineYears = Array.from(
-  new Set(combinedExperience.map((item) => item.year))
-)
-  .filter((year) => year > 0)
-  .sort((a, b) => b - a);
+import BaseLayout from '../layouts/BaseLayout.astro';
+import BuildStatus from '../components/BuildStatus.astro';
 ---
 
-<Layout
-  title={`${personalInfo.name} - ${personalInfo.title}`}
-  description={`Software engineer specializing in ${personalInfo.contact.stack}. ${personalInfo.profile.slice(0, 150)}...`}
+<BaseLayout
+  title="Robertas Rudys - Senior .NET Software Engineer"
+  description="Resume and profile of Robertas Rudys."
 >
-  <main class="container">
-    <Header
-      name={personalInfo.name}
-      title={personalInfo.title}
-      contact={personalInfo.contact}
-    />
+  <h1>Robertas Rudys</h1>
 
-    <Section title="PROFILE">
-      {personalInfo.profile.split('\n\n').map((p) => <p>{p}</p>)}
-    </Section>
+  <p>Senior .NET Software Engineer</p>
 
-    <Section title="CORE SKILLS">
-      <ul class="skills-list">
-        {
-          coreSkills.map((skill) => (
-            <li>
-              <strong>{skill.label}:</strong> {skill.value}
-            </li>
-          ))
-        }
-      </ul>
-    </Section>
-
-    <Section title="EXPERIENCE TIMELINE">
-      <div class="timeline-selector" role="tablist" aria-label="Jump to year">
-        {
-          timelineYears.map((year, index) => (
-            <button
-              class={`year-chip ${index === 0 ? 'is-active' : ''}`}
-              type="button"
-              data-year={year}
-              aria-pressed={index === 0 ? 'true' : 'false'}
-            >
-              {year}
-            </button>
-          ))
-        }
-      </div>
-      <div class="timeline-scroll" role="list">
-        <div class="timeline-spacer" aria-hidden="true"></div>
-        {
-          combinedExperience.map((item) => (
-            <div id={`year-${item.year}`} class="timeline-anchor">
-              <ExperienceTimelineItem {...item} />
-            </div>
-          ))
-        }
-        <div class="timeline-spacer" aria-hidden="true"></div>
-      </div>
-    </Section>
-
-    <Section title="WHAT I'M LOOKING FOR NEXT">
-      <ul class="next-list">
-        {lookingFor.map((item) => <li>{item}</li>)}
-      </ul>
-    </Section>
-
-    <div class="no-print">
-      <Section title="ENDORSEMENTS">
-        <p>
-          If we worked together or you reviewed my work, a short public
-          endorsement helps hiring teams move faster.
-        </p>
-        <p class="endorsement-explainer">
-          Clicking "Post Endorsement" opens a prefilled GitHub issue draft in a
-          new tab. You review it and click "Submit new issue" yourself—nothing
-          is posted automatically.
-        </p>
-        <form
-          id="endorsement-form"
-          class="endorsement-form"
-          data-github-owner={githubOwner}
-          data-github-repo={githubRepo}
-        >
-          <label class="endorsement-field">
-            <span>Name</span>
-            <input
-              type="text"
-              name="name"
-              placeholder="Ada Lovelace"
-              autocomplete="name"
-              required
-            />
-          </label>
-          <label class="endorsement-field">
-            <span>Company / Role</span>
-            <input
-              type="text"
-              name="company"
-              placeholder="Acme Corp · Engineering Manager"
-              required
-            />
-          </label>
-          <label class="endorsement-field">
-            <span>Endorsement (1–3 sentences)</span>
-            <textarea
-              name="note"
-              rows="3"
-              placeholder="Robertas shipped critical backend migrations with calm, clear communication."
-              required></textarea>
-          </label>
-          <button type="submit" class="endorsement-submit">
-            Post Endorsement on GitHub
-          </button>
-        </form>
-        <p
-          id="endorsement-success"
-          class="endorsement-success"
-          role="status"
-          aria-live="polite"
-        >
-        </p>
-        <p class="endorsement-help">
-          A draft issue opens in a new tab so you can review before posting.
-        </p>
-      </Section>
-    </div>
-
-    {
-      latestPosts.length > 0 && (
-        <div class="no-print">
-          <Section title="LATEST ARTICLES">
-            <div class="articles-preview">
-              {latestPosts.map((post) => (
-                <a href={`/blog/${post.slug}`} class="article-link">
-                  <span class="article-title">{post.data.title}</span>
-                  <span class="article-date">
-                    {post.data.date.toLocaleDateString('lt-LT', {
-                      year: 'numeric',
-                      month: '2-digit',
-                      day: '2-digit',
-                      timeZone: 'Europe/Vilnius',
-                    })}
-                  </span>
-                </a>
-              ))}
-              <a href="/blog" class="view-all-link">
-                View all posts →
-              </a>
-            </div>
-          </Section>
-        </div>
-      )
-    }
-
-    <footer class="last-updated no-print">
-      <div
-        id="github-actions-container"
-        class="github-actions-container no-print"
-        data-github-owner={githubOwner}
-        data-github-repo={githubRepo}
-        data-github-branch="main"
+  <ul>
+    <li>
+      Email:
+      <a href="mailto:robertas.rudys+www@gmail.com"
+        >robertas.rudys+www@gmail.com</a
       >
-        {
-          latestWorkflowRuns.length > 0 ? (
-            latestWorkflowRuns.map((run) => {
-              return <WorkflowStatusBadge run={run} />;
-            })
-          ) : (
-            <a
-              href="https://github.com/bitkojine/cv-site/actions"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="workflow-badge workflow-badge--fallback"
-              data-status="unknown"
-            >
-              <span class="workflow-badge__dot" aria-hidden="true" />
-              <span class="workflow-badge__meta">
-                <span class="workflow-badge__name">View Build Status</span>
-                <span class="workflow-badge__status">on GitHub</span>
-              </span>
-            </a>
-          )
-        }
-      </div>
-
-      <div
-        id="github-commits-container"
-        class="github-commits-container no-print"
-      >
-        <h2>LATEST COMMITS</h2>
-        {
-          latestCommits.length > 0 ? (
-            <ul class="commits-list">
-              {latestCommits.map((commit) => {
-                const message = commit.commit.message.split('\n')[0];
-                const date = formatVilniusDateTime(commit.commit.author.date);
-                return (
-                  <li>
-                    <a
-                      href={commit.html_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {message}
-                    </a>
-                    <span class="commit-meta"> ({date})</span>
-                  </li>
-                );
-              })}
-            </ul>
-          ) : (
-            <p class="fallback-text">
-              <a
-                href="https://github.com/bitkojine/cv-site/commits"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                View on GitHub →
-              </a>
-            </p>
-          )
-        }
-      </div>
-    </footer>
-  </main>
-</Layout>
-
-<script is:inline>
-  const endorsementForm = document.getElementById('endorsement-form');
-  const endorsementSuccess = document.getElementById('endorsement-success');
-
-  if (endorsementForm) {
-    let started = false;
-    endorsementForm.addEventListener('focusin', () => {
-      if (!started) {
-        started = true;
-        window.cvTrack?.('endorsement_started');
-      }
-    });
-
-    endorsementForm.addEventListener('submit', (event) => {
-      event.preventDefault();
-      const formData = new FormData(endorsementForm);
-      const name = (formData.get('name') || '').toString().trim();
-      const company = (formData.get('company') || '').toString().trim();
-      const note = (formData.get('note') || '').toString().trim();
-
-      if (!name || !company || !note) {
-        return;
-      }
-
-      const owner = endorsementForm.dataset.githubOwner || 'bitkojine';
-      const repo = endorsementForm.dataset.githubRepo || 'cv-site';
-      const issueUrl = new URL(
-        `https://github.com/${owner}/${repo}/issues/new`
-      );
-      issueUrl.searchParams.set(
-        'title',
-        `Endorsement from ${name} (${company})`
-      );
-      issueUrl.searchParams.set(
-        'body',
-        `**Endorser**: ${name}\n**Company/Role**: ${company}\n\n${note}\n\n---\nSubmitted via ${window.location.origin}`
-      );
-      issueUrl.searchParams.set('labels', 'endorsement');
-
-      window.cvTrack?.('endorsement_submitted', { channel: 'github_issue' });
-      window.open(issueUrl.toString(), '_blank', 'noopener,noreferrer');
-
-      endorsementForm.reset();
-      if (endorsementSuccess) {
-        endorsementSuccess.textContent =
-          'Thanks! A GitHub issue draft opened in a new tab.';
-      }
-    });
-  }
-
-  const timeline = document.querySelector('.timeline-scroll');
-  const yearChips = Array.from(document.querySelectorAll('.year-chip'));
-  const timelineAnchors = Array.from(
-    document.querySelectorAll('.timeline-anchor')
-  );
-  let isProgrammaticScroll = false;
-  let programmaticScrollTimer;
-
-  const setActiveYear = (year) => {
-    yearChips.forEach((chip) => {
-      const isActive = chip.dataset.year === year;
-      chip.classList.toggle('is-active', isActive);
-      chip.setAttribute('aria-pressed', isActive ? 'true' : 'false');
-    });
-  };
-
-  if (timeline && yearChips.length && timelineAnchors.length) {
-    yearChips.forEach((chip) => {
-      chip.addEventListener('click', () => {
-        const targetYear = chip.dataset.year;
-        if (!targetYear) {
-          return;
-        }
-        const target = document.getElementById(`year-${targetYear}`);
-        if (target) {
-          isProgrammaticScroll = true;
-          if (programmaticScrollTimer) {
-            window.clearTimeout(programmaticScrollTimer);
-          }
-          setActiveYear(targetYear);
-          target.scrollIntoView({
-            behavior: 'smooth',
-            block: 'nearest',
-            inline: 'start',
-          });
-          programmaticScrollTimer = window.setTimeout(() => {
-            isProgrammaticScroll = false;
-            updateActiveFromScroll();
-          }, 300);
-        }
-      });
-    });
-
-    let ticking = false;
-    const updateActiveFromScroll = () => {
-      const timelineRect = timeline.getBoundingClientRect();
-      const maxScrollLeft = timeline.scrollWidth - timeline.clientWidth;
-
-      if (timeline.scrollLeft <= 1) {
-        setActiveYear(yearChips[0].dataset.year);
-        return;
-      }
-
-      if (timeline.scrollLeft >= maxScrollLeft - 1) {
-        setActiveYear(yearChips[yearChips.length - 1].dataset.year);
-        return;
-      }
-
-      let closest = null;
-      let closestDistance = Number.POSITIVE_INFINITY;
-
-      timelineAnchors.forEach((anchor) => {
-        const rect = anchor.getBoundingClientRect();
-        const distance = Math.abs(rect.left - timelineRect.left);
-        if (distance < closestDistance) {
-          closestDistance = distance;
-          closest = anchor;
-        }
-      });
-
-      if (closest && closest.id) {
-        const year = closest.id.replace('year-', '');
-        setActiveYear(year);
-      }
-    };
-
-    updateActiveFromScroll();
-
-    timeline.addEventListener('scroll', () => {
-      if (isProgrammaticScroll) {
-        if (programmaticScrollTimer) {
-          window.clearTimeout(programmaticScrollTimer);
-        }
-        programmaticScrollTimer = window.setTimeout(() => {
-          isProgrammaticScroll = false;
-          updateActiveFromScroll();
-        }, 120);
-        return;
-      }
-      if (ticking) {
-        return;
-      }
-      ticking = true;
-      window.requestAnimationFrame(() => {
-        updateActiveFromScroll();
-        ticking = false;
-      });
-    });
-  }
-
-  const actionsContainer = document.getElementById('github-actions-container');
-  if (actionsContainer) {
-    const badges = Array.from(
-      actionsContainer.querySelectorAll('.workflow-badge[data-workflow-id]')
-    );
-    const owner = actionsContainer.dataset.githubOwner;
-    const repo = actionsContainer.dataset.githubRepo;
-    const branch = actionsContainer.dataset.githubBranch;
-
-    const resolveBadge = (status, conclusion) => {
-      if (status === 'in_progress' || status === 'queued') {
-        return { state: 'running', label: 'Running' };
-      }
-      if (status === 'completed' && conclusion === 'success') {
-        return { state: 'success', label: 'Success' };
-      }
-      if (status === 'completed' && conclusion === 'failure') {
-        return { state: 'failure', label: 'Failure' };
-      }
-      return { state: 'unknown', label: 'Unknown' };
-    };
-
-    const applyRuns = (runs) => {
-      const latestRuns = new Map();
-      for (const run of runs || []) {
-        if (run && !latestRuns.has(run.workflow_id)) {
-          latestRuns.set(run.workflow_id, run);
-        }
-      }
-      badges.forEach((badge) => {
-        const workflowId = Number(badge.dataset.workflowId);
-        const run = latestRuns.get(workflowId);
-        if (!run) {
-          return;
-        }
-        const resolved = resolveBadge(run.status, run.conclusion);
-        badge.dataset.status = resolved.state;
-        const statusEl = badge.querySelector('.workflow-badge__status');
-        if (statusEl) {
-          statusEl.textContent = resolved.label;
-        }
-        const nameEl = badge.querySelector('.workflow-badge__name');
-        const nameText = nameEl ? nameEl.textContent : 'Workflow';
-        badge.setAttribute(
-          'aria-label',
-          `${nameText} workflow status: ${resolved.label}`
-        );
-      });
-    };
-
-    if (owner && repo) {
-      const runsUrl = new URL(
-        `https://api.github.com/repos/${owner}/${repo}/actions/runs`
-      );
-      runsUrl.searchParams.set('per_page', '30');
-      if (branch) {
-        runsUrl.searchParams.set('branch', branch);
-      }
-
-      fetch(runsUrl.toString(), {
-        headers: {
-          Accept: 'application/vnd.github+json',
-        },
-      })
-        .then((response) => (response.ok ? response.json() : null))
-        .then((data) => {
-          if (data && Array.isArray(data.workflow_runs)) {
-            applyRuns(data.workflow_runs);
-          }
-        })
-        .catch(() => {});
-    }
-  }
-</script>
-
-<style>
-  .skills-list,
-  .next-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-
-  .skills-list li,
-  .next-list li {
-    margin-bottom: 0.75rem;
-    position: relative;
-    padding-left: 1.25rem;
-  }
-
-  .skills-list li::before,
-  .next-list li::before {
-    content: '→';
-    position: absolute;
-    left: 0;
-    color: var(--accent-text);
-    font-weight: bold;
-  }
-
-  .container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 2rem 1.5rem;
-  }
-
-  .timeline-selector {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-    margin-bottom: 1rem;
-  }
-
-  .year-chip {
-    border: 1px solid var(--border-subtle);
-    background: var(--bg-card);
-    color: var(--text-primary);
-    padding: 0.35rem 0.75rem;
-    border-radius: 999px;
-    font-weight: 600;
-    font-size: var(--fs-sm);
-    cursor: pointer;
-    transition:
-      color 0.2s ease,
-      border-color 0.2s ease,
-      background 0.2s ease,
-      transform 0.2s ease;
-  }
-
-  .year-chip:hover {
-    color: var(--text-primary);
-    border-color: var(--accent-600);
-    transform: translateY(-1px);
-  }
-
-  .year-chip.is-active {
-    color: var(--text-inverse);
-    background: var(--accent-600);
-    border-color: var(--accent-600);
-  }
-
-  :root:not(.dark-mode) .year-chip {
-    background: var(--bg-card);
-    border-color: var(--border-subtle);
-    color: var(--text-primary);
-  }
-
-  :root:not(.dark-mode) .year-chip:hover {
-    background: var(--accent-100);
-    border-color: var(--accent-300);
-    color: var(--text-primary);
-  }
-
-  :root:not(.dark-mode) .year-chip.is-active {
-    color: var(--text-near-white);
-    background: var(--accent-600);
-    border-color: var(--accent-600);
-  }
-
-  .timeline-scroll {
-    position: relative;
-    display: flex;
-    flex-direction: row;
-    gap: 1.5rem;
-    overflow-x: auto;
-    overflow-y: hidden;
-    width: 100%;
-    max-width: 100%;
-    padding: 0.75rem 0.75rem 1rem;
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-lg);
-    box-sizing: border-box;
-    background-color: var(--bg-app);
-    background-image: linear-gradient(
-      to right,
-      var(--border-subtle),
-      var(--border-subtle)
-    );
-    background-size: 100% 2px;
-    background-repeat: no-repeat;
-    background-position: 0 var(--timeline-line-y);
-    scrollbar-gutter: stable;
-    scroll-snap-type: x mandatory;
-    scroll-padding-inline: 0.75rem;
-    --timeline-padding-top: 0.75rem;
-    --timeline-year-height: 28px;
-    --timeline-line-y: calc(
-      var(--timeline-padding-top) + (var(--timeline-year-height) * 0.5)
-    );
-  }
-
-  .timeline-scroll:focus-within {
-    box-shadow: 0 0 0 2px var(--accent-100);
-  }
-
-  .timeline-anchor {
-    scroll-snap-align: start;
-    width: min(340px, 80vw);
-    max-width: calc(100vw - 3rem);
-    flex: 0 0 auto;
-  }
-
-  .timeline-spacer {
-    flex: 0 0 1.25rem;
-  }
-
-  @media (min-width: 768px) {
-    .timeline-scroll {
-      padding: 1rem 1.5rem 1.25rem;
-      background-position: 0 var(--timeline-line-y);
-      scroll-padding-inline: 1.5rem;
-      --timeline-padding-top: 1rem;
-      --timeline-year-height: 32px;
-      --timeline-line-y: calc(
-        var(--timeline-padding-top) + (var(--timeline-year-height) * 0.5)
-      );
-    }
-
-    .timeline-anchor {
-      width: 420px;
-    }
-
-    .timeline-spacer {
-      flex-basis: 1.75rem;
-    }
-  }
-
-  @media (min-width: 768px) {
-    .container {
-      padding: 4rem 2rem;
-    }
-  }
-
-  .articles-preview {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-
-  .endorsement-form {
-    display: grid;
-    gap: 0.9rem;
-    padding: 1rem;
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-lg);
-    background: var(--bg-card);
-    box-shadow: var(--shadow-sm);
-    margin: 1rem 0 0.5rem;
-  }
-
-  .endorsement-field {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    font-size: var(--fs-sm);
-    color: var(--text-primary);
-    background: transparent;
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-md);
-    padding: 0.5rem 0.6rem;
-  }
-
-  .endorsement-field input,
-  .endorsement-field textarea {
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-md);
-    padding: 0.6rem 0.75rem;
-    font-family: inherit;
-    font-size: var(--fs-md);
-    color: var(--text-primary);
-    background: var(--bg-app);
-  }
-
-  .endorsement-field textarea {
-    resize: vertical;
-    min-height: 84px;
-  }
-
-  .endorsement-submit {
-    border: none;
-    border-radius: 999px;
-    padding: 0.65rem 1.1rem;
-    font-weight: 600;
-    background: var(--accent-600);
-    color: var(--text-near-white);
-    cursor: pointer;
-    transition:
-      transform 0.15s ease,
-      box-shadow 0.15s ease,
-      background 0.2s ease;
-    box-shadow: var(--shadow-sm);
-  }
-
-  .endorsement-submit:hover {
-    background: var(--accent-700);
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-md);
-  }
-
-  .endorsement-success {
-    margin-top: 0.75rem;
-    font-size: var(--fs-sm);
-    color: var(--text-muted);
-  }
-
-  .endorsement-help {
-    font-size: var(--fs-sm);
-    color: var(--text-muted);
-    margin-top: 0.25rem;
-  }
-
-  .endorsement-explainer {
-    font-size: var(--fs-sm);
-    color: var(--text-muted);
-    margin-top: -0.25rem;
-  }
-
-  .article-link {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 0.4rem 0.75rem;
-    padding: 0.75rem 1rem;
-    background: var(--bg-card);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-md);
-    text-decoration: none;
-    transition: all 0.2s;
-  }
-
-  .article-link:hover {
-    border-color: var(--accent-600);
-    transform: translateX(4px);
-  }
-
-  .article-title {
-    color: var(--text-primary);
-    font-weight: 500;
-    min-width: 0;
-    overflow-wrap: anywhere;
-  }
-
-  .article-date {
-    color: var(--text-muted);
-    font-size: var(--fs-sm);
-  }
-
-  .view-all-link {
-    color: var(--accent-text);
-    font-size: var(--fs-sm);
-    text-decoration: none;
-    margin-top: 0.5rem;
-  }
-
-  .view-all-link:hover {
-    text-decoration: underline;
-  }
-
-  .github-actions-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    gap: 1rem;
-    margin-top: 0;
-  }
-
-  :global(.workflow-badge) {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.7rem;
-    max-width: 100%;
-    padding: 0.55rem 0.85rem;
-    border-radius: 999px;
-    background: var(--bg-card);
-    border: 1px solid var(--border-subtle);
-    box-shadow: var(--shadow-sm);
-    color: var(--text-primary);
-    text-decoration: none;
-    font-size: var(--fs-sm);
-    transition:
-      transform 0.2s ease,
-      box-shadow 0.2s ease,
-      border-color 0.2s ease;
-  }
-
-  :global(.workflow-badge:hover) {
-    transform: translateY(-1px);
-    border-color: #000;
-    box-shadow: var(--shadow-md);
-  }
-
-  :global(.workflow-badge__dot) {
-    position: relative;
-    width: 12px;
-    height: 12px;
-    border-radius: 999px;
-    background: var(--workflow-dot-bg);
-    border: 2px solid var(--workflow-dot-border);
-    box-shadow: none;
-    flex: 0 0 auto;
-  }
-
-  :global(.workflow-badge__meta) {
-    display: flex;
-    flex-direction: column;
-    line-height: 1.15;
-    min-width: 0;
-    text-align: left;
-  }
-
-  :global(.workflow-badge__name) {
-    font-weight: 600;
-    font-size: var(--fs-sm);
-    color: var(--text-primary);
-  }
-
-  :global(.workflow-badge__status) {
-    font-size: var(--fs-xs);
-    color: var(--text-muted);
-    letter-spacing: 0.01em;
-  }
-
-  :global(.workflow-badge[data-status='running'] .workflow-badge__dot) {
-    background: var(--workflow-dot-running);
-    border-color: var(--workflow-dot-running);
-    box-shadow: 0 0 0 3px var(--workflow-dot-running-glow);
-    animation: workflowPulse 1.2s ease-in-out infinite;
-  }
-
-  :global(.workflow-badge[data-status='success'] .workflow-badge__dot) {
-    background: var(--workflow-dot-success);
-    border-radius: 3px;
-    border-color: var(--workflow-dot-success);
-  }
-
-  :global(.workflow-badge[data-status='failure'] .workflow-badge__dot) {
-    background: var(--workflow-dot-failure-bg);
-    border-color: var(--workflow-dot-border);
-    transform: rotate(45deg);
-  }
-
-  :global(.workflow-badge[data-status='failure'] .workflow-badge__dot)::after {
-    content: '!';
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 8px;
-    font-weight: 700;
-    color: var(--workflow-dot-failure-text);
-    transform: rotate(-45deg);
-  }
-
-  :global(.workflow-badge[data-status='unknown'] .workflow-badge__dot) {
-    background: var(--workflow-dot-bg);
-    border: 2px dotted var(--workflow-dot-unknown-border);
-  }
-
-  .github-commits-container {
-    margin-top: 2rem;
-    font-size: var(--fs-sm);
-    text-align: left;
-  }
-
-  .github-commits-container h2 {
-    text-align: left;
-  }
-
-  .fallback-text {
-    color: var(--text-muted);
-  }
-
-  :global(.commits-list) {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    max-width: 600px;
-    text-align: left;
-  }
-
-  :global(.commits-list li) {
-    display: flex;
-    justify-content: flex-start;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-    text-align: left;
-  }
-
-  :global(.commits-list a) {
-    color: var(--text-muted);
-    text-decoration: none;
-    overflow-wrap: anywhere;
-    word-break: break-word;
-  }
-
-  :global(.commits-list a:hover) {
-    color: var(--accent-text);
-    text-decoration: underline;
-  }
-
-  :global(.commit-meta) {
-    color: var(--text-muted);
-    opacity: 0.7;
-  }
-
-  @keyframes workflowPulse {
-    0% {
-      transform: scale(1);
-      opacity: 0.9;
-    }
-    50% {
-      transform: scale(1.15);
-      opacity: 0.5;
-    }
-    100% {
-      transform: scale(1);
-      opacity: 0.9;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    :global(.workflow-badge[data-status='running'] .workflow-badge__dot) {
-      animation: none;
-    }
-  }
-</style>
+    </li>
+    <li>Location: Lithuania / EU</li>
+    <li>Remote: Open to Remote (EU time zones)</li>
+    <li>Stack: Backend (.NET, SQL, Web)</li>
+  </ul>
+
+  <h2>Profile</h2>
+
+  <p>
+    Senior .NET Software Engineer with ~7 years of professional experience
+    working on data-driven and product-focused systems. Strong background in
+    backend development with .NET, C#, MS SQL Server, and web development
+    experience with modern frameworks.
+  </p>
+
+  <p>
+    I've worked across stable product teams and fast-changing environments,
+    which helped me become adaptable and pragmatic. I'm now intentionally
+    focused on a long-term role in a stable product company, where I can take
+    ownership, grow steadily, and deliver consistent value.
+  </p>
+
+  <h2>Core Skills</h2>
+
+  <ul>
+    <li>
+      <strong>Backend:</strong> C#, .NET (Framework / Core / modern .NET), REST APIs
+    </li>
+    <li>
+      <strong>Databases:</strong> MS SQL Server, T-SQL, data modeling, performance
+      tuning
+    </li>
+    <li>
+      <strong>Frontend:</strong> Angular (working knowledge), HTML/CSS, JavaScript/TypeScript
+    </li>
+    <li>
+      <strong>Architecture:</strong> Monoliths, modular systems, integrations
+    </li>
+    <li>
+      <strong>Practices:</strong> Code reviews, debugging legacy systems, collaboration
+      in cross-functional teams
+    </li>
+    <li>
+      <strong>Other:</strong> Git, CI/CD basics, cloud fundamentals (Azure - working
+      knowledge)
+    </li>
+  </ul>
+
+  <h2>Experience</h2>
+
+  <h3>Senior .NET Software Engineer</h3>
+  <p>Product Company (EU, Remote)<br />2026 - Present</p>
+  <ul>
+    <li>
+      Building and maintaining backend services for a stable product platform
+    </li>
+    <li>Improving performance and reliability of core .NET services</li>
+    <li>
+      Partnering with product and data teams to deliver long-term roadmap work
+    </li>
+  </ul>
+
+  <h3>Senior .NET Software Engineer</h3>
+  <p>Adform Lithuania<br />2025</p>
+  <ul>
+    <li>
+      Engineered scalable AdTech backend services in a high-concurrency
+      environment
+    </li>
+    <li>
+      Developed and optimized mission-critical features in existing production
+      codebases
+    </li>
+    <li>
+      Collaborated within a mature engineering organization to uphold strict
+      technical standards
+    </li>
+  </ul>
+
+  <h3>Senior / Software Engineer (.NET)</h3>
+  <p>Ignitis Group Services Center<br />2023</p>
+  <ul>
+    <li>Refactored and maintained enterprise-grade .NET internal systems</li>
+    <li>Extended complex codebases while ensuring stability and performance</li>
+  </ul>
+
+  <h3>Software Engineer (.NET / Blockchain)</h3>
+  <p>Super How<br />2021 - 2022</p>
+  <ul>
+    <li>
+      Developed and deployed decentralized applications (dApps) and smart
+      contract integrations
+    </li>
+    <li>
+      Delivered end-to-end features in a fast-paced, early-stage product
+      environment
+    </li>
+  </ul>
+
+  <h3>Software Engineer (.NET / SQL)</h3>
+  <p>Euromonitor International<br />2018 - 2020</p>
+  <ul>
+    <li>
+      Engineered data-heavy MS SQL Server solutions for international market
+      research
+    </li>
+    <li>
+      Led full-stack development initiatives using .NET and Angular for key
+      product modules
+    </li>
+    <li>
+      Maintained long-term stability of core business systems used globally
+    </li>
+  </ul>
+
+  <h3>Software Engineer (C# / Unity)</h3>
+  <p>Invenis<br />2015</p>
+  <ul>
+    <li>Developed interactive 3D applications using C# and Unity3D</li>
+    <li>Implemented core game logic and UI systems for client projects</li>
+  </ul>
+
+  <h2>Independent Projects</h2>
+
+  <h3>Founder / Product &amp; Engineering</h3>
+  <p>Early-Stage Startup (Self-Initiated)<br />2024</p>
+  <ul>
+    <li>
+      Initiated a startup project based on accumulated product, marketing, and
+      technical knowledge
+    </li>
+    <li>
+      Worked on early product definition, validation ideas, and technical
+      direction
+    </li>
+    <li>Explored go-to-market strategy and team formation</li>
+    <li>
+      Closed the legal entity after the team did not fully materialize,
+      retaining lessons learned around product scope, execution, and risk
+    </li>
+  </ul>
+
+  <h2>What I'm Looking For Next</h2>
+
+  <ul>
+    <li>Stable product company</li>
+    <li>Backend or .NET role</li>
+    <li>Long-term collaboration and clear expectations</li>
+    <li>English-first engineering environment</li>
+    <li>Sustainable pace and ownership over time</li>
+  </ul>
+
+  <h2>Writing</h2>
+
+  <ul>
+    <li><a href="/blog">Blog index</a></li>
+  </ul>
+
+  <h2>Build Status</h2>
+
+  <BuildStatus />
+</BaseLayout>
