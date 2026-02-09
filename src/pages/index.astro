@@ -2,7 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Section from '../components/Section.astro';
-import ExperienceTimelineItem from '../components/ExperienceTimelineItem.astro';
+import ExperienceItem from '../components/ExperienceItem.astro';
 import WorkflowStatusBadge from '../components/WorkflowStatusBadge.astro';
 
 import cvDataRaw from '../data/cv.json';
@@ -68,20 +68,9 @@ const extractStartYear = (period: string) => {
 };
 
 const combinedExperience = [
-  ...experience.map((item) => ({ ...item, kind: 'Company' as const })),
-  ...independentProjects.map((item) => ({ ...item, kind: 'Startup' as const })),
-]
-  .map((item) => ({
-    ...item,
-    year: extractStartYear(item.period),
-  }))
-  .sort((a, b) => b.year - a.year);
-
-const timelineYears = Array.from(
-  new Set(combinedExperience.map((item) => item.year))
-)
-  .filter((year) => year > 0)
-  .sort((a, b) => b - a);
+  ...experience,
+  ...independentProjects,
+].sort((a, b) => extractStartYear(b.period) - extractStartYear(a.period));
 ---
 
 <Layout
@@ -111,32 +100,17 @@ const timelineYears = Array.from(
       </ul>
     </Section>
 
-    <Section title="EXPERIENCE TIMELINE">
-      <div class="timeline-selector" role="tablist" aria-label="Jump to year">
-        {
-          timelineYears.map((year, index) => (
-            <button
-              class={`year-chip ${index === 0 ? 'is-active' : ''}`}
-              type="button"
-              data-year={year}
-              aria-pressed={index === 0 ? 'true' : 'false'}
-            >
-              {year}
-            </button>
-          ))
-        }
-      </div>
-      <div class="timeline-scroll" role="list">
-        <div class="timeline-spacer" aria-hidden="true"></div>
-        {
-          combinedExperience.map((item) => (
-            <div id={`year-${item.year}`} class="timeline-anchor">
-              <ExperienceTimelineItem {...item} />
-            </div>
-          ))
-        }
-        <div class="timeline-spacer" aria-hidden="true"></div>
-      </div>
+    <Section title="EXPERIENCE">
+      {
+        combinedExperience.map((item) => (
+          <ExperienceItem
+            title={item.title}
+            company={item.company}
+            period={item.period}
+            description={item.description}
+          />
+        ))
+      }
     </Section>
 
     <Section title="WHAT I'M LOOKING FOR NEXT">
@@ -189,7 +163,7 @@ const timelineYears = Array.from(
               placeholder="Robertas shipped critical backend migrations with calm, clear communication."
               required></textarea>
           </label>
-          <button type="submit" class="endorsement-submit">
+          <button type="submit" class="endorsement-submit btn-primary">
             Post Endorsement on GitHub
           </button>
         </form>
@@ -356,106 +330,6 @@ const timelineYears = Array.from(
     });
   }
 
-  const timeline = document.querySelector('.timeline-scroll');
-  const yearChips = Array.from(document.querySelectorAll('.year-chip'));
-  const timelineAnchors = Array.from(
-    document.querySelectorAll('.timeline-anchor')
-  );
-  let isProgrammaticScroll = false;
-  let programmaticScrollTimer;
-
-  const setActiveYear = (year) => {
-    yearChips.forEach((chip) => {
-      const isActive = chip.dataset.year === year;
-      chip.classList.toggle('is-active', isActive);
-      chip.setAttribute('aria-pressed', isActive ? 'true' : 'false');
-    });
-  };
-
-  if (timeline && yearChips.length && timelineAnchors.length) {
-    yearChips.forEach((chip) => {
-      chip.addEventListener('click', () => {
-        const targetYear = chip.dataset.year;
-        if (!targetYear) {
-          return;
-        }
-        const target = document.getElementById(`year-${targetYear}`);
-        if (target) {
-          isProgrammaticScroll = true;
-          if (programmaticScrollTimer) {
-            window.clearTimeout(programmaticScrollTimer);
-          }
-          setActiveYear(targetYear);
-          target.scrollIntoView({
-            behavior: 'smooth',
-            block: 'nearest',
-            inline: 'start',
-          });
-          programmaticScrollTimer = window.setTimeout(() => {
-            isProgrammaticScroll = false;
-            updateActiveFromScroll();
-          }, 300);
-        }
-      });
-    });
-
-    let ticking = false;
-    const updateActiveFromScroll = () => {
-      const timelineRect = timeline.getBoundingClientRect();
-      const maxScrollLeft = timeline.scrollWidth - timeline.clientWidth;
-
-      if (timeline.scrollLeft <= 1) {
-        setActiveYear(yearChips[0].dataset.year);
-        return;
-      }
-
-      if (timeline.scrollLeft >= maxScrollLeft - 1) {
-        setActiveYear(yearChips[yearChips.length - 1].dataset.year);
-        return;
-      }
-
-      let closest = null;
-      let closestDistance = Number.POSITIVE_INFINITY;
-
-      timelineAnchors.forEach((anchor) => {
-        const rect = anchor.getBoundingClientRect();
-        const distance = Math.abs(rect.left - timelineRect.left);
-        if (distance < closestDistance) {
-          closestDistance = distance;
-          closest = anchor;
-        }
-      });
-
-      if (closest && closest.id) {
-        const year = closest.id.replace('year-', '');
-        setActiveYear(year);
-      }
-    };
-
-    updateActiveFromScroll();
-
-    timeline.addEventListener('scroll', () => {
-      if (isProgrammaticScroll) {
-        if (programmaticScrollTimer) {
-          window.clearTimeout(programmaticScrollTimer);
-        }
-        programmaticScrollTimer = window.setTimeout(() => {
-          isProgrammaticScroll = false;
-          updateActiveFromScroll();
-        }, 120);
-        return;
-      }
-      if (ticking) {
-        return;
-      }
-      ticking = true;
-      window.requestAnimationFrame(() => {
-        updateActiveFromScroll();
-        ticking = false;
-      });
-    });
-  }
-
   const actionsContainer = document.getElementById('github-actions-container');
   if (actionsContainer) {
     const badges = Array.from(
@@ -534,152 +408,21 @@ const timelineYears = Array.from(
 <style>
   .skills-list,
   .next-list {
-    list-style: none;
-    margin: 0;
+    list-style: disc;
+    margin: 0 0 0.75rem 1.25rem;
     padding: 0;
   }
 
   .skills-list li,
   .next-list li {
-    margin-bottom: 0.75rem;
-    position: relative;
-    padding-left: 1.25rem;
-  }
-
-  .skills-list li::before,
-  .next-list li::before {
-    content: '→';
-    position: absolute;
-    left: 0;
-    color: var(--accent-text);
-    font-weight: bold;
+    margin-bottom: 0.4rem;
+    padding-left: 0;
   }
 
   .container {
     max-width: 800px;
     margin: 0 auto;
     padding: 2rem 1.5rem;
-  }
-
-  .timeline-selector {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-    margin-bottom: 1rem;
-  }
-
-  .year-chip {
-    border: 1px solid var(--border-subtle);
-    background: var(--bg-card);
-    color: var(--text-primary);
-    padding: 0.35rem 0.75rem;
-    border-radius: 999px;
-    font-weight: 600;
-    font-size: var(--fs-sm);
-    cursor: pointer;
-    transition:
-      color 0.2s ease,
-      border-color 0.2s ease,
-      background 0.2s ease,
-      transform 0.2s ease;
-  }
-
-  .year-chip:hover {
-    color: var(--text-primary);
-    border-color: var(--accent-600);
-    transform: translateY(-1px);
-  }
-
-  .year-chip.is-active {
-    color: var(--text-inverse);
-    background: var(--accent-600);
-    border-color: var(--accent-600);
-  }
-
-  :root:not(.dark-mode) .year-chip {
-    background: var(--bg-card);
-    border-color: var(--border-subtle);
-    color: var(--text-primary);
-  }
-
-  :root:not(.dark-mode) .year-chip:hover {
-    background: var(--accent-100);
-    border-color: var(--accent-300);
-    color: var(--text-primary);
-  }
-
-  :root:not(.dark-mode) .year-chip.is-active {
-    color: var(--text-near-white);
-    background: var(--accent-600);
-    border-color: var(--accent-600);
-  }
-
-  .timeline-scroll {
-    position: relative;
-    display: flex;
-    flex-direction: row;
-    gap: 1.5rem;
-    overflow-x: auto;
-    overflow-y: hidden;
-    width: 100%;
-    max-width: 100%;
-    padding: 0.75rem 0.75rem 1rem;
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-lg);
-    box-sizing: border-box;
-    background-color: var(--bg-app);
-    background-image: linear-gradient(
-      to right,
-      var(--border-subtle),
-      var(--border-subtle)
-    );
-    background-size: 100% 2px;
-    background-repeat: no-repeat;
-    background-position: 0 var(--timeline-line-y);
-    scrollbar-gutter: stable;
-    scroll-snap-type: x mandatory;
-    scroll-padding-inline: 0.75rem;
-    --timeline-padding-top: 0.75rem;
-    --timeline-year-height: 28px;
-    --timeline-line-y: calc(
-      var(--timeline-padding-top) + (var(--timeline-year-height) * 0.5)
-    );
-  }
-
-  .timeline-scroll:focus-within {
-    box-shadow: 0 0 0 2px var(--accent-100);
-  }
-
-  .timeline-anchor {
-    scroll-snap-align: start;
-    width: min(340px, 80vw);
-    max-width: calc(100vw - 3rem);
-    flex: 0 0 auto;
-  }
-
-  .timeline-spacer {
-    flex: 0 0 1.25rem;
-  }
-
-  @media (min-width: 768px) {
-    .timeline-scroll {
-      padding: 1rem 1.5rem 1.25rem;
-      background-position: 0 var(--timeline-line-y);
-      scroll-padding-inline: 1.5rem;
-      --timeline-padding-top: 1rem;
-      --timeline-year-height: 32px;
-      --timeline-line-y: calc(
-        var(--timeline-padding-top) + (var(--timeline-year-height) * 0.5)
-      );
-    }
-
-    .timeline-anchor {
-      width: 420px;
-    }
-
-    .timeline-spacer {
-      flex-basis: 1.75rem;
-    }
   }
 
   @media (min-width: 768px) {
@@ -698,7 +441,6 @@ const timelineYears = Array.from(
     display: grid;
     gap: 0.9rem;
     padding: 1rem;
-    border: 1px solid var(--border-subtle);
     border-radius: var(--radius-lg);
     background: var(--bg-card);
     box-shadow: var(--shadow-sm);
@@ -712,46 +454,25 @@ const timelineYears = Array.from(
     font-size: var(--fs-sm);
     color: var(--text-primary);
     background: transparent;
-    border: 1px solid var(--border-subtle);
     border-radius: var(--radius-md);
     padding: 0.5rem 0.6rem;
+    box-shadow: none;
   }
 
   .endorsement-field input,
   .endorsement-field textarea {
-    border: 1px solid var(--border-subtle);
     border-radius: var(--radius-md);
     padding: 0.6rem 0.75rem;
     font-family: inherit;
     font-size: var(--fs-md);
     color: var(--text-primary);
     background: var(--bg-app);
+    box-shadow: none;
   }
 
   .endorsement-field textarea {
     resize: vertical;
     min-height: 84px;
-  }
-
-  .endorsement-submit {
-    border: none;
-    border-radius: 999px;
-    padding: 0.65rem 1.1rem;
-    font-weight: 600;
-    background: var(--accent-600);
-    color: var(--text-near-white);
-    cursor: pointer;
-    transition:
-      transform 0.15s ease,
-      box-shadow 0.15s ease,
-      background 0.2s ease;
-    box-shadow: var(--shadow-sm);
-  }
-
-  .endorsement-submit:hover {
-    background: var(--accent-700);
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-md);
   }
 
   .endorsement-success {
@@ -780,15 +501,15 @@ const timelineYears = Array.from(
     gap: 0.4rem 0.75rem;
     padding: 0.75rem 1rem;
     background: var(--bg-card);
-    border: 1px solid var(--border-subtle);
     border-radius: var(--radius-md);
     text-decoration: none;
     transition: all 0.2s;
+    box-shadow: var(--shadow-sm);
   }
 
   .article-link:hover {
-    border-color: var(--accent-600);
     transform: translateX(4px);
+    box-shadow: var(--shadow-md);
   }
 
   .article-title {
@@ -830,20 +551,17 @@ const timelineYears = Array.from(
     padding: 0.55rem 0.85rem;
     border-radius: 999px;
     background: var(--bg-card);
-    border: 1px solid var(--border-subtle);
     box-shadow: var(--shadow-sm);
     color: var(--text-primary);
     text-decoration: none;
     font-size: var(--fs-sm);
     transition:
       transform 0.2s ease,
-      box-shadow 0.2s ease,
-      border-color 0.2s ease;
+      box-shadow 0.2s ease;
   }
 
   :global(.workflow-badge:hover) {
     transform: translateY(-1px);
-    border-color: #000;
     box-shadow: var(--shadow-md);
   }
 
@@ -853,8 +571,8 @@ const timelineYears = Array.from(
     height: 12px;
     border-radius: 999px;
     background: var(--workflow-dot-bg);
-    border: 2px solid var(--workflow-dot-border);
     box-shadow: none;
+    opacity: 0.75;
     flex: 0 0 auto;
   }
 
@@ -880,7 +598,7 @@ const timelineYears = Array.from(
 
   :global(.workflow-badge[data-status='running'] .workflow-badge__dot) {
     background: var(--workflow-dot-running);
-    border-color: var(--workflow-dot-running);
+    opacity: 1;
     box-shadow: 0 0 0 3px var(--workflow-dot-running-glow);
     animation: workflowPulse 1.2s ease-in-out infinite;
   }
@@ -888,12 +606,14 @@ const timelineYears = Array.from(
   :global(.workflow-badge[data-status='success'] .workflow-badge__dot) {
     background: var(--workflow-dot-success);
     border-radius: 3px;
-    border-color: var(--workflow-dot-success);
+    opacity: 1;
+    box-shadow: none;
   }
 
   :global(.workflow-badge[data-status='failure'] .workflow-badge__dot) {
     background: var(--workflow-dot-failure-bg);
-    border-color: var(--workflow-dot-border);
+    opacity: 1;
+    box-shadow: none;
     transform: rotate(45deg);
   }
 
@@ -912,7 +632,7 @@ const timelineYears = Array.from(
 
   :global(.workflow-badge[data-status='unknown'] .workflow-badge__dot) {
     background: var(--workflow-dot-bg);
-    border: 2px dotted var(--workflow-dot-unknown-border);
+    opacity: 0.7;
   }
 
   .github-commits-container {

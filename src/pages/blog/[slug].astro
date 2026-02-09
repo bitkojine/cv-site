@@ -88,7 +88,7 @@ const formattedDate = post.data.date.toLocaleDateString('lt-LT', {
   .article-header {
     margin-bottom: 2rem;
     padding-bottom: 2rem;
-    border-bottom: 1px solid var(--border-subtle);
+    box-shadow: inset 0 -1px 0 var(--edge-line);
   }
 
   .article-header h1 {
@@ -144,7 +144,6 @@ const formattedDate = post.data.date.toLocaleDateString('lt-LT', {
 
   .prose :global(h2) {
     font-size: var(--fs-xl);
-    border-bottom: none;
   }
 
   .prose :global(h2)::after {
@@ -184,7 +183,7 @@ const formattedDate = post.data.date.toLocaleDateString('lt-LT', {
   }
 
   .prose :global(blockquote) {
-    border-left: 3px solid var(--accent-600);
+    box-shadow: inset 3px 0 0 var(--accent-600);
     padding-left: 1rem;
     margin: 1.5rem 0;
     color: var(--text-muted);
@@ -196,7 +195,7 @@ const formattedDate = post.data.date.toLocaleDateString('lt-LT', {
     background: var(--bg-card);
     padding: 0.15rem 0.4rem;
     border-radius: 0.25rem;
-    border: 1px solid var(--border-subtle);
+    box-shadow: var(--shadow-sm);
   }
 
   .prose :global(pre) {
@@ -205,19 +204,18 @@ const formattedDate = post.data.date.toLocaleDateString('lt-LT', {
     border-radius: var(--radius-md);
     overflow-x: auto;
     margin: 1.5rem 0;
-    border: 1px solid var(--border-subtle);
+    box-shadow: var(--shadow-sm);
   }
 
   .prose :global(pre code) {
     background: none;
     padding: 0;
-    border: none;
   }
 
   .article-footer {
     margin-top: 3rem;
     padding-top: 2rem;
-    border-top: 1px solid var(--border-subtle);
+    box-shadow: inset 0 1px 0 var(--edge-line);
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;

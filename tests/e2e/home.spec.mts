@@ -12,7 +12,7 @@ test('homepage has title and critical sections', async ({ page }) => {
     page.getByRole('heading', { name: 'CORE SKILLS' })
   ).toBeVisible();
   await expect(
-    page.getByRole('heading', { name: 'EXPERIENCE TIMELINE' })
+    page.getByRole('heading', { name: 'EXPERIENCE' })
   ).toBeVisible();
 
   // Check for no console errors (optional but good practice)
