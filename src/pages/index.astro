@@ -67,10 +67,9 @@ const extractStartYear = (period: string) => {
   return match ? Number.parseInt(match[0], 10) : 0;
 };
 
-const combinedExperience = [
-  ...experience,
-  ...independentProjects,
-].sort((a, b) => extractStartYear(b.period) - extractStartYear(a.period));
+const combinedExperience = [...experience, ...independentProjects].sort(
+  (a, b) => extractStartYear(b.period) - extractStartYear(a.period)
+);
 ---
 
 <Layout

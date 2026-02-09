@@ -19,7 +19,10 @@ const { name, title, contact } = Astro.props;
   <div class="contact-grid">
     <div class="contact-item">
       <span class="contact-label">Email:</span>
-      <a href={`mailto:${contact.email}`} aria-label={`Email: ${contact.email}`}>
+      <a
+        href={`mailto:${contact.email}`}
+        aria-label={`Email: ${contact.email}`}
+      >
         {contact.email}
       </a>
     </div>
