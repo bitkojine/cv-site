@@ -11,6 +11,7 @@ const {
   title = 'Robertas Rudys',
   description = 'Resume and writing by Robertas Rudys.',
 } = Astro.props;
+const currentYear = new Date().getFullYear();
 ---
 
 <!-- Intent: render every page like a plain Markdown document with minimal structure and styling. --><!doctype html>
@@ -28,6 +29,13 @@ const {
     <main class="page-shell" id="main-content" tabindex="-1">
       <article class="markdown-body">
         <slot />
+        <footer class="site-footer-note" aria-label="Privacy note">
+          <p>
+            I clicked enough cookies in Cookie Clicker; this site uses none.
+          </p>
+          <p>&copy; {currentYear} Robertas Rudys. All rights reserved.</p>
+          <p>As if AI web scrapers care, lmao.</p>
+        </footer>
       </article>
     </main>
   </body>

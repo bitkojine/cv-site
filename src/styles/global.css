@@ -545,3 +545,14 @@ body {
 .markdown-body .workflow-badge[data-status='unknown'] .workflow-badge__dot {
   background: #fff;
 }
+
+.markdown-body .site-footer-note {
+  margin-top: 2.2rem;
+  padding-top: 0.9rem;
+}
+
+.markdown-body .site-footer-note p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
