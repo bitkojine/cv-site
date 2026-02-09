@@ -13,7 +13,7 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
 >
   <h1>Blog</h1>
 
-  <nav aria-label="Blog navigation">
+  <nav class="site-nav" aria-label="Blog navigation">
     <ul>
       <li><a href="/">CV</a></li>
     </ul>
@@ -23,12 +23,14 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
     posts.length === 0 ? (
       <p>No posts yet.</p>
     ) : (
-      <ul>
+      <ul class="post-list">
         {posts.map((post) => (
-          <li>
-            <a href={`/blog/${post.slug}`}>{post.data.title}</a>
+          <li class="post-list-item">
+            <a class="post-link touch-link" href={`/blog/${post.slug}`}>
+              {post.data.title}
+            </a>
             <br />
-            <small>
+            <small class="post-date">
               <time datetime={post.data.date.toISOString()}>
                 {post.data.date.toLocaleDateString('lt-LT', {
                   year: 'numeric',
@@ -38,7 +40,7 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
                 })}
               </time>
             </small>
-            <p>{post.data.description}</p>
+            <p class="post-description">{post.data.description}</p>
           </li>
         ))}
       </ul>

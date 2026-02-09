@@ -9,19 +9,32 @@ import BuildStatus from '../components/BuildStatus.astro';
 >
   <h1>Robertas Rudys</h1>
 
-  <p>Senior .NET Software Engineer</p>
-
-  <ul>
-    <li>
-      Email:
-      <a href="mailto:robertas.rudys+www@gmail.com"
-        >robertas.rudys+www@gmail.com</a
-      >
-    </li>
-    <li>Location: Lithuania / EU</li>
-    <li>Remote: Open to Remote (EU time zones)</li>
-    <li>Stack: Backend (.NET, SQL, Web)</li>
-  </ul>
+  <section class="profile-sketch" aria-label="Profile summary">
+    <div class="profile-sketch__row">
+      <p class="profile-sketch__label">Role</p>
+      <p class="profile-sketch__value">Senior .NET Software Engineer</p>
+    </div>
+    <div class="profile-sketch__row">
+      <p class="profile-sketch__label">Email</p>
+      <p class="profile-sketch__value">
+        <a href="mailto:robertas.rudys+www@gmail.com"
+          >robertas.rudys+www@gmail.com</a
+        >
+      </p>
+    </div>
+    <div class="profile-sketch__row">
+      <p class="profile-sketch__label">Location</p>
+      <p class="profile-sketch__value">Lithuania / EU</p>
+    </div>
+    <div class="profile-sketch__row">
+      <p class="profile-sketch__label">Remote</p>
+      <p class="profile-sketch__value">Open to Remote (EU time zones)</p>
+    </div>
+    <div class="profile-sketch__row">
+      <p class="profile-sketch__label">Stack</p>
+      <p class="profile-sketch__value">Backend (.NET, SQL, Web)</p>
+    </div>
+  </section>
 
   <h2>Profile</h2>
 
@@ -41,7 +54,7 @@ import BuildStatus from '../components/BuildStatus.astro';
 
   <h2>Core Skills</h2>
 
-  <ul>
+  <ul class="skills-list">
     <li>
       <strong>Backend:</strong> C#, .NET (Framework / Core / modern .NET), REST APIs
     </li>
@@ -171,8 +184,8 @@ import BuildStatus from '../components/BuildStatus.astro';
 
   <h2>Writing</h2>
 
-  <ul>
-    <li><a href="/blog">Blog index</a></li>
+  <ul class="writing-list">
+    <li><a class="touch-link" href="/blog">Blog index</a></li>
   </ul>
 
   <h2>Build Status</h2>

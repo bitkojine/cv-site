@@ -18,16 +18,16 @@ const { Content } = await post.render();
   title={`${post.data.title} - Robertas Rudys`}
   description={post.data.description}
 >
-  <nav aria-label="Post navigation">
+  <nav class="site-nav" aria-label="Post navigation">
     <ul>
       <li><a href="/blog">All posts</a></li>
       <li><a href="/">CV</a></li>
     </ul>
   </nav>
 
-  <article>
+  <article class="post-entry">
     <h1>{post.data.title}</h1>
-    <p>
+    <p class="post-date">
       <time datetime={post.data.date.toISOString()}>
         {
           post.data.date.toLocaleDateString('lt-LT', {
