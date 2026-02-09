@@ -16,11 +16,11 @@ describe('resolveWorkflowBadge', () => {
   it('maps completed success and failure', () => {
     expect(resolveWorkflowBadge('completed', 'success')).toEqual({
       state: 'success',
-      label: 'success',
+      label: 'Success',
     });
     expect(resolveWorkflowBadge('completed', 'failure')).toEqual({
       state: 'failure',
-      label: 'failure',
+      label: 'Failure',
     });
   });
 
