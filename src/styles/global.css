@@ -14,12 +14,14 @@
   --radius-md: 0.5rem;
   --radius-lg: 0.75rem;
   --tap-target: 2.75rem;
-  --sketch-line-static: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 10' preserveAspectRatio='none'%3E%3Cpath d='M1 5.3 C11 2.1 25 8.1 38 5.1 S63 2.4 79 5.5 S102 8.5 119 4.6' stroke='%231f2328' stroke-opacity='.68' stroke-width='2.5' fill='none' stroke-linecap='round'/%3E%3Cpath d='M2 6.8 C15 3.8 27 8.7 41 6.4 S67 3.1 83 6.6 S106 8.7 118 5.9' stroke='%231f2328' stroke-opacity='.46' stroke-width='1.9' fill='none' stroke-linecap='round'/%3E%3Cpath d='M4 4.4 C17 2.3 30 6.9 45 4.9 S70 2.6 87 4.8 S109 6.6 117 4.1' stroke='%231f2328' stroke-opacity='.25' stroke-width='1.2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  --sketch-line-static: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 10' preserveAspectRatio='none'%3E%3Cpath d='M1 5.2 C8 2.2 16 8 24 5.1 S39 2.3 48 5.6 S63 8 72 5.1 S87 2.2 96 5.7 S109 7.5 119 5.0' stroke='%231f2328' stroke-width='1.55' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   --sketch-line: var(--sketch-line-static);
   --sketch-link-edge-h: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 6' preserveAspectRatio='none'%3E%3Cpath d='M0.5,3.1C2.5,1.1,4.6,5,6.7,3S9,1,11.3,3.1S13.9,5,16.2,3S18.4,1.1,20.7,3.2S22.8,4.5,23.5,3' stroke='%23111' stroke-opacity='.82' stroke-width='1.2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
   --sketch-link-edge-v: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 6 24' preserveAspectRatio='none'%3E%3Cpath d='M3,0.5C1.1,2.5,5,4.6,3,6.7S1,9,3.1,11.3S5,13.9,3,16.2S1.1,18.4,3.2,20.7S4.5,22.8,3,23.5' stroke='%23111' stroke-opacity='.82' stroke-width='1.2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
   --sketch-link-border-thickness: 3px;
   --sketch-link-wave-length: 24px;
+  --sketch-divider-height: 7px;
+  --sketch-divider-opacity: 0.75;
 }
 
 * {
@@ -145,11 +147,13 @@ body {
   left: 0;
   right: 0;
   bottom: 0.04em;
-  height: 8px;
+  height: var(--sketch-divider-height);
+  background-color: transparent;
   background-image: var(--sketch-line);
   background-size: 100% 100%;
   background-position: 48% 50%;
   background-repeat: no-repeat;
+  opacity: var(--sketch-divider-opacity);
 }
 
 .markdown-body p,
@@ -293,12 +297,14 @@ body {
 
 .markdown-body hr {
   border: 0;
-  height: 10px;
+  height: var(--sketch-divider-height);
   margin: 1.6rem 0;
+  background-color: transparent;
   background-image: var(--sketch-line);
   background-size: 100% 100%;
   background-position: 48% 50%;
   background-repeat: no-repeat;
+  opacity: var(--sketch-divider-opacity);
 }
 
 .markdown-body hr::before,
@@ -352,12 +358,13 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  height: 7px;
+  height: var(--sketch-divider-height);
+  background-color: transparent;
   background-image: var(--sketch-line);
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: 48% 50%;
-  opacity: 0.75;
+  opacity: var(--sketch-divider-opacity);
 }
 
 .markdown-body .profile-sketch__row:last-child::after {
