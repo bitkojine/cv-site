@@ -14,43 +14,71 @@ const {
 } = Astro.props;
 const currentYear = new Date().getFullYear();
 const { personalInfo, coreSkills, experience, independentProjects } = cvData;
-const metaKeywords = [
-  personalInfo.title,
-  'Senior Backend Engineer',
-  '.NET Developer',
-  'C# Developer',
-  'ASP.NET Core',
-  'REST APIs',
-  'MS SQL Server',
-  'T-SQL',
-  ...coreSkills.map((skill) => `${skill.label}: ${skill.value}`),
-].join(', ');
+
+function toIsoMonth(value: string) {
+  return value.length === 4 ? `${value}-01` : value;
+}
+
+function toSortableMonth(value: string) {
+  const normalized = toIsoMonth(value);
+  const [year, month] = normalized.split('-').map(Number);
+  return year * 100 + month;
+}
+
+const experienceTimeline = [...experience, ...independentProjects].sort(
+  (a, b) => toSortableMonth(b.startDate) - toSortableMonth(a.startDate)
+);
+const knowsAbout = coreSkills.flatMap((skill) =>
+  skill.value
+    .split(',')
+    .map((entry) => entry.trim())
+    .filter(Boolean)
+);
 
 const jsonLd = {
   '@context': 'https://schema.org',
-  '@type': 'Person',
-  name: personalInfo.name,
-  jobTitle: personalInfo.title,
-  description,
-  url: 'https://robertasrudys.com',
-  email: personalInfo.contact.email,
-  address: {
-    '@type': 'PostalAddress',
-    addressLocality: personalInfo.contact.location,
-  },
-  sameAs: [
-    'https://github.com/bitkojine',
-    'https://www.linkedin.com/in/robertasr/',
+  '@graph': [
+    {
+      '@type': 'Person',
+      '@id': 'https://robertasrudys.com/#person',
+      name: personalInfo.name,
+      jobTitle: personalInfo.title,
+      description,
+      url: 'https://robertasrudys.com',
+      email: personalInfo.contact.email,
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: personalInfo.contact.location,
+      },
+      sameAs: [
+        'https://github.com/bitkojine',
+        'https://www.linkedin.com/in/robertasr/',
+      ],
+      knowsAbout,
+    },
+    {
+      '@type': 'ItemList',
+      '@id': 'https://robertasrudys.com/#experience',
+      name: 'Professional Experience',
+      itemListOrder: 'https://schema.org/ItemListOrderDescending',
+      numberOfItems: experienceTimeline.length,
+      itemListElement: experienceTimeline.map((item, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        item: {
+          '@type': 'Role',
+          roleName: item.title,
+          startDate: toIsoMonth(item.startDate),
+          ...(item.endDate ? { endDate: toIsoMonth(item.endDate) } : {}),
+          worksFor: {
+            '@type': 'Organization',
+            name: item.company,
+          },
+          description: item.description.join(' '),
+        },
+      })),
+    },
   ],
-  knowsAbout: coreSkills.map((skill) => skill.value),
-  hasOccupation: [...experience, ...independentProjects].map((item) => ({
-    '@type': 'Occupation',
-    name: item.title,
-    occupationalCategory: item.company,
-    startDate: item.startDate,
-    ...(item.endDate ? { endDate: item.endDate } : {}),
-    description: item.description.join(' '),
-  })),
 };
 ---
 
@@ -65,7 +93,6 @@ const jsonLd = {
     <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
     <meta name="author" content={personalInfo.name} />
     <meta name="robots" content="index, follow" />
-    <meta name="keywords" content={metaKeywords} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="profile" />
@@ -82,10 +109,7 @@ const jsonLd = {
     <main class="page-shell" id="main-content" tabindex="-1">
       <article class="markdown-body">
         <slot />
-        <footer class="site-footer-note" aria-label="Privacy note">
-          <p>
-            I clicked enough cookies in Cookie Clicker; this site uses none.
-          </p>
+        <footer class="site-footer-note" aria-label="Site footer">
           <p>&copy; {currentYear} Robertas Rudys. All rights reserved.</p>
         </footer>
       </article>

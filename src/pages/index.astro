@@ -11,7 +11,6 @@ const {
   lookingFor,
 } = cvData;
 
-const [currentRole, ...previousRoles] = experience;
 const profileParagraphs = personalInfo.profile
   .split('\n\n')
   .map((paragraph) => paragraph.trim())
@@ -22,7 +21,24 @@ function toIsoDate(value: string) {
 }
 
 function toHumanDate(value: string) {
-  return value;
+  if (value.length === 4) return value;
+  const [year, month] = value.split('-');
+  const monthIndex = Number(month) - 1;
+  const monthNames = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ];
+  return `${monthNames[monthIndex]} ${year}`;
 }
 ---
 
@@ -33,7 +49,7 @@ function toHumanDate(value: string) {
   <h1>Robertas Rudys</h1>
 
   <section class="profile-sketch" aria-labelledby="profile-overview-heading">
-    <h2 id="profile-overview-heading" class="sr-only">Profile Overview</h2>
+    <h2 id="profile-overview-heading">Profile Overview</h2>
     <div class="profile-sketch__row">
       <p class="profile-sketch__label">Role</p>
       <p class="profile-sketch__value">{personalInfo.title}</p>
@@ -65,51 +81,23 @@ function toHumanDate(value: string) {
     {profileParagraphs.map((paragraph) => <p>{paragraph}</p>)}
   </section>
 
-  {
-    currentRole && (
-      <section aria-labelledby="current-role-heading">
-        <h2 id="current-role-heading">Current Role</h2>
-        <article class="experience-item">
-          <header class="experience-item__header">
-            <h3>{currentRole.title}</h3>
-            <p>
-              <span class="experience-item__company">
-                {currentRole.company}
-              </span>
-              {currentRole.location && (
-                <>
-                  {' '}
-                  <span aria-hidden="true">-</span> {currentRole.location}
-                </>
-              )}
-              <br />
-              <time datetime={toIsoDate(currentRole.startDate)}>
-                {toHumanDate(currentRole.startDate)}
-              </time>{' '}
-              -{' '}
-              {currentRole.endDate ? (
-                <time datetime={toIsoDate(currentRole.endDate)}>
-                  {toHumanDate(currentRole.endDate)}
-                </time>
-              ) : (
-                'Present'
-              )}
-            </p>
-          </header>
-          <ul>
-            {currentRole.description.map((item) => (
-              <li>{item}</li>
-            ))}
-          </ul>
-        </article>
-      </section>
-    )
-  }
+  <section aria-labelledby="skills-heading">
+    <h2 id="skills-heading">Technical Skills</h2>
+    <ul class="skills-list">
+      {
+        coreSkills.map((skill) => (
+          <li>
+            <strong>{skill.label}:</strong> {skill.value}
+          </li>
+        ))
+      }
+    </ul>
+  </section>
 
   <section aria-labelledby="experience-heading">
     <h2 id="experience-heading">Professional Experience</h2>
     {
-      previousRoles.map((role) => (
+      experience.map((role) => (
         <article class="experience-item">
           <header class="experience-item__header">
             <h3>{role.title}</h3>
@@ -122,11 +110,21 @@ function toHumanDate(value: string) {
                 </>
               )}
               <br />
-              <time datetime={toIsoDate(role.startDate)}>{role.startDate}</time>
-              {' - '}
-              <time datetime={toIsoDate(role.endDate ?? role.startDate)}>
-                {role.endDate ?? role.startDate}
+              <time datetime={toIsoDate(role.startDate)}>
+                {toHumanDate(role.startDate)}
               </time>
+              {role.endDate ? (
+                role.endDate === role.startDate ? null : (
+                  <>
+                    {' - '}
+                    <time datetime={toIsoDate(role.endDate)}>
+                      {toHumanDate(role.endDate)}
+                    </time>
+                  </>
+                )
+              ) : (
+                ' - Present'
+              )}
             </p>
           </header>
           <ul>
@@ -157,15 +155,19 @@ function toHumanDate(value: string) {
                 )}
                 <br />
                 <time datetime={toIsoDate(project.startDate)}>
-                  {project.startDate}
+                  {toHumanDate(project.startDate)}
                 </time>
-                {project.endDate && (
-                  <>
-                    {' - '}
-                    <time datetime={toIsoDate(project.endDate)}>
-                      {project.endDate}
-                    </time>
-                  </>
+                {project.endDate ? (
+                  project.endDate === project.startDate ? null : (
+                    <>
+                      {' - '}
+                      <time datetime={toIsoDate(project.endDate)}>
+                        {toHumanDate(project.endDate)}
+                      </time>
+                    </>
+                  )
+                ) : (
+                  ' - Present'
                 )}
               </p>
             </header>
@@ -180,28 +182,15 @@ function toHumanDate(value: string) {
     )
   }
 
-  <section aria-labelledby="skills-heading">
-    <h2 id="skills-heading">Technical Skills</h2>
-    <ul class="skills-list">
-      {
-        coreSkills.map((skill) => (
-          <li>
-            <strong>{skill.label}:</strong> {skill.value}
-          </li>
-        ))
-      }
-    </ul>
-  </section>
-
   <section aria-labelledby="target-role-heading">
-    <h2 id="target-role-heading">Target Role</h2>
+    <h2 id="target-role-heading">What I&apos;m Looking For Next</h2>
     <ul>
       {lookingFor.map((item) => <li>{item}</li>)}
     </ul>
   </section>
 
   <section aria-labelledby="writing-heading">
-    <h2 id="writing-heading">Writing</h2>
+    <h2 id="writing-heading">Blog</h2>
     <ul class="writing-list">
       <li><a class="touch-link" href="/blog">Blog index</a></li>
     </ul>
