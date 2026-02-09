@@ -10,12 +10,14 @@
 html {
   -webkit-text-size-adjust: 100%;
   background: #fff;
+  overflow-x: hidden;
   overflow-x: clip;
 }
 
 body {
   margin: 0;
   background: #fff;
+  overflow-x: hidden;
   overflow-x: clip;
 }
 
@@ -26,93 +28,113 @@ body {
 
 .markdown-body {
   position: relative;
-  width: min(100%, var(--content-width));
-  min-width: 200px;
-  max-width: var(--content-width);
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
   margin: 0 auto;
-  padding: 24px 20px 40px;
+  padding: max(14px, env(safe-area-inset-top))
+    max(14px, env(safe-area-inset-right)) max(20px, env(safe-area-inset-bottom))
+    max(14px, env(safe-area-inset-left));
   background-color: #fff;
-  background-image:
-    repeating-linear-gradient(
-      to bottom,
-      rgba(0, 0, 0, 0.07) 0,
-      rgba(0, 0, 0, 0.07) 1px,
-      transparent 1px,
-      transparent 17px
-    ),
-    repeating-linear-gradient(
-      to right,
-      rgba(0, 0, 0, 0.07) 0,
-      rgba(0, 0, 0, 0.07) 1px,
-      transparent 1px,
-      transparent 17px
-    );
+  background-image: none;
   overflow-wrap: anywhere;
   word-break: normal;
 }
 
-body::before,
-body::after {
-  content: '';
-  position: fixed;
-  top: -300vh;
-  bottom: -300vh;
-  width: 1px;
-  background: #000;
-  pointer-events: none;
-  z-index: 10;
-}
-
-body::before {
-  left: var(--rail-offset);
-}
-
-body::after {
-  right: var(--rail-offset);
-}
-
-@media (max-width: 767px) {
+@media (min-width: 768px) {
   .markdown-body {
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
-    padding: max(14px, env(safe-area-inset-top))
-      max(14px, env(safe-area-inset-right))
-      max(20px, env(safe-area-inset-bottom))
-      max(14px, env(safe-area-inset-left));
+    width: min(100%, var(--content-width));
+    max-width: var(--content-width);
+    padding: 24px 20px 40px;
+    background-image:
+      repeating-linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0.03) 0,
+        rgba(0, 0, 0, 0.03) 1px,
+        transparent 1px,
+        transparent 17px
+      ),
+      repeating-linear-gradient(
+        to right,
+        rgba(0, 0, 0, 0.03) 0,
+        rgba(0, 0, 0, 0.03) 1px,
+        transparent 1px,
+        transparent 17px
+      );
+  }
+
+  body::before,
+  body::after {
+    content: '';
+    position: fixed;
+    top: -300vh;
+    bottom: -300vh;
+    width: 1px;
+    background: #000;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  body::before {
+    left: var(--rail-offset);
+  }
+
+  body::after {
+    right: var(--rail-offset);
   }
 }
 
 .markdown-body a {
   position: relative;
-  display: inline-block;
+  display: inline;
   color: inherit;
   text-decoration: underline;
   text-underline-offset: 2px;
-  background: #fff;
-  border: 1px solid #000;
-  border-radius: 0;
-  padding: 0.05em 0.25em;
-  margin-right: 1.8em;
-  max-width: calc(100% - 1.8em);
+  background: none;
+  border: 0;
+  padding: 0;
+  margin-right: 0;
+  max-width: 100%;
   overflow-wrap: anywhere;
 }
 
 .markdown-body a::after {
-  content: ' 👈';
-  position: absolute;
-  left: calc(100% + 0.25em);
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 1.35em;
-  line-height: 1;
-  pointer-events: none;
+  content: '';
 }
 
 .markdown-body a:hover,
 .markdown-body a:focus-visible {
-  background: #000;
-  color: #fff;
+  background: transparent;
+  color: inherit;
+}
+
+@media (min-width: 768px) {
+  .markdown-body a {
+    display: inline-block;
+    background: #fff;
+    border: 1px solid #000;
+    border-radius: 0;
+    padding: 0.05em 0.25em;
+    margin-right: 1.8em;
+    max-width: calc(100% - 1.8em);
+  }
+
+  .markdown-body a::after {
+    content: ' 👈';
+    position: absolute;
+    left: calc(100% + 0.25em);
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.35em;
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  .markdown-body a:hover,
+  .markdown-body a:focus-visible {
+    background: #000;
+    color: #fff;
+  }
 }
 
 .markdown-body img,
