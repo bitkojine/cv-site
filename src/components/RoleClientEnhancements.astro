@@ -79,6 +79,7 @@
       // Direct visits to role routes should always surface the switch control.
       if (isRolePage) {
         localStorage.setItem(SWITCH_KEY, '1');
+        localStorage.setItem(STORAGE_KEY, path);
       }
 
       if (indicator && isRolePage) {
