@@ -19,7 +19,6 @@ const resolved = resolveWorkflowBadge(run.status, run.conclusion);
   data-workflow-id={run.workflow_id}
   aria-label={`${run.name} workflow status: ${resolved.label}`}
 >
-  <span class="workflow-badge__dot" aria-hidden="true"></span>
   <span class="workflow-badge__meta">
     <span class="workflow-badge__name">{run.name}</span>
     <span class="workflow-badge__status">{resolved.label}</span>
