@@ -6,9 +6,9 @@
       "email": "robertas.rudys+www@gmail.com",
       "location": "Lithuania / EU",
       "remote": "Open to Remote (EU time zones)",
-      "stack": "Backend (.NET, C#, SQL Server, REST APIs)"
+      "stack": "Backend (.NET, C#, REST APIs)"
     },
-    "profile": "Senior .NET Software Engineer working as a professional developer since 2015, delivering backend systems for data-heavy and product-focused environments. Core strengths include C#, .NET, ASP.NET Core, REST API design, MS SQL Server, and improving reliability in mature codebases.\n\nI have worked in both stable product teams and fast-changing environments, which built a pragmatic and ownership-driven engineering approach. I am focused on long-term product work with clear expectations, sustainable pace, and consistent delivery."
+    "profile": "Senior .NET Software Engineer working as a professional developer since 2015, delivering backend systems for product-focused environments. Core strengths include C#, .NET, ASP.NET Core, REST API design, and improving reliability in mature codebases.\n\nI have worked in both stable product teams and fast-changing environments, which built a pragmatic and ownership-driven engineering approach. I am focused on long-term product work with clear expectations, sustainable pace, and consistent delivery."
   },
   "coreSkills": [
     {
@@ -16,8 +16,8 @@
       "value": "C#, .NET (Framework/Core/modern .NET), ASP.NET Core, REST APIs, backend services"
     },
     {
-      "label": "Databases",
-      "value": "MS SQL Server, T-SQL, query optimization, data modeling, performance tuning"
+      "label": "Data",
+      "value": "Relational databases, query optimization, data modeling, performance tuning"
     },
     {
       "label": "Frontend",
@@ -123,8 +123,8 @@
     }
   ],
   "lookingFor": [
-    "Senior .NET Backend Engineer or Senior C# Developer role focused on SQL-heavy systems",
-    "Stable product company with long-term ownership and clear expectations",
-    "English-first engineering team with sustainable pace and strong collaboration"
+    "Short-to-mid term backend contracts focused on .NET, C#, and API-heavy product work",
+    "Teams with urgent reliability, delivery, or refactor goals and clear ownership boundaries",
+    "Remote collaboration in English with straightforward communication and practical scope"
   ]
 }
