@@ -36,10 +36,15 @@
       element.addEventListener(eventName, handler, options);
     };
 
+    const normalizePath = (value) => {
+      if (!value || value === '/') return '/';
+      return value.endsWith('/') ? value.slice(0, -1) : value;
+    };
+
     const initPage = () => {
       sentDepth = new Set();
 
-      const path = window.location.pathname;
+      const path = normalizePath(window.location.pathname);
       const search = new URLSearchParams(window.location.search);
       const currentRole = ROLE_BY_PATH[path] || '';
       const forceDoorScreen = search.get('choose') === '1';
