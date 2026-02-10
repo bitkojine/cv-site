@@ -1,0 +1,42 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import ModeSwitch from '../components/ModeSwitch.astro';
+import HiringContent from '../components/content/HiringContent.astro';
+
+const schemaExtras = {
+  about:
+    'Hiring-focused professional profile with resume-level experience and availability.',
+  mainEntity: {
+    '@type': 'Person',
+    name: 'Robertas Rudys',
+    jobTitle: 'Senior .NET Software Engineer',
+    worksFor: {
+      '@type': 'Organization',
+      name: 'Product Company (EU, Remote)',
+    },
+  },
+};
+---
+
+<SiteLayout
+  title="Robertas Rudys | Recruiter / Hiring Manager"
+  description="Resume-first hiring view with role-ready experience, skills, and availability."
+  canonicalPath="/hiring"
+  roleLabel="Recruiter / Hiring Manager"
+  schemaType="ProfilePage"
+  ogType="profile"
+  schemaExtras={schemaExtras}
+>
+  <ModeSwitch currentRole="Recruiter / Hiring Manager" />
+  <HiringContent />
+
+  <section
+    class="card"
+    data-progressive
+    hidden
+    aria-labelledby="hiring-details"
+  >
+    <h2 id="hiring-details">Additional Details</h2>
+    <p>References and deeper project examples are available on request.</p>
+  </section>
+</SiteLayout>

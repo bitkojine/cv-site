@@ -1,0 +1,85 @@
+---
+import { ClientRouter } from 'astro:transitions';
+import '../styles/global.css';
+import RoleClientEnhancements from '../components/RoleClientEnhancements.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  canonicalPath: '/' | '/hiring' | '/build' | '/vision';
+  roleLabel?: string;
+  schemaType?: 'WebPage' | 'ProfilePage' | 'CollectionPage';
+  schemaExtras?: Record<string, unknown>;
+  ogType?: 'website' | 'profile';
+}
+
+const {
+  title,
+  description,
+  canonicalPath,
+  roleLabel,
+  schemaType = 'WebPage',
+  schemaExtras = {},
+  ogType = 'website',
+} = Astro.props;
+
+const canonicalUrl = new URL(canonicalPath, Astro.site);
+const siteName = 'Robertas Rudys';
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': schemaType,
+  name: title,
+  description,
+  url: canonicalUrl,
+  isPartOf: {
+    '@type': 'WebSite',
+    name: siteName,
+    url: new URL('/', Astro.site),
+  },
+  ...(roleLabel
+    ? {
+        audience: {
+          '@type': 'Audience',
+          audienceType: roleLabel,
+        },
+      }
+    : {}),
+  ...schemaExtras,
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+    <meta name="robots" content="index,follow" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={new URL('/og-image.png', Astro.site)} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={new URL('/og-image.png', Astro.site)} />
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify(structuredData)}
+    />
+  </head>
+  <body data-current-role={roleLabel ?? ''}>
+    <ClientRouter />
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <main id="main-content" class="site-shell">
+      <slot />
+      <footer class="site-footer">
+        <small>&copy; {new Date().getFullYear()} {siteName}</small>
+      </footer>
+    </main>
+    <RoleClientEnhancements />
+  </body>
+</html>

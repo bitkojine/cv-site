@@ -1,0 +1,157 @@
+<script>
+  (() => {
+    const ROLE_PATHS = {
+      'Recruiter / Hiring Manager': '/hiring',
+      'Founder / Operator': '/build',
+      'Investor / Advisor': '/vision',
+    };
+
+    const ROLE_BY_PATH = {
+      '/hiring': 'Recruiter / Hiring Manager',
+      '/build': 'Founder / Operator',
+      '/vision': 'Investor / Advisor',
+    };
+
+    const STORAGE_KEY = 'selected_role_path';
+    const SWITCH_KEY = 'role_switch_enabled';
+    const depthMarks = [25, 50, 75, 100];
+    let sentDepth = new Set();
+    let activeScrollHandler = null;
+
+    const track = (eventName, props = {}) => {
+      console.log('[analytics]', eventName, props);
+    };
+
+    const revealProgressive = () => {
+      const revealables = document.querySelectorAll('[data-progressive]');
+      revealables.forEach((node) => {
+        node.removeAttribute('hidden');
+      });
+    };
+
+    const bindOnce = (element, key, eventName, handler, options) => {
+      const marker = `bound${key}`;
+      if (element.dataset[marker] === '1') return;
+      element.dataset[marker] = '1';
+      element.addEventListener(eventName, handler, options);
+    };
+
+    const initPage = () => {
+      sentDepth = new Set();
+
+      const path = window.location.pathname;
+      const search = new URLSearchParams(window.location.search);
+      const currentRole = ROLE_BY_PATH[path] || '';
+      const forceDoorScreen = search.get('choose') === '1';
+
+      if (path === '/' && !forceDoorScreen) {
+        const remembered = localStorage.getItem(STORAGE_KEY);
+        if (remembered && Object.values(ROLE_PATHS).includes(remembered)) {
+          window.location.replace(remembered);
+          return;
+        }
+      }
+
+      const persistRole = (role) => {
+        const target = ROLE_PATHS[role];
+        if (!target) return;
+        localStorage.setItem(STORAGE_KEY, target);
+        localStorage.setItem(SWITCH_KEY, '1');
+      };
+
+      document.querySelectorAll('[data-role-door]').forEach((link) => {
+        bindOnce(
+          link,
+          'DoorClick',
+          'click',
+          () => {
+            const selectedRole = link.getAttribute('data-role-door') || '';
+            persistRole(selectedRole);
+            track('mode_selected', { role: selectedRole });
+          },
+          { once: true }
+        );
+      });
+
+      const indicator = document.querySelector('[data-role-indicator]');
+      const canShowSwitch = localStorage.getItem(SWITCH_KEY) === '1';
+
+      if (indicator && canShowSwitch && currentRole) {
+        indicator.hidden = false;
+      }
+
+      document.querySelectorAll('[data-role-switch]').forEach((link) => {
+        bindOnce(link, 'SwitchClick', 'click', () => {
+          const nextRole = link.getAttribute('data-role-switch') || '';
+          const nextPath = ROLE_PATHS[nextRole];
+          if (!nextPath || nextPath === path) return;
+          persistRole(nextRole);
+          track('mode_switched', { from: currentRole, to: nextRole });
+        });
+      });
+
+      document.querySelectorAll('[data-return-door]').forEach((link) => {
+        bindOnce(link, 'ReturnClick', 'click', () => {
+          localStorage.setItem(SWITCH_KEY, '1');
+          track('mode_switched', { from: currentRole, to: 'Door Screen' });
+        });
+      });
+
+      document.querySelectorAll('[data-cta]').forEach((element) => {
+        bindOnce(element, 'CtaClick', 'click', () => {
+          const cta = element.getAttribute('data-cta') || 'unknown';
+          const mode = element.getAttribute('data-cta-mode') || currentRole;
+          track('cta_clicked', { cta, mode });
+          revealProgressive();
+        });
+
+        bindOnce(element, 'CtaHover', 'mouseenter', () => {
+          revealProgressive();
+        });
+
+        bindOnce(element, 'CtaTouch', 'touchstart', revealProgressive, {
+          passive: true,
+        });
+      });
+
+      const revealOnDepth = () => {
+        const documentHeight =
+          document.documentElement.scrollHeight - window.innerHeight;
+        if (documentHeight <= 0) return;
+
+        const depth = Math.min(
+          100,
+          Math.round((window.scrollY / documentHeight) * 100)
+        );
+
+        depthMarks.forEach((mark) => {
+          if (depth >= mark && !sentDepth.has(mark)) {
+            sentDepth.add(mark);
+            track('scroll_depth', {
+              depth: mark,
+              mode: currentRole || 'Door Screen',
+            });
+          }
+        });
+
+        if (depth >= 35) {
+          revealProgressive();
+        }
+      };
+
+      if (activeScrollHandler) {
+        window.removeEventListener('scroll', activeScrollHandler);
+      }
+      activeScrollHandler = revealOnDepth;
+      window.addEventListener('scroll', activeScrollHandler, { passive: true });
+      revealOnDepth();
+    };
+
+    document.addEventListener('astro:page-load', initPage);
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initPage, { once: true });
+    } else {
+      initPage();
+    }
+  })();
+</script>

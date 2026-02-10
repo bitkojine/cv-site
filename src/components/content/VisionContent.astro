@@ -1,0 +1,119 @@
+---
+import { DollarSign } from '@lucide/astro';
+import cvData from '../../data/cv.json';
+
+const { personalInfo } = cvData;
+
+const visionSignals = [
+  {
+    title: 'Product Direction Built On Delivery Reality',
+    points: [
+      'Strategy is shaped by practical implementation constraints.',
+      'Technical decisions are tied to measurable product outcomes.',
+      'Roadmap direction emphasizes compounding system leverage.',
+    ],
+  },
+  {
+    title: 'Experimentation With Clear Operating Discipline',
+    points: [
+      'New ideas are tested in scoped, reversible increments.',
+      'Risk is surfaced early with explicit tradeoffs and options.',
+      'Execution rhythm stays consistent across parallel tracks.',
+    ],
+  },
+  {
+    title: 'Long-Term Systems Thinking',
+    points: [
+      'Preference for architectures that stay maintainable under growth.',
+      'Focus on reducing coordination drag between product and engineering.',
+      'Ongoing investment in reliability as a strategic advantage.',
+    ],
+  },
+];
+---
+
+<section class="mode-hero" aria-labelledby="vision-heading">
+  <div class="headline-row">
+    <span class="headline-icon" aria-hidden="true"
+      ><DollarSign size={34} /></span
+    >
+    <h1 id="vision-heading">
+      Long-horizon product thinking backed by shipped work.
+    </h1>
+  </div>
+  <div class="cta-row">
+    <a
+      class="cta-primary"
+      href="/build"
+      data-cta="See What I’m Building"
+      data-cta-mode="Investor / Advisor"
+    >
+      See What I’m Building
+    </a>
+    <a
+      class="cta-secondary"
+      href={`mailto:${personalInfo.contact.email}?subject=Get%20Updates`}
+      data-cta="Get Updates"
+      data-cta-mode="Investor / Advisor"
+    >
+      Get Updates
+    </a>
+  </div>
+  <p class="cta-note">
+    For strategy conversations, use Get Updates to open an advisor/investor
+    thread.
+  </p>
+</section>
+
+<section class="card" aria-labelledby="vision-summary">
+  <h2 id="vision-summary">Vision Snapshot</h2>
+  <p>
+    Product direction grounded in execution reality: practical experimentation,
+    operating lessons from multiple environments, and long-term technical
+    trajectory with clear compounding intent.
+  </p>
+</section>
+
+<section class="card" aria-labelledby="vision-products">
+  <h2 id="vision-products">Products and Experiments</h2>
+  <ul>
+    <li>Workflow automation patterns for technical operators</li>
+    <li>Reliability-first backend templates for early product teams</li>
+    <li>AI-assisted delivery workflows for faster engineering output</li>
+    <li>Execution systems that connect product velocity and stability</li>
+  </ul>
+</section>
+
+<section class="card" aria-labelledby="vision-signals">
+  <h2 id="vision-signals">Strategic Signals</h2>
+  {
+    visionSignals.map((signal) => (
+      <article>
+        <h3>{signal.title}</h3>
+        <ul>
+          {signal.points.map((point) => (
+            <li>{point}</li>
+          ))}
+        </ul>
+      </article>
+    ))
+  }
+</section>
+
+<section class="card" aria-labelledby="vision-trajectory">
+  <h2 id="vision-trajectory">Trajectory</h2>
+  <ul>
+    <li>Near term: sharpen repeatable execution systems for product teams</li>
+    <li>Mid term: expand reusable delivery and architecture playbooks</li>
+    <li>Long term: compound product optionality through technical leverage</li>
+  </ul>
+</section>
+
+<section class="card" aria-labelledby="vision-conversation">
+  <h2 id="vision-conversation">Conversation Fit</h2>
+  <ul>
+    <li>Advisor and investor discussions focused on direction and risk</li>
+    <li>Strategic review of execution capacity and operating model choices</li>
+    <li>Long-horizon perspective tied to concrete building behavior</li>
+  </ul>
+</section>

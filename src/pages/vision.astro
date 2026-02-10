@@ -1,0 +1,43 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import ModeSwitch from '../components/ModeSwitch.astro';
+import VisionContent from '../components/content/VisionContent.astro';
+
+const schemaExtras = {
+  about:
+    'Strategic product direction, experiments, and long-term trajectory for investor/advisor audiences.',
+  mainEntity: {
+    '@type': 'CreativeWork',
+    name: 'Product and Technical Vision',
+    creator: {
+      '@type': 'Person',
+      name: 'Robertas Rudys',
+    },
+  },
+};
+---
+
+<SiteLayout
+  title="Robertas Rudys | Investor / Advisor"
+  description="Strategic view of product direction, experiments, and long-term trajectory."
+  canonicalPath="/vision"
+  roleLabel="Investor / Advisor"
+  schemaType="CollectionPage"
+  schemaExtras={schemaExtras}
+>
+  <ModeSwitch currentRole="Investor / Advisor" />
+  <VisionContent />
+
+  <section
+    class="card"
+    data-progressive
+    hidden
+    aria-labelledby="vision-details"
+  >
+    <h2 id="vision-details">Next Layer</h2>
+    <p>
+      Roadmap narratives and deeper signals can be shared during follow-up
+      conversations.
+    </p>
+  </section>
+</SiteLayout>
