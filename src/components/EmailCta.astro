@@ -1,7 +1,6 @@
 ---
 import {
   createDraftTooltip,
-  createMailtoHref,
   type EmailCtaConfig,
 } from '../lib/email-drafts.mts';
 
@@ -12,14 +11,49 @@ interface Props {
 
 const { cta, mode } = Astro.props;
 const className = cta.variant === 'primary' ? 'cta-primary' : 'cta-secondary';
+const [recipientLocalPart = '', recipientDomain = ''] = cta.recipientEmail.split(
+  '@'
+);
+const encodedSubject = encodeURIComponent(cta.draft.subject);
+const encodedBody = encodeURIComponent(cta.draft.body);
 ---
 
 <a
   class={className}
-  href={createMailtoHref(cta.recipientEmail, cta.draft)}
+  href="#contact-email"
   title={createDraftTooltip(cta.draft)}
   data-cta={cta.label}
   data-cta-mode={mode}
+  data-mailto-link
+  data-email-local={recipientLocalPart}
+  data-email-domain={recipientDomain}
+  data-email-subject={encodedSubject}
+  data-email-body={encodedBody}
 >
   {cta.label}
 </a>
+
+<script>
+  (() => {
+    const links = document.querySelectorAll('[data-mailto-link]');
+    links.forEach((link) => {
+      if (link.dataset.mailtoBound === '1') return;
+      link.dataset.mailtoBound = '1';
+      link.addEventListener('click', (event) => {
+        event.preventDefault();
+        const local = link.getAttribute('data-email-local') || '';
+        const domain = link.getAttribute('data-email-domain') || '';
+        if (!local || !domain) return;
+
+        const subject = link.getAttribute('data-email-subject') || '';
+        const body = link.getAttribute('data-email-body') || '';
+        const params = [];
+        if (subject) params.push(`subject=${subject}`);
+        if (body) params.push(`body=${body}`);
+        const query = params.length > 0 ? `?${params.join('&')}` : '';
+
+        window.location.href = `mailto:${local}@${domain}${query}`;
+      });
+    });
+  })();
+</script>
