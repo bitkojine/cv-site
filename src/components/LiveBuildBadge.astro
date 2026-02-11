@@ -9,7 +9,7 @@ const deployWorkflowName = 'Deploy to GitHub Pages';
 const fallbackUrl = `https://github.com/${githubOwner}/${githubRepo}/actions/workflows/deploy.yml`;
 
 let badgeHref = fallbackUrl;
-let badgeLabel = 'Live Build';
+let badgeLabel = 'Deploy Status';
 let badgeStatus = 'View Logs';
 let badgeState: 'running' | 'success' | 'failure' | 'unknown' = 'unknown';
 
