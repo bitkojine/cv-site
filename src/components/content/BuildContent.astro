@@ -1,6 +1,7 @@
 ---
 import { Cog } from '@lucide/astro';
 import EmailCta from '../EmailCta.astro';
+import PeerSharePrompt from '../PeerSharePrompt.astro';
 import { roleEmailCtas, visitorModes } from '../../lib/email-drafts.mts';
 
 const buildCaseStudies = [
@@ -53,6 +54,10 @@ const buildCaseStudies = [
     outcome to start.
   </p>
 </section>
+
+<PeerSharePrompt
+  message="Forward this profile to one founder or operator who needs hands-on execution support."
+/>
 
 <section class="card" aria-labelledby="build-summary">
   <h2 id="build-summary">Execution Snapshot</h2>

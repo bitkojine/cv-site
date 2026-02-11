@@ -1,6 +1,7 @@
 ---
 import { Briefcase } from '@lucide/astro';
 import EmailCta from '../EmailCta.astro';
+import PeerSharePrompt from '../PeerSharePrompt.astro';
 import { roleEmailCtas, visitorModes } from '../../lib/email-drafts.mts';
 
 const hiringExperience = [
@@ -91,6 +92,10 @@ const hiringExperience = [
     Hiring for a role now: request the resume or book a short intro.
   </p>
 </section>
+
+<PeerSharePrompt
+  message="Forward this profile to one teammate hiring for backend product engineering."
+/>
 
 <section class="card" aria-labelledby="hiring-summary">
   <h2 id="hiring-summary">Profile Snapshot</h2>
