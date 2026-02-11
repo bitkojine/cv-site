@@ -3,14 +3,14 @@ import { Briefcase, Cog, DollarSign } from '@lucide/astro';
 ---
 
 <section class="door-screen" aria-labelledby="door-heading">
-  <p class="eyebrow">Personal Site</p>
-  <h1 id="door-heading">What brings you here?</h1>
+  <p class="eyebrow">I’m Robertas Rudys</p>
+  <h1 id="door-heading">And who are you?</h1>
   <p>
-    Choose the door that matches your intent and you will see only the most
-    relevant information for that context.
+    Choose the visitor type that matches your intent. You will see the most
+    relevant information first.
   </p>
-  <p class="door-cta-copy">Select one door to continue to a focused view.</p>
-  <nav aria-label="Role doors" class="door-grid">
+  <p class="door-cta-copy">Select one option to continue.</p>
+  <nav aria-label="Visitor options" class="door-grid">
     <a class="door" href="/hiring" data-role-door="Recruiter / Hiring Manager">
       <span class="door-head">
         <span class="door-icon" aria-hidden="true">
@@ -18,7 +18,7 @@ import { Briefcase, Cog, DollarSign } from '@lucide/astro';
         </span>
         <span class="door-label">I’m a Recruiter / Hiring Manager</span>
       </span>
-      <span class="door-subtext">Hiring for a role</span>
+      <span class="door-subtext">Hiring for an open position</span>
     </a>
     <a class="door" href="/build" data-role-door="Founder / Operator">
       <span class="door-head">
@@ -27,7 +27,7 @@ import { Briefcase, Cog, DollarSign } from '@lucide/astro';
         </span>
         <span class="door-label">I’m a Founder / Operator</span>
       </span>
-      <span class="door-subtext">Building or fixing a product</span>
+      <span class="door-subtext">Building or scaling a product</span>
     </a>
     <a class="door" href="/vision" data-role-door="Investor / Advisor">
       <span class="door-head">
@@ -36,7 +36,9 @@ import { Briefcase, Cog, DollarSign } from '@lucide/astro';
         </span>
         <span class="door-label">I’m an Investor / Advisor</span>
       </span>
-      <span class="door-subtext">Evaluating vision or direction</span>
+      <span class="door-subtext">
+        Evaluating traction, execution quality, and long-term potential
+      </span>
     </a>
   </nav>
 </section>
