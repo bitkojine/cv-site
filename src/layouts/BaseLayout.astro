@@ -2,6 +2,7 @@
 import 'github-markdown-css/github-markdown.css';
 import '../styles/global.css';
 import cvData from '../data/cv.json';
+import { BUILD_VERSION } from '../lib/build-version.mts';
 
 interface Props {
   title?: string;
@@ -110,7 +111,10 @@ const jsonLd = {
       <article class="markdown-body">
         <slot />
         <footer class="site-footer-note" aria-label="Site footer">
-          <p>&copy; {currentYear} Robertas Rudys. All rights reserved.</p>
+          <p>
+            &copy; {currentYear} Robertas Rudys. All rights reserved.
+            <span class="build-version"> | Build {BUILD_VERSION}</span>
+          </p>
         </footer>
       </article>
     </main>

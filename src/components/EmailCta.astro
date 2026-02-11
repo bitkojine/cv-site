@@ -3,6 +3,14 @@ import {
   createDraftTooltip,
   type EmailCtaConfig,
 } from '../lib/email-drafts.mts';
+import {
+  Briefcase,
+  CalendarClock,
+  Handshake,
+  PhoneCall,
+  Radio,
+  Landmark,
+} from '@lucide/astro';
 
 interface Props {
   cta: EmailCtaConfig;
@@ -15,6 +23,17 @@ const [recipientLocalPart = '', recipientDomain = ''] =
   cta.recipientEmail.split('@');
 const encodedSubject = encodeURIComponent(cta.draft.subject);
 const encodedBody = encodeURIComponent(cta.draft.body);
+
+const iconByLabel = {
+  'Request Resume': Briefcase,
+  'Schedule Intro': CalendarClock,
+  'Work Together': Handshake,
+  'Book a Call': PhoneCall,
+  'Get Product Updates': Radio,
+  'Request Investment Details': Landmark,
+} as const;
+
+const Icon = iconByLabel[cta.label] ?? Briefcase;
 ---
 
 <a
@@ -29,5 +48,6 @@ const encodedBody = encodeURIComponent(cta.draft.body);
   data-email-subject={encodedSubject}
   data-email-body={encodedBody}
 >
-  {cta.label}
+  <span class="cta-icon" aria-hidden="true"><Icon size={16} /></span>
+  <span>{cta.label}</span>
 </a>

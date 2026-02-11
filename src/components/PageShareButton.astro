@@ -1,0 +1,28 @@
+---
+import { Share2 } from '@lucide/astro';
+
+interface Props {
+  shareRole:
+    | 'Recruiter / Hiring Manager'
+    | 'Founder / Operator'
+    | 'Investor / Advisor';
+  label: string;
+  source: string;
+  shareTitle?: string;
+  shareText?: string;
+}
+
+const { shareRole, label, source, shareTitle, shareText } = Astro.props;
+---
+
+<button
+  class="cta-secondary cta-share"
+  type="button"
+  data-role-share={shareRole}
+  data-share-source={source}
+  data-share-title={shareTitle}
+  data-share-text={shareText}
+>
+  <span class="cta-icon" aria-hidden="true"><Share2 size={16} /></span>
+  <span data-role-share-label>{label}</span>
+</button>

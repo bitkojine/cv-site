@@ -55,7 +55,10 @@
     const updateShareButtonLabel = (button, label) => {
       const labelNode = button.querySelector('[data-role-share-label]');
       if (!labelNode) return;
-      const baseLabel = 'Share this profile';
+      const baseLabel =
+        button.getAttribute('data-role-share-label-default') ||
+        labelNode.textContent ||
+        'Share';
       labelNode.textContent = label;
       window.setTimeout(() => {
         labelNode.textContent = baseLabel;
@@ -128,17 +131,31 @@
       });
 
       document.querySelectorAll('[data-role-share]').forEach((button) => {
+        const shareLabelNode = button.querySelector('[data-role-share-label]');
+        if (
+          !button.getAttribute('data-role-share-label-default') &&
+          shareLabelNode?.textContent
+        ) {
+          button.setAttribute(
+            'data-role-share-label-default',
+            shareLabelNode.textContent
+          );
+        }
+
         bindOnce(button, 'RoleShareClick', 'click', async () => {
           const selectedRole = button.getAttribute('data-role-share') || '';
+          const shareSource =
+            button.getAttribute('data-share-source') || 'role_share';
           const shareUrl = buildShareUrl(selectedRole || currentRole);
           const sharePayload = {
-            title: document.title,
-            text: getPageDescription(),
+            title: button.getAttribute('data-share-title') || document.title,
+            text:
+              button.getAttribute('data-share-text') || getPageDescription(),
             url: shareUrl,
           };
 
           reportEvent('share_clicked', {
-            source: 'mode_switch',
+            source: shareSource,
             mode: roleForAnalytics,
           });
 
@@ -147,7 +164,7 @@
               await navigator.share(sharePayload);
               reportEvent('share_completed', {
                 method: 'web_share',
-                source: 'mode_switch',
+                source: shareSource,
                 mode: roleForAnalytics,
               });
               updateShareButtonLabel(button, 'Shared');
@@ -161,7 +178,7 @@
             await navigator.clipboard.writeText(shareUrl);
             reportEvent('share_completed', {
               method: 'copy_link',
-              source: 'mode_switch',
+              source: shareSource,
               mode: roleForAnalytics,
             });
             updateShareButtonLabel(button, 'Link copied');
