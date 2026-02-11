@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 function formatBuildVersion(date: Date): string {
   const formatter = new Intl.DateTimeFormat('en-GB', {
     timeZone: 'Europe/Vilnius',
