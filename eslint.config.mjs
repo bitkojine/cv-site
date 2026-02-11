@@ -16,6 +16,12 @@ export default tseslint.config(
     },
   },
   {
+    files: ['src/env.d.ts'],
+    rules: {
+      '@typescript-eslint/triple-slash-reference': 'off',
+    },
+  },
+  {
     ignores: ['dist/', 'node_modules/', '.astro/', '.github/'],
   }
 );
