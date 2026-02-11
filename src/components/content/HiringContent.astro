@@ -1,10 +1,7 @@
 ---
 import { Briefcase } from '@lucide/astro';
-import cvData from '../../data/cv.json';
 import EmailCta from '../EmailCta.astro';
 import { roleEmailCtas, visitorModes } from '../../lib/email-drafts.mts';
-
-const { personalInfo } = cvData;
 
 const hiringExperience = [
   {
@@ -81,13 +78,7 @@ const hiringExperience = [
   <div class="cta-row">
     {
       roleEmailCtas.hiring.map((cta) => (
-        <EmailCta
-          email={personalInfo.contact.email}
-          draft={cta.draft}
-          label={cta.label}
-          mode={visitorModes.hiring}
-          variant={cta.variant}
-        />
+        <EmailCta cta={cta} mode={visitorModes.hiring} />
       ))
     }
   </div>

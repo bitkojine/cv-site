@@ -1,10 +1,7 @@
 ---
 import { Cog } from '@lucide/astro';
-import cvData from '../../data/cv.json';
 import EmailCta from '../EmailCta.astro';
 import { roleEmailCtas, visitorModes } from '../../lib/email-drafts.mts';
-
-const { personalInfo } = cvData;
 
 const buildCaseStudies = [
   {
@@ -42,13 +39,7 @@ const buildCaseStudies = [
   <div class="cta-row">
     {
       roleEmailCtas.build.map((cta) => (
-        <EmailCta
-          email={personalInfo.contact.email}
-          draft={cta.draft}
-          label={cta.label}
-          mode={visitorModes.build}
-          variant={cta.variant}
-        />
+        <EmailCta cta={cta} mode={visitorModes.build} />
       ))
     }
   </div>

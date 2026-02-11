@@ -2,27 +2,24 @@
 import {
   createDraftTooltip,
   createMailtoHref,
-  type EmailDraft,
+  type EmailCtaConfig,
 } from '../lib/email-drafts.mts';
 
 interface Props {
-  email: string;
-  draft: EmailDraft;
-  label: string;
+  cta: EmailCtaConfig;
   mode: string;
-  variant: 'primary' | 'secondary';
 }
 
-const { email, draft, label, mode, variant } = Astro.props;
-const className = variant === 'primary' ? 'cta-primary' : 'cta-secondary';
+const { cta, mode } = Astro.props;
+const className = cta.variant === 'primary' ? 'cta-primary' : 'cta-secondary';
 ---
 
 <a
   class={className}
-  href={createMailtoHref(email, draft)}
-  title={createDraftTooltip(draft)}
-  data-cta={label}
+  href={createMailtoHref(cta.recipientEmail, cta.draft)}
+  title={createDraftTooltip(cta.draft)}
+  data-cta={cta.label}
   data-cta-mode={mode}
 >
-  {label}
+  {cta.label}
 </a>

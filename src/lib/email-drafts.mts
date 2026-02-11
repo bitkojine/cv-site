@@ -1,10 +1,44 @@
+import cvData from '../data/cv.json';
+
 export interface EmailDraft {
   subject: string;
   body: string;
 }
 
+export interface EmailCtaConfig {
+  label: string;
+  variant: 'primary' | 'secondary';
+  draft: EmailDraft;
+  recipientEmail: string;
+}
+
 function joinLines(lines: string[]): string {
   return lines.join('\n');
+}
+
+function getBaseEmailAddress(email: string): string {
+  const [localPart, domain] = email.split('@');
+  const baseLocalPart = localPart.split('+')[0];
+  return `${baseLocalPart}@${domain}`;
+}
+
+function buildTaggedGmailAddress(baseEmail: string, tag: string): string {
+  const [localPart, domain] = baseEmail.split('@');
+  return `${localPart}+${tag}@${domain}`;
+}
+
+function createEmailCta(
+  label: string,
+  variant: 'primary' | 'secondary',
+  draft: EmailDraft,
+  tag: string
+): EmailCtaConfig {
+  return {
+    label,
+    variant,
+    draft,
+    recipientEmail: buildTaggedGmailAddress(websiteEmailBase, tag),
+  };
 }
 
 export function createMailtoHref(email: string, draft: EmailDraft): string {
@@ -120,6 +154,33 @@ export const emailDrafts = {
   },
 } as const;
 
+// Tracks which inbox alias is used for each website intent.
+const websiteEmailBase = getBaseEmailAddress(cvData.personalInfo.contact.email);
+
+export const contactEmailAliases = {
+  header: cvData.personalInfo.contact.email,
+  cta: {
+    hiringRequestResume: buildTaggedGmailAddress(
+      websiteEmailBase,
+      'www-hiring-resume'
+    ),
+    hiringScheduleIntro: buildTaggedGmailAddress(
+      websiteEmailBase,
+      'www-hiring-intro'
+    ),
+    buildWorkTogether: buildTaggedGmailAddress(websiteEmailBase, 'www-build'),
+    buildBookCall: buildTaggedGmailAddress(websiteEmailBase, 'www-build-call'),
+    visionGetProductUpdates: buildTaggedGmailAddress(
+      websiteEmailBase,
+      'www-vision-updates'
+    ),
+    visionRequestInvestmentDetails: buildTaggedGmailAddress(
+      websiteEmailBase,
+      'www-vision-invest'
+    ),
+  },
+} as const;
+
 export const visitorModes = {
   hiring: 'Recruiter / Hiring Manager',
   build: 'Founder / Operator',
@@ -128,39 +189,45 @@ export const visitorModes = {
 
 export const roleEmailCtas = {
   hiring: [
-    {
-      label: 'Request Resume',
-      variant: 'primary',
-      draft: emailDrafts.hiring.requestResume,
-    },
-    {
-      label: 'Schedule Intro',
-      variant: 'secondary',
-      draft: emailDrafts.hiring.scheduleIntro,
-    },
+    createEmailCta(
+      'Request Resume',
+      'primary',
+      emailDrafts.hiring.requestResume,
+      'www-hiring-resume'
+    ),
+    createEmailCta(
+      'Schedule Intro',
+      'secondary',
+      emailDrafts.hiring.scheduleIntro,
+      'www-hiring-intro'
+    ),
   ],
   build: [
-    {
-      label: 'Work Together',
-      variant: 'primary',
-      draft: emailDrafts.build.workTogether,
-    },
-    {
-      label: 'Book a Call',
-      variant: 'secondary',
-      draft: emailDrafts.build.bookCall,
-    },
+    createEmailCta(
+      'Work Together',
+      'primary',
+      emailDrafts.build.workTogether,
+      'www-build'
+    ),
+    createEmailCta(
+      'Book a Call',
+      'secondary',
+      emailDrafts.build.bookCall,
+      'www-build-call'
+    ),
   ],
   vision: [
-    {
-      label: 'Get Product Updates',
-      variant: 'primary',
-      draft: emailDrafts.vision.getProductUpdates,
-    },
-    {
-      label: 'Request Investment Details',
-      variant: 'secondary',
-      draft: emailDrafts.vision.requestInvestmentDetails,
-    },
+    createEmailCta(
+      'Get Product Updates',
+      'primary',
+      emailDrafts.vision.getProductUpdates,
+      'www-vision-updates'
+    ),
+    createEmailCta(
+      'Request Investment Details',
+      'secondary',
+      emailDrafts.vision.requestInvestmentDetails,
+      'www-vision-invest'
+    ),
   ],
-} as const;
+} as const satisfies Record<string, readonly EmailCtaConfig[]>;

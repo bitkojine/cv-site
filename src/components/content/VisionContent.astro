@@ -1,10 +1,7 @@
 ---
 import { DollarSign } from '@lucide/astro';
-import cvData from '../../data/cv.json';
 import EmailCta from '../EmailCta.astro';
 import { roleEmailCtas, visitorModes } from '../../lib/email-drafts.mts';
-
-const { personalInfo } = cvData;
 
 const visionSignals = [
   {
@@ -46,13 +43,7 @@ const visionSignals = [
   <div class="cta-row">
     {
       roleEmailCtas.vision.map((cta) => (
-        <EmailCta
-          email={personalInfo.contact.email}
-          draft={cta.draft}
-          label={cta.label}
-          mode={visitorModes.vision}
-          variant={cta.variant}
-        />
+        <EmailCta cta={cta} mode={visitorModes.vision} />
       ))
     }
   </div>
