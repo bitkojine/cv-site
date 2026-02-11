@@ -66,6 +66,10 @@ body {
   padding: 2rem 0 4rem;
 }
 
+body[data-current-role]:not([data-current-role='']) .site-shell {
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 8.5rem);
+}
+
 .eyebrow {
   margin: 0 0 0.75rem;
   color: var(--muted);
@@ -417,6 +421,10 @@ button:focus-visible {
 }
 
 @media (min-width: 720px) {
+  body[data-current-role]:not([data-current-role='']) .site-shell {
+    padding-bottom: 4rem;
+  }
+
   .door-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
