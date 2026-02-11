@@ -1,0 +1,156 @@
+---
+import { Briefcase } from '@lucide/astro';
+import cvData from '../../data/cv.json';
+
+const { personalInfo } = cvData;
+
+const hiringExperience = [
+  {
+    title: 'Senior .NET Software Engineer',
+    company: 'Product Company (EU, Remote)',
+    period: '2026 - Present',
+    details: [
+      'Owns backend services and APIs supporting core product workflows.',
+      'Improves performance and production reliability in mature systems.',
+      'Delivers roadmap work with product and data stakeholders.',
+    ],
+  },
+  {
+    title: 'Senior .NET Software Engineer',
+    company: 'Adform Lithuania',
+    period: '2025',
+    details: [
+      'Built backend services in a high-concurrency production environment.',
+      'Delivered mission-critical features in large existing codebases.',
+      'Worked within mature testing and reliability standards.',
+    ],
+  },
+  {
+    title: 'Senior Software Engineer (.NET)',
+    company: 'Ignitis Group Services Center',
+    period: '2023',
+    details: [
+      'Refactored and maintained enterprise .NET systems used by business teams.',
+      'Extended legacy code while preserving stability and maintainability.',
+      'Improved maintainability in systems with complex operational context.',
+    ],
+  },
+  {
+    title: 'Software Engineer (.NET / Blockchain)',
+    company: 'Super How',
+    period: '2021 - 2022',
+    details: [
+      'Delivered end-to-end features in a fast-moving product setting.',
+      'Built decentralized application integrations and service logic.',
+      'Shipped practical outcomes under changing product constraints.',
+    ],
+  },
+  {
+    title: 'Software Engineer (.NET / SQL)',
+    company: 'Euromonitor International',
+    period: '2018 - 2020',
+    details: [
+      'Implemented data-heavy SQL solutions for research products.',
+      'Delivered product modules with .NET and Angular.',
+      'Maintained long-lived business systems used across global teams.',
+    ],
+  },
+  {
+    title: 'Software Engineer (C# / Unity)',
+    company: 'Invenis',
+    period: '2015',
+    details: [
+      'Developed interactive applications using C# and Unity3D.',
+      'Implemented gameplay logic and UI systems for client projects.',
+      'Built delivery discipline in early professional engineering work.',
+    ],
+  },
+];
+---
+
+<section class="mode-hero" aria-labelledby="hiring-heading">
+  <div class="headline-row">
+    <span class="headline-icon" aria-hidden="true"><Briefcase size={34} /></span
+    >
+    <h1 id="hiring-heading">
+      Senior .NET engineer for stable, long-term product delivery.
+    </h1>
+  </div>
+  <div class="cta-row">
+    <a
+      class="cta-primary"
+      href={`mailto:${personalInfo.contact.email}?subject=Resume%20Request`}
+      data-cta="Download Resume"
+      data-cta-mode="Recruiter / Hiring Manager"
+    >
+      Download Resume
+    </a>
+    <a
+      class="cta-secondary"
+      href={`mailto:${personalInfo.contact.email}?subject=Schedule%20Intro`}
+      data-cta="Schedule Intro"
+      data-cta-mode="Recruiter / Hiring Manager"
+    >
+      Schedule Intro
+    </a>
+  </div>
+  <p class="cta-note">
+    Hiring for a role now: request the resume or book a short intro.
+  </p>
+</section>
+
+<section class="card" aria-labelledby="hiring-summary">
+  <h2 id="hiring-summary">Profile Snapshot</h2>
+  <p>
+    Professional engineer since 2015 focused on C# and .NET systems. Strong fit
+    for teams that need dependable backend ownership, practical communication,
+    and low-risk onboarding into existing product architecture.
+  </p>
+</section>
+
+<section class="card" aria-labelledby="hiring-skills">
+  <h2 id="hiring-skills">Core Technical Scope</h2>
+  <ul>
+    <li>C#, .NET (Framework/Core/modern .NET), ASP.NET Core, REST APIs</li>
+    <li>Relational data modeling, query optimization, performance tuning</li>
+    <li>Production troubleshooting, legacy-system debugging, safe refactors</li>
+    <li>CI/CD collaboration, code reviews, cross-functional delivery</li>
+  </ul>
+</section>
+
+<section class="card" aria-labelledby="hiring-experience">
+  <h2 id="hiring-experience">Experience Highlights</h2>
+  {
+    hiringExperience.map((role) => (
+      <article>
+        <h3>{role.title}</h3>
+        <p>
+          {role.company} | {role.period}
+        </p>
+        <ul>
+          {role.details.map((item) => (
+            <li>{item}</li>
+          ))}
+        </ul>
+      </article>
+    ))
+  }
+</section>
+
+<section class="card" aria-labelledby="hiring-availability">
+  <h2 id="hiring-availability">Availability</h2>
+  <ul>
+    <li>Open to full-time or long-term product roles</li>
+    <li>Remote collaboration in EU-aligned time zones</li>
+    <li>Structured onboarding and direct communication preferred</li>
+  </ul>
+</section>
+
+<section class="card" aria-labelledby="hiring-fit">
+  <h2 id="hiring-fit">Best Team Fit</h2>
+  <ul>
+    <li>Product teams modernizing existing backend services</li>
+    <li>Organizations prioritizing reliability and predictable delivery</li>
+    <li>Teams that value ownership and sustainable engineering pace</li>
+  </ul>
+</section>

@@ -1,0 +1,37 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import ModeSwitch from '../components/ModeSwitch.astro';
+import BuildContent from '../components/content/BuildContent.astro';
+
+const schemaExtras = {
+  about:
+    'Execution-focused collaboration page for founders and operators shipping product work.',
+  mainEntity: {
+    '@type': 'Service',
+    name: 'Product Execution Collaboration',
+    serviceType:
+      'Freelance, contract, fractional engineering, long-term partnership',
+    provider: {
+      '@type': 'Person',
+      name: 'Robertas Rudys',
+    },
+  },
+};
+---
+
+<SiteLayout
+  title="Robertas Rudys | Founder / Operator"
+  description="Execution-focused builder view for founders and operators shipping product outcomes."
+  canonicalPath="/build"
+  roleLabel="Founder / Operator"
+  schemaType="CollectionPage"
+  schemaExtras={schemaExtras}
+>
+  <ModeSwitch currentRole="Founder / Operator" />
+  <BuildContent />
+
+  <section class="card" data-progressive hidden aria-labelledby="build-details">
+    <h2 id="build-details">Operating Notes</h2>
+    <p>Engagements prioritize measurable outcomes and short feedback loops.</p>
+  </section>
+</SiteLayout>

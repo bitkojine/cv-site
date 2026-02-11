@@ -1,0 +1,116 @@
+---
+import { Cog } from '@lucide/astro';
+import cvData from '../../data/cv.json';
+
+const { personalInfo } = cvData;
+
+const buildCaseStudies = [
+  {
+    title: 'Reliability Recovery In Existing APIs',
+    outcomes: [
+      'Found failure points in mature backend modules without full rewrites.',
+      'Prioritized fixes that reduced release risk while roadmap work continued.',
+      'Clarified service boundaries to lower maintenance cost.',
+    ],
+  },
+  {
+    title: 'Delivery Unblock For Product Roadmaps',
+    outcomes: [
+      'Shipped high-priority backend changes in systems with technical debt.',
+      'Improved query behavior to reduce performance bottlenecks.',
+      'Kept implementation scope narrow and outcome-focused.',
+    ],
+  },
+  {
+    title: 'Architecture Plus Hands-On Execution',
+    outcomes: [
+      'Provided practical architecture direction tied to implementation.',
+      'Reduced founder/operator coordination overhead in decisions.',
+      'Left clean handoff points for internal follow-on contributors.',
+    ],
+  },
+];
+---
+
+<section class="mode-hero" aria-labelledby="build-heading">
+  <div class="headline-row">
+    <span class="headline-icon" aria-hidden="true"><Cog size={34} /></span>
+    <h1 id="build-heading">Ship faster with focused technical execution.</h1>
+  </div>
+  <div class="cta-row">
+    <a
+      class="cta-primary"
+      href={`mailto:${personalInfo.contact.email}?subject=Work%20Together`}
+      data-cta="Work Together"
+      data-cta-mode="Founder / Operator"
+    >
+      Work Together
+    </a>
+    <a
+      class="cta-secondary"
+      href={`mailto:${personalInfo.contact.email}?subject=Book%20a%20Call`}
+      data-cta="Book a Call"
+      data-cta-mode="Founder / Operator"
+    >
+      Book a Call
+    </a>
+  </div>
+  <p class="cta-note">
+    Need execution support now: send one bottleneck, timeline, and expected
+    outcome to start.
+  </p>
+</section>
+
+<section class="card" aria-labelledby="build-summary">
+  <h2 id="build-summary">Execution Snapshot</h2>
+  <p>
+    Product execution support for teams that need speed now, technical leverage
+    this quarter, and clear ownership from discovery to shipped output in
+    existing codebases.
+  </p>
+</section>
+
+<section class="card" aria-labelledby="build-fit">
+  <h2 id="build-fit">Where I Add Leverage Fast</h2>
+  <ul>
+    <li>Backend/API bottlenecks blocking product iteration</li>
+    <li>Legacy architecture friction slowing delivery cadence</li>
+    <li>Reliability incidents pulling focus from roadmap work</li>
+    <li>Teams needing both execution and technical decision support</li>
+  </ul>
+</section>
+
+<section class="card" aria-labelledby="build-cases">
+  <h2 id="build-cases">Case Study Snapshots</h2>
+  {
+    buildCaseStudies.map((study) => (
+      <article>
+        <h3>{study.title}</h3>
+        <ul>
+          {study.outcomes.map((item) => (
+            <li>{item}</li>
+          ))}
+        </ul>
+      </article>
+    ))
+  }
+</section>
+
+<section class="card" aria-labelledby="build-shapes">
+  <h2 id="build-shapes">Collaboration Shapes</h2>
+  <ul>
+    <li>Freelance</li>
+    <li>Contract</li>
+    <li>Fractional engineering</li>
+    <li>Long-term partnership / cofounder path</li>
+  </ul>
+</section>
+
+<section class="card" aria-labelledby="build-model">
+  <h2 id="build-model">Engagement Model</h2>
+  <ul>
+    <li>Start with one constrained bottleneck and ship first</li>
+    <li>Work in short blocks with explicit outcomes and constraints</li>
+    <li>Close each block with clear handoff and next-step options</li>
+  </ul>
+</section>

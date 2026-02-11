@@ -1,0 +1,131 @@
+---
+import { DollarSign } from '@lucide/astro';
+import cvData from '../../data/cv.json';
+
+const { personalInfo } = cvData;
+const investmentEmailTemplate = [
+  'Hi Robertas,',
+  '',
+  'I am interested in exploring investment in your work.',
+  '',
+  'Name:',
+  'Firm (if applicable):',
+  'Role:',
+  'Investment range:',
+  'Timeline:',
+  'What convinced me:',
+  '',
+  'Please share investment details and suggested next steps.',
+].join('\n');
+
+const visionSignals = [
+  {
+    title: 'Direction',
+    points: [
+      'Product direction is based on shipping constraints and market feedback.',
+      'Technical choices are tied to measurable outcomes.',
+      'Roadmaps prioritize leverage, not feature volume.',
+    ],
+  },
+  {
+    title: 'Execution',
+    points: [
+      'New ideas are tested in scoped, reversible increments.',
+      'Major risks are surfaced early with explicit tradeoffs.',
+      'Execution cadence is maintained across parallel workstreams.',
+    ],
+  },
+  {
+    title: 'Systems',
+    points: [
+      'Architectures are designed to stay maintainable as complexity grows.',
+      'Coordination overhead is reduced between product and engineering.',
+      'Reliability is treated as a long-term strategic edge.',
+    ],
+  },
+];
+---
+
+<section class="mode-hero" aria-labelledby="vision-heading">
+  <div class="headline-row">
+    <span class="headline-icon" aria-hidden="true"
+      ><DollarSign size={34} /></span
+    >
+    <h1 id="vision-heading">
+      If the execution is strong, invest because you believe in me.
+    </h1>
+  </div>
+  <div class="cta-row">
+    <a
+      class="cta-primary"
+      href="#vision-products"
+      data-cta="See What I’m Building"
+      data-cta-mode="Investor / Advisor"
+    >
+      See What I’m Building
+    </a>
+    <a
+      class="cta-secondary"
+      href={`mailto:${personalInfo.contact.email}?subject=Request%20Investment%20Details&body=${encodeURIComponent(investmentEmailTemplate)}`}
+      data-cta="Request Investment Details"
+      data-cta-mode="Investor / Advisor"
+    >
+      Request Investment Details
+    </a>
+  </div>
+  <p class="cta-note">
+    If this direction and output resonates, use Get Updates to discuss
+    investment.
+  </p>
+</section>
+
+<section class="card" aria-labelledby="vision-summary">
+  <h2 id="vision-summary">Overview</h2>
+  <p>
+    This view is for people deciding whether to back me. The signal is simple:
+    clear direction, shipped work, and disciplined execution over time.
+  </p>
+</section>
+
+<section class="card" aria-labelledby="vision-products">
+  <h2 id="vision-products">Products and Experiments</h2>
+  <ul>
+    <li>Workflow automation for technical operators</li>
+    <li>Reliability-first backend templates for early teams</li>
+    <li>AI-assisted delivery workflows for faster implementation</li>
+  </ul>
+</section>
+
+<section class="card" aria-labelledby="vision-signals">
+  <h2 id="vision-signals">Strategic Signals</h2>
+  {
+    visionSignals.map((signal) => (
+      <article>
+        <h3>{signal.title}</h3>
+        <ul>
+          {signal.points.map((point) => (
+            <li>{point}</li>
+          ))}
+        </ul>
+      </article>
+    ))
+  }
+</section>
+
+<section class="card" aria-labelledby="vision-trajectory">
+  <h2 id="vision-trajectory">Trajectory</h2>
+  <ul>
+    <li>Near term: improve repeatable execution systems</li>
+    <li>Mid term: expand reusable architecture and delivery playbooks</li>
+    <li>Long term: increase product optionality through technical leverage</li>
+  </ul>
+</section>
+
+<section class="card" aria-labelledby="vision-conversation">
+  <h2 id="vision-conversation">Best Fit For Conversation</h2>
+  <ul>
+    <li>Investors who want to back a builder they believe in</li>
+    <li>Review of execution capacity and operating model choices</li>
+    <li>Long-range planning tied to concrete shipping behavior</li>
+  </ul>
+</section>

@@ -5,19 +5,15 @@ const isCvPage = Astro.url.pathname === '/' || Astro.url.pathname === '';
 ---
 
 <script>
-  function trackEvent(name: string, data: Record<string, unknown> = {}) {
-    try {
-      const key = 'cv_event_counts';
-      const raw = localStorage.getItem(key);
-      const payload = raw ? JSON.parse(raw) : { counts: {}, last: {} };
-      payload.counts[name] = (payload.counts[name] || 0) + 1;
-      payload.last[name] = { ts: Date.now(), ...data };
-      localStorage.setItem(key, JSON.stringify(payload));
-      if (window.location.search.includes('debug=1')) {
-        console.info('[track]', name, data);
-      }
-    } catch (e) {
-      console.warn('Tracking failed', e);
+  function reportEvent(name: string, data: Record<string, unknown> = {}) {
+    const sendEvent = window.cvReportEvent ?? window.cvTrack;
+    if (typeof sendEvent === 'function') {
+      sendEvent(name, data);
+      return;
+    }
+
+    if (window.location.search.includes('debug=1')) {
+      console.info('[event-report]', name, data);
     }
   }
 
@@ -50,12 +46,12 @@ const isCvPage = Astro.url.pathname === '/' || Astro.url.pathname === '';
       url: url.toString(),
     };
 
-    trackEvent('share_clicked');
+    reportEvent('share_clicked');
 
     if (navigator.share) {
       try {
         await navigator.share(shareData);
-        trackEvent('share_completed', { method: 'web_share' });
+        reportEvent('share_completed', { method: 'web_share' });
         showToast('Share sent');
         return;
       } catch (err) {
@@ -65,7 +61,7 @@ const isCvPage = Astro.url.pathname === '/' || Astro.url.pathname === '';
 
     try {
       await navigator.clipboard.writeText(shareData.url);
-      trackEvent('share_completed', { method: 'copy_link' });
+      reportEvent('share_completed', { method: 'copy_link' });
       showToast('Link copied');
     } catch (err) {
       console.warn('Copy failed', err);
@@ -80,16 +76,11 @@ const isCvPage = Astro.url.pathname === '/' || Astro.url.pathname === '';
   }
 
   function toggleDebugGrid() {
-    const isOn = document.body.classList.toggle('debug-grid');
-    localStorage.setItem('debugGrid', isOn ? 'enabled' : 'disabled');
+    document.body.classList.toggle('debug-grid');
   }
 
   // Initialization logic
   document.addEventListener('DOMContentLoaded', () => {
-    if (localStorage.getItem('debugGrid') === 'enabled') {
-      document.body.classList.add('debug-grid');
-    }
-
     const isCvPage =
       window.location.pathname === '/' || window.location.pathname === '';
     document

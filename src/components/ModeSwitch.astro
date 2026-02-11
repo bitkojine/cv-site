@@ -1,0 +1,42 @@
+---
+import { Briefcase, Cog, DollarSign, House } from '@lucide/astro';
+
+interface Props {
+  currentRole:
+    | 'Recruiter / Hiring Manager'
+    | 'Founder / Operator'
+    | 'Investor / Advisor';
+}
+
+const { currentRole } = Astro.props;
+---
+
+<aside class="mode-indicator" data-role-indicator hidden>
+  <details class="switch-details" data-role-switch-details>
+    <summary class="switch-summary">
+      Viewing as: <strong data-role-label>{currentRole}</strong>
+      <span class="switch-button">(Switch)</span>
+    </summary>
+    <nav class="switch-list" data-role-switch-list aria-label="Switch role">
+      <a href="/?choose=1" data-return-door>
+        <span class="menu-icon" aria-hidden="true"><House size={16} /></span>
+        Back to door selection
+      </a>
+      <a href="/hiring" data-role-switch="Recruiter / Hiring Manager">
+        <span class="menu-icon" aria-hidden="true"><Briefcase size={16} /></span
+        >
+        Recruiter / Hiring Manager
+      </a>
+      <a href="/build" data-role-switch="Founder / Operator">
+        <span class="menu-icon" aria-hidden="true"><Cog size={16} /></span>
+        Founder / Operator
+      </a>
+      <a href="/vision" data-role-switch="Investor / Advisor">
+        <span class="menu-icon" aria-hidden="true"
+          ><DollarSign size={16} /></span
+        >
+        Investor / Advisor
+      </a>
+    </nav>
+  </details>
+</aside>
