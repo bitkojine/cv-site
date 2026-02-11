@@ -11,9 +11,8 @@ interface Props {
 
 const { cta, mode } = Astro.props;
 const className = cta.variant === 'primary' ? 'cta-primary' : 'cta-secondary';
-const [recipientLocalPart = '', recipientDomain = ''] = cta.recipientEmail.split(
-  '@'
-);
+const [recipientLocalPart = '', recipientDomain = ''] =
+  cta.recipientEmail.split('@');
 const encodedSubject = encodeURIComponent(cta.draft.subject);
 const encodedBody = encodeURIComponent(cta.draft.body);
 ---
