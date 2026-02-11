@@ -13,6 +13,8 @@ interface Props {
 }
 
 const { name, title, contact } = Astro.props;
+const [emailLocalPart = '', emailDomain = ''] = contact.email.split('@');
+const emailDisplay = `${emailLocalPart} [at] ${emailDomain}`;
 ---
 
 <header class="cv-header">
@@ -21,9 +23,15 @@ const { name, title, contact } = Astro.props;
   <div class="contact-grid">
     <div class="contact-item">
       <Mail size={18} class="icon" aria-hidden="true" />
-      <a href={`mailto:${contact.email}`} aria-label={`Email: ${contact.email}`}
-        >{contact.email}</a
+      <a
+        href="#contact-email"
+        aria-label="Email"
+        data-mailto-link
+        data-email-local={emailLocalPart}
+        data-email-domain={emailDomain}
       >
+        {emailDisplay}
+      </a>
     </div>
     <div class="contact-item">
       <MapPin size={18} class="icon" aria-hidden="true" />
@@ -38,7 +46,29 @@ const { name, title, contact } = Astro.props;
       <span>{contact.stack}</span>
     </div>
   </div>
+  <noscript>
+    <p class="contact-note">
+      Email link requires JavaScript. Please enable JavaScript to contact me.
+    </p>
+  </noscript>
 </header>
+
+<script>
+  (() => {
+    const links = document.querySelectorAll('[data-mailto-link]');
+    links.forEach((link) => {
+      if (link.dataset.mailtoBound === '1') return;
+      link.dataset.mailtoBound = '1';
+      link.addEventListener('click', (event) => {
+        event.preventDefault();
+        const local = link.getAttribute('data-email-local') || '';
+        const domain = link.getAttribute('data-email-domain') || '';
+        if (!local || !domain) return;
+        window.location.href = `mailto:${local}@${domain}`;
+      });
+    });
+  })();
+</script>
 
 <style>
   .cv-header {
@@ -91,6 +121,12 @@ const { name, title, contact } = Astro.props;
     font-weight: 400;
     opacity: 0.8;
     margin-left: 0.25em;
+  }
+
+  .contact-note {
+    margin-top: 0.85rem;
+    font-size: var(--fs-sm);
+    color: var(--text-secondary);
   }
 
   @media (min-width: 768px) {
