@@ -1,6 +1,7 @@
 ---
 import { Cog } from '@lucide/astro';
 import EmailCta from '../EmailCta.astro';
+import PageShareButton from '../PageShareButton.astro';
 import PeerSharePrompt from '../PeerSharePrompt.astro';
 import { roleEmailCtas, visitorModes } from '../../lib/email-drafts.mts';
 
@@ -34,7 +35,7 @@ const buildCaseStudies = [
 
 <section class="mode-hero" aria-labelledby="build-heading">
   <div class="headline-row">
-    <span class="headline-icon" aria-hidden="true"><Cog size={34} /></span>
+    <span class="headline-icon" aria-hidden="true"><Cog size={86} /></span>
     <h1 id="build-heading">Ship faster with focused technical execution.</h1>
   </div>
   <div class="cta-row">
@@ -43,6 +44,13 @@ const buildCaseStudies = [
         <EmailCta cta={cta} mode={visitorModes.build} />
       ))
     }
+    <PageShareButton
+      shareRole="Founder / Operator"
+      label="Share with founder"
+      source="build_hero_cta"
+      shareTitle="Robertas Rudys | Founder / Operator"
+      shareText="Sharing this builder profile for execution support."
+    />
   </div>
   <noscript>
     <p class="cta-note">

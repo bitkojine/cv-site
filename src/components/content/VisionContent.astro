@@ -1,6 +1,7 @@
 ---
 import { DollarSign } from '@lucide/astro';
 import EmailCta from '../EmailCta.astro';
+import PageShareButton from '../PageShareButton.astro';
 import PeerSharePrompt from '../PeerSharePrompt.astro';
 import { roleEmailCtas, visitorModes } from '../../lib/email-drafts.mts';
 
@@ -35,7 +36,7 @@ const visionSignals = [
 <section class="mode-hero" aria-labelledby="vision-heading">
   <div class="headline-row">
     <span class="headline-icon" aria-hidden="true"
-      ><DollarSign size={34} /></span
+      ><DollarSign size={86} /></span
     >
     <h1 id="vision-heading">
       If the execution is strong, invest because you believe in me.
@@ -47,6 +48,13 @@ const visionSignals = [
         <EmailCta cta={cta} mode={visitorModes.vision} />
       ))
     }
+    <PageShareButton
+      shareRole="Investor / Advisor"
+      label="Share with investor"
+      source="vision_hero_cta"
+      shareTitle="Robertas Rudys | Investor / Advisor"
+      shareText="Sharing this execution-focused profile for investor review."
+    />
   </div>
   <noscript>
     <p class="cta-note">
