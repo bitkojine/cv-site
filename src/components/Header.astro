@@ -53,23 +53,6 @@ const emailDisplay = `${emailLocalPart} [at] ${emailDomain}`;
   </noscript>
 </header>
 
-<script>
-  (() => {
-    const links = document.querySelectorAll('[data-mailto-link]');
-    links.forEach((link) => {
-      if (link.dataset.mailtoBound === '1') return;
-      link.dataset.mailtoBound = '1';
-      link.addEventListener('click', (event) => {
-        event.preventDefault();
-        const local = link.getAttribute('data-email-local') || '';
-        const domain = link.getAttribute('data-email-domain') || '';
-        if (!local || !domain) return;
-        window.location.href = `mailto:${local}@${domain}`;
-      });
-    });
-  })();
-</script>
-
 <style>
   .cv-header {
     margin-bottom: 2rem;

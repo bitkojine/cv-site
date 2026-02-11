@@ -72,8 +72,10 @@ const structuredData = {
     />
     <script>
       import { installGlobalEventReporter } from '../lib/event-reporting.mts';
+      import { installMailtoLinkHandler } from '../lib/mailto-links.mts';
 
       installGlobalEventReporter(window);
+      installMailtoLinkHandler(window, document);
     </script>
   </head>
   <body data-current-role={roleLabel ?? ''}>
