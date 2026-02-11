@@ -31,28 +31,3 @@ const encodedBody = encodeURIComponent(cta.draft.body);
 >
   {cta.label}
 </a>
-
-<script>
-  (() => {
-    const links = document.querySelectorAll('[data-mailto-link]');
-    links.forEach((link) => {
-      if (link.dataset.mailtoBound === '1') return;
-      link.dataset.mailtoBound = '1';
-      link.addEventListener('click', (event) => {
-        event.preventDefault();
-        const local = link.getAttribute('data-email-local') || '';
-        const domain = link.getAttribute('data-email-domain') || '';
-        if (!local || !domain) return;
-
-        const subject = link.getAttribute('data-email-subject') || '';
-        const body = link.getAttribute('data-email-body') || '';
-        const params = [];
-        if (subject) params.push(`subject=${subject}`);
-        if (body) params.push(`body=${body}`);
-        const query = params.length > 0 ? `?${params.join('&')}` : '';
-
-        window.location.href = `mailto:${local}@${domain}${query}`;
-      });
-    });
-  })();
-</script>
