@@ -46,11 +46,42 @@
       return value.endsWith('/') ? value.slice(0, -1) : value;
     };
 
+    const updateShareButtonLabel = (button, label) => {
+      const labelNode = button.querySelector('[data-role-share-label]');
+      if (!labelNode) return;
+      const baseLabel = 'Share this profile';
+      labelNode.textContent = label;
+      window.setTimeout(() => {
+        labelNode.textContent = baseLabel;
+      }, 1800);
+    };
+
+    const buildShareUrl = (roleLabel) => {
+      const url = new URL(window.location.href);
+      url.searchParams.set('ref', 'peer_share');
+      if (roleLabel) {
+        url.searchParams.set('shared_role', roleLabel);
+      }
+      return url.toString();
+    };
+
     const initPage = () => {
       sentDepth = new Set();
 
       const path = normalizePath(window.location.pathname);
       const currentRole = ROLE_BY_PATH[path] || '';
+      const roleForAnalytics = currentRole || 'Role Selection';
+      const params = new URLSearchParams(window.location.search);
+      const ref = params.get('ref');
+      const sessionKey = `share-visit:${window.location.pathname}${window.location.search}`;
+      if (ref === 'peer_share' && !window.sessionStorage.getItem(sessionKey)) {
+        reportEvent('share_visit', {
+          mode: roleForAnalytics,
+          ref,
+          shared_role: params.get('shared_role') || 'unknown',
+        });
+        window.sessionStorage.setItem(sessionKey, '1');
+      }
 
       document.querySelectorAll('[data-role-door]').forEach((link) => {
         bindOnce(
@@ -85,8 +116,56 @@
         bindOnce(link, 'ReturnClick', 'click', () => {
           reportEvent('mode_switched', {
             from: currentRole,
-            to: 'Door Screen',
+            to: 'Role Selection',
           });
+        });
+      });
+
+      document.querySelectorAll('[data-role-share]').forEach((button) => {
+        bindOnce(button, 'RoleShareClick', 'click', async () => {
+          const selectedRole = button.getAttribute('data-role-share') || '';
+          const shareUrl = buildShareUrl(selectedRole || currentRole);
+          const sharePayload = {
+            title: document.title,
+            text:
+              document
+                .querySelector('meta[name="description"]')
+                ?.getAttribute('content') || 'Profile link',
+            url: shareUrl,
+          };
+
+          reportEvent('share_clicked', {
+            source: 'mode_switch',
+            mode: roleForAnalytics,
+          });
+
+          if (navigator.share) {
+            try {
+              await navigator.share(sharePayload);
+              reportEvent('share_completed', {
+                method: 'web_share',
+                source: 'mode_switch',
+                mode: roleForAnalytics,
+              });
+              updateShareButtonLabel(button, 'Shared');
+              return;
+            } catch (err) {
+              console.warn('Share canceled or failed', err);
+            }
+          }
+
+          try {
+            await navigator.clipboard.writeText(shareUrl);
+            reportEvent('share_completed', {
+              method: 'copy_link',
+              source: 'mode_switch',
+              mode: roleForAnalytics,
+            });
+            updateShareButtonLabel(button, 'Link copied');
+          } catch (err) {
+            console.warn('Copy failed', err);
+            updateShareButtonLabel(button, 'Copy failed');
+          }
         });
       });
 
@@ -122,7 +201,7 @@
             sentDepth.add(mark);
             reportEvent('scroll_depth', {
               depth: mark,
-              mode: currentRole || 'Door Screen',
+              mode: roleForAnalytics,
             });
           }
         });

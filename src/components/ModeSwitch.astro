@@ -1,5 +1,5 @@
 ---
-import { Briefcase, Cog, DollarSign, House } from '@lucide/astro';
+import { Briefcase, Cog, DollarSign, House, Share2 } from '@lucide/astro';
 
 interface Props {
   currentRole:
@@ -14,14 +14,18 @@ const { currentRole } = Astro.props;
 <aside class="mode-indicator" data-role-indicator hidden>
   <details class="switch-details" data-role-switch-details>
     <summary class="switch-summary">
-      Viewing as: <strong data-role-label>{currentRole}</strong>
-      <span class="switch-button">(Switch)</span>
+      Visitor role: <strong data-role-label>{currentRole}</strong>
+      <span class="switch-button">(Switch role)</span>
     </summary>
     <nav class="switch-list" data-role-switch-list aria-label="Switch role">
       <a href="/?choose=1" data-return-door>
         <span class="menu-icon" aria-hidden="true"><House size={16} /></span>
-        Back to door selection
+        Back to visitor role selection
       </a>
+      <button type="button" data-role-share={currentRole}>
+        <span class="menu-icon" aria-hidden="true"><Share2 size={16} /></span>
+        <span data-role-share-label>Share this profile</span>
+      </button>
       <a href="/hiring" data-role-switch="Recruiter / Hiring Manager">
         <span class="menu-icon" aria-hidden="true"><Briefcase size={16} /></span
         >
