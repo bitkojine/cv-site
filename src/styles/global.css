@@ -284,6 +284,24 @@ body[data-current-role]:not([data-current-role='']) .site-shell {
   transform: translateY(1px);
 }
 
+.switch-list a.switch-return-link {
+  border-color: transparent;
+  color: #f7fbff;
+  background: linear-gradient(102deg, #5e91dc 0%, #3a73cd 42%, #255aad 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    0 4px 12px rgba(22, 66, 142, 0.22);
+}
+
+.switch-list a.switch-return-link:hover {
+  border-color: transparent;
+  filter: brightness(1.03);
+}
+
+.switch-list a.switch-return-link .menu-icon {
+  color: #f7fbff;
+}
+
 .menu-icon {
   width: 1.2rem;
   height: 1.2rem;
