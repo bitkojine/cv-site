@@ -12,14 +12,19 @@
       '/vision': 'Investor / Advisor',
     };
 
-    const STORAGE_KEY = 'selected_role_path';
-    const SWITCH_KEY = 'role_switch_enabled';
     const depthMarks = [25, 50, 75, 100];
     let sentDepth = new Set();
     let activeScrollHandler = null;
 
-    const track = (eventName, props = {}) => {
-      console.log('[analytics]', eventName, props);
+    const reportEvent = (eventName, props = {}) => {
+      const sendEvent = window.cvReportEvent ?? window.cvTrack;
+      if (typeof sendEvent === 'function') {
+        sendEvent(eventName, props);
+        return;
+      }
+      if (window.location.search.includes('debug=1')) {
+        console.log('[event-report]', eventName, props);
+      }
     };
 
     const revealProgressive = () => {
@@ -45,24 +50,7 @@
       sentDepth = new Set();
 
       const path = normalizePath(window.location.pathname);
-      const search = new URLSearchParams(window.location.search);
       const currentRole = ROLE_BY_PATH[path] || '';
-      const forceDoorScreen = search.get('choose') === '1';
-
-      if (path === '/' && !forceDoorScreen) {
-        const remembered = localStorage.getItem(STORAGE_KEY);
-        if (remembered && Object.values(ROLE_PATHS).includes(remembered)) {
-          window.location.replace(remembered);
-          return;
-        }
-      }
-
-      const persistRole = (role) => {
-        const target = ROLE_PATHS[role];
-        if (!target) return;
-        localStorage.setItem(STORAGE_KEY, target);
-        localStorage.setItem(SWITCH_KEY, '1');
-      };
 
       document.querySelectorAll('[data-role-door]').forEach((link) => {
         bindOnce(
@@ -71,8 +59,7 @@
           'click',
           () => {
             const selectedRole = link.getAttribute('data-role-door') || '';
-            persistRole(selectedRole);
-            track('mode_selected', { role: selectedRole });
+            reportEvent('mode_selected', { role: selectedRole });
           },
           { once: true }
         );
@@ -80,12 +67,6 @@
 
       const indicator = document.querySelector('[data-role-indicator]');
       const isRolePage = Boolean(currentRole);
-
-      // Direct visits to role routes should always surface the switch control.
-      if (isRolePage) {
-        localStorage.setItem(SWITCH_KEY, '1');
-        localStorage.setItem(STORAGE_KEY, path);
-      }
 
       if (indicator && isRolePage) {
         indicator.hidden = false;
@@ -96,15 +77,16 @@
           const nextRole = link.getAttribute('data-role-switch') || '';
           const nextPath = ROLE_PATHS[nextRole];
           if (!nextPath || nextPath === path) return;
-          persistRole(nextRole);
-          track('mode_switched', { from: currentRole, to: nextRole });
+          reportEvent('mode_switched', { from: currentRole, to: nextRole });
         });
       });
 
       document.querySelectorAll('[data-return-door]').forEach((link) => {
         bindOnce(link, 'ReturnClick', 'click', () => {
-          localStorage.setItem(SWITCH_KEY, '1');
-          track('mode_switched', { from: currentRole, to: 'Door Screen' });
+          reportEvent('mode_switched', {
+            from: currentRole,
+            to: 'Door Screen',
+          });
         });
       });
 
@@ -112,7 +94,7 @@
         bindOnce(element, 'CtaClick', 'click', () => {
           const cta = element.getAttribute('data-cta') || 'unknown';
           const mode = element.getAttribute('data-cta-mode') || currentRole;
-          track('cta_clicked', { cta, mode });
+          reportEvent('cta_clicked', { cta, mode });
           revealProgressive();
         });
 
@@ -138,7 +120,7 @@
         depthMarks.forEach((mark) => {
           if (depth >= mark && !sentDepth.has(mark)) {
             sentDepth.add(mark);
-            track('scroll_depth', {
+            reportEvent('scroll_depth', {
               depth: mark,
               mode: currentRole || 'Door Screen',
             });
