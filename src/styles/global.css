@@ -307,6 +307,18 @@ body[data-current-role]:not([data-current-role='']) .site-shell {
   margin-top: 0.9rem;
 }
 
+.peer-share-prompt {
+  border-style: dashed;
+  border-color: #bfd0eb;
+  background: color-mix(in oklab, var(--surface) 88%, #e9f1ff);
+}
+
+.peer-share-forward-btn {
+  margin-top: 0.8rem;
+  cursor: pointer;
+  font: inherit;
+}
+
 .mode-hero h1 {
   margin: 0;
   font-size: clamp(1.5rem, 4vw, 2.25rem);

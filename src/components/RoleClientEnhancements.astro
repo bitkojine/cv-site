@@ -27,6 +27,11 @@
       }
     };
 
+    const getPageDescription = () =>
+      document
+        .querySelector('meta[name="description"]')
+        ?.getAttribute('content') || 'Profile link';
+
     const revealProgressive = () => {
       const revealables = document.querySelectorAll('[data-progressive]');
       revealables.forEach((node) => {
@@ -35,6 +40,7 @@
     };
 
     const bindOnce = (element, key, eventName, handler, options) => {
+      if (!element) return;
       const marker = `bound${key}`;
       if (element.dataset[marker] === '1') return;
       element.dataset[marker] = '1';
@@ -127,10 +133,7 @@
           const shareUrl = buildShareUrl(selectedRole || currentRole);
           const sharePayload = {
             title: document.title,
-            text:
-              document
-                .querySelector('meta[name="description"]')
-                ?.getAttribute('content') || 'Profile link',
+            text: getPageDescription(),
             url: shareUrl,
           };
 
@@ -168,6 +171,89 @@
           }
         });
       });
+
+      const peerSharePrompt = document.querySelector(
+        '[data-peer-share-prompt]'
+      );
+      const peerShareButton = document.querySelector(
+        '[data-peer-share-forward]'
+      );
+      const peerShareLabelNode = document.querySelector(
+        '[data-peer-share-forward-label]'
+      );
+      const peerShareBaseLabel =
+        peerShareLabelNode?.textContent?.trim() || 'Forward profile';
+      const setPeerShareLabel = (label) => {
+        if (!peerShareLabelNode) return;
+        peerShareLabelNode.textContent = label;
+      };
+      const resetPeerShareLabel = () => {
+        window.setTimeout(() => {
+          setPeerShareLabel(peerShareBaseLabel);
+        }, 1800);
+      };
+
+      if (peerSharePrompt) {
+        if (ref !== 'peer_share') {
+          peerSharePrompt.hidden = true;
+        } else {
+          peerSharePrompt.hidden = false;
+          const sharedRole =
+            params.get('shared_role') || currentRole || 'unknown';
+          const promptSessionKey = `peer-share-prompt:${path}:${sharedRole}`;
+          if (!window.sessionStorage.getItem(promptSessionKey)) {
+            reportEvent('peer_share_prompt_viewed', {
+              mode: roleForAnalytics,
+              shared_role: sharedRole,
+            });
+            window.sessionStorage.setItem(promptSessionKey, '1');
+          }
+
+          bindOnce(peerShareButton, 'PeerShareForward', 'click', async () => {
+            const shareUrl = buildShareUrl(sharedRole || currentRole);
+            const sharePayload = {
+              title: document.title,
+              text: getPageDescription(),
+              url: shareUrl,
+            };
+            reportEvent('share_clicked', {
+              source: 'peer_share_prompt',
+              mode: roleForAnalytics,
+            });
+
+            if (navigator.share) {
+              try {
+                await navigator.share(sharePayload);
+                reportEvent('peer_share_forwarded', {
+                  method: 'web_share',
+                  mode: roleForAnalytics,
+                  shared_role: sharedRole,
+                });
+                setPeerShareLabel('Forwarded');
+                resetPeerShareLabel();
+                return;
+              } catch (err) {
+                console.warn('Share canceled or failed', err);
+              }
+            }
+
+            try {
+              await navigator.clipboard.writeText(shareUrl);
+              reportEvent('peer_share_forwarded', {
+                method: 'copy_link',
+                mode: roleForAnalytics,
+                shared_role: sharedRole,
+              });
+              setPeerShareLabel('Link copied');
+              resetPeerShareLabel();
+            } catch (err) {
+              console.warn('Copy failed', err);
+              setPeerShareLabel('Copy failed');
+              resetPeerShareLabel();
+            }
+          });
+        }
+      }
 
       document.querySelectorAll('[data-cta]').forEach((element) => {
         bindOnce(element, 'CtaClick', 'click', () => {

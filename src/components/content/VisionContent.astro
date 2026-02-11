@@ -1,6 +1,7 @@
 ---
 import { DollarSign } from '@lucide/astro';
 import EmailCta from '../EmailCta.astro';
+import PeerSharePrompt from '../PeerSharePrompt.astro';
 import { roleEmailCtas, visitorModes } from '../../lib/email-drafts.mts';
 
 const visionSignals = [
@@ -57,6 +58,10 @@ const visionSignals = [
     start the conversation.
   </p>
 </section>
+
+<PeerSharePrompt
+  message="Forward this profile to one investor or advisor reviewing execution-focused builders."
+/>
 
 <section class="card" aria-labelledby="vision-summary">
   <h2 id="vision-summary">Overview</h2>

@@ -1,0 +1,19 @@
+---
+interface Props {
+  message: string;
+}
+
+const { message } = Astro.props;
+---
+
+<section class="card peer-share-prompt" data-peer-share-prompt hidden>
+  <h2>Know one teammate who should see this?</h2>
+  <p>{message}</p>
+  <button
+    class="cta-secondary peer-share-forward-btn"
+    type="button"
+    data-peer-share-forward
+  >
+    <span data-peer-share-forward-label>Forward profile</span>
+  </button>
+</section>
