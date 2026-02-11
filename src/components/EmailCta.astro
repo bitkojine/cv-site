@@ -1,0 +1,28 @@
+---
+import {
+  createDraftTooltip,
+  createMailtoHref,
+  type EmailDraft,
+} from '../lib/email-drafts.mts';
+
+interface Props {
+  email: string;
+  draft: EmailDraft;
+  label: string;
+  mode: string;
+  variant: 'primary' | 'secondary';
+}
+
+const { email, draft, label, mode, variant } = Astro.props;
+const className = variant === 'primary' ? 'cta-primary' : 'cta-secondary';
+---
+
+<a
+  class={className}
+  href={createMailtoHref(email, draft)}
+  title={createDraftTooltip(draft)}
+  data-cta={label}
+  data-cta-mode={mode}
+>
+  {label}
+</a>

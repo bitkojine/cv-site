@@ -1,6 +1,11 @@
 ---
 import { Cog } from '@lucide/astro';
 import cvData from '../../data/cv.json';
+import EmailCta from '../EmailCta.astro';
+import {
+  roleEmailCtas,
+  visitorModes,
+} from '../../lib/email-drafts.mts';
 
 const { personalInfo } = cvData;
 
@@ -38,22 +43,17 @@ const buildCaseStudies = [
     <h1 id="build-heading">Ship faster with focused technical execution.</h1>
   </div>
   <div class="cta-row">
-    <a
-      class="cta-primary"
-      href={`mailto:${personalInfo.contact.email}?subject=Work%20Together`}
-      data-cta="Work Together"
-      data-cta-mode="Founder / Operator"
-    >
-      Work Together
-    </a>
-    <a
-      class="cta-secondary"
-      href={`mailto:${personalInfo.contact.email}?subject=Book%20a%20Call`}
-      data-cta="Book a Call"
-      data-cta-mode="Founder / Operator"
-    >
-      Book a Call
-    </a>
+    {
+      roleEmailCtas.build.map((cta) => (
+        <EmailCta
+          email={personalInfo.contact.email}
+          draft={cta.draft}
+          label={cta.label}
+          mode={visitorModes.build}
+          variant={cta.variant}
+        />
+      ))
+    }
   </div>
   <p class="cta-note">
     Need execution support now: send one bottleneck, timeline, and expected
