@@ -1,0 +1,55 @@
+---
+import { Github } from '@lucide/astro';
+import { getGithubData } from '../lib/github-actions.mts';
+import { resolveWorkflowBadge } from '../lib/github-status.mts';
+
+const githubOwner = 'bitkojine';
+const githubRepo = 'cv-site';
+const deployWorkflowName = 'Deploy to GitHub Pages';
+const fallbackUrl = `https://github.com/${githubOwner}/${githubRepo}/actions/workflows/deploy.yml`;
+
+let badgeHref = fallbackUrl;
+let badgeLabel = 'Live Build';
+let badgeStatus = 'View Logs';
+let badgeState: 'running' | 'success' | 'failure' | 'unknown' = 'unknown';
+
+try {
+  const { latestWorkflowRuns } = await getGithubData({
+    owner: githubOwner,
+    repo: githubRepo,
+    branch: 'main',
+  });
+
+  const deployRuns = latestWorkflowRuns.filter(
+    (run) => run.name === deployWorkflowName
+  );
+  const liveRun =
+    deployRuns.find(
+      (run) => run.status === 'completed' && run.conclusion === 'success'
+    ) ?? deployRuns.at(0);
+
+  if (liveRun) {
+    const resolved = resolveWorkflowBadge(liveRun.status, liveRun.conclusion);
+    badgeHref = liveRun.html_url;
+    badgeStatus = resolved.label;
+    badgeState = resolved.state;
+  }
+} catch {
+  // Use fallback link if API fetch fails during build.
+}
+---
+
+<a
+  href={badgeHref}
+  target="_blank"
+  rel="noopener noreferrer"
+  class="footer-build-badge"
+  data-status={badgeState}
+  aria-label={`Live deploy status: ${badgeStatus}. Open workflow logs in GitHub.`}
+>
+  <span class="footer-build-badge__icon" aria-hidden="true">
+    <Github size={14} />
+  </span>
+  <span class="footer-build-badge__label">{badgeLabel}</span>
+  <span class="footer-build-badge__status">{badgeStatus}</span>
+</a>
