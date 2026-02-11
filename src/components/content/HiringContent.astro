@@ -1,8 +1,7 @@
 ---
 import { Briefcase } from '@lucide/astro';
-import cvData from '../../data/cv.json';
-
-const { personalInfo } = cvData;
+import EmailCta from '../EmailCta.astro';
+import { roleEmailCtas, visitorModes } from '../../lib/email-drafts.mts';
 
 const hiringExperience = [
   {
@@ -77,22 +76,11 @@ const hiringExperience = [
     </h1>
   </div>
   <div class="cta-row">
-    <a
-      class="cta-primary"
-      href={`mailto:${personalInfo.contact.email}?subject=Resume%20Request`}
-      data-cta="Download Resume"
-      data-cta-mode="Recruiter / Hiring Manager"
-    >
-      Download Resume
-    </a>
-    <a
-      class="cta-secondary"
-      href={`mailto:${personalInfo.contact.email}?subject=Schedule%20Intro`}
-      data-cta="Schedule Intro"
-      data-cta-mode="Recruiter / Hiring Manager"
-    >
-      Schedule Intro
-    </a>
+    {
+      roleEmailCtas.hiring.map((cta) => (
+        <EmailCta cta={cta} mode={visitorModes.hiring} />
+      ))
+    }
   </div>
   <p class="cta-note">
     Hiring for a role now: request the resume or book a short intro.

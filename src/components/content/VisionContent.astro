@@ -1,22 +1,7 @@
 ---
 import { DollarSign } from '@lucide/astro';
-import cvData from '../../data/cv.json';
-
-const { personalInfo } = cvData;
-const investmentEmailTemplate = [
-  'Hi Robertas,',
-  '',
-  'I am interested in exploring investment in your work.',
-  '',
-  'Name:',
-  'Firm (if applicable):',
-  'Role:',
-  'Investment range:',
-  'Timeline:',
-  'What convinced me:',
-  '',
-  'Please share investment details and suggested next steps.',
-].join('\n');
+import EmailCta from '../EmailCta.astro';
+import { roleEmailCtas, visitorModes } from '../../lib/email-drafts.mts';
 
 const visionSignals = [
   {
@@ -56,26 +41,15 @@ const visionSignals = [
     </h1>
   </div>
   <div class="cta-row">
-    <a
-      class="cta-primary"
-      href="#vision-products"
-      data-cta="See What I’m Building"
-      data-cta-mode="Investor / Advisor"
-    >
-      See What I’m Building
-    </a>
-    <a
-      class="cta-secondary"
-      href={`mailto:${personalInfo.contact.email}?subject=Request%20Investment%20Details&body=${encodeURIComponent(investmentEmailTemplate)}`}
-      data-cta="Request Investment Details"
-      data-cta-mode="Investor / Advisor"
-    >
-      Request Investment Details
-    </a>
+    {
+      roleEmailCtas.vision.map((cta) => (
+        <EmailCta cta={cta} mode={visitorModes.vision} />
+      ))
+    }
   </div>
   <p class="cta-note">
-    If this direction and output resonates, use Get Updates to discuss
-    investment.
+    If this direction and output resonates, use Request Investment Details to
+    start the conversation.
   </p>
 </section>
 
