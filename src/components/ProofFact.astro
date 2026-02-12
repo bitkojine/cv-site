@@ -46,7 +46,8 @@ const tooltipId = `proof-${text
 <style>
   .proof-fact {
     position: relative;
-    display: inline;
+    display: inline-block;
+    max-width: 100%;
   }
 
   .proof-fact__trigger {
@@ -58,17 +59,24 @@ const tooltipId = `proof-${text
     line-height: inherit;
     vertical-align: baseline;
     text-align: left;
+    max-width: 100%;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    min-height: 1.85rem;
   }
 
   .proof-fact__tooltip {
-    position: absolute;
-    left: 0;
-    top: calc(100% + 0.45rem);
+    position: fixed;
+    left: 0.65rem;
+    right: 0.65rem;
+    bottom: 0.7rem;
     z-index: 30;
-    width: min(27rem, 88vw);
+    width: auto;
+    max-height: min(60vh, 24rem);
+    overflow: auto;
     display: none;
     gap: 0.45rem;
-    padding: 0.6rem 0.68rem;
+    padding: 0.72rem 0.78rem;
     border-radius: 0.58rem;
     border: 1px solid color-mix(in oklab, var(--line) 74%, #89b6ff);
     background: color-mix(in oklab, var(--surface) 96%, #f2f7ff);
@@ -103,15 +111,41 @@ const tooltipId = `proof-${text
 
   .proof-fact__cta {
     width: fit-content;
+    display: inline-block;
     text-decoration: underline;
     text-underline-offset: 2px;
-    margin-top: 0.1rem;
+    margin-top: 0.18rem;
+    padding: 0.12rem 0;
     cursor: pointer;
   }
 
   .proof-fact:hover .proof-fact__tooltip,
+  .proof-fact__trigger:focus + .proof-fact__tooltip,
   .proof-fact__trigger:focus-visible + .proof-fact__tooltip {
     display: grid;
     pointer-events: auto;
+  }
+
+  @media (min-width: 720px) {
+    .proof-fact {
+      display: inline;
+      max-width: none;
+    }
+
+    .proof-fact__tooltip {
+      position: absolute;
+      left: 0;
+      right: auto;
+      bottom: auto;
+      top: calc(100% + 0.45rem);
+      width: min(27rem, 88vw);
+      max-height: none;
+      overflow: visible;
+      padding: 0.6rem 0.68rem;
+    }
+
+    .proof-fact__trigger {
+      min-height: auto;
+    }
   }
 </style>

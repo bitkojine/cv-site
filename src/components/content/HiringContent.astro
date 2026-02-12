@@ -391,6 +391,7 @@ const hiringExperience = [
       display: flex;
       align-items: center;
       gap: 0.5rem;
+      min-height: 44px;
     }
 
     .template-notice-details summary::-webkit-details-marker {
@@ -413,6 +414,18 @@ const hiringExperience = [
 
     .template-notice-details p:first-of-type {
       margin-top: 0.5rem;
+    }
+
+    .template-notice .cta-secondary {
+      width: 100%;
+      justify-content: center;
+      min-height: 44px;
+    }
+
+    @media (min-width: 720px) {
+      .template-notice .cta-secondary {
+        width: auto;
+      }
     }
   </style>
 
