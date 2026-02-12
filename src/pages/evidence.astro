@@ -1,0 +1,99 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+
+const schemaExtras = {
+  about:
+    'Centralized evidence registry for CV and resume outcome claims used across profile pages.',
+};
+---
+
+<SiteLayout
+  title="Robertas Rudys | Evidence Registry"
+  description="Central proof page for CV and resume metrics and references."
+  canonicalPath="/evidence"
+  schemaType="CollectionPage"
+  schemaExtras={schemaExtras}
+>
+  <section class="card" aria-labelledby="evidence-heading">
+    <h1 id="evidence-heading">Evidence Registry</h1>
+    <p>
+      Central source for demo references used in the hiring CV/resume page.
+      Every highlighted material result links to a matching section below.
+    </p>
+    <p>
+      <a class="cta-primary" href="/hiring">Back to Candidate CV/Resume</a>
+    </p>
+  </section>
+
+  <section class="card" id="snapshot" aria-labelledby="snapshot-heading">
+    <h2 id="snapshot-heading">Snapshot Metrics</h2>
+    <ul>
+      <li>Lead-Time Dashboard (Release Cycles)</li>
+      <li>Incident and Hotfix Trends (QoQ)</li>
+      <li>Roadmap On-Time Delivery Review (Quarterly)</li>
+    </ul>
+  </section>
+
+  <section class="card" id="reliability" aria-labelledby="reliability-heading">
+    <h2 id="reliability-heading">Reliability KPI Track Record</h2>
+    <ul>
+      <li>SLO Availability Reports</li>
+      <li>Change-Failure Rate by Release</li>
+      <li>Outage Minutes and Downtime Logs</li>
+    </ul>
+  </section>
+
+  <section class="card" id="product-company" aria-labelledby="pc-heading">
+    <h2 id="pc-heading">Product Company (EU, Remote)</h2>
+    <ul>
+      <li>Jira Lead-Time Dashboard (Q1-Q2 2026)</li>
+      <li>Opsgenie Incident Summary (Q2 2026)</li>
+      <li>Quarterly Roadmap Delivery Review (H1 2026)</li>
+    </ul>
+  </section>
+
+  <section class="card" id="adform" aria-labelledby="adform-heading">
+    <h2 id="adform-heading">Adform Lithuania</h2>
+    <ul>
+      <li>SLO Availability Report (Peak Campaign Windows)</li>
+      <li>Release Change-Failure Dashboard (2025)</li>
+      <li>QA Regression Reopen Tracker (Q3 2025)</li>
+    </ul>
+  </section>
+
+  <section class="card" id="ignitis" aria-labelledby="ignitis-heading">
+    <h2 id="ignitis-heading">Ignitis Group Services Center</h2>
+    <ul>
+      <li>Outage Minutes Trend (Internal Services, 2023)</li>
+      <li>Release Train Stability Log (Train A + Train B)</li>
+      <li>Engineering Effort Benchmark (Q2-Q4 2023)</li>
+    </ul>
+  </section>
+
+  <section class="card" id="super-how" aria-labelledby="super-how-heading">
+    <h2 id="super-how-heading">Super How</h2>
+    <ul>
+      <li>Sprint Commitment Accuracy Board (2022)</li>
+      <li>Integration Go-Live Timeline Comparison</li>
+      <li>Scope Churn Report (Quarterly)</li>
+    </ul>
+  </section>
+
+  <section class="card" id="euromonitor" aria-labelledby="euromonitor-heading">
+    <h2 id="euromonitor-heading">Euromonitor International</h2>
+    <ul>
+      <li>Report Pipeline Failure Trends (2019-2020)</li>
+      <li>Release Throughput Dashboard (Team Metrics)</li>
+      <li>Global Ticket Interruption Summary (YoY)</li>
+    </ul>
+  </section>
+
+  <section class="card" id="invenis" aria-labelledby="invenis-heading">
+    <h2 id="invenis-heading">Invenis</h2>
+    <ul>
+      <li>Contract Milestone Acceptance Records (2015)</li>
+      <li>Post-Release Defect Backlog Trend</li>
+      <li>Client UAT Sign-Off Notes</li>
+    </ul>
+  </section>
+</SiteLayout>

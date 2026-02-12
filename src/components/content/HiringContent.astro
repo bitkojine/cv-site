@@ -3,6 +3,7 @@ import { Briefcase } from '@lucide/astro';
 import EmailCta from '../EmailCta.astro';
 import PageShareButton from '../PageShareButton.astro';
 import PeerSharePrompt from '../PeerSharePrompt.astro';
+import ProofFact from '../ProofFact.astro';
 import { roleEmailCtas, visitorModes } from '../../lib/email-drafts.mts';
 
 const hiringExperience = [
@@ -10,6 +11,16 @@ const hiringExperience = [
     title: 'Senior .NET Software Engineer',
     company: 'Product Company (EU, Remote)',
     period: '2026 - Present',
+    proof: {
+      title: 'Product Company Delivery References',
+      refs: [
+        'Jira Lead-Time Dashboard (Q1-Q2 2026)',
+        'Opsgenie Incident Summary (Q2 2026)',
+        'Quarterly Roadmap Delivery Review (H1 2026)',
+      ],
+      href: '/evidence#product-company',
+      hrefLabel: 'View in Evidence Registry',
+    },
     details: [
       {
         lead: 'Led core product workflow APIs end to end; reduced scoped-work-to-production lead time ',
@@ -32,6 +43,16 @@ const hiringExperience = [
     title: 'Senior .NET Software Engineer',
     company: 'Adform Lithuania',
     period: '2025',
+    proof: {
+      title: 'Adform Reliability References',
+      refs: [
+        'SLO Availability Report (Peak Campaign Windows)',
+        'Release Change-Failure Dashboard (2025)',
+        'QA Regression Reopen Tracker (Q3 2025)',
+      ],
+      href: '/evidence#adform',
+      hrefLabel: 'View in Evidence Registry',
+    },
     details: [
       {
         lead: 'Built backend services on high-concurrency adtech flows; increased availability ',
@@ -54,6 +75,16 @@ const hiringExperience = [
     title: 'Senior Software Engineer (.NET)',
     company: 'Ignitis Group Services Center',
     period: '2023',
+    proof: {
+      title: 'Ignitis Operations References',
+      refs: [
+        'Outage Minutes Trend (Internal Services, 2023)',
+        'Release Train Stability Log (Train A + Train B)',
+        'Engineering Effort Benchmark (Q2-Q4 2023)',
+      ],
+      href: '/evidence#ignitis',
+      hrefLabel: 'View in Evidence Registry',
+    },
     details: [
       {
         lead: 'Delivered reliability refactors for enterprise .NET systems; reduced critical outage minutes ',
@@ -76,6 +107,16 @@ const hiringExperience = [
     title: 'Software Engineer (.NET / Blockchain)',
     company: 'Super How',
     period: '2021 - 2022',
+    proof: {
+      title: 'Super How Delivery References',
+      refs: [
+        'Sprint Commitment Accuracy Board (2022)',
+        'Integration Go-Live Timeline Comparison',
+        'Scope Churn Report (Quarterly)',
+      ],
+      href: '/evidence#super-how',
+      hrefLabel: 'View in Evidence Registry',
+    },
     details: [
       {
         lead: 'Delivered end-to-end backend scope in a fast-changing product environment; increased sprint predictability ',
@@ -98,6 +139,16 @@ const hiringExperience = [
     title: 'Software Engineer (.NET / SQL)',
     company: 'Euromonitor International',
     period: '2018 - 2020',
+    proof: {
+      title: 'Euromonitor Platform References',
+      refs: [
+        'Report Pipeline Failure Trends (2019-2020)',
+        'Release Throughput Dashboard (Team Metrics)',
+        'Global Ticket Interruption Summary (YoY)',
+      ],
+      href: '/evidence#euromonitor',
+      hrefLabel: 'View in Evidence Registry',
+    },
     details: [
       {
         lead: 'Improved SQL report pipeline reliability in data-heavy research products; reduced report-generation failures ',
@@ -120,6 +171,16 @@ const hiringExperience = [
     title: 'Software Engineer (C# / Unity)',
     company: 'Invenis',
     period: '2015',
+    proof: {
+      title: 'Invenis Delivery References',
+      refs: [
+        'Contract Milestone Acceptance Records (2015)',
+        'Post-Release Defect Backlog Trend',
+        'Client UAT Sign-Off Notes',
+      ],
+      href: '/evidence#invenis',
+      hrefLabel: 'View in Evidence Registry',
+    },
     details: [
       {
         lead: 'Delivered C# and Unity scope for client-facing projects; completed ',
@@ -137,181 +198,238 @@ const hiringExperience = [
 ---
 
 <div class="hiring-stack">
-<section class="card template-notice" aria-labelledby="template-notice-heading">
-  <h2 id="template-notice-heading">Template Notice</h2>
-  <p>
-    This hiring page is a CV/resume template built for recruiters and hiring
-    managers. All quantified outcomes are illustrative placeholder examples used
-    to model strong result framing, business-impact language, and decision-ready
-    storytelling.
-  </p>
-  <p>
-    World-class recipe: make each bullet answer four questions in one line:
-    <strong>What was owned?</strong> <strong>What changed?</strong>{' '}
-    <strong>How much did it improve?</strong> <strong>Why did the business care?</strong>
-  </p>
-  <p>
-    Replace placeholders with verified outcomes in this order:
-    <strong>revenue/cost impact</strong>, <strong>reliability impact</strong>,{' '}
-    <strong>delivery speed</strong>, then <strong>scope of ownership</strong>.
-    Include before/after deltas, timeframe, and operating context.
-  </p>
-  <p>
-    Credibility rules: quantify with metrics tied to P&L or risk, keep claims
-    attributable to your direct ownership, and remove generic strengths not backed
-    by evidence. If a claim cannot be measured, frame it as scope, not outcome.
-  </p>
-</section>
+  <section
+    class="card template-notice"
+    aria-labelledby="template-notice-heading"
+  >
+    <h2 id="template-notice-heading">Template Notice</h2>
+    <p>
+      This hiring page is a CV/resume template built for recruiters and hiring
+      managers. All quantified outcomes are illustrative placeholder examples
+      used to model strong result framing, business-impact language, and
+      decision-ready storytelling.
+    </p>
+    <p>
+      World-class recipe: make each bullet answer four questions in one line:
+      <strong>What was owned?</strong>
+      <strong>What changed?</strong>{' '}
+      <strong>How much did it improve?</strong>
+      <strong>Why did the business care?</strong>
+    </p>
+    <p>
+      Replace placeholders with verified outcomes in this order:
+      <strong>revenue/cost impact</strong>, <strong>reliability impact</strong
+      >,{' '}
+      <strong>delivery speed</strong>, then <strong>scope of ownership</strong>.
+      Include before/after deltas, timeframe, and operating context.
+    </p>
+    <p>
+      Credibility rules: quantify with metrics tied to P&L or risk, keep claims
+      attributable to your direct ownership, and remove generic strengths not
+      backed by evidence. If a claim cannot be measured, frame it as scope, not
+      outcome.
+    </p>
+  </section>
 
-<section class="mode-hero" aria-labelledby="hiring-heading">
-  <div class="headline-row">
-    <span class="headline-icon" aria-hidden="true"><Briefcase size={86} /></span
-    >
-    <h1 id="hiring-heading">
-      Senior .NET backend engineer driving reliability and delivery outcomes in production systems.
-    </h1>
-  </div>
-  <div class="cta-row">
+  <section class="mode-hero" aria-labelledby="hiring-heading">
+    <div class="headline-row">
+      <span class="headline-icon" aria-hidden="true"
+        ><Briefcase size={86} /></span
+      >
+      <h1 id="hiring-heading">
+        Senior .NET backend engineer driving reliability and delivery outcomes
+        in production systems.
+      </h1>
+    </div>
+    <div class="cta-row">
+      {
+        roleEmailCtas.hiring.map((cta) => (
+          <EmailCta cta={cta} mode={visitorModes.hiring} />
+        ))
+      }
+      <PageShareButton
+        shareRole="Recruiter / Hiring Manager"
+        label="Share with hiring team"
+        source="hiring_hero_cta"
+        shareTitle="Robertas Rudys | Recruiter / Hiring Manager"
+        shareText="Sharing this profile for backend hiring review."
+      />
+    </div>
+    <noscript>
+      <p class="cta-note">
+        Email links require JavaScript. Please enable JavaScript to contact me.
+      </p>
+    </noscript>
+    <p class="cta-note">
+      Hiring for an open backend role: request the resume or schedule a short
+      intro.
+    </p>
+  </section>
+
+  <PeerSharePrompt
+    message="Forward this profile to one teammate hiring for backend product engineering."
+  />
+
+  <section class="card" aria-labelledby="hiring-summary">
+    <h2 id="hiring-summary">Profile Snapshot</h2>
+    <p>
+      Senior .NET backend engineer for production teams, leading API and service
+      delivery from scoped requirements through release.
+    </p>
+    <p>
+      Recent outcomes in high-use systems:{' '}
+      <ProofFact
+        text="13 to 9 day lead time, 34% fewer Sev-2/3 incidents, and 68% to 88% on-time roadmap delivery"
+        title="Cross-Role Snapshot References"
+        refs={[
+          'Lead-Time Dashboard (Release Cycles, baseline vs. current)',
+          'Incident and Hotfix Trends (quarter-over-quarter)',
+          'Roadmap On-Time Delivery Review (quarterly planning cadence)',
+        ]}
+        href="/evidence#snapshot"
+        hrefLabel="View in Evidence Registry"
+      />
+    </p>
+  </section>
+
+  <section class="card" aria-labelledby="hiring-scope-kpis">
+    <h2 id="hiring-scope-kpis">Core Scope & Reliability KPIs</h2>
+    <p>
+      Scope and KPI ownership across high-concurrency adtech, enterprise
+      internal systems, and mature .NET product services.
+    </p>
+    <ul>
+      <li>
+        Backend scope: C#, .NET, ASP.NET Core, REST APIs, and service
+        integration boundaries in existing systems.
+      </li>
+      <li>
+        Data-path scope: SQL schema/query design, bottleneck removal, and
+        production tuning.
+      </li>
+      <li>
+        Reliability scope: incident triage, safe refactors, legacy debugging,
+        change-risk reduction, and operational hardening.
+      </li>
+      <li>
+        Delivery scope: cross-functional planning with product/data partners,
+        peer review, and CI/CD-ready releases.
+      </li>
+    </ul>
+    <p>
+      KPI track record:{' '}
+      <ProofFact
+        text="99.90% -> 99.95% availability, 12% -> 7% change-failure rate, 46% fewer outage minutes, 0 minutes unplanned downtime across two release trains"
+        title="Reliability KPI References"
+        refs={[
+          'SLO Availability Reports (pre/post release hardening)',
+          'Change-Failure Rate by Release (baseline vs. current)',
+          'Outage Minutes and Downtime Logs (two release trains)',
+        ]}
+        href="/evidence#reliability"
+        hrefLabel="View in Evidence Registry"
+      />
+    </p>
+  </section>
+
+  <style>
+    .hiring-stack {
+      display: grid;
+      gap: 0.95rem;
+    }
+
+    .hiring-stack > section {
+      margin: 0;
+    }
+
+    .template-notice {
+      position: relative;
+      overflow: clip;
+      border: 1px solid #d9c5ff;
+      background:
+        radial-gradient(circle at 100% 0%, #f1e7ff 0%, transparent 42%),
+        linear-gradient(
+          168deg,
+          color-mix(in oklab, var(--surface) 92%, #f4ecff),
+          var(--surface) 60%
+        );
+    }
+
+    .template-notice::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, #a78bfa, #8b5cf6 38%, #7c3aed 78%);
+      opacity: 0.85;
+    }
+
+    .template-notice h2 {
+      color: #5b21b6;
+    }
+  </style>
+
+  <section class="card" aria-labelledby="hiring-experience">
+    <h2 id="hiring-experience">Experience Highlights</h2>
+    <p>
+      Role evidence focused on direct ownership and measured business outcomes.
+    </p>
     {
-      roleEmailCtas.hiring.map((cta) => (
-        <EmailCta cta={cta} mode={visitorModes.hiring} />
+      hiringExperience.map((role) => (
+        <article>
+          <h3>{role.title}</h3>
+          <p>
+            {role.company} | {role.period}
+          </p>
+          <ul>
+            {role.details.map((item) => (
+              <li>
+                {item.lead}
+                <ProofFact
+                  text={item.metric}
+                  title={role.proof.title}
+                  refs={role.proof.refs}
+                  href={role.proof.href}
+                  hrefLabel={role.proof.hrefLabel}
+                />
+                {item.tail}
+              </li>
+            ))}
+          </ul>
+        </article>
       ))
     }
-    <PageShareButton
-      shareRole="Recruiter / Hiring Manager"
-      label="Share with hiring team"
-      source="hiring_hero_cta"
-      shareTitle="Robertas Rudys | Recruiter / Hiring Manager"
-      shareText="Sharing this profile for backend hiring review."
-    />
-  </div>
-  <noscript>
-    <p class="cta-note">
-      Email links require JavaScript. Please enable JavaScript to contact me.
-    </p>
-  </noscript>
-  <p class="cta-note">
-    Hiring for an open backend role: request the resume or schedule a short intro.
-  </p>
-</section>
+  </section>
 
-<PeerSharePrompt
-  message="Forward this profile to one teammate hiring for backend product engineering."
-/>
-
-<section class="card" aria-labelledby="hiring-summary">
-  <h2 id="hiring-summary">Profile Snapshot</h2>
-  <p>
-    Senior .NET backend engineer for production product teams, leading API and
-    service delivery from scoped requirements through release.
-  </p>
-  <p>
-    Recent outcomes in high-use systems:{' '}
-    <span class="inline-fact">13 -> 9 day lead time, 34% fewer Sev-2/3 incidents, and 68% -> 88% on-time roadmap delivery</span>,
-    improving delivery predictability and reducing operational risk.
-  </p>
-</section>
-
-<section class="card" aria-labelledby="hiring-scope-kpis">
-  <h2 id="hiring-scope-kpis">Core Scope & Reliability KPIs</h2>
-  <p>
-    Scope and KPI ownership across high-concurrency adtech, enterprise internal
-    systems, and mature .NET product services.
-  </p>
-  <ul>
-    <li>
-      Backend scope: C#, .NET, ASP.NET Core, REST APIs, and service integration boundaries in existing systems.
-    </li>
-    <li>
-      Data-path scope: SQL schema/query design, bottleneck removal, and production tuning.
-    </li>
-    <li>
-      Reliability scope: incident triage, safe refactors, legacy debugging, change-risk reduction, and operational hardening.
-    </li>
-    <li>
-      Delivery scope: cross-functional planning with product/data partners, peer review, and CI/CD-ready releases.
-    </li>
-  </ul>
-  <p>
-    KPI track record:{' '}
-    <span class="inline-fact">99.90% -> 99.95% availability, 12% -> 7% change-failure rate, 46% fewer outage minutes, 0 minutes unplanned downtime across two release trains</span>.
-  </p>
-</section>
-
-<style>
-  .hiring-stack {
-    display: grid;
-    gap: 0.95rem;
-  }
-
-  .hiring-stack > section {
-    margin: 0;
-  }
-
-  .template-notice {
-    position: relative;
-    overflow: clip;
-    border: 1px solid #d9c5ff;
-    background:
-      radial-gradient(circle at 100% 0%, #f1e7ff 0%, transparent 42%),
-      linear-gradient(
-        168deg,
-        color-mix(in oklab, var(--surface) 92%, #f4ecff),
-        var(--surface) 60%
-      );
-  }
-
-  .template-notice::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 3px;
-    background: linear-gradient(90deg, #a78bfa, #8b5cf6 38%, #7c3aed 78%);
-    opacity: 0.85;
-  }
-
-  .template-notice h2 {
-    color: #5b21b6;
-  }
-</style>
-
-<section class="card" aria-labelledby="hiring-experience">
-  <h2 id="hiring-experience">Experience Highlights</h2>
-  <p>
-    Role evidence focused on direct ownership and measured business outcomes.
-  </p>
-  {
-    hiringExperience.map((role) => (
-      <article>
-        <h3>{role.title}</h3>
-        <p>
-          {role.company} | {role.period}
-        </p>
-        <ul>
-          {role.details.map((item) => (
-            <li>
-              {item.lead}
-              <span class="inline-fact">{item.metric}</span>
-              {item.tail}
-            </li>
-          ))}
-        </ul>
-      </article>
-    ))
-  }
-</section>
-
-<section class="card" aria-labelledby="hiring-availability">
-  <h2 id="hiring-availability">Hiring Readiness</h2>
-  <ul>
-    <li><strong>Target role:</strong> Senior backend engineer for API delivery, service reliability, and release outcomes.</li>
-    <li><strong>Work model:</strong> Remote-first, EU-time-zone overlap, direct access to product and engineering decision-makers.</li>
-    <li><strong>Fast process:</strong> Align first-quarter scope, success KPIs, interview stages, and compensation band before final round.</li>
-    <li><strong>Confirm early:</strong> Employment setup, overlap hours, on-call expectations, and start date.</li>
-    <li><strong>Strong fit:</strong> Backend modernization work with explicit reliability and delivery goals.</li>
-    <li><strong>Not a fit:</strong> Undefined ownership, constant fire-fighting, or unclear hiring process constraints.</li>
-  </ul>
-</section>
+  <section class="card" aria-labelledby="hiring-availability">
+    <h2 id="hiring-availability">Hiring Readiness</h2>
+    <ul>
+      <li>
+        <strong>Target role:</strong> Senior backend engineer for API delivery, service
+        reliability, and release outcomes.
+      </li>
+      <li>
+        <strong>Work model:</strong> Remote-first, EU-time-zone overlap, direct access
+        to product and engineering decision-makers.
+      </li>
+      <li>
+        <strong>Fast process:</strong> Align first-quarter scope, success KPIs, interview
+        stages, and compensation band before final round.
+      </li>
+      <li>
+        <strong>Confirm early:</strong> Employment setup, overlap hours, on-call expectations,
+        and start date.
+      </li>
+      <li>
+        <strong>Strong fit:</strong> Backend modernization work with explicit reliability
+        and delivery goals.
+      </li>
+      <li>
+        <strong>Not a fit:</strong> Undefined ownership, constant fire-fighting, or
+        unclear hiring process constraints.
+      </li>
+    </ul>
+  </section>
 </div>

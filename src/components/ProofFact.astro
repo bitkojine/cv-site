@@ -1,0 +1,117 @@
+---
+interface Props {
+  text: string;
+  title: string;
+  refs: string[];
+  href?: string;
+  hrefLabel?: string;
+}
+
+const { text, title, refs, href, hrefLabel = 'View proof' } = Astro.props;
+const isExternalHref = href ? /^https?:\/\//.test(href) : false;
+const tooltipId = `proof-${text
+  .toLowerCase()
+  .replace(/[^a-z0-9]+/g, '-')
+  .replace(/(^-|-$)/g, '')}`;
+---
+
+<span class="proof-fact">
+  <button
+    type="button"
+    class="inline-fact proof-fact__trigger"
+    aria-describedby={tooltipId}
+  >
+    {text}
+  </button>
+  <span id={tooltipId} class="proof-fact__tooltip" role="tooltip">
+    <strong>{title}</strong>
+    <span class="proof-fact__refs">
+      {refs.map((ref) => <span class="proof-fact__ref">{ref}</span>)}
+    </span>
+    {
+      href && (
+        <a
+          href={href}
+          class="proof-fact__cta"
+          target={isExternalHref ? '_blank' : undefined}
+          rel={isExternalHref ? 'noopener noreferrer' : undefined}
+        >
+          {hrefLabel}
+        </a>
+      )
+    }
+  </span>
+</span>
+
+<style>
+  .proof-fact {
+    position: relative;
+    display: inline;
+  }
+
+  .proof-fact__trigger {
+    cursor: help;
+    appearance: none;
+    -webkit-appearance: none;
+    border: 0;
+    font: inherit;
+    line-height: inherit;
+    vertical-align: baseline;
+    text-align: left;
+  }
+
+  .proof-fact__tooltip {
+    position: absolute;
+    left: 0;
+    top: calc(100% + 0.45rem);
+    z-index: 30;
+    width: min(27rem, 88vw);
+    display: none;
+    gap: 0.45rem;
+    padding: 0.6rem 0.68rem;
+    border-radius: 0.58rem;
+    border: 1px solid color-mix(in oklab, var(--line) 74%, #89b6ff);
+    background: color-mix(in oklab, var(--surface) 96%, #f2f7ff);
+    box-shadow: 0 10px 22px color-mix(in oklab, #0b1728 18%, transparent);
+    color: var(--text);
+    font-size: 0.82rem;
+    line-height: 1.35;
+    pointer-events: none;
+  }
+
+  .proof-fact__refs {
+    display: grid;
+    gap: 0.2rem;
+    margin: 0;
+    padding: 0;
+  }
+
+  .proof-fact__ref {
+    display: block;
+    margin: 0;
+    padding-left: 0.95rem;
+    position: relative;
+  }
+
+  .proof-fact__ref::before {
+    content: '•';
+    position: absolute;
+    left: 0.2rem;
+    top: 0;
+    color: color-mix(in oklab, var(--text) 70%, #2459d4);
+  }
+
+  .proof-fact__cta {
+    width: fit-content;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    margin-top: 0.1rem;
+    cursor: pointer;
+  }
+
+  .proof-fact:hover .proof-fact__tooltip,
+  .proof-fact__trigger:focus-visible + .proof-fact__tooltip {
+    display: grid;
+    pointer-events: auto;
+  }
+</style>
