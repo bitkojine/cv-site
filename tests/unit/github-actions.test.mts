@@ -38,7 +38,58 @@ describe('getGithubData', () => {
     });
 
     expect(call).toBe(2);
+    expect(result.workflowRuns).toEqual([]);
     expect(result.latestWorkflowRuns).toEqual([]);
     expect(result.latestCommits).toEqual([]);
+  });
+
+  it('returns full workflow history and deduped latest workflow runs', async () => {
+    const workflowRuns = [
+      {
+        workflow_id: 10,
+        name: 'Deploy to GitHub Pages',
+        html_url: 'https://example.com/runs/3',
+        status: 'in_progress',
+        conclusion: null,
+      },
+      {
+        workflow_id: 10,
+        name: 'Deploy to GitHub Pages',
+        html_url: 'https://example.com/runs/2',
+        status: 'completed',
+        conclusion: 'success',
+      },
+      {
+        workflow_id: 20,
+        name: 'CI',
+        html_url: 'https://example.com/runs/1',
+        status: 'completed',
+        conclusion: 'success',
+      },
+    ];
+
+    let call = 0;
+    const fetchImpl = async (): Promise<MockResponse> => {
+      call += 1;
+      if (call === 1) {
+        return {
+          ok: true,
+          json: async () => ({ workflow_runs: workflowRuns }),
+        };
+      }
+      return { ok: true, json: async () => [] };
+    };
+
+    const result = await getGithubData({
+      owner: 'owner',
+      repo: 'repo',
+      fetchImpl,
+    });
+
+    expect(result.workflowRuns).toEqual(workflowRuns);
+    expect(result.latestWorkflowRuns).toEqual([
+      workflowRuns[0],
+      workflowRuns[2],
+    ]);
   });
 });
