@@ -163,7 +163,6 @@ body[data-current-role]:not([data-current-role='']) .site-shell {
   padding: 0.55rem 0.65rem;
   border: 1px solid var(--line);
   border-radius: 14px;
-  box-shadow: var(--shadow);
   background: color-mix(in oklab, var(--surface) 94%, #eef3ff);
   color: var(--muted);
   font-size: 0.88rem;
