@@ -1,56 +1,172 @@
-# CV Site Role System
+# cv-site
 
-Static Astro site with one identity and three role paths:
+Personal Astro site centered on a role-based entry experience.
 
-- `/hiring` for `Recruiter / Hiring Manager`
-- `/build` for `Founder / Operator`
-- `/vision` for `Investor / Advisor`
-- `/` as role selection only
+## Stack
 
-## Guardrails
+- Astro 5 + TypeScript
+- Zod (data schema validation)
+- Vitest (unit tests)
+- Playwright (E2E tests)
+- ESLint + Prettier
 
-- Keep exactly three role options.
-- Do not expose internal mode names in UI.
-- Do not share mode-specific content blocks across routes.
-- Keep switching subtle and reversible via `Viewing as: X (Switch)`.
-- Ensure mobile-first behavior remains the default.
+## Main Routes
 
-## Analytics Hooks
+- `/`: role selection entry (`Recruiter / Hiring Manager`, `Founder / Operator`, `Investor / Advisor`)
+- `/hiring`: hiring-focused profile and CTA flow
+- `/build`: founder/operator execution offer page
+- `/vision`: investor/advisor strategy and milestone page
+- `/blog`: blog index
+- `/blog/[slug]`: blog posts
+- `/linkedin`: LinkedIn copy-kit page
+- `/test/workflow-badge`: workflow badge visual test page
 
-Client analytics are lightweight and emitted with `console.log` in
-`/Users/name/trusted-git/public-repos/cv-site/src/components/RoleClientEnhancements.astro`.
+## Navigation Reachability (From Homepage)
 
-Tracked events:
+Verified internal journey from `/`:
 
-- `mode_selected`: role choice from `/`
-- `mode_switched`: role switch action with `{ from, to }`
-- `cta_clicked`: CTA click with `{ cta, mode }`
-- `scroll_depth`: milestone with `{ depth, mode }`
+1. `/` links to `/hiring`, `/build`, `/vision` via `src/components/DoorSelection.astro`.
+2. Each role page links back to `/?choose=1` and across the three role pages via `src/components/ModeSwitch.astro`.
+3. Share flow in `src/components/RoleClientEnhancements.astro` stays on the current role page and appends query params (`ref=peer_share`, `shared_role`).
 
-Required attributes for instrumentation:
+Currently not linked from the homepage journey:
 
-- Role option links: `data-role-door="..."`
-- Switch links: `data-role-switch="..."`
-- Return-to-selection link: `data-return-door`
-- CTA links/buttons: `data-cta` and `data-cta-mode`
-- Progressive sections: `data-progressive`
+- `/blog` and `/blog/[slug]`
+- `/linkedin`
+- `/test/workflow-badge`
 
-## SEO + Schema
+These routes are still built and present in sitemap output unless explicitly excluded.
 
-Each route must define:
+## Current Architecture (Active)
 
-- unique `title`
-- unique meta description
-- canonical path
-- structured data context via `schemaType` and `schemaExtras`
+- Active route/layout path:
+  - `src/pages/index.astro`
+  - `src/pages/hiring.astro`
+  - `src/pages/build.astro`
+  - `src/pages/vision.astro`
+  - `src/layouts/SiteLayout.astro`
+  - `src/components/DoorSelection.astro`
+  - `src/components/ModeSwitch.astro`
+  - `src/components/content/*.astro`
+  - `src/components/RoleClientEnhancements.astro`
+- Supporting libraries:
+  - `src/lib/event-reporting.mts`
+  - `src/lib/mailto-links.mts`
+  - `src/lib/email-drafts.mts`
+  - `src/lib/github-actions.mts`
+  - `src/lib/github-status.mts`
+  - `src/lib/build-version.mts`
 
-Set these in route files under `/Users/name/trusted-git/public-repos/cv-site/src/pages` and pass them through `/Users/name/trusted-git/public-repos/cv-site/src/layouts/SiteLayout.astro`.
+## Legacy/Disconnected Pieces (Still in Repo)
 
-## Validation
+- Legacy layout not used by current pages:
+  - `src/layouts/Layout.astro`
+- Legacy helper component only used by legacy layout:
+  - `src/components/Controls.astro`
+- Components with no active imports in current route stack:
+  - `src/components/Header.astro`
+  - `src/components/Section.astro`
+  - `src/components/BlogCard.astro`
+  - `src/components/BuildStatus.astro`
+  - `src/components/ExperienceItem.astro`
+  - `src/components/ExperienceTimelineItem.astro`
 
-Run before publishing:
+## Local Development
+
+Prerequisites:
+
+- Node.js 20+ (CI uses Node 20)
+- npm
+
+Install and run:
 
 ```bash
-npm run build
-npm run lint
+npm ci
+npm run dev
 ```
+
+Open `http://localhost:4321`.
+
+## Scripts
+
+- `npm run dev` / `npm start`: Astro dev server
+- `npm run build`: production build to `dist/`
+- `npm run preview`: preview built site
+- `npm run lint`: ESLint
+- `npm run format`: Prettier write
+- `npm run test`: unit tests alias
+- `npm run test:unit`: Vitest
+- `npm run test:e2e`: Playwright (build + preview server via Playwright config)
+
+## Role-System Guardrails (Current UX)
+
+- Keep exactly three role options on `/`.
+- Keep each role page content isolated to its own route.
+- Keep role switching reversible via the `ModeSwitch` UI.
+- Preserve mobile-first interaction and layout behavior.
+
+## Event Instrumentation
+
+`src/lib/event-reporting.mts` installs `window.cvReportEvent` and `window.cvTrack`, which push to `window.dataLayer` when available.
+
+`src/components/RoleClientEnhancements.astro` emits events including:
+
+- `mode_selected`
+- `mode_switched`
+- `cta_clicked`
+- `scroll_depth`
+- `share_visit`
+- `share_clicked`
+- `share_completed`
+- `peer_share_prompt_viewed`
+- `peer_share_forwarded`
+
+Attributes used by instrumentation:
+
+- `data-role-door`
+- `data-role-switch`
+- `data-return-door`
+- `data-cta`
+- `data-cta-mode`
+- `data-role-share`
+- `data-peer-share-prompt`
+- `data-peer-share-forward`
+- `data-progressive`
+
+## Email CTA Model
+
+- CTA copy and draft templates live in `src/lib/email-drafts.mts`.
+- Emails use tagged aliases for intent tracking (for example `+www-build`, `+www-vision-invest`).
+- Click handling is obfuscated and hydrated client-side through `src/lib/mailto-links.mts` using `data-mailto-link` attributes.
+
+## GitHub Build Status Badge
+
+- Footer badge component: `src/components/LiveBuildBadge.astro`
+- Fetches GitHub Actions runs from `bitkojine/cv-site` and resolves status via `src/lib/github-status.mts`
+- Falls back to workflow URL if API calls fail during build
+
+## CI and Deploy
+
+- CI workflow: `.github/workflows/ci.yml`
+  - lint, prettier check, unit tests, build, Playwright tests
+- Deploy workflow: `.github/workflows/deploy.yml`
+  - builds `dist/` and deploys to GitHub Pages
+
+Site config is in `astro.config.mts` with:
+
+- `site: https://robertasrudys.com`
+- sitemap integration enabled
+
+## Content and Data
+
+- CV/profile source data: `src/data/cv.json`
+- Data schema: `src/data/schema.mts`
+- Blog content collection:
+  - config: `src/content/config.ts`
+  - posts: `src/content/blog/*.md`
+
+## Testing
+
+- Unit tests: `tests/unit`
+- E2E tests: `tests/e2e`
+- Workflow badge test route fixture: `src/pages/test/workflow-badge.astro`
