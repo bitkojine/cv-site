@@ -202,33 +202,44 @@ const hiringExperience = [
     class="card template-notice"
     aria-labelledby="template-notice-heading"
   >
-    <h2 id="template-notice-heading">Template Notice</h2>
-    <p>
-      This hiring page is a CV/resume template built for recruiters and hiring
-      managers. All quantified outcomes are illustrative placeholder examples
-      used to model strong result framing, business-impact language, and
-      decision-ready storytelling.
-    </p>
-    <p>
-      World-class recipe: make each bullet answer four questions in one line:
-      <strong>What was owned?</strong>
-      <strong>What changed?</strong>{' '}
-      <strong>How much did it improve?</strong>
-      <strong>Why did the business care?</strong>
-    </p>
-    <p>
-      Replace placeholders with verified outcomes in this order:
-      <strong>revenue/cost impact</strong>, <strong>reliability impact</strong
-      >,{' '}
-      <strong>delivery speed</strong>, then <strong>scope of ownership</strong>.
-      Include before/after deltas, timeframe, and operating context.
-    </p>
-    <p>
-      Credibility rules: quantify with metrics tied to P&L or risk, keep claims
-      attributable to your direct ownership, and remove generic strengths not
-      backed by evidence. If a claim cannot be measured, frame it as scope, not
-      outcome.
-    </p>
+    <details class="template-notice-details" open>
+      <summary>
+        <h2 id="template-notice-heading">Template Notice</h2>
+      </summary>
+      <p>
+        This hiring page is a CV/resume template built for recruiters and hiring
+        managers. All quantified outcomes are illustrative placeholder examples
+        used to model strong result framing, business-impact language, and
+        decision-ready storytelling.
+      </p>
+      <p>
+        World-class recipe: make each bullet answer four questions in one line:
+        <strong>What was owned?</strong>
+        <strong>What changed?</strong>{' '}
+        <strong>How much did it improve?</strong>
+        <strong>Why did the business care?</strong>
+      </p>
+      <p>
+        Replace placeholders with verified outcomes in this order:
+        <strong>revenue/cost impact</strong>,{' '}
+        <strong>reliability impact</strong>, <strong>delivery speed</strong>,
+        then <strong>scope of ownership</strong>. Include before/after deltas,
+        timeframe, and operating context.
+      </p>
+      <p>
+        Credibility rules: quantify with metrics tied to P&L or risk, keep
+        claims attributable to your direct ownership, and remove generic
+        strengths not backed by evidence. If a claim cannot be measured, frame
+        it as scope, not outcome.
+      </p>
+      <p>
+        Evidence model: every highlighted material metric should map to an
+        auditable reference source.
+      </p>
+      <p>
+        <a class="cta-secondary" href="/evidence">Open Evidence Registry</a>
+      </p>
+    </details>
   </section>
 
   <section class="mode-hero" aria-labelledby="hiring-heading">
@@ -368,6 +379,40 @@ const hiringExperience = [
 
     .template-notice h2 {
       color: #5b21b6;
+    }
+
+    .template-notice-details {
+      margin: 0;
+    }
+
+    .template-notice-details summary {
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .template-notice-details summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .template-notice-details summary::before {
+      content: '▾';
+      color: #6d28d9;
+      font-weight: 700;
+      font-size: 0.95rem;
+      line-height: 1;
+      transform-origin: center;
+      transition: transform 0.14s ease;
+    }
+
+    .template-notice-details:not([open]) summary::before {
+      transform: rotate(-90deg);
+    }
+
+    .template-notice-details p:first-of-type {
+      margin-top: 0.5rem;
     }
   </style>
 
