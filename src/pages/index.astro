@@ -20,4 +20,76 @@ const schemaExtras = {
   schemaExtras={schemaExtras}
 >
   <DoorSelection />
+
+  <section class="card brutal-ai-score" aria-labelledby="entry-ai-score">
+    <h2 id="entry-ai-score">Brutal AI Score</h2>
+    <p>
+      Overall score: <strong>7.4 / 10</strong> (routing is clearer and trust signals
+      are better, though this remains an entry page rather than a full sales page).
+    </p>
+    <ul>
+      <li>Audience self-selection clarity: 9.3/10</li>
+      <li>Entry-page value proposition clarity: 7.1/10</li>
+      <li>Role path differentiation signal: 8.5/10</li>
+      <li>Friction to first meaningful click: 8.6/10</li>
+      <li>Trust/evidence before click-through: 6.2/10</li>
+      <li>Conversion readiness as marketing entry point: 7.0/10</li>
+    </ul>
+    <h3>Critical gaps</h3>
+    <ul>
+      <li>
+        Trust signals are improved but still lightweight compared with deeper
+        role pages.
+      </li>
+      <li>
+        The page intentionally avoids detailed proof artifacts, so some users
+        still need one extra click before confidence is high.
+      </li>
+      <li>
+        No direct case metrics are shown at the entry level to preserve
+        simplicity.
+      </li>
+    </ul>
+    <h3>Can this hold water?</h3>
+    <p>
+      It holds water as a conversion-oriented role router and does a better job
+      reducing ambiguity for first-time visitors, while still delegating most
+      proof to the destination pages by design.
+    </p>
+  </section>
 </SiteLayout>
+
+<style>
+  .brutal-ai-score {
+    position: relative;
+    overflow: clip;
+    border: 1px solid #f3c2cd;
+    background:
+      radial-gradient(circle at 100% 0%, #ffe9ef 0%, transparent 42%),
+      linear-gradient(
+        168deg,
+        color-mix(in oklab, var(--surface) 93%, #fff0f4),
+        var(--surface) 58%
+      );
+  }
+
+  .brutal-ai-score::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, #fb7185, #e11d48 38%, #be123c 78%);
+    opacity: 0.8;
+  }
+
+  .brutal-ai-score h2,
+  .brutal-ai-score h3 {
+    color: #9f1239;
+  }
+
+  .brutal-ai-score strong {
+    color: #be123c;
+  }
+</style>

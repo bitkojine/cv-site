@@ -152,6 +152,42 @@ const hiringExperience = [
   </ul>
 </section>
 
+<section class="card" aria-labelledby="hiring-workflow">
+  <h2 id="hiring-workflow">Hiring Workflow (Fast Path)</h2>
+  <ol>
+    <li>
+      Send role context with the <strong>Request Resume</strong> CTA: title, team
+      setup, timezone expectations, and compensation range.
+    </li>
+    <li>
+      For intro calls, use <strong>Schedule Intro</strong> with a preferred window
+      and interview format.
+    </li>
+    <li>
+      Initial screening should focus on role fit, onboarding constraints, and
+      ownership expectations for the first quarter.
+    </li>
+  </ol>
+</section>
+
+<section class="card" aria-labelledby="hiring-evidence">
+  <h2 id="hiring-evidence">Evidence Boundary</h2>
+  <ul>
+    <li>
+      Public profile highlights ownership scope and technical context, not
+      confidential internal KPIs.
+    </li>
+    <li>
+      Role history is intentionally conservative: no inflated titles, no
+      fabricated leadership claims.
+    </li>
+    <li>
+      If your process requires quantified outcomes, ask directly for role-level
+      examples suitable for interview discussion.
+    </li>
+  </ul>
+</section>
+
 <section class="card" aria-labelledby="hiring-fit">
   <h2 id="hiring-fit">Best Team Fit</h2>
   <ul>
@@ -160,3 +196,75 @@ const hiringExperience = [
     <li>Teams that value ownership and sustainable engineering pace</li>
   </ul>
 </section>
+
+<section class="card brutal-ai-score" aria-labelledby="hiring-ai-score">
+  <h2 id="hiring-ai-score">Brutal AI Score</h2>
+  <p>
+    Overall score: <strong>7.3 / 10</strong> (clearer hiring workflow and role fit
+    framing, still limited by public proof depth).
+  </p>
+  <ul>
+    <li>Candidate clarity for target role: 8.9/10</li>
+    <li>Skills-to-role fit specificity: 8.3/10</li>
+    <li>Evidence of impact (outcomes/scope/ownership): 5.8/10</li>
+    <li>Hiring readiness (availability/timezone/remote): 8.1/10</li>
+    <li>CTA usefulness for hiring workflow: 8.2/10</li>
+    <li>Risk signals (vagueness/inconsistency/proof gaps): 4.7/10</li>
+  </ul>
+  <h3>Critical gaps</h3>
+  <ul>
+    <li>
+      Impact evidence remains mostly qualitative; there are still no public
+      quantified outcome deltas tied to specific roles.
+    </li>
+    <li>
+      Availability is clearer, but concrete start-date constraints and legal
+      employment specifics are not stated on-page.
+    </li>
+    <li>
+      The workflow is better defined, but there is still no downloadable resume
+      or direct interview-slot booking flow.
+    </li>
+  </ul>
+  <h3>Can this hold water?</h3>
+  <p>
+    This now holds water for recruiter screening and manager-level first
+    interviews, but competitive late-stage pipelines will still ask for more
+    measurable impact evidence and tighter hiring logistics upfront.
+  </p>
+</section>
+
+<style>
+  .brutal-ai-score {
+    position: relative;
+    overflow: clip;
+    border: 1px solid #f3c2cd;
+    background:
+      radial-gradient(circle at 100% 0%, #ffe9ef 0%, transparent 42%),
+      linear-gradient(
+        168deg,
+        color-mix(in oklab, var(--surface) 93%, #fff0f4),
+        var(--surface) 58%
+      );
+  }
+
+  .brutal-ai-score::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, #fb7185, #e11d48 38%, #be123c 78%);
+    opacity: 0.8;
+  }
+
+  .brutal-ai-score h2,
+  .brutal-ai-score h3 {
+    color: #9f1239;
+  }
+
+  .brutal-ai-score strong {
+    color: #be123c;
+  }
+</style>
