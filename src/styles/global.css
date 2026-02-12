@@ -509,6 +509,22 @@ body[data-current-role]:not([data-current-role='']) .site-shell {
   padding-left: 1.15rem;
 }
 
+.card .inline-fact {
+  display: inline;
+  margin: 0;
+  padding: 0.08em 0.14em 0.12em;
+  border-radius: 0.2em;
+  border: 0;
+  background: color-mix(in oklab, #bfe8ff 78%, #e9f7ff);
+  color: color-mix(in oklab, var(--text) 96%, #0b2239);
+  font-size: inherit;
+  font-weight: 600;
+  line-height: inherit;
+  vertical-align: baseline;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
 .site-footer {
   margin-top: 2rem;
   color: var(--muted);
