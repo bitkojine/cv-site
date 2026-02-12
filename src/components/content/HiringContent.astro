@@ -137,6 +137,32 @@ const hiringExperience = [
 ---
 
 <div class="hiring-stack">
+<section class="card template-notice" aria-labelledby="template-notice-heading">
+  <h2 id="template-notice-heading">Template Notice</h2>
+  <p>
+    This hiring page is a CV/resume template built for recruiters and hiring
+    managers. All quantified outcomes are illustrative placeholder examples used
+    to model strong result framing, business-impact language, and decision-ready
+    storytelling.
+  </p>
+  <p>
+    World-class recipe: make each bullet answer four questions in one line:
+    <strong>What was owned?</strong> <strong>What changed?</strong>{' '}
+    <strong>How much did it improve?</strong> <strong>Why did the business care?</strong>
+  </p>
+  <p>
+    Replace placeholders with verified outcomes in this order:
+    <strong>revenue/cost impact</strong>, <strong>reliability impact</strong>,{' '}
+    <strong>delivery speed</strong>, then <strong>scope of ownership</strong>.
+    Include before/after deltas, timeframe, and operating context.
+  </p>
+  <p>
+    Credibility rules: quantify with metrics tied to P&L or risk, keep claims
+    attributable to your direct ownership, and remove generic strengths not backed
+    by evidence. If a claim cannot be measured, frame it as scope, not outcome.
+  </p>
+</section>
+
 <section class="mode-hero" aria-labelledby="hiring-heading">
   <div class="headline-row">
     <span class="headline-icon" aria-hidden="true"><Briefcase size={86} /></span
@@ -220,6 +246,34 @@ const hiringExperience = [
 
   .hiring-stack > section {
     margin: 0;
+  }
+
+  .template-notice {
+    position: relative;
+    overflow: clip;
+    border: 1px solid #d9c5ff;
+    background:
+      radial-gradient(circle at 100% 0%, #f1e7ff 0%, transparent 42%),
+      linear-gradient(
+        168deg,
+        color-mix(in oklab, var(--surface) 92%, #f4ecff),
+        var(--surface) 60%
+      );
+  }
+
+  .template-notice::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, #a78bfa, #8b5cf6 38%, #7c3aed 78%);
+    opacity: 0.85;
+  }
+
+  .template-notice h2 {
+    color: #5b21b6;
   }
 </style>
 
