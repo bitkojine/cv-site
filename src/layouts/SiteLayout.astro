@@ -2,6 +2,7 @@
 import { ClientRouter } from 'astro:transitions';
 import '../styles/global.css';
 import RoleClientEnhancements from '../components/RoleClientEnhancements.astro';
+import LiveBuildBadge from '../components/LiveBuildBadge.astro';
 import { BUILD_VERSION } from '../lib/build-version.mts';
 
 interface Props {
@@ -85,11 +86,12 @@ const structuredData = {
     <main id="main-content" class="site-shell">
       <slot />
       <footer class="site-footer">
-        <small>
+        <small class="site-footer-copy">
           &copy; {new Date().getFullYear()}
           {siteName}
           <span class="build-version"> | Build {BUILD_VERSION}</span>
         </small>
+        <LiveBuildBadge />
       </footer>
     </main>
     <RoleClientEnhancements />
