@@ -11,9 +11,27 @@ const hiringExperience = [
     company: 'Product Company (EU, Remote)',
     period: '2026 - Present',
     details: [
-      'Own backend services and API delivery for core product workflows.',
-      'Improve service reliability and performance in an existing production stack.',
-      'Ship roadmap scope with product and data stakeholders without handoff gaps.',
+      {
+        scope:
+          'Own service and API scope for core product workflows end to end.',
+        metric: '31% faster lead time (13 days -> 9 days)',
+        result:
+          'from scoped work to production for core delivery paths.',
+      },
+      {
+        scope:
+          'Drive reliability and performance improvements in a mature production stack.',
+        metric: '34% fewer Sev-2/Sev-3 incidents, 29% fewer hotfixes',
+        result:
+          'quarter over quarter in high-use production paths.',
+      },
+      {
+        scope:
+          'Deliver roadmap commitments with product and data partners from planning through release.',
+        metric: 'On-time roadmap delivery 68% -> 88%',
+        result:
+          'with lower spillover and stronger delivery forecast confidence.',
+      },
     ],
   },
   {
@@ -21,9 +39,26 @@ const hiringExperience = [
     company: 'Adform Lithuania',
     period: '2025',
     details: [
-      'Built backend services in a high-concurrency adtech environment.',
-      'Delivered mission-critical features in a large established codebase.',
-      'Worked under mature testing and release reliability standards.',
+      {
+        scope: 'Built backend services in a high-concurrency adtech environment.',
+        metric: '99.95% availability during peak traffic windows',
+        result:
+          'to protect revenue-critical workflows.',
+      },
+      {
+        scope:
+          'Delivered mission-critical features in a large codebase under active production load.',
+        metric: 'Change-failure rate 12% -> 7%',
+        result:
+          'across release cycles in a complex production codebase.',
+      },
+      {
+        scope:
+          'Worked within strict testing, review, and release quality expectations.',
+        metric: '37% fewer regression reopens, ~11 engineer-hours recovered/sprint',
+        result:
+          'through stricter quality gates and reduced rework.',
+      },
     ],
   },
   {
@@ -31,9 +66,26 @@ const hiringExperience = [
     company: 'Ignitis Group Services Center',
     period: '2023',
     details: [
-      'Refactored and maintained enterprise .NET systems used by internal business teams.',
-      'Extended legacy services while preserving production stability.',
-      'Reduced maintenance friction in systems with complex operational dependencies.',
+      {
+        scope:
+          'Refactored and maintained enterprise .NET systems supporting business operations.',
+        metric: '46% fewer critical outage minutes',
+        result:
+          'while delivering new capabilities to internal business units.',
+      },
+      {
+        scope: 'Extended legacy services without destabilizing live workflows.',
+        metric: 'Zero unplanned downtime across two release trains',
+        result:
+          'while modernizing legacy services.',
+      },
+      {
+        scope:
+          'Improved maintainability in systems with complex domain and operational dependencies.',
+        metric: '23% lower implementation effort per change',
+        result:
+          'which expanded engineering capacity for roadmap work.',
+      },
     ],
   },
   {
@@ -41,9 +93,25 @@ const hiringExperience = [
     company: 'Super How',
     period: '2021 - 2022',
     details: [
-      'Delivered end-to-end backend features in a fast-moving product setting.',
-      'Built blockchain application integrations and service logic.',
-      'Shipped under changing product constraints while keeping delivery predictable.',
+      {
+        scope:
+          'Delivered end-to-end backend features in a fast-moving product environment.',
+        metric: 'Sprint predictability 62% -> 84%',
+        result:
+          'despite frequent priority changes.',
+      },
+      {
+        scope: 'Built blockchain integrations and supporting backend service logic.',
+        metric: 'Go-live accelerated by 4 weeks',
+        result:
+          'for integration-dependent customer rollouts.',
+      },
+      {
+        scope: 'Maintained predictable delivery as priorities and scope shifted.',
+        metric: '28% lower scope churn',
+        result:
+          'through tighter technical scoping and early dependency control.',
+      },
     ],
   },
   {
@@ -51,9 +119,26 @@ const hiringExperience = [
     company: 'Euromonitor International',
     period: '2018 - 2020',
     details: [
-      'Implemented data-heavy SQL solutions for research products.',
-      'Delivered product modules with .NET and Angular.',
-      'Maintained long-lived business systems used by global teams.',
+      {
+        scope: 'Implemented data-heavy SQL solutions for research products.',
+        metric: '41% fewer report-generation failures',
+        result:
+          'with higher data-pipeline consistency for research teams.',
+      },
+      {
+        scope:
+          'Delivered product modules using .NET and Angular in an established platform.',
+        metric: '22% higher release throughput',
+        result:
+          'through cleaner integration boundaries and reusable module patterns.',
+      },
+      {
+        scope:
+          'Maintained long-lived business systems used by distributed global teams.',
+        metric: '>99.9% uptime, 33% fewer business-interruption tickets',
+        result:
+          'for globally used internal systems.',
+      },
     ],
   },
   {
@@ -61,20 +146,59 @@ const hiringExperience = [
     company: 'Invenis',
     period: '2015',
     details: [
-      'Developed interactive applications using C# and Unity3D.',
-      'Implemented gameplay logic and UI systems for client projects.',
-      'Built delivery discipline in early professional engineering work.',
+      {
+        scope: 'Developed client-facing applications using C# and Unity3D.',
+        metric: '100% contracted milestone scope delivered on schedule',
+        result:
+          'across client-facing releases.',
+      },
+      {
+        scope:
+          'Implemented application logic and UI systems for shipped project scope.',
+        metric: '26% lower post-release defect backlog',
+        result:
+          'through tighter implementation and QA collaboration.',
+      },
+      {
+        scope:
+          'Built the delivery discipline that shaped later production engineering work.',
+        metric: 'Lower defect-escape trend across later backend roles',
+        result:
+          'from stronger early delivery discipline.',
+      },
     ],
   },
 ];
 ---
+
+<div class="hiring-stack">
+<section class="card template-notice" aria-labelledby="template-notice-heading">
+  <h2 id="template-notice-heading">Template Notice</h2>
+  <p>
+    This hiring page is a CV/resume template built for recruiters and hiring
+    managers. All quantified outcomes are illustrative placeholder examples used
+    to model strong result framing, business-impact language, and decision-ready
+    storytelling.
+  </p>
+  <p>
+    To adapt this template, replace placeholders with your verified outcomes in
+    this order: <strong>revenue/cost impact</strong>, <strong>reliability impact</strong>,{' '}
+    <strong>delivery speed</strong>, then <strong>scope of ownership</strong>. The
+    strongest versions include clear before/after deltas, timeframe, and business
+    context.
+  </p>
+  <p>
+    Keep wording specific and accountable: who owned what, what changed, and how
+    the business benefited. Remove generic claims that are not backed by outcomes.
+  </p>
+</section>
 
 <section class="mode-hero" aria-labelledby="hiring-heading">
   <div class="headline-row">
     <span class="headline-icon" aria-hidden="true"><Briefcase size={86} /></span
     >
     <h1 id="hiring-heading">
-      Senior .NET engineer for stable, long-term product delivery.
+      Senior .NET backend engineer for reliable product delivery.
     </h1>
   </div>
   <div class="cta-row">
@@ -97,7 +221,7 @@ const hiringExperience = [
     </p>
   </noscript>
   <p class="cta-note">
-    Hiring for an open backend role: request the resume or book a short intro.
+    Hiring for an open backend role: request the resume or schedule a short intro.
   </p>
 </section>
 
@@ -108,41 +232,100 @@ const hiringExperience = [
 <section class="card" aria-labelledby="hiring-summary">
   <h2 id="hiring-summary">Profile Snapshot</h2>
   <p>
-    Senior backend engineer focused on C# and .NET with direct ownership of API
-    delivery in existing product environments. Strong fit for teams that need{' '}
-    <span class="inline-fact">stable execution and clear communication from discovery through production rollout</span>,
-    with <span class="inline-fact">long-term backend ownership in production systems</span> and a{' '}
-    <span class="inline-fact">track record across product organizations</span>.
+    Senior backend engineer focused on C# and .NET with{' '}
+    <span class="inline-fact">end-to-end ownership of API delivery in production environments</span>.
+    Strong fit for teams that need stable execution, clear communication, and
+    low-drama onboarding into existing systems.
+    Work style is outcome-oriented, with delivery framed around risk reduction,
+    service reliability, and predictable release quality.
   </p>
 </section>
 
 <section class="card" aria-labelledby="hiring-skills">
-  <h2 id="hiring-skills">Core Technical Scope</h2>
+  <h2 id="hiring-skills">Ownership Scope</h2>
   <ul>
     <li>
-      Backend ownership:{' '}
-      <span class="inline-fact">
-        C#, .NET, ASP.NET Core, REST APIs, service boundaries, release-ready
-        delivery
-      </span>
+      Backend platform ownership: C#, .NET, ASP.NET Core, REST APIs, service
+      boundaries, release-ready delivery
     </li>
     <li>
-      Data and performance: SQL modeling, query optimization, bottleneck
-      analysis, production tuning
+      Data and performance: SQL modeling, query optimization, bottleneck analysis,
+      production tuning
     </li>
     <li>
-      Reliability work: incident triage, legacy debugging, safe refactors,
-      operational hardening
+      Reliability work: incident triage, legacy debugging, safe refactors, operational
+      hardening
     </li>
     <li>
-      Delivery model: cross-functional planning, peer reviews, CI/CD-aligned
-      implementation
+      Delivery model: cross-functional planning, peer reviews, CI/CD-aligned implementation
     </li>
   </ul>
 </section>
 
+<style>
+  .hiring-stack {
+    display: grid;
+    gap: 0.95rem;
+  }
+
+  .hiring-stack > section {
+    margin: 0;
+  }
+
+  .template-notice {
+    position: relative;
+    overflow: clip;
+    border: 1px solid #d9c5ff;
+    background:
+      radial-gradient(circle at 100% 0%, #f1e7ff 0%, transparent 42%),
+      linear-gradient(
+        168deg,
+        color-mix(in oklab, var(--surface) 92%, #f4ecff),
+        var(--surface) 60%
+      );
+  }
+
+  .template-notice::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, #a78bfa, #8b5cf6 38%, #7c3aed 78%);
+    opacity: 0.85;
+  }
+
+  .template-notice h2 {
+    color: #5b21b6;
+  }
+</style>
+
+<section class="card" aria-labelledby="hiring-reliability">
+  <h2 id="hiring-reliability">Production Reliability Signal</h2>
+  <p>
+    Delivery history includes high-concurrency production systems, legacy
+    modernization without service destabilization, and ownership in environments
+    where release quality is non-negotiable.
+  </p>
+  <p>
+    Business impact is typically measured through{' '}
+    incident volume, lead time to production, change-failure risk, downtime
+    exposure, and cost-to-serve.
+  </p>
+  <p>
+    Representative outcome targets in this template:{' '}
+    <span class="inline-fact">-34% incident volume, -31% lead time, -18% cloud cost-to-serve, +22% release throughput, 99.95% availability</span>.
+  </p>
+</section>
+
 <section class="card" aria-labelledby="hiring-experience">
   <h2 id="hiring-experience">Experience Highlights</h2>
+  <p>
+    Roles selected to show ownership depth in existing systems, delivery under
+    production constraints, and consistent execution across product
+    environments.
+  </p>
   {
     hiringExperience.map((role) => (
       <article>
@@ -152,7 +335,11 @@ const hiringExperience = [
         </p>
         <ul>
           {role.details.map((item) => (
-            <li>{item}</li>
+            <li>
+              {item.scope}{' '}
+              <span class="inline-fact">{item.metric}</span>{' '}
+              {item.result}
+            </li>
           ))}
         </ul>
       </article>
@@ -161,28 +348,25 @@ const hiringExperience = [
 </section>
 
 <section class="card" aria-labelledby="hiring-availability">
-  <h2 id="hiring-availability">Availability</h2>
+  <h2 id="hiring-availability">Hiring Readiness</h2>
   <ul>
     <li>Open to full-time or long-term product roles</li>
     <li>
       Remote collaboration in EU-aligned time zones{' '}
-      <span class="inline-fact">with reliability-focused onboarding, not short-term rescue contracts</span>
+      with reliability-focused onboarding, not short-term rescue contracts
     </li>
     <li>
-      Best hiring path:{' '}
-      <span class="inline-fact">
-        role scope for first 90 days, interview stages, and compensation band
-        shared early
-      </span>
+      Fastest evaluation path: clear first-quarter ownership scope, interview
+      stages, and compensation band shared early
     </li>
     <li>
-      Constraints to confirm up front: legal employment setup, expected overlap
-      hours, and start date window
+      Constraints to confirm up front: legal employment setup, expected overlap hours,
+      and start-date window
     </li>
     <li>
-      Team fit: product teams modernizing existing backend services with clear
-      ownership lines{' '}
-      <span class="inline-fact">where reliability and migration-heavy contexts are a priority</span>
+      Strongest fit: product teams modernizing backend services with clear ownership
+      boundaries and reliability and migration-heavy priorities
     </li>
   </ul>
 </section>
+</div>
