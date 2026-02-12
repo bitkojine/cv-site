@@ -28,71 +28,160 @@ const schemaExtras = {
   <section class="card" id="snapshot" aria-labelledby="snapshot-heading">
     <h2 id="snapshot-heading">Snapshot Metrics</h2>
     <ul>
-      <li>Lead-Time Dashboard (Release Cycles)</li>
-      <li>Incident and Hotfix Trends (QoQ)</li>
-      <li>Roadmap On-Time Delivery Review (Quarterly)</li>
+      <li>Lead-Time Dashboard (Release Cycles, baseline vs. current)</li>
+      <li>Incident and Hotfix Trends (quarter-over-quarter)</li>
+      <li>Roadmap On-Time Delivery Review (quarterly planning cadence)</li>
     </ul>
   </section>
 
   <section class="card" id="reliability" aria-labelledby="reliability-heading">
     <h2 id="reliability-heading">Reliability KPI Track Record</h2>
     <ul>
-      <li>SLO Availability Reports</li>
-      <li>Change-Failure Rate by Release</li>
-      <li>Outage Minutes and Downtime Logs</li>
+      <li>SLO Availability Reports (pre/post release hardening)</li>
+      <li>Change-Failure Rate by Release (baseline vs. current)</li>
+      <li>Outage Minutes and Downtime Logs (two release trains)</li>
     </ul>
   </section>
 
   <section class="card" id="product-company" aria-labelledby="pc-heading">
     <h2 id="pc-heading">Product Company (EU, Remote)</h2>
+
+    <h3 id="product-company-lead-time">Lead Time and Early Delivery</h3>
     <ul>
       <li>Jira Lead-Time Dashboard (Q1-Q2 2026)</li>
+      <li>Lead-Time Baseline vs Current (13 days -&gt; 9 days)</li>
+      <li>Roadmap Release Calendar (4 days earlier delivery)</li>
+    </ul>
+
+    <h3 id="product-company-reliability">Incident and Hotfix Reduction</h3>
+    <ul>
       <li>Opsgenie Incident Summary (Q2 2026)</li>
+      <li>Incident Severity Trend (Sev-2/3 -34% QoQ)</li>
+      <li>Hotfix Volume Trend (-29% QoQ)</li>
+    </ul>
+
+    <h3 id="product-company-roadmap">Roadmap Delivery Predictability</h3>
+    <ul>
       <li>Quarterly Roadmap Delivery Review (H1 2026)</li>
+      <li>Delivery SLA Attainment (68% -&gt; 88%)</li>
+      <li>Spillover and Forecast Accuracy Log</li>
     </ul>
   </section>
 
   <section class="card" id="adform" aria-labelledby="adform-heading">
     <h2 id="adform-heading">Adform Lithuania</h2>
+
+    <h3 id="adform-availability">Availability</h3>
     <ul>
       <li>SLO Availability Report (Peak Campaign Windows)</li>
+      <li>Availability Baseline vs Current (99.90% -&gt; 99.95%)</li>
+      <li>Peak Traffic Revenue Path Monitoring</li>
+    </ul>
+
+    <h3 id="adform-change-failure">Change-Failure Rate</h3>
+    <ul>
       <li>Release Change-Failure Dashboard (2025)</li>
+      <li>Change-Failure Baseline vs Current (12% -&gt; 7%)</li>
+      <li>Rollback and Customer Impact Log</li>
+    </ul>
+
+    <h3 id="adform-regressions">Regression and Capacity Recovery</h3>
+    <ul>
       <li>QA Regression Reopen Tracker (Q3 2025)</li>
+      <li>Regression Reopen Reduction (37% over one quarter)</li>
+      <li>Recovered Engineering Capacity (~11 hours per sprint)</li>
     </ul>
   </section>
 
   <section class="card" id="ignitis" aria-labelledby="ignitis-heading">
     <h2 id="ignitis-heading">Ignitis Group Services Center</h2>
+
+    <h3 id="ignitis-outage">Critical Outage Reduction</h3>
     <ul>
       <li>Outage Minutes Trend (Internal Services, 2023)</li>
+      <li>Critical Outage Reduction (46% QoQ)</li>
+      <li>Business Workflow Impact Report</li>
+    </ul>
+
+    <h3 id="ignitis-downtime">Unplanned Downtime Control</h3>
+    <ul>
       <li>Release Train Stability Log (Train A + Train B)</li>
+      <li>Unplanned Downtime Report (0 minutes)</li>
+      <li>Change Window Business Continuity Notes</li>
+    </ul>
+
+    <h3 id="ignitis-effort">Engineering Effort Reduction</h3>
+    <ul>
       <li>Engineering Effort Benchmark (Q2-Q4 2023)</li>
+      <li>Implementation Effort Reduction (23% over two quarters)</li>
+      <li>Capacity Allocation Without Headcount Increase</li>
     </ul>
   </section>
 
   <section class="card" id="super-how" aria-labelledby="super-how-heading">
     <h2 id="super-how-heading">Super How</h2>
+
+    <h3 id="super-how-predictability">Sprint Predictability</h3>
     <ul>
       <li>Sprint Commitment Accuracy Board (2022)</li>
+      <li>Sprint Predictability Baseline vs Current (62% -&gt; 84%)</li>
+      <li>Launch Planning Variance Log</li>
+    </ul>
+
+    <h3 id="super-how-go-live">Go-Live Acceleration</h3>
+    <ul>
       <li>Integration Go-Live Timeline Comparison</li>
+      <li>Go-Live Acceleration (4 weeks per integration cycle)</li>
+      <li>Account Activation Timing Report</li>
+    </ul>
+
+    <h3 id="super-how-scope">Scope Churn Reduction</h3>
+    <ul>
       <li>Scope Churn Report (Quarterly)</li>
+      <li>Scope Churn Reduction (28% QoQ)</li>
+      <li>Rework Hours and Sprint Commitment Tracker</li>
     </ul>
   </section>
 
   <section class="card" id="euromonitor" aria-labelledby="euromonitor-heading">
     <h2 id="euromonitor-heading">Euromonitor International</h2>
+
+    <h3 id="euromonitor-pipeline">Pipeline Reliability</h3>
     <ul>
       <li>Report Pipeline Failure Trends (2019-2020)</li>
+      <li>Report Failure Reduction (41% over two quarters)</li>
+      <li>Analyst Delay and Support Ticket Correlation</li>
+    </ul>
+
+    <h3 id="euromonitor-throughput">Release Throughput</h3>
+    <ul>
       <li>Release Throughput Dashboard (Team Metrics)</li>
+      <li>Throughput Uplift (22% per quarter)</li>
+      <li>Feature Output and Integration Boundary Notes</li>
+    </ul>
+
+    <h3 id="euromonitor-stability">System Stability</h3>
+    <ul>
       <li>Global Ticket Interruption Summary (YoY)</li>
+      <li>Uptime Report (&gt;99.9%)</li>
+      <li>Business Interruption Ticket Reduction (33% YoY)</li>
     </ul>
   </section>
 
   <section class="card" id="invenis" aria-labelledby="invenis-heading">
     <h2 id="invenis-heading">Invenis</h2>
+
+    <h3 id="invenis-milestones">Milestone Delivery</h3>
     <ul>
       <li>Contract Milestone Acceptance Records (2015)</li>
+      <li>Milestone Delivery Completion (100% on schedule)</li>
+      <li>Fixed-Scope Revenue Realization Notes</li>
+    </ul>
+
+    <h3 id="invenis-defects">Defect Backlog Reduction</h3>
+    <ul>
       <li>Post-Release Defect Backlog Trend</li>
+      <li>Defect Backlog Reduction (26% by release-cycle close)</li>
       <li>Client UAT Sign-Off Notes</li>
     </ul>
   </section>
