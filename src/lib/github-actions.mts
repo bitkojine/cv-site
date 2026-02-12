@@ -31,6 +31,7 @@ interface GetGithubDataOptions {
 export const getGithubData = async (
   options: GetGithubDataOptions
 ): Promise<{
+  workflowRuns: WorkflowRun[];
   latestWorkflowRuns: WorkflowRun[];
   latestCommits: GitHubCommit[];
 }> => {
@@ -50,12 +51,14 @@ export const getGithubData = async (
     },
   });
 
+  let workflowRuns: WorkflowRun[] = [];
   let latestWorkflowRuns: WorkflowRun[] = [];
   if (runsResponse.ok) {
     const data = await runsResponse.json();
     if (data && typeof data === 'object' && 'workflow_runs' in data) {
       const runs = (data as { workflow_runs?: WorkflowRun[] }).workflow_runs;
       if (Array.isArray(runs) && runs.length) {
+        workflowRuns = runs;
         const latestRuns = new Map<number, WorkflowRun>();
         for (const run of runs) {
           if (!latestRuns.has(run.workflow_id)) {
@@ -84,5 +87,5 @@ export const getGithubData = async (
     }
   }
 
-  return { latestWorkflowRuns, latestCommits };
+  return { workflowRuns, latestWorkflowRuns, latestCommits };
 };

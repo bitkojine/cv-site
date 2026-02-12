@@ -14,19 +14,17 @@ let badgeStatus = 'View Logs';
 let badgeState: 'running' | 'success' | 'failure' | 'unknown' = 'unknown';
 
 try {
-  const { latestWorkflowRuns } = await getGithubData({
+  const { workflowRuns } = await getGithubData({
     owner: githubOwner,
     repo: githubRepo,
     branch: 'main',
   });
 
-  const deployRuns = latestWorkflowRuns.filter(
+  const deployRuns = workflowRuns.filter(
     (run) => run.name === deployWorkflowName
   );
   const liveRun =
-    deployRuns.find(
-      (run) => run.status === 'completed' && run.conclusion === 'success'
-    ) ?? deployRuns.at(0);
+    deployRuns.find((run) => run.status === 'completed') ?? deployRuns.at(0);
 
   if (liveRun) {
     const resolved = resolveWorkflowBadge(liveRun.status, liveRun.conclusion);
@@ -44,6 +42,10 @@ try {
   target="_blank"
   rel="noopener noreferrer"
   class="footer-build-badge"
+  data-live-build-badge="1"
+  data-github-owner={githubOwner}
+  data-github-repo={githubRepo}
+  data-workflow-name={deployWorkflowName}
   data-status={badgeState}
   aria-label={`Live deploy status: ${badgeStatus}. Open workflow logs in GitHub.`}
 >
@@ -53,3 +55,106 @@ try {
   <span class="footer-build-badge__label">{badgeLabel}</span>
   <span class="footer-build-badge__status">{badgeStatus}</span>
 </a>
+
+<script>
+  (() => {
+    const POLL_MS = 15000;
+    const INTERVAL_KEY = '__cvLiveBuildBadgePoll';
+
+    const resolveWorkflowBadge = (status, conclusion) => {
+      if (status === 'in_progress' || status === 'queued') {
+        return { state: 'running', label: 'Running' };
+      }
+
+      if (status === 'completed' && conclusion === 'success') {
+        return { state: 'success', label: 'Success' };
+      }
+
+      if (status === 'completed' && conclusion === 'failure') {
+        return { state: 'failure', label: 'Failure' };
+      }
+
+      return { state: 'unknown', label: 'Unknown' };
+    };
+
+    const pickLiveRun = (runs, workflowName) => {
+      if (!Array.isArray(runs) || !runs.length) return null;
+      const deployRuns = runs.filter((run) => run?.name === workflowName);
+      if (!deployRuns.length) return null;
+
+      return (
+        deployRuns.find(
+          (run) => run?.status === 'in_progress' || run?.status === 'queued'
+        ) ??
+        deployRuns.find((run) => run?.status === 'completed') ??
+        deployRuns[0]
+      );
+    };
+
+    const getBadge = () =>
+      document.querySelector('[data-live-build-badge="1"]');
+
+    const syncLiveStatus = async () => {
+      const badge = getBadge();
+      if (!badge) return;
+
+      const owner = badge.getAttribute('data-github-owner');
+      const repo = badge.getAttribute('data-github-repo');
+      const workflowName = badge.getAttribute('data-workflow-name');
+      const statusNode = badge.querySelector('.footer-build-badge__status');
+
+      if (!owner || !repo || !workflowName || !statusNode) return;
+
+      const url = new URL(
+        `https://api.github.com/repos/${owner}/${repo}/actions/runs`
+      );
+      url.searchParams.set('branch', 'main');
+      url.searchParams.set('per_page', '30');
+
+      try {
+        const response = await fetch(url.toString(), {
+          headers: { Accept: 'application/vnd.github+json' },
+          cache: 'no-store',
+        });
+        if (!response.ok) return;
+
+        const data = await response.json();
+        const liveRun = pickLiveRun(data?.workflow_runs, workflowName);
+        if (!liveRun) return;
+
+        const resolved = resolveWorkflowBadge(
+          liveRun.status,
+          liveRun.conclusion
+        );
+        badge.setAttribute('data-status', resolved.state);
+        badge.setAttribute(
+          'aria-label',
+          `Live deploy status: ${resolved.label}. Open workflow logs in GitHub.`
+        );
+        if (liveRun.html_url) {
+          badge.setAttribute('href', liveRun.html_url);
+        }
+        statusNode.textContent = resolved.label;
+      } catch {
+        // Keep server-rendered fallback when live refresh fails.
+      }
+    };
+
+    const init = () => {
+      void syncLiveStatus();
+
+      if (!window[INTERVAL_KEY]) {
+        window[INTERVAL_KEY] = window.setInterval(() => {
+          void syncLiveStatus();
+        }, POLL_MS);
+      }
+    };
+
+    document.addEventListener('astro:page-load', init);
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init, { once: true });
+    } else {
+      init();
+    }
+  })();
+</script>
