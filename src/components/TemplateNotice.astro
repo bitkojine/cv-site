@@ -5,7 +5,7 @@ interface Props {
   open?: boolean;
 }
 
-const { id, title = 'Template Notice', open = true } = Astro.props;
+const { id, title = 'Template Notice', open = false } = Astro.props;
 ---
 
 <section class="card template-notice" aria-labelledby={id}>
