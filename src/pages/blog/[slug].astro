@@ -43,4 +43,130 @@ const { Content } = await post.render();
       <Content />
     </div>
   </article>
+
+  <section class="card brutal-ai-score" aria-labelledby="blog-post-ai-score">
+    <details class="brutal-ai-details">
+      <summary>
+        <span id="blog-post-ai-score" class="brutal-ai-title"
+          >Brutal AI Score</span
+        >
+        <strong>Overall (5.4 / 10)</strong>
+      </summary>
+      <div>
+        <h2>Score Breakdown</h2>
+        <ul>
+          <li>Point of view and originality: <strong>6.2 / 10</strong></li>
+          <li>Evidence quality and citations: <strong>4.8 / 10</strong></li>
+          <li>
+            Actionability for a hiring audience: <strong>5.3 / 10</strong>
+          </li>
+        </ul>
+        <h3>Top 3 Gaps</h3>
+        <ul>
+          <li>Not every claim includes baseline, delta, and timeframe.</li>
+          <li>
+            Business outcomes are occasionally implied instead of explicit.
+          </li>
+          <li>
+            Linkage to the Evidence Registry is not complete across all posts.
+          </li>
+        </ul>
+        <h3>Can This Hold Water?</h3>
+        <p>
+          Strong enough for directional evaluation, but still needs tighter
+          attribution and evidence linkage for hiring decisions.
+        </p>
+      </div>
+    </details>
+  </section>
 </BaseLayout>
+
+<style>
+  .brutal-ai-score {
+    margin-top: var(--space-lg);
+    border: 1px solid
+      color-mix(in oklab, var(--color-border) 80%, var(--color-danger) 20%);
+    background:
+      linear-gradient(
+        135deg,
+        color-mix(in oklab, var(--color-danger-soft) 35%, transparent) 0%,
+        color-mix(in oklab, var(--color-bg-elevated) 95%, transparent) 65%
+      ),
+      var(--color-bg-elevated);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .brutal-ai-score::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 2px;
+    background: linear-gradient(
+      90deg,
+      var(--color-danger),
+      color-mix(in oklab, var(--color-danger) 70%, #fff 30%)
+    );
+    opacity: 0.9;
+    pointer-events: none;
+  }
+
+  .brutal-ai-score h2,
+  .brutal-ai-score h3 {
+    margin: 0 0 var(--space-sm);
+    font-size: var(--font-size-body);
+    font-weight: 700;
+    color: color-mix(in oklab, var(--color-text) 88%, var(--color-danger) 12%);
+  }
+
+  .brutal-ai-score strong {
+    color: color-mix(in oklab, var(--color-danger) 85%, var(--color-text) 15%);
+  }
+
+  .brutal-ai-details {
+    width: 100%;
+  }
+
+  .brutal-ai-details summary {
+    list-style: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.4rem 0.75rem;
+    line-height: 1.35;
+  }
+
+  .brutal-ai-details summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .brutal-ai-details summary::before {
+    content: '▾';
+    color: color-mix(in oklab, var(--color-danger) 78%, var(--color-text) 22%);
+    font-size: 0.95rem;
+    line-height: 1;
+    transition: transform 150ms ease;
+    transform: rotate(0deg);
+    transform-origin: 50% 50%;
+    margin-right: 0.1rem;
+  }
+
+  .brutal-ai-details:not([open]) summary::before {
+    transform: rotate(-90deg);
+  }
+
+  .brutal-ai-details summary strong {
+    margin-left: auto;
+  }
+
+  .brutal-ai-details > *:not(summary):first-of-type {
+    margin-top: var(--space-sm);
+  }
+
+  @media (max-width: 560px) {
+    .brutal-ai-details summary strong {
+      margin-left: 0;
+    }
+  }
+</style>
