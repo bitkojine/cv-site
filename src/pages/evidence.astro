@@ -1,5 +1,6 @@
 ---
 import SiteLayout from '../layouts/SiteLayout.astro';
+import TemplateNotice from '../components/TemplateNotice.astro';
 
 const schemaExtras = {
   about:
@@ -14,7 +15,23 @@ const schemaExtras = {
   schemaType="CollectionPage"
   schemaExtras={schemaExtras}
 >
-  <section class="card" aria-labelledby="evidence-heading">
+  <TemplateNotice id="evidence-template-heading">
+    <p>
+      This Evidence Registry is currently populated with illustrative example
+      figures while the website system is being built out.
+    </p>
+    <p>
+      With real data, this page keeps the same structure: each highlighted claim
+      on the CV/Resume maps to a specific evidence record with clear baseline,
+      result, timeframe, and operating context.
+    </p>
+    <p>
+      Goal: make every material metric traceable so recruiters and hiring
+      managers can validate claims quickly.
+    </p>
+  </TemplateNotice>
+
+  <section class="card evidence-intro" aria-labelledby="evidence-heading">
     <h1 id="evidence-heading">Evidence Registry</h1>
     <p>
       Central source for demo references used in the hiring CV/resume page.
@@ -185,4 +202,11 @@ const schemaExtras = {
       <li>Client UAT Sign-Off Notes</li>
     </ul>
   </section>
+
+  <style>
+    .evidence-intro h1 {
+      margin: 0;
+      font-size: 1.1rem;
+    }
+  </style>
 </SiteLayout>

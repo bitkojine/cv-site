@@ -1,0 +1,95 @@
+---
+interface Props {
+  id: string;
+  title?: string;
+  open?: boolean;
+}
+
+const { id, title = 'Template Notice', open = true } = Astro.props;
+---
+
+<section class="card template-notice" aria-labelledby={id}>
+  <details class="template-notice-details" open={open}>
+    <summary>
+      <h2 id={id}>{title}</h2>
+    </summary>
+    <slot />
+  </details>
+</section>
+
+<style>
+  .template-notice {
+    position: relative;
+    overflow: clip;
+    border: 1px solid #d9c5ff;
+    background:
+      radial-gradient(circle at 100% 0%, #f1e7ff 0%, transparent 42%),
+      linear-gradient(
+        168deg,
+        color-mix(in oklab, var(--surface) 92%, #f4ecff),
+        var(--surface) 60%
+      );
+  }
+
+  .template-notice::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, #a78bfa, #8b5cf6 38%, #7c3aed 78%);
+    opacity: 0.85;
+  }
+
+  .template-notice h2 {
+    color: #5b21b6;
+  }
+
+  .template-notice-details {
+    margin: 0;
+  }
+
+  .template-notice-details summary {
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 44px;
+  }
+
+  .template-notice-details summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .template-notice-details summary::before {
+    content: '▾';
+    color: #6d28d9;
+    font-weight: 700;
+    font-size: 0.95rem;
+    line-height: 1;
+    transform-origin: center;
+    transition: transform 0.14s ease;
+  }
+
+  .template-notice-details:not([open]) summary::before {
+    transform: rotate(-90deg);
+  }
+
+  .template-notice-details p:first-of-type {
+    margin-top: 0.5rem;
+  }
+
+  .template-notice .cta-secondary {
+    width: 100%;
+    justify-content: center;
+    min-height: 44px;
+  }
+
+  @media (min-width: 720px) {
+    .template-notice .cta-secondary {
+      width: auto;
+    }
+  }
+</style>
