@@ -1,6 +1,7 @@
 ---
 import SiteLayout from '../layouts/SiteLayout.astro';
 import TemplateNotice from '../components/TemplateNotice.astro';
+import { FolderSearch } from '@lucide/astro';
 
 const schemaExtras = {
   about:
@@ -31,14 +32,19 @@ const schemaExtras = {
     </p>
   </TemplateNotice>
 
-  <section class="card evidence-intro" aria-labelledby="evidence-heading">
-    <h1 id="evidence-heading">Evidence Registry</h1>
-    <p>
-      Central source for demo references used in the hiring CV/resume page.
-      Every highlighted material result links to a matching section below.
-    </p>
-    <p>
+  <section class="mode-hero" aria-labelledby="evidence-heading">
+    <div class="headline-row">
+      <span class="headline-icon" aria-hidden="true"
+        ><FolderSearch size={86} /></span
+      >
+      <h1 id="evidence-heading">Evidence Registry</h1>
+    </div>
+    <div class="cta-row">
       <a class="cta-primary" href="/hiring">Back to Candidate CV/Resume</a>
+    </div>
+    <p class="cta-note">
+      Central source for demo references used in the hiring CV/resume page.
+      Every highlighted material result maps to a matching section below.
     </p>
   </section>
 
@@ -240,11 +246,6 @@ const schemaExtras = {
   </section>
 
   <style>
-    .evidence-intro h1 {
-      margin: 0;
-      font-size: 1.1rem;
-    }
-
     .card[id],
     h3[id] {
       scroll-margin-top: 0.9rem;

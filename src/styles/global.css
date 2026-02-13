@@ -423,6 +423,10 @@ body[data-current-role]:not([data-current-role='']) .site-shell {
   margin-top: 0.9rem;
 }
 
+.template-notice + .mode-hero {
+  margin-top: 0.9rem;
+}
+
 .mode-hero {
   --hero-icon-size: clamp(4.6rem, 22vw, 5.8rem);
   --hero-icon-gap: 0.95rem;
