@@ -301,32 +301,38 @@ const visionSignals = [
 </section>
 
 <section class="card brutal-ai-score" aria-labelledby="vision-ai-score">
-  <h2 id="vision-ai-score">Brutal AI Score</h2>
-  <p><strong>Overall (5.2 / 10)</strong></p>
-  <ul>
-    <li>Business model coherence: 6.3/10</li>
-    <li>Capital logic: 5.7/10</li>
-    <li>Falsifiable milestones: 6.1/10</li>
-    <li>Traction evidence: 4.0/10</li>
-    <li>Defensibility: 4.8/10</li>
-    <li>Funding readiness: 4.9/10</li>
-  </ul>
-  <h3>Top 3 gaps</h3>
-  <ul>
-    <li>No published paid-pilot outcomes or cohort trend data.</li>
-    <li>
-      Revenue and margin baselines are undisclosed, blocking efficiency checks.
-    </li>
-    <li>
-      Defensibility is future-oriented and not yet evidenced as a current moat.
-    </li>
-  </ul>
-  <h3>Can this hold water?</h3>
-  <p>
-    This holds for early thesis review and milestone-pressure testing, not for a
-    low-risk funding decision. A rational investor should require published
-    traction and repeat economics before committing capital.
-  </p>
+  <details class="brutal-ai-details">
+    <summary>
+      <span id="vision-ai-score" class="brutal-ai-title">Brutal AI Score</span>
+      <strong>Overall (5.2 / 10)</strong>
+    </summary>
+    <ul>
+      <li>Business model coherence: 6.3/10</li>
+      <li>Capital logic: 5.7/10</li>
+      <li>Falsifiable milestones: 6.1/10</li>
+      <li>Traction evidence: 4.0/10</li>
+      <li>Defensibility: 4.8/10</li>
+      <li>Funding readiness: 4.9/10</li>
+    </ul>
+    <h3>Top 3 gaps</h3>
+    <ul>
+      <li>No published paid-pilot outcomes or cohort trend data.</li>
+      <li>
+        Revenue and margin baselines are undisclosed, blocking efficiency
+        checks.
+      </li>
+      <li>
+        Defensibility is future-oriented and not yet evidenced as a current
+        moat.
+      </li>
+    </ul>
+    <h3>Can this hold water?</h3>
+    <p>
+      This holds for early thesis review and milestone-pressure testing, not for
+      a low-risk funding decision. A rational investor should require published
+      traction and repeat economics before committing capital.
+    </p>
+  </details>
 </section>
 
 <style>
@@ -359,7 +365,55 @@ const visionSignals = [
     color: #9f1239;
   }
 
+  .brutal-ai-title {
+    color: #9f1239;
+    font-size: 1.1rem;
+    font-weight: 700;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
   .brutal-ai-score strong {
     color: #be123c;
+  }
+
+  .brutal-ai-details {
+    margin: 0;
+  }
+
+  .brutal-ai-details summary {
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    min-height: 44px;
+  }
+
+  .brutal-ai-details summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .brutal-ai-details summary::before {
+    content: '▾';
+    color: #6d28d9;
+    font-weight: 700;
+    font-size: 0.95rem;
+    line-height: 1;
+    transition: transform 0.14s ease;
+  }
+
+  .brutal-ai-details:not([open]) summary::before {
+    transform: rotate(-90deg);
+  }
+
+  .brutal-ai-details summary strong {
+    margin-left: auto;
+    white-space: nowrap;
+    font-size: 0.95rem;
+  }
+
+  .brutal-ai-details > *:not(summary):first-of-type {
+    margin-top: 0.45rem;
   }
 </style>

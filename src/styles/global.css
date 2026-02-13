@@ -63,7 +63,87 @@ body {
 .site-shell {
   width: min(960px, 100% - 2rem);
   margin: 0 auto;
-  padding: 2rem 0 4rem;
+  padding: 0.95rem 0 4rem;
+}
+
+.top-ad-shell {
+  width: min(960px, 100% - 2rem);
+  margin: 0.75rem auto 0;
+}
+
+.top-ad {
+  border: 1px solid #c6d5ec;
+  border-radius: 10px;
+  background: linear-gradient(
+    165deg,
+    color-mix(in oklab, var(--surface) 90%, #edf4ff),
+    var(--surface) 60%
+  );
+  padding: 0.6rem 0.7rem 0.68rem;
+  display: grid;
+  gap: 0.62rem;
+}
+
+.top-ad-main,
+.top-ad-pitch {
+  min-width: 0;
+}
+
+.top-ad-label {
+  margin: 0;
+  font-size: 0.72rem;
+  color: var(--muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.top-ad-title {
+  margin: 0.12rem 0 0;
+  font-size: 0.98rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.42rem;
+}
+
+.top-ad-logo {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+  display: inline-block;
+}
+
+.top-ad-copy {
+  margin: 0.3rem 0 0;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.top-ad-link {
+  display: inline;
+  font-size: 0.84rem;
+  color: var(--accent);
+  text-decoration: underline;
+  overflow-wrap: anywhere;
+}
+
+.top-ad-pitch {
+  border-top: 1px dashed #b6c8e6;
+  padding-top: 0.58rem;
+}
+
+.top-ad-pitch-title {
+  margin: 0;
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: color-mix(in oklab, var(--text) 86%, #1d4db5);
+}
+
+.top-ad-pitch-copy {
+  margin: 0.25rem 0 0;
+  font-size: 0.84rem;
+  color: var(--muted);
+  line-height: 1.45;
 }
 
 body[data-current-role]:not([data-current-role='']) .site-shell {
@@ -79,7 +159,7 @@ body[data-current-role]:not([data-current-role='']) .site-shell {
 }
 
 .door-screen {
-  padding-top: 6vh;
+  padding-top: clamp(0.4rem, 2.2vh, 1rem);
 }
 
 .door-screen h1 {
@@ -601,6 +681,27 @@ button:focus-visible {
 }
 
 @media (min-width: 720px) {
+  .top-ad-shell {
+    margin-top: 1rem;
+  }
+
+  .top-ad {
+    padding: 0.68rem 0.82rem 0.74rem;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 0.85rem;
+    align-items: stretch;
+  }
+
+  .top-ad-pitch {
+    border-top: 0;
+    border-left: 1px dashed #b6c8e6;
+    padding-top: 0;
+    padding-left: 0.82rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
   body[data-current-role]:not([data-current-role='']) .site-shell {
     padding-bottom: 4rem;
   }

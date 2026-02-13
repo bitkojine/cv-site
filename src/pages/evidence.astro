@@ -208,5 +208,46 @@ const schemaExtras = {
       margin: 0;
       font-size: 1.1rem;
     }
+
+    .card[id],
+    h3[id] {
+      scroll-margin-top: 0.9rem;
+    }
+
+    .card[id]:target {
+      position: relative;
+      border-color: #7ca9f4;
+      background:
+        radial-gradient(circle at 100% 0%, #eef5ff 0%, transparent 42%),
+        linear-gradient(
+          165deg,
+          color-mix(in oklab, var(--surface) 90%, #e8f2ff),
+          var(--surface) 62%
+        );
+      outline: 3px solid color-mix(in oklab, #9fc4ff 34%, transparent);
+    }
+
+    h3[id]:target {
+      display: inline-block;
+      margin-top: 0.25rem;
+      padding: 0.12rem 0.48rem 0.18rem;
+      border-radius: 0.45rem;
+      background: color-mix(in oklab, #c9e2ff 70%, #edf5ff);
+      border: 1px solid color-mix(in oklab, #90b9ff 38%, transparent);
+      color: color-mix(in oklab, var(--text) 88%, #174ea0);
+      outline: 2px solid color-mix(in oklab, #9fc4ff 30%, transparent);
+    }
+
+    h3[id]:target + ul {
+      margin-top: 0.45rem;
+      padding: 0.62rem 0.78rem 0.7rem 1.2rem;
+      border-radius: 0.55rem;
+      background: linear-gradient(
+        180deg,
+        color-mix(in oklab, var(--surface) 89%, #edf5ff),
+        color-mix(in oklab, var(--surface) 94%, #f5f9ff)
+      );
+      border: 1px solid color-mix(in oklab, var(--line) 72%, #9ebef3);
+    }
   </style>
 </SiteLayout>

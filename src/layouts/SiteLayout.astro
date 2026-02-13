@@ -83,6 +83,37 @@ const structuredData = {
   <body data-current-role={roleLabel ?? ''}>
     <ClientRouter />
     <a class="skip-link" href="#main-content">Skip to content</a>
+    <aside class="top-ad-shell" aria-label="Sponsored referral">
+      <div class="top-ad" data-ad-slot="revolut-referral">
+        <div class="top-ad-main">
+          <p class="top-ad-label">advertisement</p>
+          <p class="top-ad-title">
+            <img src="/revolut-logo.svg" alt="" class="top-ad-logo" />
+            <span>Revolut</span>
+          </p>
+          <p class="top-ad-copy">
+            Join me and over 70 million users who love Revolut. Sign up with my
+            link below:
+            <a
+              class="top-ad-link"
+              href="https://revolut.com/referral/?referral-code=robertbrt!FEB1-26-AR-H3-RNDM&geo-redirect"
+              target="_blank"
+              rel="noopener noreferrer sponsored"
+            >
+              https://revolut.com/referral/?referral-code=robertbrt!FEB1-26-AR-H3-RNDM&geo-redirect
+            </a>
+          </p>
+        </div>
+        <div class="top-ad-pitch">
+          <p class="top-ad-pitch-title">Why it works for devs</p>
+          <p class="top-ad-pitch-copy">
+            Great fit if you contract, work full-time, or are preparing for
+            investment: multi-currency handling, clean spend control, and fast
+            global transfers in one workflow.
+          </p>
+        </div>
+      </div>
+    </aside>
     <main id="main-content" class="site-shell">
       <slot />
       <footer class="site-footer">
