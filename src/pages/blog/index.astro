@@ -53,6 +53,7 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
         <span id="blog-index-ai-score" class="brutal-ai-title"
           >Brutal AI Score</span
         >
+        <span class="brutal-ai-meta">Automated strict page audit</span>
         <strong>Overall (5.2 / 10)</strong>
       </summary>
       <div>
@@ -130,10 +131,11 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
     list-style: none;
     cursor: pointer;
     display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 0.4rem 0.75rem;
+    align-items: baseline;
+    flex-wrap: nowrap;
+    gap: 0.5rem;
     line-height: 1.35;
+    padding: 0.12rem 0;
   }
 
   .brutal-ai-details summary::-webkit-details-marker {

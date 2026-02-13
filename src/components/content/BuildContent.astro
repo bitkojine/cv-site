@@ -228,6 +228,7 @@ const buildCaseStudies = [
   <details class="brutal-ai-details">
     <summary>
       <span id="build-ai-score" class="brutal-ai-title">Brutal AI Score</span>
+      <span class="brutal-ai-meta">Automated strict page audit</span>
       <strong>Overall (6.0 / 10)</strong>
     </summary>
     <ul>
@@ -294,8 +295,6 @@ const buildCaseStudies = [
     color: #9f1239;
     font-size: 1.1rem;
     font-weight: 700;
-    flex: 1 1 auto;
-    min-width: 0;
   }
 
   .brutal-ai-score strong {
@@ -310,9 +309,10 @@ const buildCaseStudies = [
     cursor: pointer;
     list-style: none;
     display: flex;
-    align-items: center;
-    gap: 0.7rem;
+    align-items: baseline;
+    gap: 0.5rem;
     min-height: 44px;
+    padding: 0.12rem 0;
   }
 
   .brutal-ai-details summary::-webkit-details-marker {

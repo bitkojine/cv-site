@@ -519,6 +519,40 @@ body[data-current-role]:not([data-current-role='']) .site-shell {
   width: 100%;
 }
 
+.brutal-ai-meta {
+  font-size: 0.82rem;
+  color: var(--muted);
+  display: inline-flex;
+  align-items: center;
+  align-self: baseline;
+  line-height: 1.1;
+  margin-left: 0.2rem;
+}
+
+.brutal-ai-details summary .brutal-ai-title,
+.brutal-ai-meta,
+.brutal-ai-details summary strong {
+  line-height: 1.1;
+}
+
+.brutal-ai-details summary .brutal-ai-title {
+  order: 0;
+}
+
+.brutal-ai-details summary strong {
+  order: 1;
+}
+
+@media (max-width: 560px) {
+  .brutal-ai-details summary {
+    flex-wrap: wrap;
+  }
+
+  .brutal-ai-details summary strong {
+    margin-left: 0;
+  }
+}
+
 .cta-primary,
 .cta-secondary {
   display: inline-flex;
