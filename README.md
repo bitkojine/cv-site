@@ -93,10 +93,44 @@ Open `http://localhost:4321`.
 - `npm run build`: production build to `dist/`
 - `npm run preview`: preview built site
 - `npm run lint`: ESLint
+- `npm run lint:comments`: Zero Comment Policy audit
 - `npm run format`: Prettier write
 - `npm run test`: unit tests alias
 - `npm run test:unit`: Vitest
-- `npm run test:e2e`: Playwright (build + preview server via Playwright config)
+- `npm run test:e2e`: Playwright (CI suite)
+
+## Zero Comment Policy
+
+This repository enforces a strict **Zero Comment Policy** for all production source files under `src/`.
+
+### How it Works
+
+- **Pre-commit Hook**: Every commit is automatically scanned (via Husky/Git Hooks). If any disallowed comments are found in `src/`, the commit is blocked (exit code 1).
+- **Scanner**: A substring-based detection script looks for `//` and `/*` tokens. It is intentionally simple and avoids complex parsing.
+- **Fail-Safe**: If the check cannot run reliably (e.g., Git errors), it fails closed and blocks the commit (exit code 2).
+
+### Whitelist
+
+The following patterns are permitted:
+
+- `http://` and `https://`
+- `/// <reference ...` (TypeScript reference tags)
+
+### Violation Workflow
+
+If a violation is detected:
+
+1. **Move Documentation**: Transfer all reasoning, explanations, or context to `docs/ai-reasoning/inline-comment-attempts.md`.
+2. **Cleanup**: Remove the comments from the source code.
+3. **Retry**: Stage the changes and retry the commit.
+
+### manual Audit
+
+To check the entire codebase for comments:
+
+```bash
+npm run lint:comments
+```
 
 ## Role-System Guardrails (Current UX)
 
