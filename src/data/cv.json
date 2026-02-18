@@ -109,6 +109,19 @@
   ],
   "independentProjects": [
     {
+      "title": "Author / Lead Engineer",
+      "company": "Causaloop (Open Source Framework)",
+      "location": "Remote",
+      "startDate": "2025",
+      "endDate": "Present",
+      "description": [
+        "Architected a deterministic effect management system for high-integrity applications",
+        "Implemented 'Radical Determinism' patterns to eliminate race conditions and side-effect bugs",
+        "Built a comprehensive suite of developer tools including a time-travel debugger",
+        "maintained 100% test coverage and zero-comment policy in core libraries"
+      ]
+    },
+    {
       "title": "Founder / Product & Engineering",
       "company": "Early-Stage Startup (Self-Initiated)",
       "location": "Lithuania",
