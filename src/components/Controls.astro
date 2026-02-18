@@ -70,7 +70,6 @@ const isCvPage = Astro.url.pathname === '/' || Astro.url.pathname === '';
   }
 
   function downloadPDF() {
-    // Professional notice before printing
     console.log('Preparing PDF export...');
     window.print();
   }
@@ -79,7 +78,6 @@ const isCvPage = Astro.url.pathname === '/' || Astro.url.pathname === '';
     document.body.classList.toggle('debug-grid');
   }
 
-  // Initialization logic
   document.addEventListener('DOMContentLoaded', () => {
     const isCvPage =
       window.location.pathname === '/' || window.location.pathname === '';

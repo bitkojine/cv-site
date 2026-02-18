@@ -12,6 +12,7 @@
     "test:e2e": "env -u NO_COLOR playwright test",
     "test": "npm run test:unit",
     "lint": "eslint .",
+    "lint:comments": "./scripts/zero-comment-policy.sh --all",
     "format": "prettier --write .",
     "prepare": "husky"
   },

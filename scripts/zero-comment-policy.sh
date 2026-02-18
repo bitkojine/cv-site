@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# ZERO COMMENT POLICY – PRE-COMMIT HOOK
-# Purpose: Block commits that introduce code comments into production source files.
+# ZERO COMMENT POLICY
+# Purpose: Block commits or lint codebase to ensure no comments in production source files.
 
 # Exit codes:
 # 0: No violations.
@@ -11,9 +11,8 @@
 # Error handler for internal errors
 handle_internal_error() {
   echo "" >&2
-  echo "ERROR: The zero-comment-policy hook failed to execute properly." >&2
+  echo "ERROR: The zero-comment-policy script failed to execute properly." >&2
   echo "This may be due to a Git command failure or missing tooling." >&2
-  echo "The commit has been blocked to ensure policy compliance." >&2
   exit 2
 }
 
@@ -21,46 +20,49 @@ handle_internal_error() {
 set -e
 trap handle_internal_error ERR
 
-# 1. Identify staged files (Added, Copied, Modified)
-# Only scan files under src/
-STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep '^src/' || true)
+CHECK_ALL=false
+if [ "$1" == "--all" ]; then
+  CHECK_ALL=true
+fi
 
-if [ -z "$STAGED_FILES" ]; then
+# 1. Identify files to scan
+if [ "$CHECK_ALL" = true ]; then
+  # Scan all files under src/ (working tree), ignoring md files
+  FILES=$(find src -type f | grep -vE 'src/(generated|vendor|dist|build)/|\.md$' || true)
+else
+  # Scan staged files only (Git index), ignoring md files
+  FILES=$(git diff --cached --name-only --diff-filter=ACM | grep '^src/' | grep -vE 'src/(generated|vendor|dist|build)/|\.md$' || true)
+fi
+
+if [ -z "$FILES" ]; then
   exit 0
 fi
 
 VIOLATIONS=""
 HAS_VIOLATIONS=false
 
-for FILE in $STAGED_FILES; do
-  # Ignore generated, vendor, dist, and build directories under src/
-  case "$FILE" in
-    src/generated/*|src/vendor/*|src/dist/*|src/build/*)
-      continue
-      ;;
-  esac
-
-  # Check if file exists in the index (it should, but just in case)
-  if ! git ls-files --error-unmatch "$FILE" >/dev/null 2>&1; then
-    continue
-  fi
-
-  # Check if it's a text file
-  # git show :FILE outputs the content from the index
-  # grep -I returns 1 if binary content is detected
-  if ! git show ":$FILE" | grep -qI . ; then
-    continue
+for FILE in $FILES; do
+  # Skip if file doesn't exist (e.g. deleted in working tree but still in list)
+  if [ "$CHECK_ALL" = true ]; then
+    if [ ! -f "$FILE" ]; then continue; fi
+    # Check if text file
+    if ! grep -qI . "$FILE"; then continue; fi
+    CONTENT_CMD="cat $FILE"
+  else
+    # Check if exists in index
+    if ! git ls-files --error-unmatch "$FILE" >/dev/null 2>&1; then continue; fi
+    # Check if text file in index
+    if ! git show ":$FILE" | grep -qI . ; then continue; fi
+    CONTENT_CMD="git show :$FILE"
   fi
 
   # Matching logic
-  # We use a temporary file to collect violations for this file
-  FILE_VIOLATIONS=$(git show ":$FILE" | awk -v path="$FILE" '
+  FILE_VIOLATIONS=$($CONTENT_CMD | awk -v path="$FILE" '
     {
       line = $0
       sanitized = line
       
       # Whitelist: http://, https://, /// <reference
-      # We remove them to see if any other // or /* remain
       gsub(/https?:\/\//, "", sanitized)
       gsub(/\/\/\/ <reference/, "", sanitized)
 
@@ -92,7 +94,9 @@ if [ "$HAS_VIOLATIONS" = true ]; then
   echo "  1. Move all reasoning/documentation to:"
   echo "     docs/ai-reasoning/inline-comment-attempts.md"
   echo "  2. Remove all comments from the source files."
-  echo "  3. Stage changes and retry the commit."
+  if [ "$CHECK_ALL" = false ]; then
+    echo "  3. Stage changes and retry the commit."
+  fi
   echo ""
   echo "################################################################################"
   
