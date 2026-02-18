@@ -1,0 +1,8 @@
+#!/bin/sh
+
+echo "Running pre-push checks..."
+
+echo "1. Dead Branch Protection..."
+./scripts/check-dead-branch.sh || exit 1
+
+echo "All push checks passed!"
