@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro build",
+    "build": "npm run fetch-activity && astro build",
+    "fetch-activity": "tsx src/scripts/fetch-github-activity.mts",
     "preview": "astro preview",
     "astro": "astro",
     "test:unit": "vitest run",
@@ -33,6 +34,7 @@
     "husky": "^9.1.7",
     "prettier": "^3.8.1",
     "prettier-plugin-astro": "^0.14.1",
+    "tsx": "^4.21.0",
     "typescript-eslint": "^8.54.0",
     "vitest": "^4.0.18"
   }
