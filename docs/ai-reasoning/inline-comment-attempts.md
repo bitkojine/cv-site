@@ -11,3 +11,6 @@ The following comments were attempted in the source code but removed to comply w
 
 - **src/scripts/fetch-github-activity.mts**: `// Ensure we don't break the build if the API is down, but we want to know it failed.`
   - Reasoning: Explaining the defensive check that ensures a valid (though empty) JSON array exists even if the API fetch fails during build.
+
+- **src/scripts/fetch-github-activity.mts**: `// Ignore metadata read errors`
+  - Reasoning: Preventing the script from crashing if the cache metadata file is corrupted or unreadable.
