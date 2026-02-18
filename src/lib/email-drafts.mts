@@ -152,6 +152,37 @@ export const emailDrafts = {
       ]),
     },
   },
+  dev: {
+    getUpdates: {
+      subject: 'Get Open Source Updates',
+      body: joinLines([
+        'Hi Robertas,',
+        '',
+        'I am following your open source work and would like to stay updated.',
+        '',
+        'Name / GitHub handle:',
+        'Projects I am most interested in (Causaloop, etc.):',
+        'Specific feedback or questions:',
+        '',
+        'Thanks for building in public.',
+      ]),
+    },
+    collaborate: {
+      subject: 'Collaborate on Open Source',
+      body: joinLines([
+        'Hi Robertas,',
+        '',
+        'I am interested in collaborating on one of your open source projects.',
+        '',
+        'Name / GitHub handle:',
+        'Project:',
+        'Area of interest (architecture, tests, tooling):',
+        'Context / background:',
+        '',
+        'Looking forward to your thoughts.',
+      ]),
+    },
+  },
 } as const;
 
 const websiteEmailBase = getBaseEmailAddress(cvData.personalInfo.contact.email);
@@ -177,6 +208,8 @@ export const contactEmailAliases = {
       websiteEmailBase,
       'www-vision-invest'
     ),
+    devGetUpdates: buildTaggedGmailAddress(websiteEmailBase, 'www-dev-updates'),
+    devCollaborate: buildTaggedGmailAddress(websiteEmailBase, 'www-dev-collab'),
   },
 } as const;
 
@@ -184,6 +217,7 @@ export const visitorModes = {
   hiring: 'Recruiter / Hiring Manager',
   build: 'Founder / Operator',
   vision: 'Investor / Advisor',
+  dev: 'Developer / Builder',
 } as const;
 
 export const roleEmailCtas = {
@@ -227,6 +261,20 @@ export const roleEmailCtas = {
       'secondary',
       emailDrafts.vision.requestInvestmentDetails,
       'www-vision-invest'
+    ),
+  ],
+  dev: [
+    createEmailCta(
+      'Get Updates',
+      'primary',
+      emailDrafts.dev.getUpdates,
+      'www-dev-updates'
+    ),
+    createEmailCta(
+      'Collaborate',
+      'secondary',
+      emailDrafts.dev.collaborate,
+      'www-dev-collab'
     ),
   ],
 } as const satisfies Record<string, readonly EmailCtaConfig[]>;

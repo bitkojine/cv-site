@@ -1,36 +1,60 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
+import SiteLayout from '../../layouts/SiteLayout.astro';
 import { getCollection } from 'astro:content';
+import { BookText, House } from '@lucide/astro';
 
 const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
 );
 ---
 
-<BaseLayout
-  title="Blog - Robertas Rudys"
+<SiteLayout
+  title="Blog | Robertas Rudys"
   description="Technical articles, opinions, and notes by Robertas Rudys."
+  canonicalPath="/blog"
 >
-  <h1>Blog</h1>
-
-  <nav class="site-nav" aria-label="Blog navigation">
-    <ul>
-      <li><a href="/">CV</a></li>
-    </ul>
+  <nav class="mode-indicator" aria-label="Blog navigation" data-role-indicator>
+    <a
+      href="/"
+      class="switch-button"
+      style="text-decoration: none; display: flex; align-items: center; gap: 0.5rem; color: var(--accent); font-weight: 500;"
+    >
+      <House size={18} />
+      <span>Back to Home</span>
+    </a>
   </nav>
+
+  <section class="mode-hero" aria-labelledby="blog-heading">
+    <div class="headline-row">
+      <span class="headline-icon" aria-hidden="true"
+        ><BookText size={86} /></span
+      >
+      <h1 id="blog-heading">Engineering notes and building in public.</h1>
+    </div>
+    <p class="cta-note">
+      Articles on software reliability, .NET architecture, and the intersection
+      of AI and development.
+    </p>
+  </section>
 
   {
     posts.length === 0 ? (
-      <p>No posts yet.</p>
+      <section class="card">
+        <p>No posts yet.</p>
+      </section>
     ) : (
-      <ul class="post-list">
-        {posts.map((post) => (
-          <li class="post-list-item">
-            <a class="post-link touch-link" href={`/blog/${post.slug}`}>
-              {post.data.title}
-            </a>
-            <br />
-            <small class="post-date">
+      posts.map((post) => (
+        <section class="card">
+          <article>
+            <h2 style="margin: 0; font-size: 1.25rem;">
+              <a
+                href={`/blog/${post.slug}`}
+                style="text-decoration: none; color: var(--accent);"
+              >
+                {post.data.title}
+              </a>
+            </h2>
+            <small style="display: block; margin-top: 0.4rem; color: var(--muted); font-size: 0.85rem;">
               <time datetime={post.data.date.toISOString()}>
                 {post.data.date.toLocaleDateString('lt-LT', {
                   year: 'numeric',
@@ -40,10 +64,12 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
                 })}
               </time>
             </small>
-            <p class="post-description">{post.data.description}</p>
-          </li>
-        ))}
-      </ul>
+            <p style="margin-top: 0.75rem; color: var(--text); font-size: 0.95rem;">
+              {post.data.description}
+            </p>
+          </article>
+        </section>
+      ))
     )
   }
-</BaseLayout>
+</SiteLayout>

@@ -1,6 +1,7 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
+import SiteLayout from '../../layouts/SiteLayout.astro';
 import { getCollection } from 'astro:content';
+import { ChevronLeft, BookOpen } from '@lucide/astro';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
@@ -14,21 +15,32 @@ const { post } = Astro.props;
 const { Content } = await post.render();
 ---
 
-<BaseLayout
-  title={`${post.data.title} - Robertas Rudys`}
+<SiteLayout
+  title={`${post.data.title} | Robertas Rudys`}
   description={post.data.description}
+  canonicalPath={`/blog/${post.slug}`}
+  ogType="website"
 >
-  <nav class="site-nav" aria-label="Post navigation">
-    <ul>
-      <li><a href="/blog">All posts</a></li>
-      <li><a href="/">CV</a></li>
-    </ul>
+  <nav class="mode-indicator" aria-label="Post navigation" data-role-indicator>
+    <a
+      href="/blog"
+      class="switch-button"
+      style="text-decoration: none; display: flex; align-items: center; gap: 0.5rem; color: var(--accent); font-weight: 500;"
+    >
+      <ChevronLeft size={18} />
+      <span>All Posts</span>
+    </a>
   </nav>
 
-  <article class="post-entry">
-    <h1>{post.data.title}</h1>
-    <p class="post-date">
-      <time datetime={post.data.date.toISOString()}>
+  <article class="card">
+    <div
+      style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem; color: var(--accent);"
+    >
+      <BookOpen size={24} />
+      <time
+        datetime={post.data.date.toISOString()}
+        style="font-size: 0.9rem; font-weight: 500; color: var(--muted);"
+      >
         {
           post.data.date.toLocaleDateString('lt-LT', {
             year: 'numeric',
@@ -38,9 +50,76 @@ const { Content } = await post.render();
           })
         }
       </time>
-    </p>
-    <div class="post-content">
+    </div>
+
+    <h1
+      style="margin: 0 0 1rem; font-size: clamp(1.8rem, 5vw, 2.75rem); line-height: 1.15; color: var(--text);"
+    >
+      {post.data.title}
+    </h1>
+
+    <div
+      class="prose"
+      style="margin-top: 2rem; color: var(--text); line-height: 1.7;"
+    >
       <Content />
     </div>
   </article>
-</BaseLayout>
+</SiteLayout>
+
+<style is:global>
+  .prose h2 {
+    font-size: 1.5rem;
+    margin: 2.5rem 0 1rem;
+    color: var(--text);
+  }
+  .prose h3 {
+    font-size: 1.25rem;
+    margin: 2rem 0 0.75rem;
+    color: var(--text);
+  }
+  .prose p {
+    margin-bottom: 1.25rem;
+  }
+  .prose ul,
+  .prose ol {
+    margin-bottom: 1.25rem;
+    padding-left: 1.5rem;
+  }
+  .prose li {
+    margin-bottom: 0.5rem;
+  }
+  .prose code {
+    background: var(--accent-soft);
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    font-size: 0.9em;
+    color: var(--accent);
+  }
+  .prose pre {
+    background: #1e293b;
+    color: #f8fafc;
+    padding: 1.25rem;
+    border-radius: 12px;
+    overflow-x: auto;
+    margin: 1.5rem 0;
+    font-size: 0.9rem;
+  }
+  .prose pre code {
+    background: transparent;
+    padding: 0;
+    color: inherit;
+  }
+  .prose a {
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .prose blockquote {
+    border-left: 4px solid var(--accent);
+    padding-left: 1rem;
+    margin: 1.5rem 0;
+    font-style: italic;
+    color: var(--muted);
+  }
+</style>

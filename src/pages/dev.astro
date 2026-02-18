@@ -1,0 +1,30 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import ModeSwitch from '../components/ModeSwitch.astro';
+import DevContent from '../components/content/DevContent.astro';
+
+const schemaExtras = {
+  about:
+    'Open source projects, architecture patterns, and technical methodology for developers and builders.',
+  mainEntity: {
+    '@type': 'CreativeWork',
+    name: 'Open Source and Engineering Methodology',
+    creator: {
+      '@type': 'Person',
+      name: 'Robertas Rudys',
+    },
+  },
+};
+---
+
+<SiteLayout
+  title="Robertas Rudys | Developer / Builder"
+  description="Open source projects, architecture patterns, and technical methodology."
+  canonicalPath="/dev"
+  roleLabel="Developer / Builder"
+  schemaType="CollectionPage"
+  schemaExtras={schemaExtras}
+>
+  <ModeSwitch currentRole="Developer / Builder" />
+  <DevContent />
+</SiteLayout>

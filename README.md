@@ -12,10 +12,11 @@ Personal Astro site centered on a role-based entry experience.
 
 ## Main Routes
 
-- `/`: role selection entry (`Recruiter / Hiring Manager`, `Founder / Operator`, `Investor / Advisor`)
+- `/`: role selection entry (`Recruiter / Hiring Manager`, `Founder / Operator`, `Investor / Advisor`, `Developer / Builder`)
 - `/hiring`: hiring-focused profile and CTA flow
 - `/build`: founder/operator execution offer page
 - `/vision`: investor/advisor strategy and milestone page
+- `/dev`: developer/builder open source and methodology page
 - `/blog`: blog index
 - `/blog/[slug]`: blog posts
 - `/linkedin`: LinkedIn copy-kit page
