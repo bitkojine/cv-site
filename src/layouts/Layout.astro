@@ -54,7 +54,6 @@ const jsonLd = {
       document.documentElement.classList.remove('dark-mode');
       document.documentElement.style.colorScheme = 'light';
 
-      // Standalone mode detection (iOS + PWA)
       const isStandalone =
         window.matchMedia('(display-mode: standalone)').matches ||
         window.navigator.standalone === true;

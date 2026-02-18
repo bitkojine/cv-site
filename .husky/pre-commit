@@ -3,6 +3,9 @@
 
 echo "Running pre-commit checks..."
 
+echo "0. Zero Comment Policy..."
+./scripts/zero-comment-policy.sh --all || exit $?
+
 echo "1. Linting..."
 npm run lint || exit 1
 

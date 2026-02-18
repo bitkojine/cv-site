@@ -33,7 +33,7 @@ try {
     badgeState = resolved.state;
   }
 } catch {
-  // Use fallback link if API fetch fails during build.
+  void 0;
 }
 ---
 
@@ -136,7 +136,7 @@ try {
         }
         statusNode.textContent = resolved.label;
       } catch {
-        // Keep server-rendered fallback when live refresh fails.
+        void 0;
       }
     };
 

@@ -154,7 +154,6 @@ export const emailDrafts = {
   },
 } as const;
 
-// Tracks which inbox alias is used for each website intent.
 const websiteEmailBase = getBaseEmailAddress(cvData.personalInfo.contact.email);
 
 export const contactEmailAliases = {
