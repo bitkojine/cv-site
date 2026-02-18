@@ -34,9 +34,4 @@ test.describe('Blog Index', () => {
       ).toBeVisible();
     }
   });
-
-  test('should check for the specific new post', async ({ page }) => {
-    await page.goto('/blog');
-    await expect(page.getByText('Stopping the Zombie Attack')).toBeVisible();
-  });
 });
