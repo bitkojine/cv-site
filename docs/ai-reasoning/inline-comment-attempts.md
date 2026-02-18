@@ -6,8 +6,11 @@
 
 The following comments were attempted in the source code but removed to comply with the Zero Comment Policy:
 
-- **src/components/content/DevContent.astro**: `// Run on page load and astro transitions`
-  - Reasoning: Ensuring the GitHub activity fetcher runs correctly during both initial page loads and Astro's client-side navigation (View Transitions).
+- **src/components/content/DevContent.astro**: `// Fetch from the static file generated at build time`
+  - Reasoning: Identifying that the fetch now targets a local pre-fetched JSON file instead of the GitHub API.
 
-- **src/pages/blog/[slug].astro**: `/* Basic prose styles to match the site aesthetic */`
-  - Reasoning: Identifying the purpose of the global styles used to format Markdown content rendered by Astro.
+- **src/scripts/fetch-github-activity.mts**: `// Ensure we don't break the build if the API is down, but we want to know it failed.`
+  - Reasoning: Explaining the defensive check that ensures a valid (though empty) JSON array exists even if the API fetch fails during build.
+
+- **src/scripts/fetch-github-activity.mts**: `// Ignore metadata read errors`
+  - Reasoning: Preventing the script from crashing if the cache metadata file is corrupted or unreadable.
