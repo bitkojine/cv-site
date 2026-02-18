@@ -1,40 +1,49 @@
 #!/bin/bash
 
-# Get current branch name
 CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
-# Don't check main
+# Skip main
 if [ "$CURRENT_BRANCH" == "main" ]; then
   exit 0
 fi
 
-echo "Checking if $CURRENT_BRANCH is already merged to origin/main..."
+echo "Checking status of $CURRENT_BRANCH..."
 
-# Fetch latest origin/main
-git fetch origin main > /dev/null 2>&1
+# Ensure we have the latest world view
+git fetch origin > /dev/null 2>&1
 
-# Check if the branch is merged into origin/main
-# We check if the commit at the tip of our current branch is reachable from origin/main
-IS_MERGED=$(git merge-base --is-ancestor HEAD origin/main && echo "yes" || echo "no")
+# Check if the tracking branch exists
+if git show-ref --verify --quiet "refs/remotes/origin/$CURRENT_BRANCH"; then
+    
+    ORIGIN_TIP=$(git rev-parse "origin/$CURRENT_BRANCH")
+    MAIN_TIP=$(git rev-parse "origin/main")
 
-if [ "$IS_MERGED" == "yes" ]; then
-  echo "################################################################################"
-  echo "#                                                                              #"
-  echo "#                        DEAD BRANCH PROTECTION                                #"
-  echo "#                                                                              #"
-  echo "################################################################################"
-  echo ""
-  echo "Whoops! This branch ($CURRENT_BRANCH) has already been merged into origin/main."
-  echo "Pushing new commits to a merged branch is prohibited to avoid 'necroing' dead branches."
-  echo ""
-  echo "ACTION REQUIRED:"
-  echo "  1. Fetch latest remote main: git fetch origin main"
-  echo "  2. Branch directly from remote: git checkout -b feat/your-feature-name origin/main"
-  echo "  3. Cherry-pick or move your work there."
-  echo ""
-  echo "################################################################################"
-  exit 1
+    # Case 1: The branch points exactly to main (Fresh branch). Safe.
+    if [ "$ORIGIN_TIP" == "$MAIN_TIP" ]; then
+        echo "Branch is up-to-date with main. Safe to push."
+        exit 0
+    fi
+
+    # Case 2: The remote branch is strictly behind main (Merged or Abandoned).
+    if git merge-base --is-ancestor "$ORIGIN_TIP" "$MAIN_TIP"; then
+             echo "################################################################################"
+             echo "⛔️  BLOCKING PUSH: DEAD OR STALE BRANCH DETECTED"
+             echo "################################################################################"
+             echo ""
+             echo "The remote branch 'origin/$CURRENT_BRANCH' is fully merged into 'origin/main'."
+             echo "This usually means the PULL REQUEST WAS MERGED or the branch was abandoned."
+             echo "Adding new commits to this branch is bad practice (necroing)."
+             echo ""
+             echo "ACTION REQUIRED:"
+             echo "  1. Sync main: git checkout main && git pull"
+             echo "  2. Create a FRESH branch: git checkout -b feat/new-topic"
+             echo "  3. Move your work: git cherry-pick <commits>"
+             echo ""
+             exit 1
+    fi
+else
+    # New branch (no remote yet). Safe.
+    echo "New branch detected. Safe to push."
 fi
 
-echo "Branch is safe to push."
 exit 0
