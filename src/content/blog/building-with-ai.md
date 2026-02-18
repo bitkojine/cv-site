@@ -41,7 +41,7 @@ Code moved from a single HTML file into structured app files:
 
 - `src/pages/index.astro`
 - `src/layouts/Layout.astro`
-- `src/components/`
+- `src/components/*`
 - `src/data/cv.json`
 - `src/styles/global.css`
 - project config files like `astro.config.mjs`, `package.json`, `tsconfig.json`
@@ -80,7 +80,7 @@ Primary files touched:
 - `src/pages/index.astro`
 - `src/lib/github-cache.mts` / `src/lib/github-actions.mts` / `src/lib/github-status.mts`
 - `src/components/WorkflowStatusBadge.astro`
-- `tests/unit/` and `tests/e2e/`
+- `tests/unit/*` and `tests/e2e/*`
 
 ## Phase 5: Blog, Content Collections, and Ongoing UX Refinement
 
