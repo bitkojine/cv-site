@@ -1,5 +1,5 @@
 ---
-import { Briefcase, Cog, DollarSign } from '@lucide/astro';
+import { Briefcase, Cog, DollarSign, Code2 } from '@lucide/astro';
 ---
 
 <section class="door-screen" aria-labelledby="door-heading">
@@ -12,9 +12,10 @@ import { Briefcase, Cog, DollarSign } from '@lucide/astro';
     <li>Recruiters: role fit, availability, and hiring workflow</li>
     <li>Founders: scoped execution offers and start criteria</li>
     <li>Investors: model logic, milestones, and known constraints</li>
+    <li>Developers: open source, engineering blog, and live activity</li>
   </ul>
   <p class="door-cta-copy">Select one route to continue.</p>
-  <nav aria-label="Visitor options" class="door-grid">
+  <nav aria-label="Visitor options" class="door-grid door-grid--four">
     <a class="door" href="/hiring" data-role-door="Recruiter / Hiring Manager">
       <span class="door-head">
         <span class="door-icon" aria-hidden="true">
@@ -54,6 +55,18 @@ import { Briefcase, Cog, DollarSign } from '@lucide/astro';
       <span class="door-promise">
         Service-first business model, milestone gates, and funding-readiness
         constraints.
+      </span>
+    </a>
+    <a class="door" href="/dev" data-role-door="Developer / Builder">
+      <span class="door-head">
+        <span class="door-icon" aria-hidden="true">
+          <Code2 size={20} />
+        </span>
+        <span class="door-label">I’m a Developer / Builder</span>
+      </span>
+      <span class="door-subtext">Following or contributing to open source</span>
+      <span class="door-promise">
+        Architecture patterns, engineering blog, and live build telemetry.
       </span>
     </a>
   </nav>

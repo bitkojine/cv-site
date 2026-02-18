@@ -1,11 +1,12 @@
 ---
-import { Briefcase, Cog, DollarSign, House } from '@lucide/astro';
+import { Briefcase, Cog, DollarSign, House, Code2 } from '@lucide/astro';
 
 interface Props {
   currentRole:
     | 'Recruiter / Hiring Manager'
     | 'Founder / Operator'
-    | 'Investor / Advisor';
+    | 'Investor / Advisor'
+    | 'Developer / Builder';
 }
 
 const { currentRole } = Astro.props;
@@ -36,6 +37,10 @@ const { currentRole } = Astro.props;
           ><DollarSign size={16} /></span
         >
         Investor / Advisor
+      </a>
+      <a href="/dev" data-role-switch="Developer / Builder">
+        <span class="menu-icon" aria-hidden="true"><Code2 size={16} /></span>
+        Developer / Builder
       </a>
     </nav>
   </details>

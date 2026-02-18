@@ -10,6 +10,8 @@ import {
   PhoneCall,
   Radio,
   Landmark,
+  Github,
+  Mail,
 } from '@lucide/astro';
 
 interface Props {
@@ -31,6 +33,8 @@ const iconByLabel = {
   'Book a Call': PhoneCall,
   'Get Product Updates': Radio,
   'Request Investment Details': Landmark,
+  'Get Updates': Github,
+  Collaborate: Mail,
 } as const;
 
 const Icon = iconByLabel[cta.label] ?? Briefcase;
