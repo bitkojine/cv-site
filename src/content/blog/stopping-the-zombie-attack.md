@@ -1,6 +1,6 @@
 ---
 title: 'Stopping the Zombie Attack: Robust Dead Branch Protection in Git'
-date: '2026-02-18'
+date: 2026-02-18
 description: "How we implemented a cryptographic-proof protection against 'necroing' dead branches, and why Squash Merging complicates Git hygiene."
 tags: ['git', 'devops', 'engineering', 'automation']
 ---
