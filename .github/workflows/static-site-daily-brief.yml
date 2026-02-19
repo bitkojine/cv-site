@@ -19,6 +19,8 @@ jobs:
       ORIGIN_IPS: '185.199.108.153 185.199.109.153 185.199.110.153 185.199.111.153'
       ENFORCE_ORIGIN_VALIDATION: 'false'
       MAX_URL_CHECKS: '250'
+      EXPECTED_NS_1: chip.ns.cloudflare.com.
+      EXPECTED_NS_2: rosalie.ns.cloudflare.com.
     steps:
       - name: Collect daily website brief
         id: brief
@@ -34,6 +36,7 @@ jobs:
           now_utc="$(date -u +'%Y-%m-%d %H:%M:%S UTC')"
           headers_file="$(mktemp)"
           report_file="$(mktemp)"
+          html_file="$(mktemp)"
 
           classify_state() {
             local days_left="$1"
@@ -73,11 +76,14 @@ jobs:
             echo "${end_date}|${days_left}"
           }
 
-          edge_status="$(curl -sS -o /dev/null -D "${headers_file}" -w '%{http_code}' --max-time 20 "${URL}" || true)"
-          edge_ttfb="$(curl -sS -o /dev/null -w '%{time_starttransfer}' --max-time 20 "${URL}" || echo "n/a")"
-          edge_total="$(curl -sS -o /dev/null -w '%{time_total}' --max-time 20 "${URL}" || echo "n/a")"
+          edge_metrics="$(curl -sS -o /dev/null -D "${headers_file}" --max-time 20 -w 'status=%{http_code}\nttfb=%{time_starttransfer}\ntotal=%{time_total}\n' "${URL}" || true)"
+          edge_status="$(echo "${edge_metrics}" | awk -F= '/^status=/{print $2}')"
+          edge_ttfb="$(echo "${edge_metrics}" | awk -F= '/^ttfb=/{print $2}')"
+          edge_total="$(echo "${edge_metrics}" | awk -F= '/^total=/{print $2}')"
           edge_server="$(grep -i '^server:' "${headers_file}" | tail -n1 | cut -d' ' -f2- | tr -d '\r' || true)"
           edge_cf_ray="$(grep -i '^cf-ray:' "${headers_file}" | tail -n1 | cut -d' ' -f2- | tr -d '\r' || true)"
+
+          curl -fsSL --max-time 20 "${URL}" > "${html_file}" || true
 
           edge_cert_data="$(cert_days_left "${DOMAIN}:443" "${DOMAIN}")"
           edge_not_after="$(echo "${edge_cert_data}" | cut -d'|' -f1)"
@@ -117,17 +123,38 @@ jobs:
           dns_www_cname="$(dig +short "www.${DOMAIN}" CNAME | tr '\n' ' ' || true)"
           dns_caa="$(dig +short "${DOMAIN}" CAA | tr '\n' ' ' || true)"
 
+          ns_ok=true
+          echo "${dns_ns}" | grep -q "${EXPECTED_NS_1}" || ns_ok=false
+          echo "${dns_ns}" | grep -q "${EXPECTED_NS_2}" || ns_ok=false
+
           hsts="$(grep -i '^strict-transport-security:' "${headers_file}" | cut -d' ' -f2- | tr -d '\r' || true)"
-          csp="$(grep -i '^content-security-policy:' "${headers_file}" | cut -d' ' -f2- | tr -d '\r' || true)"
+          csp_header="$(grep -i '^content-security-policy:' "${headers_file}" | cut -d' ' -f2- | tr -d '\r' || true)"
           xfo="$(grep -i '^x-frame-options:' "${headers_file}" | cut -d' ' -f2- | tr -d '\r' || true)"
           xcto="$(grep -i '^x-content-type-options:' "${headers_file}" | cut -d' ' -f2- | tr -d '\r' || true)"
-          refpol="$(grep -i '^referrer-policy:' "${headers_file}" | cut -d' ' -f2- | tr -d '\r' || true)"
-          missing_headers=""
-          [ -z "${hsts}" ] && missing_headers="${missing_headers} HSTS"
-          [ -z "${csp}" ] && missing_headers="${missing_headers} CSP"
-          [ -z "${xfo}" ] && missing_headers="${missing_headers} X-Frame-Options"
-          [ -z "${xcto}" ] && missing_headers="${missing_headers} X-Content-Type-Options"
-          [ -z "${refpol}" ] && missing_headers="${missing_headers} Referrer-Policy"
+          refpol_header="$(grep -i '^referrer-policy:' "${headers_file}" | cut -d' ' -f2- | tr -d '\r' || true)"
+
+          csp_meta="$(grep -Eio '<meta[^>]+http-equiv=["'"'"']Content-Security-Policy["'"'"'][^>]*>' "${html_file}" || true)"
+          refpol_meta="$(grep -Eio '<meta[^>]+name=["'"'"']referrer["'"'"'][^>]*>' "${html_file}" || true)"
+
+          csp_ok=false
+          [ -n "${csp_header}" ] && csp_ok=true
+          [ -n "${csp_meta}" ] && csp_ok=true
+
+          frame_protection_ok=false
+          [ -n "${xfo}" ] && frame_protection_ok=true
+          if [ -n "${csp_header}" ] && echo "${csp_header}" | grep -qi "frame-ancestors"; then frame_protection_ok=true; fi
+          if [ -n "${csp_meta}" ] && echo "${csp_meta}" | grep -qi "frame-ancestors"; then frame_protection_ok=true; fi
+
+          refpol_ok=false
+          [ -n "${refpol_header}" ] && refpol_ok=true
+          [ -n "${refpol_meta}" ] && refpol_ok=true
+
+          security_actions=""
+          [ -z "${hsts}" ] && security_actions="${security_actions}\n- Add HSTS at Cloudflare edge (response header)."
+          [ "${csp_ok}" != "true" ] && security_actions="${security_actions}\n- Add CSP (edge header preferred; meta fallback currently checked)."
+          [ "${frame_protection_ok}" != "true" ] && security_actions="${security_actions}\n- Add frame protection (`X-Frame-Options` or CSP `frame-ancestors`)."
+          [ -z "${xcto}" ] && security_actions="${security_actions}\n- Add `X-Content-Type-Options: nosniff` at Cloudflare edge."
+          [ "${refpol_ok}" != "true" ] && security_actions="${security_actions}\n- Add `Referrer-Policy` header (meta fallback currently checked)."
 
           robots_status="$(curl -sS -o /dev/null -w '%{http_code}' --max-time 15 "${URL}/robots.txt" || true)"
           sitemap_index_status="$(curl -sS -o /dev/null -w '%{http_code}' --max-time 15 "${URL}/sitemap-index.xml" || true)"
@@ -163,15 +190,42 @@ jobs:
           fi
 
           status="OK"
+          actions=""
           if [ -z "${edge_status}" ] || [ "${edge_status}" = "000" ] || [ "${edge_status}" -ge 500 ]; then
             status="CRITICAL"
-          elif [ "${edge_state}" = "error" ] || [ "${edge_state}" = "expired" ] || [ "${edge_state}" = "critical" ]; then
-            status="CRITICAL"
-          elif [ "${ENFORCE_ORIGIN_VALIDATION}" = "true" ] && { [ "${origin_state}" = "error" ] || [ "${origin_state}" = "expired" ] || [ "${origin_state}" = "critical" ]; }; then
-            status="CRITICAL"
-          elif [ "${bad_urls}" -gt 0 ] || [ -n "${missing_headers}" ] || [ "${edge_state}" = "warning" ] || [ "${origin_state}" = "warning" ] || [ "${origin_state}" = "expired" ] || [ "${origin_state}" = "critical" ] || [ "${origin_state}" = "error" ]; then
-            status="WARN"
+            actions="${actions}\n- Site edge availability is failing; investigate Cloudflare/GitHub Pages edge."
           fi
+          if [ "${edge_state}" = "error" ] || [ "${edge_state}" = "expired" ] || [ "${edge_state}" = "critical" ]; then
+            status="CRITICAL"
+            actions="${actions}\n- Renew/fix edge certificate immediately."
+          elif [ "${edge_state}" = "warning" ]; then
+            [ "${status}" = "OK" ] && status="WARN"
+            actions="${actions}\n- Edge certificate expires within ${ALERT_DAYS} days."
+          fi
+          if [ "${ENFORCE_ORIGIN_VALIDATION}" = "true" ] && { [ "${origin_state}" = "error" ] || [ "${origin_state}" = "expired" ] || [ "${origin_state}" = "critical" ]; }; then
+            status="CRITICAL"
+            actions="${actions}\n- Origin certificate is ${origin_state} while strict origin validation is enabled."
+          elif [ "${origin_state}" = "error" ] || [ "${origin_state}" = "expired" ] || [ "${origin_state}" = "critical" ] || [ "${origin_state}" = "warning" ]; then
+            [ "${status}" = "OK" ] && status="WARN"
+            actions="${actions}\n- Origin certificate is ${origin_state}; keep Cloudflare Full temporarily and switch back to Full (Strict) after renewal."
+          fi
+          if [ "${ENFORCE_ORIGIN_VALIDATION}" = "false" ] && [ "${origin_state}" = "healthy" ]; then
+            [ "${status}" = "OK" ] && status="WARN"
+            actions="${actions}\n- Certificates are healthy; switch Cloudflare to Full (Strict) and set ENFORCE_ORIGIN_VALIDATION=true."
+          fi
+          if [ "${bad_urls}" -gt 0 ]; then
+            [ "${status}" = "OK" ] && status="WARN"
+            actions="${actions}\n- Fix non-OK URLs from sitemap crawl (${bad_urls} found)."
+          fi
+          if [ -n "${security_actions}" ]; then
+            [ "${status}" = "OK" ] && status="WARN"
+            actions="${actions}\n- Apply missing security controls:${security_actions}"
+          fi
+          if [ "${ns_ok}" != "true" ]; then
+            [ "${status}" = "OK" ] && status="WARN"
+            actions="${actions}\n- Nameserver drift detected; verify Cloudflare NS assignment."
+          fi
+          [ -z "${actions}" ] && actions="\n- No immediate action required."
 
           {
             echo "Static Site Daily Brief"
@@ -179,13 +233,16 @@ jobs:
             echo ""
             echo "Overall status: ${status}"
             echo ""
-            echo "Edge availability"
+            echo "Action required"
+            printf '%b\n' "${actions}"
+            echo ""
+            echo "Key signals"
             echo "- URL: ${URL}"
             echo "- HTTP status: ${edge_status}"
-            echo "- Server: ${edge_server:-unknown}"
-            echo "- CF-Ray: ${edge_cf_ray:-unknown}"
             echo "- TTFB (s): ${edge_ttfb}"
             echo "- Total time (s): ${edge_total}"
+            echo "- Server: ${edge_server:-unknown}"
+            echo "- CF-Ray: ${edge_cf_ray:-unknown}"
             echo ""
             echo "TLS"
             echo "- Edge cert: state=${edge_state}, days_left=${edge_days_left:-unknown}, not_after=${edge_not_after:-unknown}"
@@ -193,22 +250,14 @@ jobs:
             printf '%b\n' "${origin_details}"
             echo "- ENFORCE_ORIGIN_VALIDATION=${ENFORCE_ORIGIN_VALIDATION}"
             echo ""
-            echo "DNS snapshot"
-            echo "- NS: ${dns_ns:-none}"
-            echo "- A: ${dns_a:-none}"
-            echo "- AAAA: ${dns_aaaa:-none}"
-            echo "- www CNAME: ${dns_www_cname:-none}"
-            echo "- CAA: ${dns_caa:-none}"
+            echo "Security controls"
+            echo "- HSTS header: ${hsts:+present}${hsts:-missing}"
+            echo "- CSP: $([ "${csp_ok}" = "true" ] && echo present || echo missing)"
+            echo "- Frame protection: $([ "${frame_protection_ok}" = "true" ] && echo present || echo missing)"
+            echo "- X-Content-Type-Options: ${xcto:+present}${xcto:-missing}"
+            echo "- Referrer-Policy: $([ "${refpol_ok}" = "true" ] && echo present || echo missing)"
             echo ""
-            echo "Security headers"
-            echo "- HSTS: ${hsts:-missing}"
-            echo "- CSP: ${csp:-missing}"
-            echo "- X-Frame-Options: ${xfo:-missing}"
-            echo "- X-Content-Type-Options: ${xcto:-missing}"
-            echo "- Referrer-Policy: ${refpol:-missing}"
-            echo "- Missing headers:${missing_headers:- none}"
-            echo ""
-            echo "Robots + sitemap"
+            echo "SEO + crawl"
             echo "- /robots.txt status: ${robots_status}"
             echo "- /sitemap-index.xml status: ${sitemap_index_status}"
             echo "- URLs checked from sitemap: ${checked_urls}"
@@ -216,6 +265,13 @@ jobs:
             if [ "${bad_urls}" -gt 0 ]; then
               printf '%b\n' "${bad_details}"
             fi
+            echo ""
+            echo "Config snapshot"
+            echo "- NS: ${dns_ns:-none}"
+            echo "- A: ${dns_a:-none}"
+            echo "- AAAA: ${dns_aaaa:-none}"
+            echo "- www CNAME: ${dns_www_cname:-none}"
+            echo "- CAA: ${dns_caa:-none}"
           } > "${report_file}"
 
           {
@@ -227,7 +283,7 @@ jobs:
 
           cat "${report_file}"
 
-      - name: Send daily brief email
+      - name: Detect SMTP configuration
         id: smtp
         shell: bash
         env:
