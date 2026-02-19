@@ -28,14 +28,19 @@ const notePayload = JSON.stringify(note).replaceAll('<', '\\u003c');
   data-echo-root
   role="note"
 >
-  <span aria-hidden="true" class="self-reference__mascot">♞</span>
-  <div class="self-reference__body">
-    <div class="self-reference__meta">
-      <span class="self-reference__mascot-name">{mascotName}</span>
-      <span class="self-reference__severity">{note.severity}</span>
-    </div>
-    <details class="self-reference__panel">
-      <summary class="self-reference__summary">Open Echo guidance</summary>
+  <details class="self-reference__panel">
+    <summary class="self-reference__summary">
+      <span aria-hidden="true" class="self-reference__mascot">♞</span>
+      <span class="self-reference__meta">
+        <span class="self-reference__mascot-name">{mascotName}</span>
+        <span class="self-reference__severity">{note.severity}</span>
+      </span>
+      <span class="self-reference__summary-label">
+        <span class="self-reference__summary-open">Open Echo guidance</span>
+        <span class="self-reference__summary-close">Close Echo guidance</span>
+      </span>
+    </summary>
+    <div class="self-reference__body">
       <p class="self-reference__message" data-echo-message>
         {note.variants.full}
       </p>
@@ -95,12 +100,12 @@ const notePayload = JSON.stringify(note).replaceAll('<', '\\u003c');
           </p>
         )
       }
-      <details class="self-reference__why">
-        <summary>Why this note exists</summary>
+      <div class="self-reference__why">
+        <p class="self-reference__action-label">Why this note exists</p>
         <p>{note.whyExists}</p>
-      </details>
-    </details>
-  </div>
+      </div>
+    </div>
+  </details>
 </div>
 
 <script is:inline>
