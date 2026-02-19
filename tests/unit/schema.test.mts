@@ -52,6 +52,31 @@ describe('CVSchema', () => {
     expect(result.success).toBe(true);
   });
 
+  it('rejects unexpected top-level fields', () => {
+    const invalidCV = {
+      ...rawCvData,
+      unknownField: true,
+    };
+
+    const result = CVSchema.safeParse(invalidCV);
+    expect(result.success).toBe(false);
+  });
+
+  it('rejects invalid month in normalized date', () => {
+    const invalidCV = {
+      ...rawCvData,
+      experience: [
+        {
+          ...rawCvData.experience[0],
+          startDate: '2024-13',
+        },
+      ],
+    };
+
+    const result = CVSchema.safeParse(invalidCV);
+    expect(result.success).toBe(false);
+  });
+
   it('exposes parsed cvData through the runtime accessor', () => {
     expect(cvData.personalInfo.name).toBeTypeOf('string');
     expect(cvData.coreSkills.length).toBeGreaterThan(0);

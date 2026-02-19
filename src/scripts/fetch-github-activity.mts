@@ -9,7 +9,31 @@ const OUTPUT_FILE = join(OUTPUT_DIR, 'github-activity.json');
 const CACHE_DIR = join(process.cwd(), '.cache');
 const METADATA_FILE = join(CACHE_DIR, 'github-metadata.json');
 const MetadataSchema = z.object({ etag: z.string().optional() });
-const GitHubEventsSchema = z.array(z.unknown());
+const GitHubEventSchema = z
+  .object({
+    type: z.string(),
+    created_at: z.string(),
+    repo: z.object({ name: z.string() }).passthrough(),
+    payload: z
+      .object({
+        commits: z
+          .array(z.object({ message: z.string() }).passthrough())
+          .optional(),
+        ref: z.string().optional(),
+        ref_type: z.string().optional(),
+        action: z.string().optional(),
+        pull_request: z
+          .object({
+            title: z.string().optional(),
+          })
+          .passthrough()
+          .optional(),
+      })
+      .passthrough()
+      .optional(),
+  })
+  .passthrough();
+const GitHubEventsSchema = z.array(GitHubEventSchema);
 
 function setChangedOutput(changed: boolean) {
   if (!process.env.GITHUB_OUTPUT) return;
