@@ -265,6 +265,15 @@ const devPhilosophy = [
 </style>
 
 <script>
+  const activityDateFormatter = new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'Europe/Vilnius',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  });
+
   function formatTypeLabel(eventType) {
     if (!eventType) return 'Activity';
     if (eventType === 'WatchEvent') return 'Star';
@@ -298,12 +307,7 @@ const devPhilosophy = [
         const item = document.createElement('div');
         item.className = 'activity-item';
 
-        const date = new Date(event.created_at).toLocaleDateString(undefined, {
-          month: 'short',
-          day: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit',
-        });
+        const date = activityDateFormatter.format(new Date(event.created_at));
 
         let content = '';
         const typeLabel = formatTypeLabel(event.type);
