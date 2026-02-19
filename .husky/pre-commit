@@ -8,16 +8,19 @@ echo "0. Zero Comment Policy..."
 echo "1. Linting..."
 npm run lint || exit 1
 
-echo "2. Formatting check..."
+echo "2. Workflow lint..."
+npm run lint:workflows || exit 1
+
+echo "3. Formatting check..."
 npx prettier --check . || exit 1
 
-echo "3. Unit tests..."
+echo "4. Unit tests..."
 npm run test:unit || exit 1
 
-echo "4. Build..."
+echo "5. Build..."
 npm run build || exit 1
 
-echo "5. E2E tests..."
+echo "6. E2E tests..."
 npm run test:e2e || exit 1
 
 echo "All checks passed!"

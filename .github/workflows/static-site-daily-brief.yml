@@ -223,7 +223,26 @@ jobs:
           cat "${report_file}"
 
       - name: Send daily brief email
-        if: ${{ secrets.ALERT_SMTP_SERVER != '' && secrets.ALERT_EMAIL_TO != '' && secrets.ALERT_EMAIL_FROM != '' && secrets.ALERT_SMTP_USERNAME != '' && secrets.ALERT_SMTP_PASSWORD != '' }}
+        id: smtp
+        shell: bash
+        env:
+          ALERT_SMTP_SERVER: ${{ secrets.ALERT_SMTP_SERVER }}
+          ALERT_EMAIL_TO: ${{ secrets.ALERT_EMAIL_TO }}
+          ALERT_EMAIL_FROM: ${{ secrets.ALERT_EMAIL_FROM }}
+          ALERT_SMTP_USERNAME: ${{ secrets.ALERT_SMTP_USERNAME }}
+          ALERT_SMTP_PASSWORD: ${{ secrets.ALERT_SMTP_PASSWORD }}
+        run: |
+          set -euo pipefail
+          configured=true
+          [ -z "${ALERT_SMTP_SERVER}" ] && configured=false
+          [ -z "${ALERT_EMAIL_TO}" ] && configured=false
+          [ -z "${ALERT_EMAIL_FROM}" ] && configured=false
+          [ -z "${ALERT_SMTP_USERNAME}" ] && configured=false
+          [ -z "${ALERT_SMTP_PASSWORD}" ] && configured=false
+          echo "configured=${configured}" >> "$GITHUB_OUTPUT"
+
+      - name: Send daily brief email
+        if: steps.smtp.outputs.configured == 'true'
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: ${{ secrets.ALERT_SMTP_SERVER }}
@@ -240,5 +259,5 @@ jobs:
             Workflow run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
       - name: Warn if SMTP is not configured
-        if: ${{ !(secrets.ALERT_SMTP_SERVER != '' && secrets.ALERT_EMAIL_TO != '' && secrets.ALERT_EMAIL_FROM != '' && secrets.ALERT_SMTP_USERNAME != '' && secrets.ALERT_SMTP_PASSWORD != '') }}
+        if: steps.smtp.outputs.configured != 'true'
         run: echo "SMTP secrets missing, skipped email delivery."
