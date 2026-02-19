@@ -1,7 +1,7 @@
 ---
 import SiteLayout from '../../layouts/SiteLayout.astro';
 import { getCollection } from 'astro:content';
-import { ChevronLeft, BookOpen } from '@lucide/astro';
+import { BookOpen, ChevronLeft } from '@lucide/astro';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
@@ -11,21 +11,16 @@ export async function getStaticPaths() {
   }));
 }
 
-const { post } = Astro.props;
-const { Content } = await post.render();
+const { post } = Astro.props,
+ { Content } = await post.render();
 ---
 
 <SiteLayout
-  title={`${post.data.title} | Robertas Rudys`}
-  description={post.data.description}
-  canonicalPath={`/blog/${post.slug}`}
-  roleLabel={post.data.title}
-  ogType="website"
+  canonicalPath={`/blog/${post.slug}`}   description={post.data.description}   ogType="website"   roleLabel={post.data.title}   title={`${post.data.title} | Robertas Rudys`}
 >
-  <nav class="mode-indicator" aria-label="Post navigation" data-role-indicator>
+  <nav aria-label="Post navigation" class="mode-indicator" data-role-indicator>
     <a
-      href="/blog"
-      class="switch-button"
+      class="switch-button"       href="/blog"
       style="text-decoration: none; display: flex; align-items: center; gap: 0.5rem; color: var(--accent); font-weight: 500;"
     >
       <ChevronLeft size={18} />

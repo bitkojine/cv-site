@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 import fs from 'fs';
 import path from 'path';
 
@@ -9,8 +9,8 @@ function getBlogPosts() {
   return files
     .filter((file) => file.endsWith('.md') || file.endsWith('.mdx'))
     .map((file) => {
-      const content = fs.readFileSync(path.join(BLOG_DIR, file), 'utf-8');
-      const match = content.match(/title:\s*['"]?(.*?)['"]?$/m);
+      const content = fs.readFileSync(path.join(BLOG_DIR, file), 'utf-8'),
+       match = /title:\s*['"]?(.*?)['"]?$/m.exec(content);
       return {
         file,
         title: match ? match[1] : '',

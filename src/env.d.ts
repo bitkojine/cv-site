@@ -3,7 +3,7 @@ type EventReporter = (eventName: string, props?: EventProps) => void;
 
 declare global {
   interface Window {
-    dataLayer?: Array<Record<string, unknown>>;
+    dataLayer?: Record<string, unknown>[];
     cvReportEvent?: EventReporter;
     cvTrack?: EventReporter;
   }

@@ -12,7 +12,7 @@ const { title, company, period, description, year, kind } = Astro.props;
 ---
 
 <article class="timeline-item">
-  <div class="timeline-year" aria-hidden="true">
+  <div aria-hidden="true" class="timeline-year">
     <span>{year}</span>
   </div>
   <div class="timeline-card">
@@ -23,7 +23,7 @@ const { title, company, period, description, year, kind } = Astro.props;
       </div>
       <div class="timeline-meta">
         <span class="timeline-tag">{kind}</span>
-        <span class="timeline-period" aria-label={`Period: ${period}`}>
+        <span aria-label={`Period: ${period}`} class="timeline-period">
           {period}
         </span>
       </div>

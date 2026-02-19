@@ -1,17 +1,17 @@
 ---
 import {
-  createDraftTooltip,
   type EmailCtaConfig,
+  createDraftTooltip,
 } from '../lib/email-drafts.mts';
 import {
   Briefcase,
   CalendarClock,
+  Github,
   Handshake,
+  Landmark,
+  Mail,
   PhoneCall,
   Radio,
-  Landmark,
-  Github,
-  Mail,
 } from '@lucide/astro';
 
 interface Props {
@@ -19,14 +19,14 @@ interface Props {
   mode: string;
 }
 
-const { cta, mode } = Astro.props;
-const className = cta.variant === 'primary' ? 'cta-primary' : 'cta-secondary';
-const [recipientLocalPart = '', recipientDomain = ''] =
-  cta.recipientEmail.split('@');
-const encodedSubject = encodeURIComponent(cta.draft.subject);
-const encodedBody = encodeURIComponent(cta.draft.body);
+const { cta, mode } = Astro.props,
+ className = cta.variant === 'primary' ? 'cta-primary' : 'cta-secondary',
+ [recipientLocalPart = '', recipientDomain = ''] =
+  cta.recipientEmail.split('@'),
+ encodedSubject = encodeURIComponent(cta.draft.subject),
+ encodedBody = encodeURIComponent(cta.draft.body),
 
-const iconByLabel = {
+ iconByLabel = {
   'Request Resume': Briefcase,
   'Schedule Intro': CalendarClock,
   'Work Together': Handshake,
@@ -38,23 +38,15 @@ const iconByLabel = {
   'Explore Advisory Fit': Handshake,
   'Get Updates': Github,
   Collaborate: Mail,
-} as const;
+} as const,
 
-const Icon = iconByLabel[cta.label] ?? Briefcase;
+ Icon = iconByLabel[cta.label] ?? Briefcase;
 ---
 
 <a
-  class={className}
-  href="#contact-email"
-  title={createDraftTooltip(cta.draft)}
-  data-cta={cta.label}
-  data-cta-mode={mode}
-  data-mailto-link
-  data-email-local={recipientLocalPart}
-  data-email-domain={recipientDomain}
-  data-email-subject={encodedSubject}
-  data-email-body={encodedBody}
+  class:list={className}
+  data-cta={cta.label}   data-cta-mode={mode}   data-email-body={encodedBody}   data-email-domain={recipientDomain}   data-email-local={recipientLocalPart}   data-email-subject={encodedSubject}   data-mailto-link   href="#contact-email"   title={createDraftTooltip(cta.draft)}
 >
-  <span class="cta-icon" aria-hidden="true"><Icon size={16} /></span>
+  <span aria-hidden="true" class="cta-icon"><Icon size={16} /></span>
   <span>{cta.label}</span>
 </a>

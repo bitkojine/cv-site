@@ -39,7 +39,7 @@ class MockLink {
         defaultPrevented = true;
       },
     };
-    this.clickHandlers.forEach((handler) => handler(event));
+    this.clickHandlers.forEach((handler) => { handler(event); });
     return { defaultPrevented };
   }
 }
@@ -47,7 +47,7 @@ class MockLink {
 class MockDocument {
   readyState: DocumentReadyState = 'complete';
   links: MockLink[] = [];
-  listeners = new Map<string, Array<() => void>>();
+  listeners = new Map<string, (() => void)[]>();
 
   querySelectorAll<T>(selector: string): NodeListOf<T> {
     void selector;
@@ -62,7 +62,7 @@ class MockDocument {
 
   emit(eventName: string): void {
     const handlers = this.listeners.get(eventName) || [];
-    handlers.forEach((handler) => handler());
+    handlers.forEach((handler) => { handler(); });
   }
 }
 
@@ -105,8 +105,8 @@ describe('bindMailtoLinks', () => {
     const link = new MockLink({
       'data-email-local': 'john',
       'data-email-domain': 'example.com',
-    });
-    const doc = new MockDocument();
+    }),
+     doc = new MockDocument();
     doc.links = [link];
     const win = { location: { href: '' } };
 
@@ -122,8 +122,8 @@ describe('bindMailtoLinks', () => {
   it('does not prevent default when link is missing required attributes', () => {
     const link = new MockLink({
       'data-email-local': 'john',
-    });
-    const doc = new MockDocument();
+    }),
+     doc = new MockDocument();
     doc.links = [link];
     const win = { location: { href: 'unchanged' } };
 
@@ -140,12 +140,12 @@ describe('installMailtoLinkHandler', () => {
     const initialLink = new MockLink({
       'data-email-local': 'first',
       'data-email-domain': 'example.com',
-    });
-    const nextLink = new MockLink({
+    }),
+     nextLink = new MockLink({
       'data-email-local': 'second',
       'data-email-domain': 'example.com',
-    });
-    const doc = new MockDocument();
+    }),
+     doc = new MockDocument();
     doc.readyState = 'complete';
     doc.links = [initialLink];
     const win = { location: { href: '' } };
@@ -190,8 +190,8 @@ describe('installMailtoLinkHandler', () => {
   });
 
   it('marks the window as installed', () => {
-    const doc = new MockDocument();
-    const win = { location: { href: '' } };
+    const doc = new MockDocument(),
+     win = { location: { href: '' } };
 
     installMailtoLinkHandler(
       win as unknown as Window,

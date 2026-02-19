@@ -8,15 +8,15 @@ interface Props {
   description: string;
 }
 
-const { title, description } = Astro.props;
-const { personalInfo } = cvData;
+const { title, description } = Astro.props,
+ { personalInfo } = cvData,
 
-const jsonLd = {
+ jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Person',
   name: personalInfo.name,
   jobTitle: personalInfo.title,
-  description: description,
+  description,
   url: 'https://robertasrudys.com',
   address: {
     '@type': 'PostalAddress',
@@ -35,19 +35,18 @@ const jsonLd = {
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>{title}</title>
 
-    <meta name="description" content={description} />
-    <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
-    <meta name="author" content={personalInfo.name} />
-    <meta name="robots" content="index, follow" />
+    <meta content={description} name="description" />
+    <link href={new URL(Astro.url.pathname, Astro.site)} rel="canonical" />
+    <meta content={personalInfo.name} name="author" />
+    <meta content="index, follow" name="robots" />
     <meta
-      name="keywords"
-      content="Software Engineer, .NET, ASP.NET, C#, Backend Developer, Azure, Microservices"
+      content="Software Engineer, .NET, ASP.NET, C#, Backend Developer, Azure, Microservices"       name="keywords"
     />
 
-    <meta name="color-scheme" content="light" />
+    <meta content="light" name="color-scheme" />
     <script is:inline>
       document.documentElement.classList.remove('dark-mode');
       document.documentElement.style.colorScheme = 'light';
@@ -65,30 +64,27 @@ const jsonLd = {
       installGlobalEventReporter(window);
     </script>
 
-    <link rel="preconnect" href="https://rsms.me/" />
-    <link rel="preload" href="https://rsms.me/inter/inter.css" as="style" />
+    <link href="https://rsms.me/" rel="preconnect" />
+    <link as="style" href="https://rsms.me/inter/inter.css" rel="preload" />
     <link
-      rel="stylesheet"
-      href="https://rsms.me/inter/inter.css"
-      media="print"
-      onload="this.media='all'"
+      href="https://rsms.me/inter/inter.css"       media="print"       onload="this.media='all'"       rel="stylesheet"
     />
     <noscript>
-      <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+      <link href="https://rsms.me/inter/inter.css" rel="stylesheet" />
     </noscript>
 
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    <meta property="og:type" content="profile" />
-    <meta property="og:url" content={new URL(Astro.url.pathname, Astro.site)} />
-    <meta property="og:image" content={new URL('og-image.png', Astro.site)} />
+    <meta content={title} property="og:title" />
+    <meta content={description} property="og:description" />
+    <meta content="profile" property="og:type" />
+    <meta content={new URL(Astro.url.pathname, Astro.site)} property="og:url" />
+    <meta content={new URL('og-image.png', Astro.site)} property="og:image" />
 
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={title} />
-    <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={new URL('og-image.png', Astro.site)} />
+    <meta content="summary_large_image" name="twitter:card" />
+    <meta content={title} name="twitter:title" />
+    <meta content={description} name="twitter:description" />
+    <meta content={new URL('og-image.png', Astro.site)} name="twitter:image" />
 
-    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    <script set:html={JSON.stringify(jsonLd)} type="application/ld+json" />
   </head>
   <body>
     <slot />

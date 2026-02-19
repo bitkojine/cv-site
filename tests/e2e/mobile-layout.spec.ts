@@ -1,8 +1,8 @@
 import { expect, test } from '@playwright/test';
 
-const pagesToCheck = ['/', '/hiring', '/build', '/vision', '/dev'] as const;
+const pagesToCheck = ['/', '/hiring', '/build', '/vision', '/dev'] as const,
 
-const viewports = [
+ viewports = [
   { name: 'iphone-se-portrait', width: 320, height: 568 },
   { name: 'iphone-max-portrait', width: 430, height: 932 },
   { name: 'iphone-se-landscape', width: 568, height: 320 },
@@ -24,9 +24,9 @@ test.describe('mobile layout', () => {
         await expect(page.locator('.mail-topbar')).toBeVisible();
 
         const hasOverflow = await page.evaluate(() => {
-          const viewportWidth = window.innerWidth;
-          const bodyWidth = document.body.scrollWidth;
-          const rootWidth = document.documentElement.scrollWidth;
+          const viewportWidth = window.innerWidth,
+           bodyWidth = document.body.scrollWidth,
+           rootWidth = document.documentElement.scrollWidth;
           return bodyWidth > viewportWidth + 1 || rootWidth > viewportWidth + 1;
         });
 

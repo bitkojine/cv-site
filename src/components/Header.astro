@@ -1,5 +1,5 @@
 ---
-import { Mail, MapPin, Globe, Monitor } from '@lucide/astro';
+import { Globe, Mail, MapPin, Monitor } from '@lucide/astro';
 
 interface Props {
   name: string;
@@ -12,9 +12,9 @@ interface Props {
   };
 }
 
-const { name, title, contact } = Astro.props;
-const [emailLocalPart = '', emailDomain = ''] = contact.email.split('@');
-const emailDisplay = `${emailLocalPart} [at] ${emailDomain}`;
+const { name, title, contact } = Astro.props,
+ [emailLocalPart = '', emailDomain = ''] = contact.email.split('@'),
+ emailDisplay = `${emailLocalPart} [at] ${emailDomain}`;
 ---
 
 <header class="cv-header">
@@ -22,27 +22,23 @@ const emailDisplay = `${emailLocalPart} [at] ${emailDomain}`;
   <p class="role-title">{title}</p>
   <div class="contact-grid">
     <div class="contact-item">
-      <Mail size={18} class="icon" aria-hidden="true" />
+      <Mail aria-hidden="true" class="icon" size={18} />
       <a
-        href="#contact-email"
-        aria-label="Email"
-        data-mailto-link
-        data-email-local={emailLocalPart}
-        data-email-domain={emailDomain}
+        aria-label="Email"         data-email-domain={emailDomain}         data-email-local={emailLocalPart}         data-mailto-link         href="#contact-email"
       >
         {emailDisplay}
       </a>
     </div>
     <div class="contact-item">
-      <MapPin size={18} class="icon" aria-hidden="true" />
+      <MapPin aria-hidden="true" class="icon" size={18} />
       <span>{contact.location}</span>
     </div>
     <div class="contact-item">
-      <Globe size={18} class="icon" aria-hidden="true" />
+      <Globe aria-hidden="true" class="icon" size={18} />
       <span>{contact.remote}</span>
     </div>
     <div class="contact-item">
-      <Monitor size={18} class="icon" aria-hidden="true" />
+      <Monitor aria-hidden="true" class="icon" size={18} />
       <span>{contact.stack}</span>
     </div>
   </div>

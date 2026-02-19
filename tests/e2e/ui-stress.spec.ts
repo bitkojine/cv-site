@@ -1,22 +1,22 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 
-const criticalRoutes = ['/', '/hiring', '/build', '/vision', '/dev', '/blog'];
+const criticalRoutes = ['/', '/hiring', '/build', '/vision', '/dev', '/blog'],
 
-const viewportProfiles = [
+ viewportProfiles = [
   { name: 'desktop-wide', width: 1728, height: 1117 },
   { name: 'desktop-compact', width: 1280, height: 720 },
   { name: 'tablet-portrait', width: 834, height: 1194 },
   { name: 'tablet-landscape', width: 1194, height: 834 },
   { name: 'mobile-portrait', width: 390, height: 844 },
   { name: 'mobile-landscape', width: 844, height: 390 },
-] as const;
+] as const,
 
-const hasHorizontalOverflow = async (page: import('@playwright/test').Page) =>
+ hasHorizontalOverflow = async (page: import('@playwright/test').Page) =>
   page.evaluate(() => {
-    const viewportWidth = window.innerWidth;
-    const bodyWidth = document.body.scrollWidth;
-    const rootWidth = document.documentElement.scrollWidth;
+    const viewportWidth = window.innerWidth,
+     bodyWidth = document.body.scrollWidth,
+     rootWidth = document.documentElement.scrollWidth;
     return bodyWidth > viewportWidth + 1 || rootWidth > viewportWidth + 1;
   });
 
@@ -50,15 +50,15 @@ test.describe('ui stress', () => {
   test('chaos navigation + rapid interactions remain stable', async ({
     page,
   }, testInfo) => {
-    const isCi = !!process.env.CI;
+    const isCi = Boolean(process.env.CI);
     test.setTimeout(isCi ? 90_000 : 60_000);
 
-    const pageErrors: string[] = [];
-    const severeConsole: string[] = [];
+    const pageErrors: string[] = [],
+     severeConsole: string[] = [];
 
     page.on('pageerror', (err) => pageErrors.push(String(err)));
     page.on('console', (msg) => {
-      if (msg.type() !== 'error') return;
+      if (msg.type() !== 'error') {return;}
       const text = msg.text();
       if (
         text.includes('Failed to load resource') ||
@@ -70,21 +70,21 @@ test.describe('ui stress', () => {
       severeConsole.push(text);
     });
 
-    const maxIterations = isCi ? 80 : 120;
-    const deadline = Date.now() + (isCi ? 45_000 : 52_000);
+    const maxIterations = isCi ? 80 : 120,
+     deadline = Date.now() + (isCi ? 45_000 : 52_000);
     let completedIterations = 0;
 
     await page.goto('/', { waitUntil: 'domcontentloaded' });
     for (let i = 0; i < maxIterations; i++) {
-      if (Date.now() > deadline) break;
+      if (Date.now() > deadline) {break;}
       const route = criticalRoutes[i % criticalRoutes.length];
       await page.goto(route, {
         waitUntil: 'domcontentloaded',
         timeout: 6000,
       });
 
-      const inputs = page.locator('input, textarea');
-      const inputCount = await inputs.count();
+      const inputs = page.locator('input, textarea'),
+       inputCount = await inputs.count();
       for (let j = 0; j < Math.min(3, inputCount); j++) {
         await inputs
           .nth(j)
@@ -96,9 +96,9 @@ test.describe('ui stress', () => {
         delay: 5,
       });
       await page.keyboard.press('Tab');
-      if (i % 6 === 0) await page.keyboard.press('Space').catch(() => {});
-      if (i % 10 === 0) await page.goBack().catch(() => {});
-      if (i % 11 === 0) await page.goForward().catch(() => {});
+      if (i % 6 === 0) {await page.keyboard.press('Space').catch(() => {});}
+      if (i % 10 === 0) {await page.goBack().catch(() => {});}
+      if (i % 11 === 0) {await page.goForward().catch(() => {});}
       await page
         .waitForLoadState('domcontentloaded', { timeout: 1500 })
         .catch(() => {});
@@ -169,18 +169,18 @@ test.describe('ui stress', () => {
   test('critical accessibility violations are not introduced', async ({
     page,
   }, testInfo) => {
-    const criticalFindings: Array<{
+    const criticalFindings: {
       route: string;
       id: string;
       impact: string | null | undefined;
       description: string;
       help: string;
-    }> = [];
+    }[] = [];
 
     for (const route of criticalRoutes) {
       await page.goto(route, { waitUntil: 'domcontentloaded' });
-      const results = await new AxeBuilder({ page }).analyze();
-      const criticalOnly = results.violations.filter(
+      const results = await new AxeBuilder({ page }).analyze(),
+       criticalOnly = results.violations.filter(
         (v) => v.impact === 'critical'
       );
 

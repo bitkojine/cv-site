@@ -12,36 +12,36 @@ interface Props {
 const {
   title = 'Robertas Rudys',
   description = 'Resume and writing by Robertas Rudys.',
-} = Astro.props;
-const currentYear = Number(
+} = Astro.props,
+ currentYear = Number(
   new Intl.DateTimeFormat('lt-LT', {
     timeZone: 'Europe/Vilnius',
     year: 'numeric',
   }).format(new Date())
-);
-const { personalInfo, coreSkills, experience, independentProjects } = cvData;
+),
+ { personalInfo, coreSkills, experience, independentProjects } = cvData;
 
 function toIsoMonth(value: string) {
   return value.length === 4 ? `${value}-01` : value;
 }
 
 function toSortableMonth(value: string) {
-  const normalized = toIsoMonth(value);
-  const [year, month] = normalized.split('-').map(Number);
+  const normalized = toIsoMonth(value),
+   [year, month] = normalized.split('-').map(Number);
   return year * 100 + month;
 }
 
 const experienceTimeline = [...experience, ...independentProjects].sort(
   (a, b) => toSortableMonth(b.startDate) - toSortableMonth(a.startDate)
-);
-const knowsAbout = coreSkills.flatMap((skill) =>
+),
+ knowsAbout = coreSkills.flatMap((skill) =>
   skill.value
     .split(',')
     .map((entry) => entry.trim())
     .filter(Boolean)
-);
+),
 
-const jsonLd = {
+ jsonLd = {
   '@context': 'https://schema.org',
   '@graph': [
     {
@@ -93,35 +93,34 @@ const jsonLd = {
   <head>
     <meta charset="UTF-8" />
     <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, viewport-fit=cover"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"       name="viewport"
     />
-    <meta name="color-scheme" content="light" />
+    <meta content="light" name="color-scheme" />
     <title>{title}</title>
-    <meta name="description" content={description} />
-    <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
-    <meta name="author" content={personalInfo.name} />
-    <meta name="robots" content="index, follow" />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    <meta property="og:type" content="profile" />
-    <meta property="og:url" content={new URL(Astro.url.pathname, Astro.site)} />
-    <meta property="og:image" content={new URL('og-image.png', Astro.site)} />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={title} />
-    <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={new URL('og-image.png', Astro.site)} />
-    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    <meta content={description} name="description" />
+    <link href={new URL(Astro.url.pathname, Astro.site)} rel="canonical" />
+    <meta content={personalInfo.name} name="author" />
+    <meta content="index, follow" name="robots" />
+    <meta content={title} property="og:title" />
+    <meta content={description} property="og:description" />
+    <meta content="profile" property="og:type" />
+    <meta content={new URL(Astro.url.pathname, Astro.site)} property="og:url" />
+    <meta content={new URL('og-image.png', Astro.site)} property="og:image" />
+    <meta content="summary_large_image" name="twitter:card" />
+    <meta content={title} name="twitter:title" />
+    <meta content={description} name="twitter:description" />
+    <meta content={new URL('og-image.png', Astro.site)} name="twitter:image" />
+    <script set:html={JSON.stringify(jsonLd)} type="application/ld+json" />
   </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to main content</a>
     <main class="page-shell" id="main-content" tabindex="-1">
-      <nav class="page-topnav" aria-label="Site navigation">
+      <nav aria-label="Site navigation" class="page-topnav">
         <a class="page-home-link" href="/">Home</a>
       </nav>
       <article class="markdown-body">
         <slot />
-        <footer class="site-footer-note" aria-label="Site footer">
+        <footer aria-label="Site footer" class="site-footer-note">
           <p>
             &copy; {currentYear} Robertas Rudys. All rights reserved.
             <span class="build-version">Build {BUILD_VERSION}</span>

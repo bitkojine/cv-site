@@ -27,18 +27,18 @@ const {
   ogType = 'website',
   showBuildVersion = true,
   showLiveBuildBadge = true,
-} = Astro.props;
+} = Astro.props,
 
-const canonicalUrl = new URL(canonicalPath, Astro.site);
-const isHomePage = canonicalPath === '/';
-const siteName = 'Robertas Rudys';
-const currentYear = Number(
+ canonicalUrl = new URL(canonicalPath, Astro.site),
+ isHomePage = canonicalPath === '/',
+ siteName = 'Robertas Rudys',
+ currentYear = Number(
   new Intl.DateTimeFormat('lt-LT', {
     timeZone: 'Europe/Vilnius',
     year: 'numeric',
   }).format(new Date())
-);
-const structuredData = {
+),
+ structuredData = {
   '@context': 'https://schema.org',
   '@type': schemaType,
   name: title,
@@ -66,30 +66,27 @@ const structuredData = {
   <head>
     <meta charset="UTF-8" />
     <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, viewport-fit=cover"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"       name="viewport"
     />
     <title>{title}</title>
-    <meta name="description" content={description} />
-    <link rel="canonical" href={canonicalUrl} />
-    <meta name="robots" content="index,follow" />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    <meta property="og:type" content={ogType} />
-    <meta property="og:url" content={canonicalUrl} />
-    <meta property="og:image" content={new URL('/og-image.png', Astro.site)} />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={title} />
-    <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={new URL('/og-image.png', Astro.site)} />
-    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta content={description} name="description" />
+    <link href={canonicalUrl} rel="canonical" />
+    <meta content="index,follow" name="robots" />
+    <meta content={title} property="og:title" />
+    <meta content={description} property="og:description" />
+    <meta content={ogType} property="og:type" />
+    <meta content={canonicalUrl} property="og:url" />
+    <meta content={new URL('/og-image.png', Astro.site)} property="og:image" />
+    <meta content="summary_large_image" name="twitter:card" />
+    <meta content={title} name="twitter:title" />
+    <meta content={description} name="twitter:description" />
+    <meta content={new URL('/og-image.png', Astro.site)} name="twitter:image" />
+    <meta content="strict-origin-when-cross-origin" name="referrer" />
     <meta
-      http-equiv="Content-Security-Policy"
-      content="default-src 'self'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; connect-src 'self' https://api.github.com; object-src 'none'; base-uri 'self'; form-action 'self' mailto:;"
+      content="default-src 'self'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; connect-src 'self' https://api.github.com; object-src 'none'; base-uri 'self'; form-action 'self' mailto:;"       http-equiv="Content-Security-Policy"
     />
     <script
-      type="application/ld+json"
-      set:html={JSON.stringify(structuredData)}
+      set:html={JSON.stringify(structuredData)}       type="application/ld+json"
     />
     <script>
       import { installGlobalEventReporter } from '../lib/event-reporting.mts';
@@ -102,7 +99,7 @@ const structuredData = {
   <body data-current-role={roleLabel ?? ''}>
     <ClientRouter />
     <a class="skip-link" href="#main-content">Skip to content</a>
-    <header class="mail-topbar" aria-label="Page header">
+    <header aria-label="Page header" class="mail-topbar">
       <div class="mail-topbar__inner">
         <div class="mail-topbar__meta">
           <p class="mail-topbar__eyebrow">{siteName}</p>
@@ -110,14 +107,14 @@ const structuredData = {
         </div>
         {
           !isHomePage && (
-            <a class="mail-topbar__home" href="/" aria-label="Go to homepage">
+            <a aria-label="Go to homepage" class="mail-topbar__home" href="/">
               Home
             </a>
           )
         }
       </div>
     </header>
-    <main id="main-content" class="site-shell">
+    <main class="site-shell" id="main-content">
       <slot />
       <footer class="site-footer">
         <small class="site-footer-copy">

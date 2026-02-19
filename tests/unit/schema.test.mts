@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { CVSchema } from '../../src/data/schema';
 import rawCvData from '../../src/data/cv.json';
 import { cvData } from '../../src/data/cv.mts';
@@ -30,9 +30,9 @@ describe('CVSchema', () => {
       ],
       independentProjects: [],
       lookingFor: ['Remote work'],
-    };
+    },
 
-    const result = CVSchema.safeParse(validCV);
+     result = CVSchema.safeParse(validCV);
     expect(result.success).toBe(true);
   });
 
@@ -41,9 +41,9 @@ describe('CVSchema', () => {
       personalInfo: {
         name: 'John Doe',
       },
-    };
+    },
 
-    const result = CVSchema.safeParse(invalidCV);
+     result = CVSchema.safeParse(invalidCV);
     expect(result.success).toBe(false);
   });
 
@@ -56,9 +56,9 @@ describe('CVSchema', () => {
     const invalidCV = {
       ...rawCvData,
       unknownField: true,
-    };
+    },
 
-    const result = CVSchema.safeParse(invalidCV);
+     result = CVSchema.safeParse(invalidCV);
     expect(result.success).toBe(false);
   });
 
@@ -71,9 +71,9 @@ describe('CVSchema', () => {
           startDate: '2024-13',
         },
       ],
-    };
+    },
 
-    const result = CVSchema.safeParse(invalidCV);
+     result = CVSchema.safeParse(invalidCV);
     expect(result.success).toBe(false);
   });
 

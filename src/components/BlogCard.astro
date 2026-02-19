@@ -7,9 +7,9 @@ interface Props {
   tags?: string[];
 }
 
-const { title, date, description, slug, tags } = Astro.props;
+const { title, date, description, slug, tags } = Astro.props,
 
-const formattedDate = date.toLocaleDateString('lt-LT', {
+ formattedDate = date.toLocaleDateString('lt-LT', {
   year: 'numeric',
   month: '2-digit',
   day: '2-digit',
@@ -18,7 +18,7 @@ const formattedDate = date.toLocaleDateString('lt-LT', {
 ---
 
 <article class="blog-card">
-  <a href={`/blog/${slug}`} class="blog-card-link">
+  <a class="blog-card-link" href={`/blog/${slug}`}>
     <h3>{title}</h3>
     <time datetime={date.toISOString()}>{formattedDate}</time>
     <p>{description}</p>

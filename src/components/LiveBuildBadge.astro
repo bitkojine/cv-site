@@ -1,30 +1,21 @@
 ---
 import { Github } from '@lucide/astro';
 
-const githubOwner = 'bitkojine';
-const githubRepo = 'cv-site';
-const deployWorkflowName = 'Deploy to GitHub Pages';
-const fallbackUrl = `https://github.com/${githubOwner}/${githubRepo}/actions/workflows/deploy.yml`;
+const githubOwner = 'bitkojine',
+ githubRepo = 'cv-site',
+ deployWorkflowName = 'Deploy to GitHub Pages',
+ fallbackUrl = `https://github.com/${githubOwner}/${githubRepo}/actions/workflows/deploy.yml`,
 
-let badgeHref = fallbackUrl;
-let badgeLabel = 'Deploy Status';
-let badgeStatus = 'Live';
-let badgeState: 'running' | 'success' | 'failure' | 'unknown' = 'unknown';
+ badgeHref = fallbackUrl,
+ badgeLabel = 'Deploy Status',
+ badgeStatus = 'Live',
+ badgeState: 'running' | 'success' | 'failure' | 'unknown' = 'unknown';
 ---
 
 <a
-  href={badgeHref}
-  target="_blank"
-  rel="noopener noreferrer"
-  class="footer-build-badge"
-  data-live-build-badge="1"
-  data-github-owner={githubOwner}
-  data-github-repo={githubRepo}
-  data-workflow-name={deployWorkflowName}
-  data-status={badgeState}
-  aria-label={`Live deploy status: ${badgeStatus}. Open workflow logs in GitHub.`}
+  aria-label={`Live deploy status: ${badgeStatus}. Open workflow logs in GitHub.`}   class="footer-build-badge"   data-github-owner={githubOwner}   data-github-repo={githubRepo}   data-live-build-badge="1"   data-status={badgeState}   data-workflow-name={deployWorkflowName}   href={badgeHref}   rel="noopener noreferrer"   target="_blank"
 >
-  <span class="footer-build-badge__icon" aria-hidden="true">
+  <span aria-hidden="true" class="footer-build-badge__icon">
     <Github size={14} />
   </span>
   <span class="footer-build-badge__text">

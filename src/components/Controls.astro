@@ -102,33 +102,29 @@ const isCvPage = Astro.url.pathname === '/' || Astro.url.pathname === '';
 
 <div class="controls-dock no-print">
   <button
-    class={`btn-primary download-btn cv-only${isCvPage ? '' : ' hidden'}`}
-    type="button"
-    aria-label="Download CV as PDF"
+    aria-label="Download CV as PDF"     class:list={[`btn-primary download-btn cv-only`,{"hidden": !isCvPage}]}     type="button"
   >
     <FileText size={20} />
     <span>PDF</span>
   </button>
   <a
-    href="/"
-    class={`btn-primary cv-btn non-cv-only${isCvPage ? ' hidden' : ''}`}
-    aria-label="Back to CV"
+    aria-label="Back to CV"     class:list={[`btn-primary cv-btn non-cv-only`,{"hidden": isCvPage}]}     href="/"
   >
     <FileText size={20} />
     <span>CV</span>
   </a>
-  <button class="btn-primary share-btn" type="button" aria-label="Share CV">
+  <button aria-label="Share CV" class="btn-primary share-btn" type="button">
     <Share2 size={20} />
     <span>Share</span>
   </button>
-  <a href="/blog" class="btn-primary blog-btn" aria-label="Read my blog">
+  <a aria-label="Read my blog" class="btn-primary blog-btn" href="/blog">
     <NotebookPen size={20} />
     <span>Blog</span>
   </a>
 </div>
-<button class="debug-grid-toggle" type="button" aria-label="Toggle debug grid"
+<button aria-label="Toggle debug grid" class="debug-grid-toggle" type="button"
 ></button>
-<div class="share-toast hidden" role="status" aria-live="polite"></div>
+<div aria-live="polite" class="share-toast hidden" role="status"></div>
 
 <style>
   .hidden {

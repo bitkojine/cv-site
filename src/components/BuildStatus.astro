@@ -3,9 +3,9 @@ import WorkflowStatusBadge from './WorkflowStatusBadge.astro';
 import { getGithubData } from '../lib/github-actions.mts';
 import type { WorkflowRun } from '../lib/github-actions.mts';
 
-const githubOwner = 'bitkojine';
-const githubRepo = 'cv-site';
-const shouldFetchGithub = true;
+const githubOwner = 'bitkojine',
+ githubRepo = 'cv-site',
+ shouldFetchGithub = true;
 
 let latestWorkflowRuns: WorkflowRun[] = [];
 
@@ -35,8 +35,7 @@ if (shouldFetchGithub) {
       <a
         class="touch-link"
         href="https://github.com/bitkojine/cv-site/actions"
-        target="_blank"
-        rel="noopener noreferrer"
+        rel="noopener noreferrer"         target="_blank"
       >
         View Build Status on GitHub
       </a>

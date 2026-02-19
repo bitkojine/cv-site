@@ -1,15 +1,15 @@
 import { describe, expect, it } from 'vitest';
 import { getGithubData } from '../../src/lib/github-actions.mts';
 
-type MockResponse = {
+interface MockResponse {
   ok: boolean;
   json: () => Promise<unknown>;
-};
+}
 
 describe('getGithubData', () => {
   it('includes the branch query parameter', async () => {
-    const calls: string[] = [];
-    const fetchImpl = async (url: string): Promise<MockResponse> => {
+    const calls: string[] = [],
+     fetchImpl = async (url: string): Promise<MockResponse> => {
       calls.push(url);
       return { ok: true, json: async () => ({ workflow_runs: [] }) };
     };
@@ -29,9 +29,9 @@ describe('getGithubData', () => {
     const fetchImpl = async (): Promise<MockResponse> => {
       call += 1;
       return { ok: false, json: async () => ({}) };
-    };
+    },
 
-    const result = await getGithubData({
+     result = await getGithubData({
       owner: 'owner',
       repo: 'repo',
       fetchImpl,
@@ -78,9 +78,9 @@ describe('getGithubData', () => {
         };
       }
       return { ok: true, json: async () => [] };
-    };
+    },
 
-    const result = await getGithubData({
+     result = await getGithubData({
       owner: 'owner',
       repo: 'repo',
       fetchImpl,
@@ -121,9 +121,9 @@ describe('getGithubData', () => {
         };
       }
       return { ok: true, json: async () => [] };
-    };
+    },
 
-    const result = await getGithubData({
+     result = await getGithubData({
       owner: 'owner',
       repo: 'repo',
       fetchImpl,

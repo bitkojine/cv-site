@@ -31,16 +31,16 @@ const devPhilosophy = [
       'Code as a formal spec for AI collaboration.',
     ],
   },
-];
+],
 
-const deepDivePosts = (
+ deepDivePosts = (
   await getCollection('blog', ({ data }) => !data.draft)
 ).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 ---
 
-<section class="mode-hero" aria-labelledby="dev-heading">
+<section aria-labelledby="dev-heading" class="mode-hero">
   <div class="headline-row">
-    <span class="headline-icon" aria-hidden="true"><Code2 size={86} /></span>
+    <span aria-hidden="true" class="headline-icon"><Code2 size={86} /></span>
     <h1 id="dev-heading">Building in public with radical determinism.</h1>
   </div>
   <div class="cta-row">
@@ -50,11 +50,8 @@ const deepDivePosts = (
       ))
     }
     <PageShareButton
-      shareRole="Developer / Builder"
-      label="Share with developer"
-      source="dev_hero_cta"
-      shareTitle="Robertas Rudys | Developer / Builder"
-      shareText="Sharing this open source profile and engineering methodology."
+      label="Share with developer"       shareRole="Developer / Builder"
+      shareText="Sharing this open source profile and engineering methodology."       shareTitle="Robertas Rudys | Developer / Builder"       source="dev_hero_cta"
     />
   </div>
   <noscript>
@@ -72,13 +69,11 @@ const deepDivePosts = (
   message="Forward this profile to one developer interested in deterministic architecture or AI-first workflows."
 />
 
-<section class="card" aria-labelledby="dev-activity-heading">
+<section aria-labelledby="dev-activity-heading" class="card">
   <h2 id="dev-activity-heading">Live Activity Feed</h2>
   <p class="activity-hint">Scroll to see more activity.</p>
   <div
-    id="github-activity-feed"
-    class="activity-feed"
-    data-github-user="bitkojine"
+    class="activity-feed"     data-github-user="bitkojine"     id="github-activity-feed"
   >
     <p class="activity-feed__loading">
       Fetching latest activity from GitHub...
@@ -86,7 +81,7 @@ const deepDivePosts = (
   </div>
 </section>
 
-<section class="card" aria-labelledby="dev-projects">
+<section aria-labelledby="dev-projects" class="card">
   <h2 id="dev-projects">Core Projects</h2>
   <article>
     <h3>Causaloop</h3>
@@ -106,7 +101,7 @@ const deepDivePosts = (
   </article>
 </section>
 
-<section class="card" aria-labelledby="dev-stack">
+<section aria-labelledby="dev-stack" class="card">
   <h2 id="dev-stack">The Deterministic Stack</h2>
   <p>
     I optimize for predictability. My stack is chosen to minimize the surface
@@ -132,10 +127,10 @@ const deepDivePosts = (
   </div>
 </section>
 
-<section class="card" aria-labelledby="dev-deep-dives">
+<section aria-labelledby="dev-deep-dives" class="card">
   <h2 id="dev-deep-dives">Technical Deep Dives</h2>
   <p class="reading-hint">Scroll to see all posts.</p>
-  <div class="reading-list" role="navigation" aria-label="All blog posts">
+  <div aria-label="All blog posts" class="reading-list" role="navigation">
     {
       deepDivePosts.map((post) => (
         <article class="reading-item">
@@ -149,7 +144,7 @@ const deepDivePosts = (
   </div>
 </section>
 
-<section class="card" aria-labelledby="dev-philosophy">
+<section aria-labelledby="dev-philosophy" class="card">
   <h2 id="dev-philosophy">Engineering Methodology</h2>
   {
     devPhilosophy.map((item) => (

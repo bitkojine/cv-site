@@ -30,7 +30,7 @@ test.describe('peer share prompt', () => {
       await page.addInitScript(() => {
         (
           window as typeof window & {
-            dataLayer: Array<Record<string, unknown>>;
+            dataLayer: Record<string, unknown>[];
           }
         ).dataLayer = [];
 
@@ -74,11 +74,11 @@ test.describe('peer share prompt', () => {
         () =>
           (
             window as typeof window & {
-              dataLayer: Array<Record<string, unknown>>;
+              dataLayer: Record<string, unknown>[];
             }
           ).dataLayer
-      );
-      const eventNames = events.map((event) => event.event);
+      ),
+       eventNames = events.map((event) => event.event);
       expect(eventNames).toContain('peer_share_prompt_viewed');
       expect(eventNames).toContain('peer_share_forwarded');
     });

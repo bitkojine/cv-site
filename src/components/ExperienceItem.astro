@@ -15,7 +15,7 @@ const { title, company, period, description } = Astro.props;
       <h3>{title}</h3>
       <span class="company">{company}</span>
     </div>
-    <span class="job-period" aria-label={`Period: ${period}`}>{period}</span>
+    <span aria-label={`Period: ${period}`} class="job-period">{period}</span>
   </header>
   <div class="job-content">
     {description.map((item) => <p>{item}</p>)}
