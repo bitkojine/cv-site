@@ -15,91 +15,180 @@ permissions:
   issues: write
 
 jobs:
-  check-origin-cert:
+  check-certificates:
     runs-on: ubuntu-latest
     env:
       DOMAIN: robertasrudys.com
       ALERT_DAYS: '21'
+      CRITICAL_DAYS: '7'
       ORIGIN_IPS: '185.199.108.153 185.199.109.153 185.199.110.153 185.199.111.153'
+      ENFORCE_ORIGIN_VALIDATION: 'false'
     steps:
-      - name: Check certificate expiry on all GitHub Pages origin IPs
+      - name: Check edge and origin certificate expiry
         id: cert
         shell: bash
         env:
           FORCE_ALERT: ${{ github.event.inputs.force_alert || 'false' }}
         run: |
           set -euo pipefail
+
           now_epoch="$(date -u +%s)"
-          min_days_left=999999
-          min_not_after=""
-          has_error=0
-          details=""
+
+          cert_days_left() {
+            local connect_target="$1"
+            local sni="$2"
+            local end_date
+            local cert_epoch
+            local days_left
+
+            end_date="$(echo | openssl s_client -servername "${sni}" -connect "${connect_target}" 2>/dev/null | openssl x509 -noout -enddate | cut -d= -f2 || true)"
+            if [ -z "${end_date}" ]; then
+              echo ""
+              return 0
+            fi
+
+            cert_epoch="$(date -u -d "${end_date}" +%s)"
+            days_left="$(( (cert_epoch - now_epoch) / 86400 ))"
+            echo "${end_date}|${days_left}"
+          }
+
+          classify_state() {
+            local days_left="$1"
+            local alert_days="$2"
+            local critical_days="$3"
+
+            if [ -z "${days_left}" ]; then
+              echo "error"
+            elif [ "${days_left}" -lt 0 ]; then
+              echo "expired"
+            elif [ "${days_left}" -le "${critical_days}" ]; then
+              echo "critical"
+            elif [ "${days_left}" -le "${alert_days}" ]; then
+              echo "warning"
+            else
+              echo "healthy"
+            fi
+          }
+
+          edge_data="$(cert_days_left "${DOMAIN}:443" "${DOMAIN}")"
+          edge_not_after="$(echo "${edge_data}" | cut -d'|' -f1)"
+          edge_days_left="$(echo "${edge_data}" | cut -d'|' -f2)"
+          [ "${edge_not_after}" = "${edge_data}" ] && edge_days_left=""
+
+          edge_state="$(classify_state "${edge_days_left}" "${ALERT_DAYS}" "${CRITICAL_DAYS}")"
+
+          origin_min_days_left=999999
+          origin_min_not_after=""
+          origin_details=""
+          origin_has_error=0
 
           for ip in ${ORIGIN_IPS}; do
-            cert_end="$(echo | openssl s_client -servername "${DOMAIN}" -connect "${ip}:443" 2>/dev/null | openssl x509 -noout -enddate | cut -d= -f2)"
-            if [ -z "${cert_end}" ]; then
-              has_error=1
-              details="${details}\n- ${ip}: failed to read certificate end date"
+            origin_data="$(cert_days_left "${ip}:443" "${DOMAIN}")"
+            origin_not_after="$(echo "${origin_data}" | cut -d'|' -f1)"
+            origin_days_left="$(echo "${origin_data}" | cut -d'|' -f2)"
+
+            if [ "${origin_not_after}" = "${origin_data}" ] || [ -z "${origin_not_after}" ]; then
+              origin_has_error=1
+              origin_details="${origin_details}\n- ${ip}: failed to read certificate end date"
               continue
             fi
 
-            cert_epoch="$(date -u -d "${cert_end}" +%s)"
-            days_left="$(( (cert_epoch - now_epoch) / 86400 ))"
-            details="${details}\n- ${ip}: expires ${cert_end} (${days_left} days left)"
+            origin_details="${origin_details}\n- ${ip}: expires ${origin_not_after} (${origin_days_left} days left)"
 
-            if [ "${days_left}" -lt "${min_days_left}" ]; then
-              min_days_left="${days_left}"
-              min_not_after="${cert_end}"
+            if [ "${origin_days_left}" -lt "${origin_min_days_left}" ]; then
+              origin_min_days_left="${origin_days_left}"
+              origin_min_not_after="${origin_not_after}"
             fi
           done
 
-          if [ "${has_error}" -eq 1 ]; then
-            alert=true
-            reason="certificate check failed for one or more origin IPs"
-          elif [ "${min_days_left}" -lt 0 ]; then
-            alert=true
-            reason="origin certificate already expired"
-          elif [ "${min_days_left}" -le "${ALERT_DAYS}" ]; then
-            alert=true
-            reason="origin certificate expires within ${ALERT_DAYS} days"
+          if [ "${origin_has_error}" -eq 1 ] && [ "${origin_min_days_left}" -eq 999999 ]; then
+            origin_state="error"
+            origin_min_days_left=""
           else
-            alert=false
-            reason="origin certificate is healthy"
+            origin_state="$(classify_state "${origin_min_days_left}" "${ALERT_DAYS}" "${CRITICAL_DAYS}")"
+          fi
+
+          alert=false
+          fail=false
+          reminder=false
+          reason="edge and origin certificates are healthy"
+          reminder_reason=""
+
+          if [ "${edge_state}" != "healthy" ] || [ "${origin_state}" != "healthy" ]; then
+            alert=true
+          fi
+
+          if [ "${edge_state}" = "error" ] || [ "${edge_state}" = "expired" ] || [ "${edge_state}" = "critical" ]; then
+            fail=true
+            reason="edge certificate is ${edge_state}"
+          elif [ "${ENFORCE_ORIGIN_VALIDATION}" = "true" ] && { [ "${origin_state}" = "error" ] || [ "${origin_state}" = "expired" ] || [ "${origin_state}" = "critical" ]; }; then
+            fail=true
+            reason="origin certificate is ${origin_state} while strict origin validation is enabled"
+          elif [ "${edge_state}" = "warning" ]; then
+            reason="edge certificate expires within ${ALERT_DAYS} days"
+          elif [ "${origin_state}" = "error" ]; then
+            reason="origin certificate check failed on one or more origin IPs"
+          elif [ "${origin_state}" = "expired" ] || [ "${origin_state}" = "critical" ] || [ "${origin_state}" = "warning" ]; then
+            reason="origin certificate is ${origin_state} (warning-only unless strict origin validation is enabled)"
           fi
 
           if [ "${FORCE_ALERT}" = "true" ]; then
             alert=true
+            fail=true
             reason="manual alert test requested via workflow_dispatch"
           fi
 
+          if [ "${ENFORCE_ORIGIN_VALIDATION}" = "false" ] && [ "${edge_state}" = "healthy" ] && [ "${origin_state}" = "healthy" ]; then
+            reminder=true
+            reminder_reason="certificates are healthy and strict-origin enforcement is still disabled (action needed)"
+          fi
+
+          summary="Edge: state=${edge_state}, days_left=${edge_days_left:-unknown}, not_after=${edge_not_after:-unknown}\nOrigin: state=${origin_state}, min_days_left=${origin_min_days_left:-unknown}, min_not_after=${origin_min_not_after:-unknown}"
+
           {
             echo "alert=${alert}"
+            echo "fail=${fail}"
             echo "reason=${reason}"
-            echo "min_days_left=${min_days_left}"
-            echo "min_not_after=${min_not_after}"
-            echo "details<<EOF"
-            printf '%b\n' "${details}"
+            echo "edge_state=${edge_state}"
+            echo "edge_days_left=${edge_days_left}"
+            echo "edge_not_after=${edge_not_after}"
+            echo "origin_state=${origin_state}"
+            echo "origin_min_days_left=${origin_min_days_left}"
+            echo "origin_min_not_after=${origin_min_not_after}"
+            echo "reminder=${reminder}"
+            echo "reminder_reason=${reminder_reason}"
+            echo "origin_details<<EOF"
+            printf '%b\n' "${origin_details}"
+            echo "EOF"
+            echo "summary<<EOF"
+            printf '%b\n' "${summary}"
             echo "EOF"
           } >> "$GITHUB_OUTPUT"
 
           echo "Result: ${reason}"
-          printf '%b\n' "${details}"
+          printf '%b\n' "${summary}"
+          printf '%b\n' "${origin_details}"
 
       - name: Open or update alert issue
         if: steps.cert.outputs.alert == 'true'
         uses: actions/github-script@v7
         with:
           script: |
-            const title = 'SSL alert: robertasrudys.com origin certificate';
+            const title = 'SSL alert: robertasrudys.com edge/origin certificate';
             const body = [
               'Detected by `.github/workflows/ssl-monitor.yml`.',
               '',
               `Reason: ${process.env.REASON}`,
-              `Minimum days left: ${process.env.MIN_DAYS_LEFT}`,
-              `Earliest notAfter: ${process.env.MIN_NOT_AFTER}`,
+              '',
+              'Summary:',
+              process.env.SUMMARY || '(none)',
               '',
               'Per-origin details:',
-              process.env.DETAILS || '(none)',
+              process.env.ORIGIN_DETAILS || '(none)',
+              '',
+              'Notes:',
+              `- ENFORCE_ORIGIN_VALIDATION=${process.env.ENFORCE_ORIGIN_VALIDATION}`,
+              `- ALERT_DAYS=${process.env.ALERT_DAYS}, CRITICAL_DAYS=${process.env.CRITICAL_DAYS}`,
             ].join('\n');
 
             const { data: issues } = await github.rest.issues.listForRepo({
@@ -129,9 +218,11 @@ jobs:
             }
         env:
           REASON: ${{ steps.cert.outputs.reason }}
-          MIN_DAYS_LEFT: ${{ steps.cert.outputs.min_days_left }}
-          MIN_NOT_AFTER: ${{ steps.cert.outputs.min_not_after }}
-          DETAILS: ${{ steps.cert.outputs.details }}
+          SUMMARY: ${{ steps.cert.outputs.summary }}
+          ORIGIN_DETAILS: ${{ steps.cert.outputs.origin_details }}
+          ENFORCE_ORIGIN_VALIDATION: ${{ env.ENFORCE_ORIGIN_VALIDATION }}
+          ALERT_DAYS: ${{ env.ALERT_DAYS }}
+          CRITICAL_DAYS: ${{ env.CRITICAL_DAYS }}
 
       - name: Send alert email
         if: steps.cert.outputs.alert == 'true'
@@ -142,23 +233,57 @@ jobs:
           username: ${{ secrets.ALERT_SMTP_USERNAME }}
           password: ${{ secrets.ALERT_SMTP_PASSWORD }}
           secure: false
-          subject: '[ALERT] robertasrudys.com origin SSL certificate'
+          subject: '[ALERT] robertasrudys.com SSL monitor'
           to: ${{ secrets.ALERT_EMAIL_TO }}
           from: ${{ secrets.ALERT_EMAIL_FROM }}
           body: |
             SSL monitor alert for robertasrudys.com
 
             Reason: ${{ steps.cert.outputs.reason }}
-            Minimum days left: ${{ steps.cert.outputs.min_days_left }}
-            Earliest notAfter: ${{ steps.cert.outputs.min_not_after }}
+
+            Summary:
+            ${{ steps.cert.outputs.summary }}
 
             Per-origin details:
-            ${{ steps.cert.outputs.details }}
+            ${{ steps.cert.outputs.origin_details }}
+
+            ENFORCE_ORIGIN_VALIDATION: ${{ env.ENFORCE_ORIGIN_VALIDATION }}
+            ALERT_DAYS: ${{ env.ALERT_DAYS }}
+            CRITICAL_DAYS: ${{ env.CRITICAL_DAYS }}
 
             Workflow run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
-      - name: Fail workflow when alerting
-        if: steps.cert.outputs.alert == 'true'
+      - name: Send strict-mode reminder email
+        if: steps.cert.outputs.reminder == 'true'
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: ${{ secrets.ALERT_SMTP_SERVER }}
+          server_port: ${{ secrets.ALERT_SMTP_PORT || '587' }}
+          username: ${{ secrets.ALERT_SMTP_USERNAME }}
+          password: ${{ secrets.ALERT_SMTP_PASSWORD }}
+          secure: false
+          subject: '[REMINDER] Re-enable strict origin SSL validation'
+          to: ${{ secrets.ALERT_EMAIL_TO }}
+          from: ${{ secrets.ALERT_EMAIL_FROM }}
+          body: |
+            Reminder from SSL monitor for robertasrudys.com
+
+            ${{ steps.cert.outputs.reminder_reason }}
+
+            Current workflow mode:
+            - ENFORCE_ORIGIN_VALIDATION=${{ env.ENFORCE_ORIGIN_VALIDATION }}
+
+            Action:
+            1) In Cloudflare, switch SSL mode to Full (Strict) once confirmed stable.
+            2) In .github/workflows/ssl-monitor.yml set ENFORCE_ORIGIN_VALIDATION to 'true'.
+
+            Summary:
+            ${{ steps.cert.outputs.summary }}
+
+            Workflow run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+      - name: Fail workflow when critical
+        if: steps.cert.outputs.fail == 'true'
         run: |
-          echo "SSL monitor alert: ${{ steps.cert.outputs.reason }}"
+          echo "SSL monitor critical: ${{ steps.cert.outputs.reason }}"
           exit 1
