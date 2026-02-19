@@ -8,17 +8,9 @@
 # 1: Violations found.
 # 2: Internal error.
 
-# Error handler for internal errors
-handle_internal_error() {
-  echo "" >&2
-  echo "ERROR: The zero-comment-policy script failed to execute properly." >&2
-  echo "This may be due to a Git command failure or missing tooling." >&2
-  exit 2
-}
-
 # Catch errors
 set -e
-trap handle_internal_error ERR
+trap 'echo "" >&2; echo "ERROR: The zero-comment-policy script failed to execute properly." >&2; echo "This may be due to a Git command failure or missing tooling." >&2; exit 2' ERR
 
 CHECK_ALL=false
 if [ "$1" == "--all" ]; then

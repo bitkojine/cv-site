@@ -1,0 +1,19 @@
+{
+  "globs": [
+    "README.md",
+    "docs/**/*.md",
+    "src/content/**/*.md",
+    "stress/**/*.md",
+  ],
+  "ignores": [
+    "node_modules/**",
+    "dist/**",
+    ".astro/**",
+    "playwright-report/**",
+    "test-results/**",
+  ],
+  "config": {
+    "MD013": false,
+    "MD025": false,
+  },
+}
