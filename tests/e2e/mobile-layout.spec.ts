@@ -8,6 +8,10 @@ const pagesToCheck = [
     '/build',
     '/vision',
     '/dev',
+    '/operating-system',
+    '/linkedin',
+    '/blog',
+    '/blog/welcome',
   ] as const,
   viewports = [
     { name: 'iphone-se-portrait', width: 320, height: 568 },

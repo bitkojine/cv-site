@@ -2,6 +2,7 @@
 import { LibraryBig } from '@lucide/astro';
 import SiteLayout from '../../layouts/SiteLayout.astro';
 import ModeSwitch from '../../components/ModeSwitch.astro';
+import SelfReferenceNote from '../../components/SelfReferenceNote.astro';
 import { hiringEvidenceData } from '../../data/hiring-evidence.mts';
 
 const themeOrder = [
@@ -164,6 +165,11 @@ const evidenceIndex = new Map(
         Back to /hiring
       </a>
     </div>
+    <SelfReferenceNote className="cta-note">
+      Echo the Horse is the site's meta guide. When Echo the Horse appears, you
+      are reading the website talking about itself, its AI collaboration model,
+      or how this learning system is evolving.
+    </SelfReferenceNote>
   </section>
 
   <section aria-labelledby="evidence-controls" class="card">

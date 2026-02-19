@@ -1,0 +1,25 @@
+---
+interface Props {
+  className?: string;
+  ariaLabel?: string;
+  mascotName?: string;
+}
+
+const {
+  className = '',
+  ariaLabel = 'Website self-reference note',
+  mascotName = 'Echo the Horse',
+} = Astro.props;
+---
+
+<div
+  aria-label={ariaLabel}
+  class:list={['self-reference', className]}
+  role="note"
+>
+  <span aria-hidden="true" class="self-reference__mascot">♞</span>
+  <p class="self-reference__body">
+    <span class="self-reference__mascot-name">{mascotName}</span>
+    <span class="self-reference__content"><slot /></span>
+  </p>
+</div>

@@ -3,6 +3,7 @@ import { Briefcase } from '@lucide/astro';
 import EmailCta from '../EmailCta.astro';
 import PageShareButton from '../PageShareButton.astro';
 import PeerSharePrompt from '../PeerSharePrompt.astro';
+import SelfReferenceNote from '../SelfReferenceNote.astro';
 import { roleEmailCtas, visitorModes } from '../../lib/email-drafts.mts';
 import { hiringEvidenceData } from '../../data/hiring-evidence.mts';
 
@@ -90,11 +91,10 @@ const evidenceHref = (id: string) => `/hiring/evidence#evidence-${id}`;
     If you want to assess me, use the evidence below and ask me to teach the
     decision logic behind real tradeoffs in production scenarios.
   </p>
-  <p class="cta-note self-reference">
-    <strong>Website self-note:</strong>
-    This site is AI-powered and part of my own learning process: I use it to refine
-    how clearly I explain systems, constraints, and decisions.
-  </p>
+  <SelfReferenceNote className="cta-note">
+    This site is AI-powered and part of my own learning process: I use it to
+    refine how clearly I explain systems, constraints, and decisions.
+  </SelfReferenceNote>
 </section>
 
 <PeerSharePrompt

@@ -1,5 +1,6 @@
 ---
 import { Briefcase, Code2, Cog, DollarSign, Layers } from '@lucide/astro';
+import SelfReferenceNote from './SelfReferenceNote.astro';
 ---
 
 <section aria-labelledby="home-heading" class="home-inbox">
@@ -9,12 +10,12 @@ import { Briefcase, Code2, Cog, DollarSign, Layers } from '@lucide/astro';
     Open the hiring profile first to check role fit, availability, and next
     steps.
   </p>
-  <p class="home-lead self-reference">
-    <strong>Website self-note:</strong>
-    This website is AI-powered and built with AI collaboration. It often explains
-    decisions more clearly than I can on my own, and I keep learning from it as I
-    improve it.
-  </p>
+  <SelfReferenceNote className="home-lead">
+    Meet Echo the Horse, the website horse mascot. Echo the Horse appears in
+    meta notes whenever the site talks about itself. This website is AI-powered
+    and built with AI collaboration. It often explains decisions more clearly
+    than I can on my own, and I keep learning from it as I improve it.
+  </SelfReferenceNote>
   <p class="home-lead">
     Each route is designed to teach one thing clearly: hiring judgment, delivery
     strategy, business model constraints, engineering methodology, or end-to-end
