@@ -30,7 +30,9 @@ const notePayload = JSON.stringify(note).replaceAll('<', '\\u003c');
 >
   <details class="self-reference__panel">
     <summary class="self-reference__summary">
-      <span aria-hidden="true" class="self-reference__mascot">♞</span>
+      <span aria-hidden="true" class="self-reference__mascot">
+        <span class="self-reference__mascot-glyph">♞</span>
+      </span>
       <span class="self-reference__meta">
         <span class="self-reference__mascot-name">{mascotName}</span>
         <span class="self-reference__severity">{note.severity}</span>
