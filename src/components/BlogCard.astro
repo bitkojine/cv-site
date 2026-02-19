@@ -41,18 +41,16 @@ const formattedDate = date.toLocaleDateString('lt-LT', {
 
   .blog-card-link {
     display: block;
-    padding: 1.25rem;
-    background: var(--bg-card);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-md);
+    padding: 1rem 0;
+    background: transparent;
+    border-top: 1px solid var(--line);
+    border-radius: 0;
     text-decoration: none;
-    transition: all 0.2s;
+    transition: border-color 0.2s;
   }
 
   .blog-card-link:hover {
-    border-color: var(--accent-600);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
+    border-color: #b9cbe9;
   }
 
   h3 {
@@ -87,7 +85,7 @@ const formattedDate = date.toLocaleDateString('lt-LT', {
   .tag {
     font-size: var(--fs-xs);
     padding: 0.2rem 0.5rem;
-    background: var(--accent-100);
+    background: color-mix(in oklab, var(--accent-soft) 60%, white);
     color: var(--accent-tag-text);
     border-radius: 0.25rem;
     font-weight: 500;
