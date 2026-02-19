@@ -17,7 +17,8 @@
     "lint": "eslint .",
     "lint:comments": "./scripts/zero-comment-policy.sh --all",
     "format": "prettier --write .",
-    "prepare": "husky"
+    "prepare": "husky",
+    "test:e2e:ci": "env -u NO_COLOR playwright test --fail-on-flaky-tests"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.0",
