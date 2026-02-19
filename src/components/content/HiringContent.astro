@@ -3,6 +3,7 @@ import { Briefcase } from '@lucide/astro';
 import EmailCta from '../EmailCta.astro';
 import PageShareButton from '../PageShareButton.astro';
 import PeerSharePrompt from '../PeerSharePrompt.astro';
+import SectionLastUpdated from '../SectionLastUpdated.astro';
 import { roleEmailCtas, visitorModes } from '../../lib/email-drafts.mts';
 import { hiringEvidenceData } from '../../data/hiring-evidence.mts';
 
@@ -67,11 +68,11 @@ const evidenceHref = (id: string) => `/hiring/evidence#evidence-${id}`;
     }
     <a
       class="cta-secondary"
-      data-cta="View Hiring Pack"
+      data-cta="Open Hiring Pack"
       data-cta-mode={visitorModes.hiring}
       href="/hiring/pack"
     >
-      View Evidence Pack
+      Open Evidence Pack
     </a>
     <PageShareButton
       label="Share with hiring team"
@@ -98,6 +99,7 @@ const evidenceHref = (id: string) => `/hiring/evidence#evidence-${id}`;
 
 <section aria-labelledby="hiring-fit-summary" class="card">
   <h2 id="hiring-fit-summary">60-Second Fit Summary</h2>
+  <SectionLastUpdated />
   <ul>
     <li>
       <strong>Role focus:</strong>
@@ -142,6 +144,7 @@ const evidenceHref = (id: string) => `/hiring/evidence#evidence-${id}`;
 
 <section aria-labelledby="hiring-learn" class="card">
   <h2 id="hiring-learn">What You Will Learn Here</h2>
+  <SectionLastUpdated />
   <ul>
     <li>How to assess senior backend capability through decision evidence</li>
     <li>How to run interviews around tradeoffs, risk, and delivery context</li>
@@ -152,6 +155,7 @@ const evidenceHref = (id: string) => `/hiring/evidence#evidence-${id}`;
 
 <section aria-labelledby="hiring-proof-highlights" class="card">
   <h2 id="hiring-proof-highlights">Proof Highlights</h2>
+  <SectionLastUpdated />
   <p>
     Claims are paired with concrete artifacts. Open any item to review context,
     decision, tradeoffs, and outcomes.
@@ -191,7 +195,7 @@ const evidenceHref = (id: string) => `/hiring/evidence#evidence-${id}`;
               data-evidence-type={signal.evidence.type}
               href={evidenceHref(signal.evidence.id)}
             >
-              Open proof artifact
+              Open full artifact
             </a>
           </div>
         </article>
@@ -202,6 +206,7 @@ const evidenceHref = (id: string) => `/hiring/evidence#evidence-${id}`;
 
 <section aria-labelledby="hiring-evidence-preview" class="card">
   <h2 id="hiring-evidence-preview">Evidence Library Preview</h2>
+  <SectionLastUpdated />
   <p>
     Review the full library at <a href="/hiring/evidence">/hiring/evidence</a>
     with filters for reliability, performance, architecture, delivery, and data.
@@ -217,7 +222,7 @@ const evidenceHref = (id: string) => `/hiring/evidence#evidence-${id}`;
               <strong>Outcome:</strong>
               {item.outcome}
             </p>
-            <a href={evidenceHref(item.id)}>Read full record</a>
+            <a href={evidenceHref(item.id)}>Open full record</a>
           </article>
         </li>
       ))
@@ -227,6 +232,7 @@ const evidenceHref = (id: string) => `/hiring/evidence#evidence-${id}`;
 
 <section aria-labelledby="hiring-working-style" class="card">
   <h2 id="hiring-working-style">Working Style And Process Filters</h2>
+  <SectionLastUpdated />
   <h3>How I De-Risk Delivery</h3>
   <ul>
     <li>Align scope to business risk before implementation starts</li>

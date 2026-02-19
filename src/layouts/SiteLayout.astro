@@ -62,6 +62,13 @@ const {
       : {}),
     ...schemaExtras,
   };
+
+const pageDensity =
+  canonicalPath === '/'
+    ? 'hero'
+    : canonicalPath === '/hiring/evidence' || canonicalPath.startsWith('/blog/')
+      ? 'dense'
+      : 'default';
 ---
 
 <!doctype html>
@@ -72,6 +79,11 @@ const {
       content="width=device-width, initial-scale=1, viewport-fit=cover"
       name="viewport"
     />
+    <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
+    <link href="/favicon.svg" rel="shortcut icon" />
+    <link href="/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" />
+    <meta content="yes" name="apple-mobile-web-app-capable" />
+    <meta content={siteName} name="apple-mobile-web-app-title" />
     <title>{title}</title>
     <meta content={description} name="description" />
     <link href={canonicalUrl} rel="canonical" />
@@ -123,7 +135,12 @@ const {
         }
       </div>
     </header>
-    <main class="site-shell" id="main-content">
+    <main
+      class:list={['site-shell', `site-shell--${pageDensity}`]}
+      data-page-density={pageDensity}
+      data-route={canonicalPath}
+      id="main-content"
+    >
       <SelfReferenceNote
         className="site-global-echo"
         note={echoNote}

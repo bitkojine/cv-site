@@ -269,13 +269,13 @@ export const visitorModes = {
 export const roleEmailCtas = {
   hiring: [
     createEmailCta(
-      'Request Resume',
+      'Send Resume Request',
       'primary',
       emailDrafts.hiring.requestResume,
       'www-hiring-resume'
     ),
     createEmailCta(
-      'Schedule Intro',
+      'Send Intro Request',
       'secondary',
       emailDrafts.hiring.scheduleIntro,
       'www-hiring-intro'
@@ -283,13 +283,13 @@ export const roleEmailCtas = {
   ],
   build: [
     createEmailCta(
-      'Work Together',
+      'Send Work Request',
       'primary',
       emailDrafts.build.workTogether,
       'www-build'
     ),
     createEmailCta(
-      'Book a Call',
+      'Send Call Request',
       'secondary',
       emailDrafts.build.bookCall,
       'www-build-call'
@@ -297,13 +297,13 @@ export const roleEmailCtas = {
   ],
   vision: [
     createEmailCta(
-      'Get Product Updates',
+      'Send Product Update Request',
       'primary',
       emailDrafts.vision.getProductUpdates,
       'www-vision-updates'
     ),
     createEmailCta(
-      'Request Investment Details',
+      'Send Investment Request',
       'secondary',
       emailDrafts.vision.requestInvestmentDetails,
       'www-vision-invest'
@@ -311,19 +311,19 @@ export const roleEmailCtas = {
   ],
   ops: [
     createEmailCta(
-      'Discuss Website System',
+      'Send Website System Request',
       'primary',
       emailDrafts.ops.discussWebsiteSystem,
       'www-ops'
     ),
     createEmailCta(
-      'Get This Website Flow Summary',
+      'Send Flow Summary Request',
       'secondary',
       emailDrafts.ops.requestPipelineSnapshot,
       'www-ops-pipeline'
     ),
     createEmailCta(
-      'Explore Advisory Fit',
+      'Send Advisory Request',
       'secondary',
       emailDrafts.ops.exploreAdvisoryFit,
       'www-ops-advisory'
@@ -331,13 +331,13 @@ export const roleEmailCtas = {
   ],
   dev: [
     createEmailCta(
-      'Get Updates',
+      'Send Open Source Update Request',
       'primary',
       emailDrafts.dev.getUpdates,
       'www-dev-updates'
     ),
     createEmailCta(
-      'Collaborate',
+      'Send Collaboration Request',
       'secondary',
       emailDrafts.dev.collaborate,
       'www-dev-collab'

@@ -4,6 +4,7 @@ import { getCollection } from 'astro:content';
 import EmailCta from '../EmailCta.astro';
 import PageShareButton from '../PageShareButton.astro';
 import PeerSharePrompt from '../PeerSharePrompt.astro';
+import SectionLastUpdated from '../SectionLastUpdated.astro';
 import { roleEmailCtas, visitorModes } from '../../lib/email-drafts.mts';
 
 const devPhilosophy = [
@@ -73,6 +74,7 @@ const devPhilosophy = [
 
 <section aria-labelledby="dev-learn" class="card">
   <h2 id="dev-learn">What You Will Learn Here</h2>
+  <SectionLastUpdated />
   <ul>
     <li>How deterministic design reduces non-reproducible production bugs</li>
     <li>How to separate business logic from side-effects for replayability</li>
@@ -83,15 +85,19 @@ const devPhilosophy = [
 
 <section aria-labelledby="dev-activity-heading" class="card">
   <h2 id="dev-activity-heading">Live Activity Feed</h2>
+  <SectionLastUpdated />
   <p class="activity-hint">Scroll to see more activity.</p>
   <div
     class="activity-feed"
     data-github-user="bitkojine"
     id="github-activity-feed"
   >
-    <p class="activity-feed__loading">
-      Fetching latest activity from GitHub...
-    </p>
+    <p class="activity-feed__loading">Loading activity feed...</p>
+    <div class="activity-skeleton-list" data-activity-skeleton>
+      <div class="ui-skeleton activity-skeleton-item"></div>
+      <div class="ui-skeleton activity-skeleton-item"></div>
+      <div class="ui-skeleton activity-skeleton-item"></div>
+    </div>
   </div>
 </section>
 
@@ -191,6 +197,15 @@ const devPhilosophy = [
     font-size: 0.9rem;
     color: var(--muted);
     font-style: italic;
+  }
+
+  .activity-skeleton-list {
+    display: grid;
+    gap: 0.55rem;
+  }
+
+  .activity-skeleton-item {
+    height: 64px;
   }
 
   .activity-hint {

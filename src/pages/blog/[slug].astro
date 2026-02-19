@@ -2,6 +2,8 @@
 import SiteLayout from '../../layouts/SiteLayout.astro';
 import { getCollection } from 'astro:content';
 import { BookOpen, ChevronLeft } from '@lucide/astro';
+import ReadingProgress from '../../components/ReadingProgress.astro';
+import SectionLastUpdated from '../../components/SectionLastUpdated.astro';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
@@ -22,6 +24,8 @@ const { post } = Astro.props,
   roleLabel={post.data.title}
   title={`${post.data.title} | Robertas Rudys`}
 >
+  <ReadingProgress targetSelector="#blog-post-content" />
+
   <nav aria-label="Post navigation" class="mode-indicator" data-role-indicator>
     <a
       class="switch-button"
@@ -29,13 +33,18 @@ const { post } = Astro.props,
       style="text-decoration: none; display: flex; align-items: center; gap: 0.5rem; color: var(--accent); font-weight: 500;"
     >
       <ChevronLeft size={18} />
-      <span>All Posts</span>
+      <span>Open all posts</span>
     </a>
   </nav>
 
-  <article class="card">
+  <nav aria-label="Post sections" class="in-page-nav" data-blog-toc hidden>
+    <p class="in-page-nav__label">On this page</p>
+    <ul data-blog-toc-list></ul>
+  </nav>
+
+  <article class="card" id="blog-post-content">
     <div
-      style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem; color: var(--accent);"
+      style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; color: var(--accent);"
     >
       <BookOpen size={24} />
       <time
@@ -54,14 +63,16 @@ const { post } = Astro.props,
     </div>
 
     <h1
-      style="margin: 0 0 1rem; font-size: clamp(1.8rem, 5vw, 2.75rem); line-height: 1.15; color: var(--text);"
+      style="margin: 0 0 0.7rem; font-size: clamp(1.8rem, 5vw, 2.75rem); line-height: 1.15; color: var(--text);"
     >
       {post.data.title}
     </h1>
 
+    <SectionLastUpdated date={post.data.date} label="Post updated" />
+
     <div
       class="prose"
-      style="margin-top: 2rem; color: var(--text); line-height: 1.7;"
+      style="margin-top: 1.35rem; color: var(--text); line-height: 1.7;"
     >
       <Content />
     </div>
@@ -73,11 +84,13 @@ const { post } = Astro.props,
     font-size: 1.5rem;
     margin: 2.5rem 0 1rem;
     color: var(--text);
+    scroll-margin-top: calc(var(--safe-top) + 8rem);
   }
   .prose h3 {
     font-size: 1.25rem;
     margin: 2rem 0 0.75rem;
     color: var(--text);
+    scroll-margin-top: calc(var(--safe-top) + 8rem);
   }
   .prose p {
     margin-bottom: 1.25rem;
@@ -126,3 +139,51 @@ const { post } = Astro.props,
     color: var(--muted);
   }
 </style>
+
+<script>
+  (() => {
+    const init = () => {
+      const tocRoot = document.querySelector('[data-blog-toc]');
+      const tocList = document.querySelector('[data-blog-toc-list]');
+      const contentRoot = document.querySelector('#blog-post-content .prose');
+      if (
+        !(tocRoot instanceof HTMLElement) ||
+        !(tocList instanceof HTMLElement) ||
+        !(contentRoot instanceof HTMLElement)
+      ) {
+        return;
+      }
+
+      if (tocRoot.dataset.boundToc === '1') return;
+      tocRoot.dataset.boundToc = '1';
+
+      const headings = Array.from(contentRoot.querySelectorAll('h2, h3'));
+      if (headings.length === 0) {
+        tocRoot.hidden = true;
+        return;
+      }
+
+      tocList.innerHTML = '';
+      headings.forEach((heading, index) => {
+        if (!(heading instanceof HTMLElement)) return;
+        if (!heading.id) {
+          heading.id = `post-section-${index + 1}`;
+        }
+        const item = document.createElement('li');
+        const link = document.createElement('a');
+        link.href = `#${heading.id}`;
+        link.textContent = heading.textContent || `Section ${index + 1}`;
+        item.append(link);
+        tocList.append(item);
+      });
+      tocRoot.hidden = false;
+    };
+
+    document.addEventListener('astro:page-load', init);
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init, { once: true });
+    } else {
+      init();
+    }
+  })();
+</script>

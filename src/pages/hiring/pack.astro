@@ -1,6 +1,7 @@
 ---
 import { FileText } from '@lucide/astro';
 import SiteLayout from '../../layouts/SiteLayout.astro';
+import SectionLastUpdated from '../../components/SectionLastUpdated.astro';
 import { hiringEvidenceData } from '../../data/hiring-evidence.mts';
 
 const topCaseStudies = hiringEvidenceData.caseStudies.slice(0, 2);
@@ -51,20 +52,24 @@ const schemaExtras = {
       </a>
       <a
         class="cta-secondary"
-        data-cta="Back To Hiring"
+        data-cta="Open Hiring Profile"
         data-cta-mode="Recruiter / Hiring Manager"
         href="/hiring"
       >
-        Back to /hiring
+        Open Hiring Profile
       </a>
       <button class="cta-secondary" data-pack-print type="button"
         >Export PDF</button
+      >
+      <button class="cta-secondary" data-pack-copy-summary type="button"
+        >Copy Recruiter Summary</button
       >
     </div>
   </section>
 
   <section aria-labelledby="pack-fit" class="card pack-card">
     <h2 id="pack-fit">60-Second Fit</h2>
+    <SectionLastUpdated />
     <ul>
       <li>
         <strong>Role focus:</strong>
@@ -95,6 +100,7 @@ const schemaExtras = {
 
   <section aria-labelledby="pack-evidence" class="card pack-card">
     <h2 id="pack-evidence">Top Evidence</h2>
+    <SectionLastUpdated />
     {
       topCaseStudies.map((study) => (
         <article>
@@ -124,6 +130,7 @@ const schemaExtras = {
 
   <section aria-labelledby="pack-interview" class="card pack-card">
     <h2 id="pack-interview">How To Interview Me</h2>
+    <SectionLastUpdated />
     <p>
       Use one artifact from <a href="/hiring/evidence">/hiring/evidence</a> and discuss
       these prompts:
@@ -199,6 +206,8 @@ const schemaExtras = {
 </style>
 
 <script>
+  import { showToast } from '../../lib/ui-feedback.mts';
+
   (() => {
     const reportEvent = (eventName, props = {}) => {
       const sendEvent = window.cvReportEvent ?? window.cvTrack;
@@ -209,6 +218,7 @@ const schemaExtras = {
 
     const init = () => {
       const printButton = document.querySelector('[data-pack-print]');
+      const copyButton = document.querySelector('[data-pack-copy-summary]');
       if (!(printButton instanceof HTMLButtonElement)) return;
       if (printButton.dataset.boundPrint === '1') return;
       printButton.dataset.boundPrint = '1';
@@ -216,6 +226,37 @@ const schemaExtras = {
         reportEvent('hiring_pack_exported', { method: 'print_dialog' });
         window.print();
       });
+
+      if (
+        copyButton instanceof HTMLButtonElement &&
+        copyButton.dataset.boundCopySummary !== '1'
+      ) {
+        copyButton.dataset.boundCopySummary = '1';
+        copyButton.addEventListener('click', async () => {
+          const text = [
+            'Hiring Pack Summary',
+            '',
+            'Fit: Senior backend engineer focused on reliability, delivery constraints, and ownership-level tradeoffs.',
+            'Interview style: Evaluate with artifact discussion and teach-back of decision logic, not trivia.',
+            '',
+            'Primary prompts:',
+            '- Talk through a system owned and tradeoffs made.',
+            '- Explain incident and reliability approach.',
+            '- Describe delivery under constraints.',
+            '',
+            `Source: ${window.location.href}`,
+          ].join('\\n');
+          try {
+            await navigator.clipboard.writeText(text);
+            showToast(document, 'Recruiter summary copied.', 'success');
+            reportEvent('hiring_pack_summary_copied', {
+              source: 'hiring_pack',
+            });
+          } catch {
+            showToast(document, 'Copy failed. Please try again.', 'warning');
+          }
+        });
+      }
     };
 
     document.addEventListener('astro:page-load', init);
