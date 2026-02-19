@@ -1136,8 +1136,9 @@ body[data-current-role]:not([data-current-role='']) .site-shell {
 }
 
 .footer-build-badge__status {
-  color: #1f8f47;
-  font-size: 0.79rem;
+  color: #166534;
+  font-size: 0.82rem;
+  font-weight: 600;
 }
 
 .footer-build-badge[data-status='success'] {
