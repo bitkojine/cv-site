@@ -188,6 +188,25 @@ Attributes used by instrumentation:
   - builds `dist/` and deploys to GitHub Pages on `main` pushes or manual dispatch
 - SSL monitor workflow: `.github/workflows/ssl-monitor.yml`
   - runs daily and opens/updates a GitHub issue if origin certificate expiry risk is detected
+- Availability monitor workflow: `.github/workflows/site-availability-monitor.yml`
+  - runs every 15 minutes and alerts on request failures, HTTP 5xx, and Cloudflare `526`
+
+## Alerting
+
+Alerts are sent to:
+
+- GitHub Issues (created/updated by monitor workflows)
+- GitHub Actions run failures
+- Email (if SMTP secrets are configured)
+
+Email secrets to configure in repository settings:
+
+- `ALERT_SMTP_SERVER` (for example `smtp.gmail.com`)
+- `ALERT_SMTP_PORT` (optional, default `587`)
+- `ALERT_SMTP_USERNAME`
+- `ALERT_SMTP_PASSWORD`
+- `ALERT_EMAIL_FROM`
+- `ALERT_EMAIL_TO`
 
 Site config is in `astro.config.mts` with:
 
