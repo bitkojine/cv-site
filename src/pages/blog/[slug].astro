@@ -19,6 +19,7 @@ const { Content } = await post.render();
   title={`${post.data.title} | Robertas Rudys`}
   description={post.data.description}
   canonicalPath={`/blog/${post.slug}`}
+  roleLabel={post.data.title}
   ogType="website"
 >
   <nav class="mode-indicator" aria-label="Post navigation" data-role-indicator>
