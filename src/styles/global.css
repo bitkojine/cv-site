@@ -280,16 +280,6 @@ body[data-current-role]:not([data-current-role='']) .site-shell {
   line-height: 1.45;
 }
 
-.self-reference--critical {
-  border-color: #8f6aff;
-  background: #eee6ff;
-}
-
-.self-reference--diagnostic {
-  border-color: #a07fff;
-  background: #f2edff;
-}
-
 .self-reference__mascot {
   width: clamp(2.4rem, 8vw, 2.9rem);
   height: clamp(2.4rem, 8vw, 2.9rem);
@@ -387,20 +377,6 @@ body[data-current-role]:not([data-current-role='']) .site-shell {
   font-weight: 700;
   letter-spacing: 0.01em;
   white-space: nowrap;
-}
-
-.self-reference__severity {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.1rem 0.42rem;
-  border-radius: 999px;
-  border: 1px solid #b8a2ff;
-  background: #fff;
-  color: #5a3db4;
-  font-size: 0.7rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
 }
 
 .self-reference__content {

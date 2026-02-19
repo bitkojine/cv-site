@@ -1,5 +1,3 @@
-export type EchoSeverity = 'informational' | 'critical' | 'diagnostic';
-
 export interface EchoMode {
   id: string;
   label: string;
@@ -9,7 +7,6 @@ export interface EchoMode {
 
 export interface EchoNote {
   id: string;
-  severity: EchoSeverity;
   variants: {
     full: string;
     compressed: string;
@@ -30,7 +27,6 @@ export interface EchoNote {
 const ECHO_NOTES_BY_PATH: Record<string, EchoNote> = {
   '/': {
     id: 'home',
-    severity: 'informational',
     variants: {
       full: 'Start with the recruiter path, then route intentionally. This homepage exists to direct each visitor to one page with one clear teaching objective.',
       compressed:
@@ -52,7 +48,6 @@ const ECHO_NOTES_BY_PATH: Record<string, EchoNote> = {
   },
   '/hiring': {
     id: 'hiring',
-    severity: 'critical',
     variants: {
       full: 'Assess senior backend judgment through scope, tradeoffs, reliability, and delivery behavior. Tool trivia is explicitly low-signal here.',
       compressed: 'Assess scope + tradeoffs, not syntax.',
@@ -98,7 +93,6 @@ const ECHO_NOTES_BY_PATH: Record<string, EchoNote> = {
   },
   '/hiring/evidence': {
     id: 'hiring-evidence',
-    severity: 'diagnostic',
     variants: {
       full: 'Run the interview from artifacts. Ask for context, option analysis, tradeoffs, and outcomes, then check how clearly the decision can be taught back.',
       compressed: 'Interview from artifacts, not memory.',
@@ -120,7 +114,6 @@ const ECHO_NOTES_BY_PATH: Record<string, EchoNote> = {
   },
   '/hiring/pack': {
     id: 'hiring-pack',
-    severity: 'critical',
     variants: {
       full: 'This is the forwardable hiring artifact. Keep this loop concise, evidence-led, and decision-focused.',
       compressed: 'Forward signal, not noise.',
@@ -142,7 +135,6 @@ const ECHO_NOTES_BY_PATH: Record<string, EchoNote> = {
   },
   '/build': {
     id: 'build',
-    severity: 'informational',
     variants: {
       full: 'Evaluate execution discipline here: scoped commitments, constraint design, and delivery cadence under real product pressure.',
       compressed: 'Measure execution cadence, not ambition.',
@@ -164,7 +156,6 @@ const ECHO_NOTES_BY_PATH: Record<string, EchoNote> = {
   },
   '/vision': {
     id: 'vision',
-    severity: 'diagnostic',
     variants: {
       full: 'Use this page to evaluate sequencing logic: where to place bets, when to defer, and how technical choices shape capital allocation.',
       compressed: 'Sequence bets before scaling bets.',
@@ -186,7 +177,6 @@ const ECHO_NOTES_BY_PATH: Record<string, EchoNote> = {
   },
   '/dev': {
     id: 'dev',
-    severity: 'diagnostic',
     variants: {
       full: 'Treat this as an engineering precision page: determinism, replayability, and design choices that shrink debugging surface area.',
       compressed: 'Reduce ambiguity. Increase reproducibility.',
@@ -208,7 +198,6 @@ const ECHO_NOTES_BY_PATH: Record<string, EchoNote> = {
   },
   '/operating-system': {
     id: 'operating-system',
-    severity: 'critical',
     variants: {
       full: 'Read this as a systems brief: visitor intent routing, signal filtering, and feedback loops that convert traffic into qualified outcomes.',
       compressed: 'Optimize system loops, not page vanity.',
@@ -230,7 +219,6 @@ const ECHO_NOTES_BY_PATH: Record<string, EchoNote> = {
   },
   '/linkedin': {
     id: 'linkedin',
-    severity: 'informational',
     variants: {
       full: 'Use this as a distribution mirror. Keep wording parity with the primary site and avoid hype drift across platforms.',
       compressed: 'Mirror signal, do not rewrite signal.',
@@ -252,7 +240,6 @@ const ECHO_NOTES_BY_PATH: Record<string, EchoNote> = {
   },
   '/blog': {
     id: 'blog-index',
-    severity: 'diagnostic',
     variants: {
       full: 'Treat the blog as a curriculum. Each post should teach a reusable decision pattern, not list tools.',
       compressed: 'Extract patterns, not preferences.',
@@ -270,7 +257,6 @@ const ECHO_NOTES_BY_PATH: Record<string, EchoNote> = {
   },
   '/test/workflow-badge': {
     id: 'workflow-test',
-    severity: 'diagnostic',
     variants: {
       full: 'This test route validates release-safety visibility. Use it to check whether status signals remain readable and actionable.',
       compressed: 'Visibility failures become delivery failures.',
@@ -291,7 +277,6 @@ const ECHO_NOTES_BY_PATH: Record<string, EchoNote> = {
 export const ECHO_BLOG_POST_NOTES: Record<string, EchoNote> = {
   '/blog/bitcoin-vs-usd': {
     id: 'blog-post-bitcoin-vs-usd',
-    severity: 'diagnostic',
     variants: {
       full: 'Use this post to evaluate monetary-risk reasoning: compare custody, inflation exposure, and failure boundaries rather than brand narratives.',
       compressed: 'Compare risk models, not slogans.',
@@ -314,7 +299,6 @@ export const ECHO_BLOG_POST_NOTES: Record<string, EchoNote> = {
   },
   '/blog/building-with-ai': {
     id: 'blog-post-building-with-ai',
-    severity: 'diagnostic',
     variants: {
       full: 'Use this post to study AI-assisted delivery loops: prompt quality, guardrails, and verification discipline under speed pressure.',
       compressed: 'Speed without guardrails is debt.',
@@ -337,7 +321,6 @@ export const ECHO_BLOG_POST_NOTES: Record<string, EchoNote> = {
   },
   '/blog/choosing-orms': {
     id: 'blog-post-choosing-orms',
-    severity: 'diagnostic',
     variants: {
       full: 'Use this post to evaluate abstraction boundaries: where ORM speed helps and where direct query control protects reliability.',
       compressed: 'Pick abstraction per risk profile.',
@@ -360,7 +343,6 @@ export const ECHO_BLOG_POST_NOTES: Record<string, EchoNote> = {
   },
   '/blog/latest-dotnet-features': {
     id: 'blog-post-latest-dotnet-features',
-    severity: 'diagnostic',
     variants: {
       full: 'Use this post to separate novelty from adoption value: assess which runtime features improve delivery, reliability, or maintainability now.',
       compressed: 'Adopt by impact, not release hype.',
@@ -383,7 +365,6 @@ export const ECHO_BLOG_POST_NOTES: Record<string, EchoNote> = {
   },
   '/blog/latest-postgresql-features': {
     id: 'blog-post-latest-postgresql-features',
-    severity: 'diagnostic',
     variants: {
       full: 'Use this post to evaluate database feature adoption through migration safety, observability impact, and rollback practicality.',
       compressed: 'Database change is risk management.',
@@ -406,7 +387,6 @@ export const ECHO_BLOG_POST_NOTES: Record<string, EchoNote> = {
   },
   '/blog/stopping-the-zombie-attack': {
     id: 'blog-post-stopping-the-zombie-attack',
-    severity: 'diagnostic',
     variants: {
       full: 'Use this post to analyze branch protection as system control: prevent stale flow, enforce freshness, and reduce merge debt.',
       compressed: 'Process controls protect code quality.',
@@ -429,7 +409,6 @@ export const ECHO_BLOG_POST_NOTES: Record<string, EchoNote> = {
   },
   '/blog/welcome': {
     id: 'blog-post-welcome',
-    severity: 'informational',
     variants: {
       full: 'Use this post to understand the learning contract: every entry should teach a reusable decision pattern with explicit constraints.',
       compressed: 'Set the learning standard early.',
@@ -452,7 +431,6 @@ export const ECHO_BLOG_POST_NOTES: Record<string, EchoNote> = {
   },
   '/blog/why-i-left-linkedin': {
     id: 'blog-post-why-i-left-linkedin',
-    severity: 'diagnostic',
     variants: {
       full: 'Use this post to study channel strategy tradeoffs: control vs reach, signal quality vs platform convenience, and long-term compounding.',
       compressed: 'Own the channel, own the signal.',
@@ -477,7 +455,6 @@ export const ECHO_BLOG_POST_NOTES: Record<string, EchoNote> = {
 
 const DEFAULT_ECHO_NOTE: EchoNote = {
   id: 'fallback',
-  severity: 'critical',
   variants: {
     full: 'This route lacks a defined teaching objective. Define the decision pattern it teaches or remove the page.',
     compressed: 'No teaching objective detected.',
@@ -499,7 +476,6 @@ export function resolveEchoNote(pathname: string): EchoNote {
     return (
       ECHO_BLOG_POST_NOTES[pathname] ?? {
         id: 'blog-post-generic',
-        severity: 'diagnostic',
         variants: {
           full: 'Use this post to complete a full learning loop: extract the decision pattern, state the tradeoff, and name the failure mode to monitor.',
           compressed: 'Close the loop: pattern, tradeoff, failure mode.',

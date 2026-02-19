@@ -22,7 +22,7 @@ const notePayload = JSON.stringify(note).replaceAll('<', '\\u003c');
 
 <div
   aria-label={ariaLabel}
-  class:list={['self-reference', `self-reference--${note.severity}`, className]}
+  class:list={['self-reference', className]}
   data-echo-note={notePayload}
   data-echo-pathname={pathname}
   data-echo-root
@@ -35,7 +35,6 @@ const notePayload = JSON.stringify(note).replaceAll('<', '\\u003c');
       </span>
       <span class="self-reference__meta">
         <span class="self-reference__mascot-name">{mascotName}</span>
-        <span class="self-reference__severity">{note.severity}</span>
       </span>
       <span class="self-reference__summary-label">
         <span class="self-reference__summary-open">Open Echo guidance</span>
