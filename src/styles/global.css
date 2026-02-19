@@ -263,8 +263,8 @@ body[data-current-role]:not([data-current-role='']) .site-shell {
 }
 
 .self-reference {
-  margin-top: 0.8rem;
-  padding: 0.62rem 0.72rem;
+  margin-top: 0.2rem;
+  padding: 0.5rem 0.64rem;
   border: 1px solid #b8a2ff;
   border-radius: 10px;
   background: #f3eeff;
@@ -311,7 +311,7 @@ body[data-current-role]:not([data-current-role='']) .site-shell {
   margin: 0;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  row-gap: 0.45rem;
+  row-gap: 0.35rem;
 }
 
 .self-reference__meta {
@@ -322,6 +322,21 @@ body[data-current-role]:not([data-current-role='']) .site-shell {
   width: 100%;
   max-width: 100%;
   min-width: 0;
+}
+
+.self-reference__panel {
+  width: 100%;
+}
+
+.self-reference__summary {
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #4f2fab;
+}
+
+.self-reference__panel[open] .self-reference__summary {
+  margin-bottom: 0.42rem;
 }
 
 .self-reference__mascot-name {
@@ -488,7 +503,7 @@ body[data-current-role]:not([data-current-role='']) .site-shell {
 }
 
 .site-global-echo {
-  margin: 0 auto 1rem;
+  margin: 0 auto 0.18rem;
 }
 
 .site-shell > .site-global-echo {

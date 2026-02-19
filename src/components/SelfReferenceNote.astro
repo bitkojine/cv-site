@@ -34,68 +34,71 @@ const notePayload = JSON.stringify(note).replaceAll('<', '\\u003c');
       <span class="self-reference__mascot-name">{mascotName}</span>
       <span class="self-reference__severity">{note.severity}</span>
     </div>
-    <p class="self-reference__message" data-echo-message>
-      {note.variants.full}
-    </p>
-    <p class="self-reference__dynamic" data-echo-dynamic hidden></p>
-    <div class="self-reference__actions">
-      <p class="self-reference__action-label">After this page, answer:</p>
-      <ol>
-        {note.actionPrompts.map((prompt) => <li>{prompt}</li>)}
-      </ol>
-    </div>
-    {
-      note.modes && (
-        <div class="self-reference__modes" data-echo-modes>
-          <div class="self-reference__mode-tabs" role="tablist">
-            {note.modes.map((mode, index) => (
-              <button
-                aria-selected={index === 0 ? 'true' : 'false'}
-                class="self-reference__mode-tab"
-                data-echo-mode-tab={mode.id}
-                role="tab"
-                type="button"
-              >
-                {mode.label}
-              </button>
-            ))}
+    <details class="self-reference__panel">
+      <summary class="self-reference__summary">Open Echo guidance</summary>
+      <p class="self-reference__message" data-echo-message>
+        {note.variants.full}
+      </p>
+      <p class="self-reference__dynamic" data-echo-dynamic hidden></p>
+      <div class="self-reference__actions">
+        <p class="self-reference__action-label">After this page, answer:</p>
+        <ol>
+          {note.actionPrompts.map((prompt) => <li>{prompt}</li>)}
+        </ol>
+      </div>
+      {
+        note.modes && (
+          <div class="self-reference__modes" data-echo-modes>
+            <div class="self-reference__mode-tabs" role="tablist">
+              {note.modes.map((mode, index) => (
+                <button
+                  aria-selected={index === 0 ? 'true' : 'false'}
+                  class="self-reference__mode-tab"
+                  data-echo-mode-tab={mode.id}
+                  role="tab"
+                  type="button"
+                >
+                  {mode.label}
+                </button>
+              ))}
+            </div>
+            <p class="self-reference__mode-summary" data-echo-mode-summary>
+              {note.modes[0]?.summary}
+            </p>
+            <ol class="self-reference__mode-prompts" data-echo-mode-prompts>
+              {note.modes[0]?.prompts.map((prompt) => (
+                <li>{prompt}</li>
+              ))}
+            </ol>
           </div>
-          <p class="self-reference__mode-summary" data-echo-mode-summary>
-            {note.modes[0]?.summary}
+        )
+      }
+      {
+        note.checklist && (
+          <div class="self-reference__checklist">
+            <p class="self-reference__action-label">Loop completion:</p>
+            <ul>
+              {note.checklist.map((item) => (
+                <li>
+                  <span aria-hidden="true">□</span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )
+      }
+      {
+        note.crossRoute && (
+          <p class="self-reference__cross-route">
+            <a href={note.crossRoute.href}>{note.crossRoute.label}</a>
           </p>
-          <ol class="self-reference__mode-prompts" data-echo-mode-prompts>
-            {note.modes[0]?.prompts.map((prompt) => (
-              <li>{prompt}</li>
-            ))}
-          </ol>
-        </div>
-      )
-    }
-    {
-      note.checklist && (
-        <div class="self-reference__checklist">
-          <p class="self-reference__action-label">Loop completion:</p>
-          <ul>
-            {note.checklist.map((item) => (
-              <li>
-                <span aria-hidden="true">□</span>
-                {item}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )
-    }
-    {
-      note.crossRoute && (
-        <p class="self-reference__cross-route">
-          <a href={note.crossRoute.href}>{note.crossRoute.label}</a>
-        </p>
-      )
-    }
-    <details class="self-reference__why">
-      <summary>Why this note exists</summary>
-      <p>{note.whyExists}</p>
+        )
+      }
+      <details class="self-reference__why">
+        <summary>Why this note exists</summary>
+        <p>{note.whyExists}</p>
+      </details>
     </details>
   </div>
 </div>
@@ -160,7 +163,9 @@ const notePayload = JSON.stringify(note).replaceAll('<', '\\u003c');
       const pathname = root.dataset.echoPathname || window.location.pathname;
       const messageEl = root.querySelector('[data-echo-message]');
       const dynamicEl = root.querySelector('[data-echo-dynamic]');
+      const panelEl = root.querySelector('.self-reference__panel');
       if (!(messageEl instanceof HTMLElement)) return;
+      if (!(panelEl instanceof HTMLDetailsElement)) return;
 
       const pathVisitKey = `echo:visit:${pathname}`;
       const globalVisitKey = 'echo:visit:global';
@@ -170,11 +175,22 @@ const notePayload = JSON.stringify(note).replaceAll('<', '\\u003c');
       localStorage.setItem(pathVisitKey, String(pathVisits));
       localStorage.setItem(globalVisitKey, String(globalVisits));
 
-      messageEl.textContent = chooseVariant(pathVisits, note.variants);
+      const applyVariantIfCollapsed = () => {
+        if (panelEl.open) return;
+        messageEl.textContent = chooseVariant(pathVisits, note.variants);
+      };
+
+      applyVariantIfCollapsed();
       bindModes(root, note);
 
       if (!(dynamicEl instanceof HTMLElement)) return;
       const dynamicMessages = [];
+      let pendingDynamicText = '';
+      const applyDynamicIfCollapsed = () => {
+        if (panelEl.open || !pendingDynamicText) return;
+        dynamicEl.hidden = false;
+        dynamicEl.textContent = pendingDynamicText;
+      };
 
       const referrer = document.referrer.toLowerCase();
       if (referrer.includes('linkedin.com')) {
@@ -222,10 +238,17 @@ const notePayload = JSON.stringify(note).replaceAll('<', '\\u003c');
           );
         }
         if (dynamicMessages.length > 0) {
-          dynamicEl.hidden = false;
-          dynamicEl.textContent = dynamicMessages.join(' ');
+          pendingDynamicText = dynamicMessages.join(' ');
+          applyDynamicIfCollapsed();
         }
       }, 20000);
+
+      panelEl.addEventListener('toggle', () => {
+        if (!panelEl.open) {
+          applyVariantIfCollapsed();
+          applyDynamicIfCollapsed();
+        }
+      });
     };
 
     const init = () => {
