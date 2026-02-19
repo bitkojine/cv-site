@@ -1,11 +1,23 @@
 import { expect, test } from '@playwright/test';
 
-const pagesToCheck = ['/', '/hiring', '/build', '/vision', '/dev'] as const,
+const pagesToCheck = [
+    '/',
+    '/hiring',
+    '/hiring/evidence',
+    '/hiring/pack',
+    '/build',
+    '/vision',
+    '/dev',
+  ] as const,
   viewports = [
     { name: 'iphone-se-portrait', width: 320, height: 568 },
     { name: 'iphone-max-portrait', width: 430, height: 932 },
     { name: 'iphone-se-landscape', width: 568, height: 320 },
     { name: 'iphone-max-landscape', width: 932, height: 430 },
+    { name: 'iphone-mini-portrait', width: 375, height: 812 },
+    { name: 'iphone-mini-landscape', width: 812, height: 375 },
+    { name: 'narrow-portrait', width: 280, height: 653 },
+    { name: 'narrow-landscape', width: 653, height: 280 },
   ] as const;
 
 test.describe('mobile layout', () => {
