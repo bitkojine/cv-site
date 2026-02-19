@@ -301,8 +301,6 @@ const deepDivePosts = (
 </style>
 
 <script>
-  import { GitHubActivityEventsSchema } from '../../lib/schemas/github.mts';
-
   const FEED_INIT_KEY = '__cvGithubFeedInit';
   const FEED_CACHE_KEY = '__cvGithubFeedCache';
   const FEED_CACHE_AT_KEY = '__cvGithubFeedCacheAt';
@@ -323,6 +321,23 @@ const deepDivePosts = (
     return raw.replace(/([a-z0-9])([A-Z])/g, '$1 $2');
   }
 
+  function isValidEvent(event) {
+    return !!(
+      event &&
+      typeof event === 'object' &&
+      typeof event.type === 'string' &&
+      typeof event.created_at === 'string' &&
+      event.repo &&
+      typeof event.repo === 'object' &&
+      typeof event.repo.name === 'string'
+    );
+  }
+
+  function parseActivityEvents(value) {
+    if (!Array.isArray(value)) return null;
+    return value.every((event) => isValidEvent(event)) ? value : null;
+  }
+
   async function fetchGitHubActivity() {
     const feed = document.getElementById('github-activity-feed');
     if (!feed) return;
@@ -333,13 +348,11 @@ const deepDivePosts = (
     try {
       const now = Date.now();
       const cachedAt = window[FEED_CACHE_AT_KEY] || 0;
-      const parsedCachedEvents = GitHubActivityEventsSchema.safeParse(
-        window[FEED_CACHE_KEY]
-      );
+      const parsedCachedEvents = parseActivityEvents(window[FEED_CACHE_KEY]);
       const canUseCache =
-        parsedCachedEvents.success && now - cachedAt < FEED_CACHE_TTL_MS;
+        !!parsedCachedEvents && now - cachedAt < FEED_CACHE_TTL_MS;
       const events = canUseCache
-        ? parsedCachedEvents.data
+        ? parsedCachedEvents
         : await (async () => {
             const ac = new AbortController();
             const timer = window.setTimeout(() => ac.abort(), 2500);
@@ -349,9 +362,8 @@ const deepDivePosts = (
             });
             window.clearTimeout(timer);
             if (!response.ok) throw new Error('Failed to load static activity');
-            const parsed = GitHubActivityEventsSchema.parse(
-              await response.json()
-            );
+            const parsed = parseActivityEvents(await response.json());
+            if (!parsed) throw new Error('Invalid static activity payload');
             window[FEED_CACHE_KEY] = parsed;
             window[FEED_CACHE_AT_KEY] = now;
             return parsed;
