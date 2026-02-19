@@ -1,7 +1,20 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-const lastUpdated = new Date().toISOString().slice(0, 10);
+const now = new Date();
+const lastUpdated = new Intl.DateTimeFormat('lt-LT', {
+  timeZone: 'Europe/Vilnius',
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+}).format(now);
+const lastUpdatedDateParts = new Intl.DateTimeFormat('lt-LT', {
+  timeZone: 'Europe/Vilnius',
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+}).formatToParts(now);
+const lastUpdatedDateTime = `${lastUpdatedDateParts.find((part) => part.type === 'year')?.value ?? '0000'}-${lastUpdatedDateParts.find((part) => part.type === 'month')?.value ?? '00'}-${lastUpdatedDateParts.find((part) => part.type === 'day')?.value ?? '00'}`;
 ---
 
 <BaseLayout
@@ -16,7 +29,7 @@ const lastUpdated = new Date().toISOString().slice(0, 10);
   </p>
   <p>
     <strong>Last updated:</strong>
-    <time datetime={lastUpdated}>{lastUpdated}</time>
+    <time datetime={lastUpdatedDateTime}>{lastUpdated}</time>
   </p>
 
   <section aria-labelledby="sync-checklist-heading">
