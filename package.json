@@ -14,7 +14,7 @@
     "test:e2e:ui-stress": "env -u NO_COLOR playwright test tests/e2e/ui-stress.spec.ts",
     "test": "npm run test:unit",
     "lint:workflows": "./scripts/lint-workflows.sh",
-    "lint": "eslint \"src/**/*.{astro,ts,mts,js,mjs}\" \"tests/**/*.{ts,mts,js,mjs}\" \"*.config.{ts,mts,mjs,js}\" eslint.config.mjs --max-warnings=0",
+    "lint": "astro sync && eslint \"src/**/*.{astro,ts,mts,js,mjs}\" \"tests/**/*.{ts,mts,js,mjs}\" \"*.config.{ts,mts,mjs,js}\" eslint.config.mjs --max-warnings=0",
     "lint:md": "markdownlint-cli2",
     "lint:css": "stylelint \"src/**/*.css\"",
     "lint:sh": "shellcheck scripts/*.sh stress/run_all.sh",
