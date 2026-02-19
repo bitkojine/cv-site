@@ -4,6 +4,11 @@ on:
   schedule:
     - cron: '15 6 * * *'
   workflow_dispatch:
+    inputs:
+      force_alert:
+        description: 'Force alert path for testing notifications'
+        required: false
+        default: 'false'
 
 permissions:
   contents: read
@@ -20,6 +25,8 @@ jobs:
       - name: Check certificate expiry on all GitHub Pages origin IPs
         id: cert
         shell: bash
+        env:
+          FORCE_ALERT: ${{ github.event.inputs.force_alert || 'false' }}
         run: |
           set -euo pipefail
           now_epoch="$(date -u +%s)"
@@ -58,6 +65,11 @@ jobs:
           else
             alert=false
             reason="origin certificate is healthy"
+          fi
+
+          if [ "${FORCE_ALERT}" = "true" ]; then
+            alert=true
+            reason="manual alert test requested via workflow_dispatch"
           fi
 
           {
@@ -122,7 +134,7 @@ jobs:
           DETAILS: ${{ steps.cert.outputs.details }}
 
       - name: Send alert email
-        if: steps.cert.outputs.alert == 'true' && secrets.ALERT_SMTP_SERVER != '' && secrets.ALERT_SMTP_USERNAME != '' && secrets.ALERT_SMTP_PASSWORD != '' && secrets.ALERT_EMAIL_TO != '' && secrets.ALERT_EMAIL_FROM != ''
+        if: steps.cert.outputs.alert == 'true'
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: ${{ secrets.ALERT_SMTP_SERVER }}
