@@ -3,6 +3,7 @@ import { DollarSign } from '@lucide/astro';
 import EmailCta from '../EmailCta.astro';
 import PageShareButton from '../PageShareButton.astro';
 import PeerSharePrompt from '../PeerSharePrompt.astro';
+import SectionLastUpdated from '../SectionLastUpdated.astro';
 import { roleEmailCtas, visitorModes } from '../../lib/email-drafts.mts';
 
 const visionSignals = [
@@ -50,11 +51,11 @@ const visionSignals = [
     }
     <a
       class="cta-secondary"
-      data-cta="View Website System"
+      data-cta="Open Website System"
       data-cta-mode={visitorModes.vision}
       href="/operating-system"
     >
-      View Website System
+      Open Website System
     </a>
     <PageShareButton
       label="Share with investor"
@@ -81,6 +82,7 @@ const visionSignals = [
 
 <section aria-labelledby="vision-summary" class="card">
   <h2 id="vision-summary">Overview</h2>
+  <SectionLastUpdated />
   <p>
     The business starts as paid, fixed-scope execution. I take one concrete
     backend bottleneck, ship a production-safe fix, and document what was done
@@ -91,6 +93,7 @@ const visionSignals = [
 
 <section aria-labelledby="vision-learn" class="card">
   <h2 id="vision-learn">What You Will Learn Here</h2>
+  <SectionLastUpdated />
   <ul>
     <li>How service-first execution can evolve into productized offerings</li>
     <li>How to evaluate pre-scale opportunities with milestone-gated logic</li>
@@ -101,6 +104,7 @@ const visionSignals = [
 
 <section aria-labelledby="vision-products" class="card">
   <h2 id="vision-products">What This Is</h2>
+  <SectionLastUpdated />
   <ul>
     <li>Today: a productized service called Backend Reliability Sprint.</li>
     <li>

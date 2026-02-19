@@ -3,6 +3,7 @@ import { Cog } from '@lucide/astro';
 import EmailCta from '../EmailCta.astro';
 import PageShareButton from '../PageShareButton.astro';
 import PeerSharePrompt from '../PeerSharePrompt.astro';
+import SectionLastUpdated from '../SectionLastUpdated.astro';
 import { roleEmailCtas, visitorModes } from '../../lib/email-drafts.mts';
 
 const buildCaseStudies = [
@@ -46,11 +47,11 @@ const buildCaseStudies = [
     }
     <a
       class="cta-secondary"
-      data-cta="View Website System"
+      data-cta="Open Website System"
       data-cta-mode={visitorModes.build}
       href="/operating-system"
     >
-      View Website System
+      Open Website System
     </a>
     <PageShareButton
       label="Share with founder"
@@ -77,6 +78,7 @@ const buildCaseStudies = [
 
 <section aria-labelledby="build-summary" class="card">
   <h2 id="build-summary">Execution Snapshot</h2>
+  <SectionLastUpdated />
   <p>
     Product execution support for teams that need speed now, technical leverage
     this quarter, and clear ownership from discovery to shipped output in
@@ -86,6 +88,7 @@ const buildCaseStudies = [
 
 <section aria-labelledby="build-learn" class="card">
   <h2 id="build-learn">What You Will Learn Here</h2>
+  <SectionLastUpdated />
   <ul>
     <li>How to scope backend work for speed without sacrificing safety</li>
     <li>
@@ -98,6 +101,7 @@ const buildCaseStudies = [
 
 <section aria-labelledby="build-fit" class="card">
   <h2 id="build-fit">Where I Add Leverage Fast</h2>
+  <SectionLastUpdated />
   <ul>
     <li>Backend/API bottlenecks blocking product iteration</li>
     <li>Legacy architecture friction slowing delivery cadence</li>

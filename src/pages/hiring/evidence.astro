@@ -2,6 +2,8 @@
 import { LibraryBig } from '@lucide/astro';
 import SiteLayout from '../../layouts/SiteLayout.astro';
 import ModeSwitch from '../../components/ModeSwitch.astro';
+import ReadingProgress from '../../components/ReadingProgress.astro';
+import SectionLastUpdated from '../../components/SectionLastUpdated.astro';
 import { hiringEvidenceData } from '../../data/hiring-evidence.mts';
 
 const themeOrder = [
@@ -133,6 +135,7 @@ const evidenceIndex = new Map(
   title="Robertas Rudys | Hiring Evidence"
 >
   <ModeSwitch currentRole="Recruiter / Hiring Manager" />
+  <ReadingProgress targetSelector="#evidence-library-content" />
 
   <section aria-labelledby="evidence-heading" class="mode-hero">
     <div class="headline-row">
@@ -157,198 +160,252 @@ const evidenceIndex = new Map(
       </a>
       <a
         class="cta-secondary"
-        data-cta="Back To Hiring"
+        data-cta="Open Hiring Profile"
         data-cta-mode="Recruiter / Hiring Manager"
         href="/hiring"
       >
-        Back to /hiring
+        Open Hiring Profile
       </a>
     </div>
   </section>
 
-  <section aria-labelledby="evidence-controls" class="card">
-    <h2 id="evidence-controls">Search And Filters</h2>
-    <div class="evidence-controls-grid">
-      <label class="control-group" for="evidence-search">
-        <span>Search evidence</span>
-        <input
-          autocomplete="off"
-          id="evidence-search"
-          name="evidence-search"
-          placeholder="Search by situation, tradeoff, outcome, or learning"
-          type="search"
-        />
-      </label>
-      <label class="control-group" for="stack-match">
-        <span>Match my stack (optional)</span>
-        <select id="stack-match" name="stack-match">
-          <option value="">All contexts</option>
-          {
-            hiringEvidenceData.stackMatchOptions.map((option) => (
-              <option value={option}>{option}</option>
-            ))
-          }
-        </select>
-      </label>
-    </div>
-    <div aria-label="Theme filters" class="theme-filter-row">
-      {
-        themeOrder.map((theme) => (
-          <button class="theme-filter" data-theme-filter={theme} type="button">
-            {toTitleCase(theme)}
-          </button>
-        ))
-      }
-    </div>
-    <p class="result-count" data-evidence-result-count>
-      Showing all evidence items.
-    </p>
-    <p class="empty-state" data-evidence-empty hidden>
-      No evidence matched this filter combination. Clear filters or broaden
-      search terms.
-    </p>
-  </section>
-
-  <section aria-labelledby="evidence-learn" class="card">
-    <h2 id="evidence-learn">How To Learn From This Library</h2>
-    <p>
-      This library is not just proof of experience. It is a practical study set
-      for senior backend decision-making. Pick one track, then review each
-      artifact with the prompts inside and ask for the reasoning as if you are
-      learning it from scratch.
-    </p>
-    <div class="track-grid">
-      {
-        learningTracks.map((track) => (
-          <article class="track-card">
-            <h3>{track.title}</h3>
-            <p>{track.description}</p>
-            <ul>
-              {track.evidenceIds.map((id) => {
-                const item = evidenceIndex.get(id);
-                if (!item) return null;
-                return (
-                  <li>
-                    <a href={`#evidence-${id}`}>{item.title}</a>
-                  </li>
-                );
-              })}
-            </ul>
-          </article>
-        ))
-      }
-    </div>
-  </section>
-
-  <section aria-labelledby="evidence-rubric" class="card">
-    <h2 id="evidence-rubric">Interviewer Rubric</h2>
-    <p>
-      Use this rubric when discussing any artifact. It keeps interviews focused
-      on senior-level signal instead of trivia, with clarity of teaching as a
-      core indicator of true depth.
-    </p>
-    <div class="rubric-grid">
-      {
-        rubricRows.map((row) => (
-          <article class="rubric-card">
-            <h3>{row.lens}</h3>
-            <p>
-              <strong>Strong signal:</strong> {row.strong}
-            </p>
-            <p>
-              <strong>Weak signal:</strong> {row.weak}
-            </p>
-          </article>
-        ))
-      }
-    </div>
-  </section>
-
-  {
-    sectionedEvidence.map((section) => (
-      <section
-        aria-labelledby={section.id}
-        class="card evidence-section"
-        data-evidence-section
-      >
-        <h2 id={section.id}>{section.title}</h2>
-        <div class="evidence-grid">
-          {section.items.map((item) => (
-            <article
-              class="evidence-item"
-              data-evidence-item
-              data-evidence-type={section.type}
-              data-search={`${item.title} ${item.context} ${item.situation} ${item.decision} ${item.outcome} ${item.learnings.join(' ')}`.toLowerCase()}
-              data-stack={item.stackHints.join('|').toLowerCase()}
-              data-themes={item.themes.join('|')}
-              id={`evidence-${item.id}`}
-            >
-              <header>
-                <h3>{item.title}</h3>
-                <p class="evidence-tags">
-                  {item.themes.map((theme) => toTitleCase(theme)).join(' · ')}
-                </p>
-              </header>
-              <p>{item.context}</p>
-              <div class="evidence-details-body">
-                <p>
-                  <strong>Situation:</strong> {item.situation}
-                </p>
-                <p>
-                  <strong>Constraints:</strong> {item.constraints.join('; ')}
-                </p>
-                <p>
-                  <strong>Options:</strong> {item.options.join('; ')}
-                </p>
-                <p>
-                  <strong>Decision:</strong> {item.decision}
-                </p>
-                <p>
-                  <strong>Tradeoffs:</strong> {item.tradeoffs.join('; ')}
-                </p>
-                <p>
-                  <strong>Outcome:</strong> {item.outcome}
-                </p>
-                <p>
-                  <strong>Learnings:</strong> {item.learnings.join('; ')}
-                </p>
-                {item.discussionPrompts && (
-                  <p>
-                    <strong>Discussion prompts:</strong>
-                    {item.discussionPrompts.join('; ')}
-                  </p>
-                )}
-                {item.evaluationSignals && (
-                  <p>
-                    <strong>What strong answers include:</strong>
-                    {item.evaluationSignals.join('; ')}
-                  </p>
-                )}
-                {item.antiPatterns && (
-                  <p>
-                    <strong>Anti-patterns to watch for:</strong>
-                    {item.antiPatterns.join('; ')}
-                  </p>
-                )}
-                {item.snippet && (
-                  <pre class="pattern-snippet">
-                    <code>{item.snippet}</code>
-                  </pre>
-                )}
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
-    ))
-  }
-
-  <section aria-labelledby="evidence-red-flags" class="card">
-    <h2 id="evidence-red-flags">Red Flags I Avoid</h2>
+  <nav aria-label="Evidence sections" class="in-page-nav">
+    <p class="in-page-nav__label">Jump to</p>
     <ul>
-      {hiringEvidenceData.redFlags.map((flag) => <li>{flag}</li>)}
+      <li><a href="#evidence-controls">Search</a></li>
+      <li><a href="#evidence-learn">Learning tracks</a></li>
+      <li><a href="#evidence-rubric">Interview rubric</a></li>
+      <li><a href="#case-studies">Case studies</a></li>
+      <li><a href="#decision-records">Decision records</a></li>
+      <li><a href="#production-patterns">Patterns</a></li>
+      <li><a href="#evidence-red-flags">Red flags</a></li>
     </ul>
-  </section>
+  </nav>
+
+  <div id="evidence-library-content">
+    <section aria-labelledby="evidence-controls" class="card">
+      <h2 id="evidence-controls">Search And Filters</h2>
+      <SectionLastUpdated />
+      <div class="evidence-controls-grid">
+        <label class="control-group" for="evidence-search">
+          <span>Search evidence</span>
+          <input
+            autocomplete="off"
+            id="evidence-search"
+            name="evidence-search"
+            placeholder="Search by situation, tradeoff, outcome, or learning"
+            type="search"
+          />
+        </label>
+        <label class="control-group" for="stack-match">
+          <span>Match my stack (optional)</span>
+          <select id="stack-match" name="stack-match">
+            <option value="">All contexts</option>
+            {
+              hiringEvidenceData.stackMatchOptions.map((option) => (
+                <option value={option}>{option}</option>
+              ))
+            }
+          </select>
+        </label>
+      </div>
+      <div aria-label="Theme filters" class="theme-filter-row">
+        {
+          themeOrder.map((theme) => (
+            <button
+              class="theme-filter"
+              data-theme-filter={theme}
+              type="button"
+            >
+              {toTitleCase(theme)}
+            </button>
+          ))
+        }
+      </div>
+      <div class="filter-actions">
+        <button
+          class="cta-secondary filter-reset"
+          data-filter-reset
+          type="button"
+        >
+          Reset filters
+        </button>
+      </div>
+      <p class="result-count" data-evidence-result-count>
+        Showing all evidence items.
+      </p>
+      <div class="empty-state" data-evidence-empty hidden>
+        <p>No evidence matched this filter combination.</p>
+        <div class="empty-state__actions">
+          <button data-empty-suggest="reliability|delivery" type="button">
+            Try Reliability + Delivery
+          </button>
+          <button data-empty-reset type="button">Clear all filters</button>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="evidence-learn" class="card">
+      <h2 id="evidence-learn">How To Learn From This Library</h2>
+      <SectionLastUpdated />
+      <p>
+        This library is not just proof of experience. It is a practical study
+        set for senior backend decision-making. Pick one track, then review each
+        artifact with the prompts inside and ask for the reasoning as if you are
+        learning it from scratch.
+      </p>
+      <div class="track-grid">
+        {
+          learningTracks.map((track) => (
+            <article class="track-card">
+              <h3>{track.title}</h3>
+              <p>{track.description}</p>
+              <ul>
+                {track.evidenceIds.map((id) => {
+                  const item = evidenceIndex.get(id);
+                  if (!item) return null;
+                  return (
+                    <li>
+                      <a href={`#evidence-${id}`}>{item.title}</a>
+                    </li>
+                  );
+                })}
+              </ul>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <section aria-labelledby="evidence-rubric" class="card">
+      <h2 id="evidence-rubric">Interviewer Rubric</h2>
+      <SectionLastUpdated />
+      <p>
+        Use this rubric when discussing any artifact. It keeps interviews
+        focused on senior-level signal instead of trivia, with clarity of
+        teaching as a core indicator of true depth.
+      </p>
+      <div class="rubric-grid">
+        {
+          rubricRows.map((row) => (
+            <article class="rubric-card">
+              <h3>{row.lens}</h3>
+              <p>
+                <strong>Strong signal:</strong> {row.strong}
+              </p>
+              <p>
+                <strong>Weak signal:</strong> {row.weak}
+              </p>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    {
+      sectionedEvidence.map((section) => (
+        <section
+          aria-labelledby={section.id}
+          class="card evidence-section"
+          data-evidence-section
+        >
+          <h2 id={section.id}>{section.title}</h2>
+          <SectionLastUpdated />
+          <div class="evidence-grid">
+            {section.items.map((item) => (
+              <article
+                class="evidence-item"
+                data-evidence-item
+                data-evidence-id={item.id}
+                data-evidence-type={section.type}
+                data-search={`${item.title} ${item.context} ${item.situation} ${item.decision} ${item.outcome} ${item.learnings.join(' ')}`.toLowerCase()}
+                data-stack={item.stackHints.join('|').toLowerCase()}
+                data-themes={item.themes.join('|')}
+                id={`evidence-${item.id}`}
+              >
+                <header>
+                  <h3>{item.title}</h3>
+                  <p class="evidence-tags">
+                    {item.themes.map((theme) => toTitleCase(theme)).join(' · ')}
+                  </p>
+                </header>
+                <p>{item.context}</p>
+                <div class="evidence-details-body">
+                  <p>
+                    <strong>Situation:</strong> {item.situation}
+                  </p>
+                  <p>
+                    <strong>Constraints:</strong> {item.constraints.join('; ')}
+                  </p>
+                  <p>
+                    <strong>Options:</strong> {item.options.join('; ')}
+                  </p>
+                  <p>
+                    <strong>Decision:</strong> {item.decision}
+                  </p>
+                  <p>
+                    <strong>Tradeoffs:</strong> {item.tradeoffs.join('; ')}
+                  </p>
+                  <p>
+                    <strong>Outcome:</strong> {item.outcome}
+                  </p>
+                  <p>
+                    <strong>Learnings:</strong> {item.learnings.join('; ')}
+                  </p>
+                  {item.discussionPrompts && (
+                    <p>
+                      <strong>Discussion prompts:</strong>
+                      {item.discussionPrompts.join('; ')}
+                    </p>
+                  )}
+                  {item.evaluationSignals && (
+                    <p>
+                      <strong>What strong answers include:</strong>
+                      {item.evaluationSignals.join('; ')}
+                    </p>
+                  )}
+                  {item.antiPatterns && (
+                    <p>
+                      <strong>Anti-patterns to watch for:</strong>
+                      {item.antiPatterns.join('; ')}
+                    </p>
+                  )}
+                  {item.snippet && (
+                    <pre class="pattern-snippet">
+                      <code>{item.snippet}</code>
+                    </pre>
+                  )}
+                </div>
+                <div class="evidence-actions">
+                  <button
+                    class="cta-secondary"
+                    data-copy-summary
+                    data-summary-title={item.title}
+                    data-summary-context={item.context}
+                    data-summary-decision={item.decision}
+                    data-summary-tradeoffs={item.tradeoffs.join('; ')}
+                    data-summary-outcome={item.outcome}
+                    data-summary-link={`/hiring/evidence#evidence-${item.id}`}
+                    type="button"
+                  >
+                    Copy summary
+                  </button>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+      ))
+    }
+
+    <section aria-labelledby="evidence-red-flags" class="card">
+      <h2 id="evidence-red-flags">Red Flags I Avoid</h2>
+      <SectionLastUpdated />
+      <ul>
+        {hiringEvidenceData.redFlags.map((flag) => <li>{flag}</li>)}
+      </ul>
+    </section>
+  </div>
 </SiteLayout>
 
 <style>
@@ -401,11 +458,49 @@ const evidenceIndex = new Map(
     color: var(--accent);
   }
 
+  .filter-actions {
+    margin-top: 0.6rem;
+  }
+
+  .filter-reset {
+    width: 100%;
+  }
+
   .result-count,
   .empty-state {
     margin-top: 0.75rem;
     color: var(--muted);
     font-size: 0.92rem;
+  }
+
+  .empty-state {
+    border: 1px dashed var(--line);
+    border-radius: 10px;
+    padding: 0.7rem;
+    background: color-mix(in oklab, var(--surface-muted) 86%, white);
+  }
+
+  .empty-state p {
+    margin: 0;
+  }
+
+  .empty-state__actions {
+    margin-top: 0.6rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .empty-state__actions button {
+    min-height: 38px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0.35rem 0.7rem;
+    background: var(--surface);
+    color: var(--text);
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.85rem;
   }
 
   .evidence-grid {
@@ -467,13 +562,22 @@ const evidenceIndex = new Map(
   }
 
   .evidence-details-body {
-    margin-top: 0.55rem;
+    margin-top: 0.45rem;
     display: grid;
     gap: 0.45rem;
   }
 
   .evidence-details-body p {
     margin: 0;
+  }
+
+  .evidence-actions {
+    margin-top: 0.65rem;
+  }
+
+  .evidence-actions .cta-secondary {
+    width: 100%;
+    cursor: pointer;
   }
 
   .pattern-snippet {
@@ -500,10 +604,20 @@ const evidenceIndex = new Map(
     .rubric-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
+
+    .filter-reset {
+      width: auto;
+    }
+
+    .evidence-actions .cta-secondary {
+      width: auto;
+    }
   }
 </style>
 
 <script>
+  import { showToast } from '../../lib/ui-feedback.mts';
+
   (() => {
     const reportEvent = (eventName, props = {}) => {
       const sendEvent = window.cvReportEvent ?? window.cvTrack;
@@ -528,6 +642,7 @@ const evidenceIndex = new Map(
       );
       const resultNode = document.querySelector('[data-evidence-result-count]');
       const emptyNode = document.querySelector('[data-evidence-empty]');
+      const resetButton = document.querySelector('[data-filter-reset]');
 
       if (
         !(searchInput instanceof HTMLInputElement) ||
@@ -541,6 +656,34 @@ const evidenceIndex = new Map(
       const activeThemes = new Set();
       let searchTimer;
       let lastAnalyticsSignature = '';
+
+      const setThemeState = (theme, isActive) => {
+        const button = themeButtons.find(
+          (candidate) =>
+            candidate instanceof HTMLButtonElement &&
+            candidate.dataset.themeFilter === theme
+        );
+        if (!(button instanceof HTMLButtonElement)) return;
+        button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+      };
+
+      const clearAllFilters = (showFeedback = false) => {
+        searchInput.value = '';
+        stackSelect.value = '';
+        activeThemes.clear();
+        themeButtons.forEach((button) => {
+          if (!(button instanceof HTMLButtonElement)) return;
+          button.setAttribute('aria-pressed', 'false');
+        });
+        applyFilters();
+        if (showFeedback) {
+          showToast(
+            document,
+            'Filters reset. Showing all evidence.',
+            'success'
+          );
+        }
+      };
 
       const applyFilters = () => {
         const query = normalize(searchInput.value);
@@ -621,11 +764,108 @@ const evidenceIndex = new Map(
         });
       });
 
+      if (resetButton instanceof HTMLButtonElement) {
+        resetButton.addEventListener('click', () => {
+          clearAllFilters(true);
+          reportEvent('evidence_filter_reset', {
+            source: 'hiring_evidence_library',
+          });
+        });
+      }
+
+      document.querySelectorAll('[data-empty-suggest]').forEach((button) => {
+        if (!(button instanceof HTMLButtonElement)) return;
+        button.addEventListener('click', () => {
+          clearAllFilters(false);
+          const raw = button.dataset.emptySuggest || '';
+          raw
+            .split('|')
+            .map((entry) => normalize(entry))
+            .filter(Boolean)
+            .forEach((theme) => {
+              activeThemes.add(theme);
+              setThemeState(theme, true);
+            });
+          applyFilters();
+          showToast(document, 'Applied suggested filters.', 'success');
+          reportEvent('evidence_filter_suggestion', {
+            source: 'hiring_evidence_library',
+            themes: raw,
+          });
+        });
+      });
+
+      document.querySelectorAll('[data-empty-reset]').forEach((button) => {
+        if (!(button instanceof HTMLButtonElement)) return;
+        button.addEventListener('click', () => clearAllFilters(true));
+      });
+
       applyFilters();
+    };
+
+    const initCopySummary = () => {
+      document.querySelectorAll('[data-copy-summary]').forEach((button) => {
+        if (!(button instanceof HTMLButtonElement)) return;
+        if (button.dataset.boundCopySummary === '1') return;
+        button.dataset.boundCopySummary = '1';
+
+        button.addEventListener('click', async () => {
+          const title = button.dataset.summaryTitle || 'Evidence item';
+          const context = button.dataset.summaryContext || '';
+          const decision = button.dataset.summaryDecision || '';
+          const tradeoffs = button.dataset.summaryTradeoffs || '';
+          const outcome = button.dataset.summaryOutcome || '';
+          const link = button.dataset.summaryLink || '/hiring/evidence';
+
+          const text = [
+            `${title}`,
+            '',
+            `Context: ${context}`,
+            `Decision: ${decision}`,
+            `Tradeoffs: ${tradeoffs}`,
+            `Outcome: ${outcome}`,
+            `Source: ${new URL(link, window.location.origin).toString()}`,
+          ].join('\n');
+
+          try {
+            await navigator.clipboard.writeText(text);
+            showToast(document, 'Summary copied for sharing.', 'success');
+            reportEvent('evidence_summary_copied', {
+              source: 'hiring_evidence_library',
+              evidence_title: title,
+            });
+          } catch {
+            showToast(document, 'Copy failed. Please try again.', 'warning');
+          }
+        });
+      });
+    };
+
+    const initEvidenceOpened = () => {
+      document.querySelectorAll('[data-evidence-item]').forEach((itemNode) => {
+        if (!(itemNode instanceof HTMLElement)) return;
+        if (itemNode.dataset.boundEvidenceOpened === '1') return;
+        itemNode.dataset.boundEvidenceOpened = '1';
+        itemNode.addEventListener(
+          'click',
+          () => {
+            if (itemNode.dataset.evidenceOpenedSent === '1') return;
+            itemNode.dataset.evidenceOpenedSent = '1';
+            reportEvent('evidence_opened', {
+              source: 'hiring_evidence_library',
+              evidence_id: itemNode.dataset.evidenceId || 'unknown',
+              evidence_type: itemNode.dataset.evidenceType || 'unknown',
+            });
+          },
+          { once: true }
+        );
+      });
     };
 
     const init = () => {
       initEvidenceFiltering();
+      initCopySummary();
+      initEvidenceOpened();
     };
 
     document.addEventListener('astro:page-load', init);

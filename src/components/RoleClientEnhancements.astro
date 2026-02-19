@@ -17,6 +17,7 @@
     const depthMarks = [25, 50, 75, 100];
     let sentDepth = new Set();
     let activeScrollHandler = null;
+    let activeReadingProgressHandler = null;
 
     const reportEvent = (eventName, props = {}) => {
       const sendEvent = window.cvReportEvent ?? window.cvTrack;
@@ -336,6 +337,57 @@
       activeScrollHandler = revealOnDepth;
       window.addEventListener('scroll', activeScrollHandler, { passive: true });
       revealOnDepth();
+
+      if (activeReadingProgressHandler) {
+        window.removeEventListener('scroll', activeReadingProgressHandler);
+        window.removeEventListener('resize', activeReadingProgressHandler);
+      }
+      const progressRoot = document.querySelector('[data-reading-progress]');
+      const progressBar = document.querySelector('[data-reading-progress-bar]');
+      if (
+        !(progressRoot instanceof HTMLElement) ||
+        !(progressBar instanceof HTMLElement)
+      ) {
+        return;
+      }
+      const targetSelector = progressRoot.getAttribute(
+        'data-reading-progress-target'
+      );
+      const target = targetSelector
+        ? document.querySelector(targetSelector)
+        : null;
+      if (!(target instanceof HTMLElement)) {
+        progressRoot.hidden = true;
+        return;
+      }
+
+      const updateReadingProgress = () => {
+        const targetRect = target.getBoundingClientRect();
+        const topOffset = window.scrollY + targetRect.top;
+        const maxDistance = Math.max(
+          1,
+          target.offsetHeight - window.innerHeight
+        );
+        const traveled = Math.min(
+          maxDistance,
+          Math.max(0, window.scrollY - topOffset)
+        );
+        const percent = Math.max(
+          0,
+          Math.min(100, Math.round((traveled / maxDistance) * 100))
+        );
+        progressBar.style.width = `${percent}%`;
+        progressRoot.setAttribute('aria-valuenow', String(percent));
+      };
+
+      activeReadingProgressHandler = updateReadingProgress;
+      window.addEventListener('scroll', activeReadingProgressHandler, {
+        passive: true,
+      });
+      window.addEventListener('resize', activeReadingProgressHandler, {
+        passive: true,
+      });
+      updateReadingProgress();
     };
 
     document.addEventListener('astro:page-load', initPage);

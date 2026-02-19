@@ -1,0 +1,26 @@
+---
+interface Props {
+  className?: string;
+  date?: Date;
+  label?: string;
+}
+
+const {
+  className = '',
+  date = new Date(),
+  label = 'Last updated',
+} = Astro.props;
+
+const isoDate = date.toISOString();
+const formattedDate = new Intl.DateTimeFormat('en-US', {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+  timeZone: 'Europe/Vilnius',
+}).format(date);
+---
+
+<p class:list={['section-last-updated', className]}>
+  <span>{label}:</span>
+  <time datetime={isoDate}>{formattedDate}</time>
+</p>

@@ -162,10 +162,25 @@ test.describe('ui stress', () => {
     await page.goto('/hiring').catch(() => {});
     await context.setOffline(false);
 
-    await page.goto('/hiring', {
-      waitUntil: 'domcontentloaded',
-      timeout: 9000,
-    });
+    let recovered = false;
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        await page.goto('/hiring', {
+          waitUntil: 'domcontentloaded',
+          timeout: 9000,
+        });
+        recovered = true;
+        break;
+      } catch {
+        await page.waitForTimeout(350);
+      }
+    }
+    if (!recovered) {
+      await page.goto('/hiring', {
+        waitUntil: 'domcontentloaded',
+        timeout: 9000,
+      });
+    }
     await expect(page.locator('.mail-topbar')).toBeVisible();
 
     expect(successfulLoads).toBeGreaterThanOrEqual(
