@@ -124,9 +124,11 @@ const {
       </div>
     </header>
     <main class="site-shell" id="main-content">
-      <SelfReferenceNote className="site-global-echo">
-        {echoNote}
-      </SelfReferenceNote>
+      <SelfReferenceNote
+        className="site-global-echo"
+        note={echoNote}
+        pathname={canonicalPath}
+      />
       <slot />
       <footer class="site-footer">
         <small class="site-footer-copy">
