@@ -265,6 +265,22 @@ const devPhilosophy = [
 </style>
 
 <script>
+  const activityDateFormatter = new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'Europe/Vilnius',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  });
+
+  function formatTypeLabel(eventType) {
+    if (!eventType) return 'Activity';
+    if (eventType === 'WatchEvent') return 'Star';
+    const raw = eventType.replace(/Event$/, '');
+    return raw.replace(/([a-z0-9])([A-Z])/g, '$1 $2');
+  }
+
   async function fetchGitHubActivity() {
     const feed = document.getElementById('github-activity-feed');
     if (!feed) return;
@@ -291,15 +307,10 @@ const devPhilosophy = [
         const item = document.createElement('div');
         item.className = 'activity-item';
 
-        const date = new Date(event.created_at).toLocaleDateString(undefined, {
-          month: 'short',
-          day: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit',
-        });
+        const date = activityDateFormatter.format(new Date(event.created_at));
 
         let content = '';
-        let typeLabel = event.type.replace('Event', '');
+        const typeLabel = formatTypeLabel(event.type);
 
         if (event.type === 'PushEvent') {
           const commits = Array.isArray(event.payload?.commits)
@@ -309,11 +320,12 @@ const devPhilosophy = [
           const repo = event.repo.name;
           const msg = commits[0]?.message || '';
           const ref = event.payload?.ref?.replace('refs/heads/', '') || '';
+          const refTarget = ref ? `<strong>${ref}</strong>` : '';
           const summary =
             count > 0
               ? `${count} commit(s)`
-              : ref
-                ? `updates on ${ref}`
+              : refTarget
+                ? `updates on ${refTarget}`
                 : 'updates';
           content = msg
             ? `Pushed ${summary} to <strong>${repo}</strong>: "${msg.split('\n')[0]}"`
@@ -321,10 +333,15 @@ const devPhilosophy = [
         } else if (event.type === 'CreateEvent') {
           const refType = event.payload?.ref_type || 'resource';
           const ref = event.payload?.ref || '';
-          content = `Created ${refType} <strong>${ref}</strong> in <strong>${event.repo.name}</strong>`;
+          const target = ref ? `<strong>${ref}</strong>` : 'repository scope';
+          content = `Created ${refType} ${target} in <strong>${event.repo.name}</strong>`;
+        } else if (event.type === 'DeleteEvent') {
+          const refType = event.payload?.ref_type || 'resource';
+          const ref = event.payload?.ref || '';
+          const target = ref ? `<strong>${ref}</strong>` : 'repository scope';
+          content = `Deleted ${refType} ${target} in <strong>${event.repo.name}</strong>`;
         } else if (event.type === 'WatchEvent') {
           content = `Starred <strong>${event.repo.name}</strong>`;
-          typeLabel = 'Star';
         } else if (event.type === 'PullRequestEvent') {
           const action = event.payload?.action || 'updated';
           const title = event.payload?.pull_request?.title || 'pull request';
