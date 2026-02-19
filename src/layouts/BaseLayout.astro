@@ -1,7 +1,7 @@
 ---
 import 'github-markdown-css/github-markdown.css';
 import '../styles/global.css';
-import cvData from '../data/cv.json';
+import { cvData } from '../data/cv.mts';
 import { BUILD_VERSION } from '../lib/build-version.mts';
 
 interface Props {
@@ -83,7 +83,7 @@ const jsonLd = {
 };
 ---
 
-<!-- Intent: render every page like a plain Markdown document with minimal structure and styling. --><!doctype html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />

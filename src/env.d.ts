@@ -1,5 +1,3 @@
-/// <reference path="../.astro/types.d.ts" />
-
 type EventProps = Record<string, unknown>;
 type EventReporter = (eventName: string, props?: EventProps) => void;
 

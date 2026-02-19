@@ -1,4 +1,4 @@
-import cvData from '../data/cv.json';
+import { cvData } from '../data/cv.mts';
 
 export interface EmailDraft {
   subject: string;

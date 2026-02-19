@@ -1,7 +1,7 @@
 ---
 import '../styles/global.css';
 import Controls from '../components/Controls.astro';
-import cvData from '../data/cv.json';
+import { cvData } from '../data/cv.mts';
 
 interface Props {
   title: string;
@@ -38,7 +38,6 @@ const jsonLd = {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
 
-    <!-- SEO Meta Tags -->
     <meta name="description" content={description} />
     <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
     <meta name="author" content={personalInfo.name} />
@@ -49,7 +48,6 @@ const jsonLd = {
     />
 
     <meta name="color-scheme" content="light" />
-    <!-- Light mode initialization -->
     <script is:inline>
       document.documentElement.classList.remove('dark-mode');
       document.documentElement.style.colorScheme = 'light';
@@ -67,7 +65,6 @@ const jsonLd = {
       installGlobalEventReporter(window);
     </script>
 
-    <!-- Fonts -->
     <link rel="preconnect" href="https://rsms.me/" />
     <link rel="preload" href="https://rsms.me/inter/inter.css" as="style" />
     <link
@@ -80,20 +77,17 @@ const jsonLd = {
       <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
     </noscript>
 
-    <!-- Open Graph Meta Tags -->
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="profile" />
     <meta property="og:url" content={new URL(Astro.url.pathname, Astro.site)} />
     <meta property="og:image" content={new URL('og-image.png', Astro.site)} />
 
-    <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={new URL('og-image.png', Astro.site)} />
 
-    <!-- JSON-LD Structured Data -->
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
   </head>
   <body>
