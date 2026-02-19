@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "npm run fetch-activity && astro build",
+    "build": "astro build",
     "fetch-activity": "tsx src/scripts/fetch-github-activity.mts",
     "preview": "astro preview",
     "astro": "astro",
