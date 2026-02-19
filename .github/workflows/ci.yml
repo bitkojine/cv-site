@@ -7,7 +7,36 @@ on:
     branches: [main]
 
 jobs:
+  branch-sync:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout PR head commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - name: Ensure PR branch includes latest base branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE_REF="${{ github.base_ref }}"
+          git fetch origin "${BASE_REF}" --depth=1
+          BASE_TIP="$(git rev-parse "origin/${BASE_REF}")"
+          HEAD_SHA="$(git rev-parse HEAD)"
+
+          if git merge-base --is-ancestor "${BASE_TIP}" "${HEAD_SHA}"; then
+            echo "Branch is up to date with ${BASE_REF}."
+            exit 0
+          fi
+
+          echo "PR branch is behind ${BASE_REF}. Rebase/merge ${BASE_REF} and push again."
+          exit 1
+
   check:
+    needs: [branch-sync]
+    if: github.event_name != 'pull_request' || needs.branch-sync.result == 'success'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
