@@ -1,5 +1,6 @@
 ---
 import { Code2 } from '@lucide/astro';
+import { getCollection } from 'astro:content';
 import EmailCta from '../EmailCta.astro';
 import PageShareButton from '../PageShareButton.astro';
 import PeerSharePrompt from '../PeerSharePrompt.astro';
@@ -31,6 +32,10 @@ const devPhilosophy = [
     ],
   },
 ];
+
+const deepDivePosts = (
+  await getCollection('blog', ({ data }) => !data.draft)
+).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 ---
 
 <section class="mode-hero" aria-labelledby="dev-heading">
@@ -69,6 +74,7 @@ const devPhilosophy = [
 
 <section class="card" aria-labelledby="dev-activity-heading">
   <h2 id="dev-activity-heading">Live Activity Feed</h2>
+  <p class="activity-hint">Scroll to see more activity.</p>
   <div
     id="github-activity-feed"
     class="activity-feed"
@@ -128,17 +134,18 @@ const devPhilosophy = [
 
 <section class="card" aria-labelledby="dev-deep-dives">
   <h2 id="dev-deep-dives">Technical Deep Dives</h2>
-  <div class="reading-list">
-    <article class="reading-item">
-      <h3>
-        <a href="/blog/building-with-ai">How I Built This Website with AI</a>
-      </h3>
-      <p>A commit-by-commit audit of agentic pair-programming in practice.</p>
-    </article>
-    <article class="reading-item">
-      <h3><a href="/blog/why-i-left-linkedin">Why I Left LinkedIn</a></h3>
-      <p>Decentralizing professional identity and reclaiming the source.</p>
-    </article>
+  <p class="reading-hint">Scroll to see all posts.</p>
+  <div class="reading-list" role="navigation" aria-label="All blog posts">
+    {
+      deepDivePosts.map((post) => (
+        <article class="reading-item">
+          <h3>
+            <a href={`/blog/${post.slug}`}>{post.data.title}</a>
+          </h3>
+          <p>{post.data.description}</p>
+        </article>
+      ))
+    }
   </div>
 </section>
 
@@ -164,12 +171,23 @@ const devPhilosophy = [
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
+    max-height: min(55vh, 24rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable both-edges;
+    padding-right: var(--scrollbar-lane);
   }
 
   .activity-feed__loading {
     font-size: 0.9rem;
     color: var(--muted);
     font-style: italic;
+  }
+
+  .activity-hint {
+    margin-top: 0.7rem;
+    font-size: 0.85rem;
+    color: var(--muted);
   }
 
   :global(.activity-item) {
@@ -239,8 +257,20 @@ const devPhilosophy = [
   .reading-list {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 0.7rem;
     margin-top: 1rem;
+    max-height: min(55vh, 24rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable both-edges;
+    padding-right: var(--scrollbar-lane);
+  }
+
+  .reading-item {
+    padding: 0.75rem;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 10px;
   }
 
   .reading-item h3 {
@@ -260,6 +290,12 @@ const devPhilosophy = [
   .reading-item p {
     margin-top: 0.25rem;
     font-size: 0.9rem;
+    color: var(--muted);
+  }
+
+  .reading-hint {
+    margin-top: 0.7rem;
+    font-size: 0.85rem;
     color: var(--muted);
   }
 </style>
