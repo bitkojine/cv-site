@@ -100,6 +100,14 @@ Open `http://localhost:4321`.
 - `npm run test:unit`: Vitest
 - `npm run test:e2e`: Playwright (CI suite)
 
+`npm run fetch-activity` uses this token lookup order:
+
+- `GITHUB_TOKEN`
+- `GH_TOKEN`
+- `gh auth token` (if GitHub CLI is logged in)
+
+If no token is available and `public/github-activity.json` already exists, it keeps the existing file and skips API fetch to avoid rate-limit churn during local hooks/builds.
+
 ## Zero Comment Policy
 
 This repository enforces a strict **Zero Comment Policy** for all production source files under `src/`.
