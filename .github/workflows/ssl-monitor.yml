@@ -23,6 +23,7 @@ jobs:
       CRITICAL_DAYS: '7'
       ORIGIN_IPS: '185.199.108.153 185.199.109.153 185.199.110.153 185.199.111.153'
       ENFORCE_ORIGIN_VALIDATION: 'false'
+      REMINDER_DAY_UTC: '1'
     steps:
       - name: Check edge and origin certificate expiry
         id: cert
@@ -110,7 +111,9 @@ jobs:
 
           alert=false
           fail=false
+          reminder=false
           reason="edge and origin certificates are healthy"
+          reminder_reason=""
 
           if [ "${edge_state}" != "healthy" ] || [ "${origin_state}" != "healthy" ]; then
             alert=true
@@ -136,6 +139,12 @@ jobs:
             reason="manual alert test requested via workflow_dispatch"
           fi
 
+          weekday_utc="$(date -u +%u)"
+          if [ "${ENFORCE_ORIGIN_VALIDATION}" = "false" ] && [ "${edge_state}" = "healthy" ] && [ "${origin_state}" = "healthy" ] && [ "${weekday_utc}" = "${REMINDER_DAY_UTC}" ]; then
+            reminder=true
+            reminder_reason="certificates are healthy and strict-origin enforcement is still disabled"
+          fi
+
           summary="Edge: state=${edge_state}, days_left=${edge_days_left:-unknown}, not_after=${edge_not_after:-unknown}\nOrigin: state=${origin_state}, min_days_left=${origin_min_days_left:-unknown}, min_not_after=${origin_min_not_after:-unknown}"
 
           {
@@ -148,6 +157,8 @@ jobs:
             echo "origin_state=${origin_state}"
             echo "origin_min_days_left=${origin_min_days_left}"
             echo "origin_min_not_after=${origin_min_not_after}"
+            echo "reminder=${reminder}"
+            echo "reminder_reason=${reminder_reason}"
             echo "origin_details<<EOF"
             printf '%b\n' "${origin_details}"
             echo "EOF"
@@ -241,6 +252,35 @@ jobs:
             ENFORCE_ORIGIN_VALIDATION: ${{ env.ENFORCE_ORIGIN_VALIDATION }}
             ALERT_DAYS: ${{ env.ALERT_DAYS }}
             CRITICAL_DAYS: ${{ env.CRITICAL_DAYS }}
+
+            Workflow run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+      - name: Send strict-mode reminder email
+        if: steps.cert.outputs.reminder == 'true'
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: ${{ secrets.ALERT_SMTP_SERVER }}
+          server_port: ${{ secrets.ALERT_SMTP_PORT || '587' }}
+          username: ${{ secrets.ALERT_SMTP_USERNAME }}
+          password: ${{ secrets.ALERT_SMTP_PASSWORD }}
+          secure: false
+          subject: '[REMINDER] Re-enable strict origin SSL validation'
+          to: ${{ secrets.ALERT_EMAIL_TO }}
+          from: ${{ secrets.ALERT_EMAIL_FROM }}
+          body: |
+            Reminder from SSL monitor for robertasrudys.com
+
+            ${{ steps.cert.outputs.reminder_reason }}
+
+            Current workflow mode:
+            - ENFORCE_ORIGIN_VALIDATION=${{ env.ENFORCE_ORIGIN_VALIDATION }}
+
+            Action:
+            1) In Cloudflare, switch SSL mode to Full (Strict) once confirmed stable.
+            2) In .github/workflows/ssl-monitor.yml set ENFORCE_ORIGIN_VALIDATION to 'true'.
+
+            Summary:
+            ${{ steps.cert.outputs.summary }}
 
             Workflow run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
