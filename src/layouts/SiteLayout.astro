@@ -4,6 +4,8 @@ import { House } from '@lucide/astro';
 import '../styles/global.css';
 import RoleClientEnhancements from '../components/RoleClientEnhancements.astro';
 import LiveBuildBadge from '../components/LiveBuildBadge.astro';
+import SelfReferenceNote from '../components/SelfReferenceNote.astro';
+import { resolveEchoNote } from '../data/echo-notes.mts';
 import { BUILD_VERSION } from '../lib/build-version.mts';
 
 interface Props {
@@ -38,6 +40,7 @@ const {
       year: 'numeric',
     }).format(new Date())
   ),
+  echoNote = resolveEchoNote(canonicalPath),
   structuredData = {
     '@context': 'https://schema.org',
     '@type': schemaType,
@@ -121,6 +124,9 @@ const {
       </div>
     </header>
     <main class="site-shell" id="main-content">
+      <SelfReferenceNote className="site-global-echo">
+        {echoNote}
+      </SelfReferenceNote>
       <slot />
       <footer class="site-footer">
         <small class="site-footer-copy">

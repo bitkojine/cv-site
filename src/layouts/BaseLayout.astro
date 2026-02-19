@@ -1,6 +1,8 @@
 ---
 import 'github-markdown-css/github-markdown.css';
 import '../styles/global.css';
+import SelfReferenceNote from '../components/SelfReferenceNote.astro';
+import { resolveEchoNote } from '../data/echo-notes.mts';
 import { cvData } from '../data/cv.mts';
 import { BUILD_VERSION } from '../lib/build-version.mts';
 
@@ -19,7 +21,8 @@ const {
       year: 'numeric',
     }).format(new Date())
   ),
-  { personalInfo, coreSkills, experience, independentProjects } = cvData;
+  { personalInfo, coreSkills, experience, independentProjects } = cvData,
+  echoNote = resolveEchoNote(Astro.url.pathname);
 
 function toIsoMonth(value: string) {
   return value.length === 4 ? `${value}-01` : value;
@@ -119,6 +122,9 @@ const experienceTimeline = [...experience, ...independentProjects].sort(
         <a class="page-home-link" href="/">Home</a>
       </nav>
       <article class="markdown-body">
+        <SelfReferenceNote className="site-global-echo">
+          {echoNote}
+        </SelfReferenceNote>
         <slot />
         <footer aria-label="Site footer" class="site-footer-note">
           <p>

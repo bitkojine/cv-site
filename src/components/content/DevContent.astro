@@ -4,7 +4,6 @@ import { getCollection } from 'astro:content';
 import EmailCta from '../EmailCta.astro';
 import PageShareButton from '../PageShareButton.astro';
 import PeerSharePrompt from '../PeerSharePrompt.astro';
-import SelfReferenceNote from '../SelfReferenceNote.astro';
 import { roleEmailCtas, visitorModes } from '../../lib/email-drafts.mts';
 
 const devPhilosophy = [
@@ -66,11 +65,6 @@ const devPhilosophy = [
     Currently focused on Causaloop: a deterministic framework for high-integrity
     applications. Follow the live feed below.
   </p>
-  <SelfReferenceNote className="cta-note">
-    This website itself is an AI-assisted system. It regularly surfaces clearer
-    explanations than I would produce alone, and I use that loop to keep
-    learning.
-  </SelfReferenceNote>
 </section>
 
 <PeerSharePrompt

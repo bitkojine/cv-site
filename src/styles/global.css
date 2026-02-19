@@ -325,6 +325,18 @@ body[data-current-role]:not([data-current-role='']) .site-shell {
   max-width: 62ch;
 }
 
+.site-global-echo {
+  margin: 0 auto 1rem;
+}
+
+.site-shell > .site-global-echo {
+  justify-self: stretch;
+}
+
+.markdown-body > .site-global-echo {
+  margin-top: 0;
+}
+
 .mode-indicator {
   position: fixed;
   left: max(0.75rem, var(--safe-left));
