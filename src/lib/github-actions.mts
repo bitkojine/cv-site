@@ -1,52 +1,9 @@
-import { z } from 'zod';
-
-const WorkflowRunSchema = z
-  .object({
-    workflow_id: z.number(),
-    name: z.string(),
-    html_url: z.string(),
-    status: z.enum(['completed', 'in_progress', 'queued']),
-    conclusion: z.string().nullable(),
-  })
-  .strict();
-
-const WorkflowRunsResponseSchema = z.object({
-  workflow_runs: z.array(WorkflowRunSchema),
-});
-
-const GitHubCommitSchema = z
-  .object({
-    html_url: z.string(),
-    commit: z
-      .object({
-        message: z.string(),
-        author: z
-          .object({
-            date: z.string(),
-          })
-          .strict(),
-      })
-      .strict(),
-  })
-  .strict();
-
-export interface WorkflowRun {
-  workflow_id: number;
-  name: string;
-  html_url: string;
-  status: 'completed' | 'in_progress' | 'queued';
-  conclusion: string | null;
-}
-
-export interface GitHubCommit {
-  html_url: string;
-  commit: {
-    message: string;
-    author: {
-      date: string;
-    };
-  };
-}
+import {
+  GitHubCommitsSchema,
+  WorkflowRunsResponseSchema,
+  type GitHubCommit,
+  type WorkflowRun,
+} from './schemas/github.mts';
 
 interface FetchResponse {
   ok: boolean;
@@ -115,7 +72,7 @@ export const getGithubData = async (
   let latestCommits: GitHubCommit[] = [];
   if (commitsResponse.ok) {
     const data = await commitsResponse.json();
-    const parsedCommits = z.array(GitHubCommitSchema).safeParse(data);
+    const parsedCommits = GitHubCommitsSchema.safeParse(data);
     if (parsedCommits.success && parsedCommits.data.length) {
       latestCommits = parsedCommits.data;
     }

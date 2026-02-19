@@ -2,6 +2,7 @@ import { writeFileSync, mkdirSync, existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { execSync } from 'node:child_process';
 import { z } from 'zod';
+import { GitHubActivityEventsSchema } from '../lib/schemas/github.mts';
 
 const GITHUB_USERNAME = 'bitkojine';
 const OUTPUT_DIR = join(process.cwd(), 'public');
@@ -9,31 +10,6 @@ const OUTPUT_FILE = join(OUTPUT_DIR, 'github-activity.json');
 const CACHE_DIR = join(process.cwd(), '.cache');
 const METADATA_FILE = join(CACHE_DIR, 'github-metadata.json');
 const MetadataSchema = z.object({ etag: z.string().optional() });
-const GitHubEventSchema = z
-  .object({
-    type: z.string(),
-    created_at: z.string(),
-    repo: z.object({ name: z.string() }).passthrough(),
-    payload: z
-      .object({
-        commits: z
-          .array(z.object({ message: z.string() }).passthrough())
-          .optional(),
-        ref: z.string().optional(),
-        ref_type: z.string().optional(),
-        action: z.string().optional(),
-        pull_request: z
-          .object({
-            title: z.string().optional(),
-          })
-          .passthrough()
-          .optional(),
-      })
-      .passthrough()
-      .optional(),
-  })
-  .passthrough();
-const GitHubEventsSchema = z.array(GitHubEventSchema);
 
 function setChangedOutput(changed: boolean) {
   if (!process.env.GITHUB_OUTPUT) return;
@@ -107,7 +83,7 @@ async function fetchActivity() {
       );
     }
 
-    const events = GitHubEventsSchema.parse(await response.json());
+    const events = GitHubActivityEventsSchema.parse(await response.json());
     const newEtag = response.headers.get('etag') || '';
 
     if (!existsSync(OUTPUT_DIR)) {
