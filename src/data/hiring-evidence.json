@@ -1,0 +1,329 @@
+{
+  "fitSummary": {
+    "roleFocus": "Senior backend engineer for product teams shipping in real-world constraints",
+    "yearsExperience": "10+ years in production software delivery",
+    "domains": [
+      "Product APIs and service boundaries",
+      "Reliability and incident response",
+      "Data-intensive backend workflows"
+    ],
+    "collaborationStyle": "Works directly with product, design, and data stakeholders to scope risk-first delivery",
+    "timezoneOverlap": "EU hours with consistent overlap for UK and US East Coast",
+    "availability": "Open to full-time and long-term product roles"
+  },
+  "interviewPolicy": {
+    "statement": "I do not run trivia-based screening. I prefer real system discussion, evidence review, and tradeoff analysis.",
+    "prompt": "If you want to assess me, use the artifacts below and ask how decisions were made under constraints."
+  },
+  "stackMatchOptions": [
+    "Distributed APIs",
+    "Data-heavy systems",
+    "Legacy modernization",
+    "Cloud-hosted backends",
+    "Event-driven workflows"
+  ],
+  "seniorSignals": [
+    {
+      "id": "signal-reliability-incident",
+      "title": "Reliability",
+      "claim": "I treat incidents as both response and design feedback loops.",
+      "evidenceRef": "dr-observability-reliability-loop",
+      "evidenceType": "decision",
+      "themes": ["reliability", "delivery"]
+    },
+    {
+      "id": "signal-performance-hot-path",
+      "title": "Performance",
+      "claim": "I profile bottlenecks before rewriting and optimize the highest-cost path first.",
+      "evidenceRef": "cs-checkout-latency",
+      "evidenceType": "case-study",
+      "themes": ["performance", "delivery", "data"]
+    },
+    {
+      "id": "signal-architecture-boundary",
+      "title": "Architecture",
+      "claim": "I choose service boundaries based on ownership and failure isolation, not fashion.",
+      "evidenceRef": "dr-bounded-context-orders-payments",
+      "evidenceType": "decision",
+      "themes": ["architecture", "reliability"]
+    },
+    {
+      "id": "signal-data-migration",
+      "title": "Data",
+      "claim": "I run risky data migrations with reversible steps and production safety gates.",
+      "evidenceRef": "pp-safe-migration-rollout",
+      "evidenceType": "pattern",
+      "themes": ["data", "reliability"]
+    },
+    {
+      "id": "signal-delivery-constraints",
+      "title": "Delivery",
+      "claim": "I ship meaningful increments while negotiating scope and timeline constraints.",
+      "evidenceRef": "cs-subscription-migration",
+      "evidenceType": "case-study",
+      "themes": ["delivery", "architecture", "data"]
+    },
+    {
+      "id": "signal-quality-risk-based",
+      "title": "Quality",
+      "claim": "I design testing strategy around business risk and failure modes, not checklist coverage.",
+      "evidenceRef": "dr-observability-reliability-loop",
+      "evidenceType": "decision",
+      "themes": ["quality", "reliability"]
+    },
+    {
+      "id": "signal-stakeholder-alignment",
+      "title": "Stakeholder Management",
+      "claim": "I keep delivery predictable by making decision tradeoffs explicit to non-engineering partners.",
+      "evidenceRef": "cs-subscription-migration",
+      "evidenceType": "case-study",
+      "themes": ["delivery", "architecture"]
+    },
+    {
+      "id": "signal-operations-pragmatism",
+      "title": "Operations",
+      "claim": "I use lightweight runbooks and ownership clarity to reduce repeat production failures.",
+      "evidenceRef": "pp-incident-playbook",
+      "evidenceType": "pattern",
+      "themes": ["reliability", "delivery"]
+    }
+  ],
+  "caseStudies": [
+    {
+      "id": "cs-checkout-latency",
+      "title": "Checkout API latency and timeout recovery",
+      "context": "Core checkout endpoint became unstable after demand spikes and regional traffic growth.",
+      "situation": "P95 latency drifted above user tolerance during peak windows, causing timeout-related drop-off in checkout completion.",
+      "constraints": [
+        "No freeze on roadmap commitments",
+        "Shared database with legacy reporting workloads",
+        "Limited ability to add new infrastructure immediately"
+      ],
+      "options": [
+        "Rewrite checkout service end-to-end",
+        "Horizontal scale only and accept cost increase",
+        "Profile hot paths, isolate expensive query patterns, and stage targeted fixes"
+      ],
+      "decision": "Chose targeted performance work: query plan fixes, request shaping, and idempotent retry handling at failure boundaries.",
+      "tradeoffs": [
+        "Did not remove all legacy coupling in phase one",
+        "Needed additional operational guardrails while rollout stabilized"
+      ],
+      "outcome": "Reduced checkout timeout rate and restored predictable peak behavior while roadmap delivery continued. Exact KPI values are confidential but were reviewed with leadership post-release.",
+      "learnings": [
+        "Profiling before refactoring avoids expensive false starts",
+        "Latency and reliability should be treated as one system"
+      ],
+      "themes": ["performance", "reliability", "data", "delivery"],
+      "stackHints": [
+        "Distributed APIs",
+        "Data-heavy systems",
+        "Cloud-hosted backends"
+      ]
+    },
+    {
+      "id": "cs-subscription-migration",
+      "title": "Subscription domain boundary split in a live system",
+      "context": "Monolithic subscription and billing logic slowed delivery and raised incident blast radius.",
+      "situation": "A single service owned subscription lifecycle, invoicing logic, and partner sync integrations, creating cross-team contention.",
+      "constraints": [
+        "Zero-downtime migration requirement",
+        "Contract commitments tied to billing correctness",
+        "Mixed seniority engineering team and active feature pressure"
+      ],
+      "options": [
+        "Big-bang migration to new services",
+        "Keep monolith and patch local pain points",
+        "Incremental boundary split with compatibility layer and progressive ownership transfer"
+      ],
+      "decision": "Used incremental extraction with explicit ownership boundaries and staged read/write migration controls.",
+      "tradeoffs": [
+        "Temporary duplication of logic while traffic shifted",
+        "Longer transition period to protect billing correctness"
+      ],
+      "outcome": "Delivery coordination improved across teams, incident impact scope narrowed, and new feature lead time decreased after boundary stabilization.",
+      "learnings": [
+        "Boundary decisions must map to team ownership, not only technical purity",
+        "Migration safety wins over implementation speed when financial correctness is involved"
+      ],
+      "themes": ["architecture", "delivery", "data", "reliability"],
+      "stackHints": [
+        "Legacy modernization",
+        "Distributed APIs",
+        "Event-driven workflows"
+      ]
+    }
+  ],
+  "decisionRecords": [
+    {
+      "id": "dr-bounded-context-orders-payments",
+      "title": "Boundary choice: orders vs payments",
+      "context": "Order and payment operations were tightly coupled, causing coordinated releases for unrelated changes.",
+      "situation": "Shared models and release pipelines increased cross-team dependency and delayed ownership.",
+      "constraints": [
+        "Compliance-sensitive payment changes",
+        "Need to preserve existing integration contracts"
+      ],
+      "options": [
+        "Keep one service with modular code",
+        "Split by technical layer",
+        "Split by domain ownership with explicit API contracts"
+      ],
+      "decision": "Separated orders and payments by business ownership with contract tests and strict dependency direction.",
+      "tradeoffs": [
+        "Initial integration overhead",
+        "Required stronger API governance discipline"
+      ],
+      "outcome": "Reduced release coupling and clearer incident ownership between domains.",
+      "learnings": [
+        "Ownership boundaries should drive architecture decisions",
+        "Contract clarity matters more than internal elegance"
+      ],
+      "themes": ["architecture", "delivery", "reliability"],
+      "stackHints": ["Distributed APIs", "Legacy modernization"]
+    },
+    {
+      "id": "dr-zero-downtime-migration-strategy",
+      "title": "Migration strategy: phased writes before reads",
+      "context": "Critical dataset required schema evolution without downtime.",
+      "situation": "Legacy consumers depended on old schema assumptions while product roadmap required new structure.",
+      "constraints": [
+        "No maintenance window",
+        "Rollback needed at each phase",
+        "Cross-service data dependencies"
+      ],
+      "options": [
+        "Big-bang schema switch",
+        "Dual-read + dual-write from day one",
+        "Expand-contract with phased write/read cutover"
+      ],
+      "decision": "Applied expand-contract pattern with validation checkpoints and rollback toggles per stage.",
+      "tradeoffs": [
+        "Longer migration timeline",
+        "Temporary storage and logic duplication"
+      ],
+      "outcome": "Schema transitioned safely with controlled risk and no customer-visible outage.",
+      "learnings": [
+        "Migration confidence comes from reversible steps",
+        "Operational rehearsals are part of engineering work"
+      ],
+      "themes": ["data", "reliability", "delivery"],
+      "stackHints": ["Data-heavy systems", "Legacy modernization"]
+    },
+    {
+      "id": "dr-observability-reliability-loop",
+      "title": "Observability approach: detection tied to action",
+      "context": "High alert volume created fatigue, while critical regressions were still missed.",
+      "situation": "Monitoring existed but lacked runbook mapping and clear ownership for response.",
+      "constraints": [
+        "Limited on-call bandwidth",
+        "No appetite for expensive tooling overhaul"
+      ],
+      "options": [
+        "Increase alerts for every known failure mode",
+        "Suppress alerts and rely on manual checks",
+        "Prioritize actionable alerting with runbook links and ownership tags"
+      ],
+      "decision": "Implemented severity-based alerting with incident runbook linkage and post-incident prevention checkpoints.",
+      "tradeoffs": [
+        "Initial tuning period with false positives",
+        "Required process consistency from engineering and product"
+      ],
+      "outcome": "Faster incident triage and fewer repeat production issues from the same classes of failure.",
+      "learnings": [
+        "Visibility without response design is noise",
+        "Incident reviews should produce concrete prevention actions"
+      ],
+      "themes": ["reliability", "quality", "delivery"],
+      "stackHints": ["Cloud-hosted backends", "Distributed APIs"]
+    }
+  ],
+  "productionPatterns": [
+    {
+      "id": "pp-idempotency-retry",
+      "title": "Idempotency with bounded retries",
+      "context": "External dependency instability caused duplicate operations during retry storms.",
+      "situation": "Network and timeout errors triggered retries that sometimes repeated non-safe operations.",
+      "constraints": [
+        "At-least-once delivery in async paths",
+        "Business flow requires exactly-once side effects"
+      ],
+      "options": [
+        "Disable retries",
+        "Keep naive retries and handle duplicate cleanup manually",
+        "Apply idempotency keys, dedupe store, and bounded retry policy"
+      ],
+      "decision": "Standardized idempotency key handling on write paths with bounded exponential retries and dead-letter escalation.",
+      "tradeoffs": [
+        "Extra storage and key lifecycle management",
+        "Slight latency increase on guarded operations"
+      ],
+      "outcome": "Reduced duplicate side effects and improved recovery behavior under transient failures.",
+      "learnings": [
+        "Retries without idempotency create hidden reliability debt",
+        "Failure-path design is first-class architecture"
+      ],
+      "themes": ["reliability", "architecture", "delivery"],
+      "stackHints": ["Event-driven workflows", "Distributed APIs"],
+      "snippet": "receive request -> check idempotency key -> if seen return prior result -> execute operation -> persist result -> ack"
+    },
+    {
+      "id": "pp-safe-migration-rollout",
+      "title": "Database migration safety rollout",
+      "context": "Business-critical table needed schema and indexing changes under active traffic.",
+      "situation": "Direct schema changes risked lock contention and prolonged degraded performance.",
+      "constraints": ["24/7 traffic profile", "Strict rollback requirements"],
+      "options": [
+        "Single transaction migration",
+        "Pause writes during migration",
+        "Expand-contract with background backfill and staged cutover"
+      ],
+      "decision": "Executed phased migration: additive schema, background backfill, validation checks, and controlled cutover.",
+      "tradeoffs": [
+        "Longer operational window",
+        "Need to maintain dual compatibility temporarily"
+      ],
+      "outcome": "Delivered schema evolution without downtime and with measurable rollback safety at each phase.",
+      "learnings": [
+        "Migration sequencing is operational engineering",
+        "Safety checkpoints prevent irreversible mistakes"
+      ],
+      "themes": ["data", "reliability", "delivery"],
+      "stackHints": ["Data-heavy systems", "Legacy modernization"],
+      "snippet": "phase 1 add nullable columns -> phase 2 dual write -> phase 3 backfill + verify -> phase 4 switch reads -> phase 5 remove legacy fields"
+    },
+    {
+      "id": "pp-incident-playbook",
+      "title": "Incident playbook with prevention loop",
+      "context": "Incident response quality varied by who was online, creating inconsistent outcomes.",
+      "situation": "Teams had tribal knowledge but no lightweight shared playbook for escalation and recovery.",
+      "constraints": [
+        "Small backend team",
+        "Need to keep documentation overhead low"
+      ],
+      "options": [
+        "Full formal incident management rollout",
+        "Ad-hoc response only",
+        "Lightweight severity playbook with explicit ownership and post-incident actions"
+      ],
+      "decision": "Adopted simple severity matrix, communication template, and mandatory follow-up action tracking for recurring failure classes.",
+      "tradeoffs": [
+        "Requires team discipline to keep runbook current",
+        "Some edge cases still need live judgment"
+      ],
+      "outcome": "Improved consistency in incident handling and reduced recurrence of known failure modes.",
+      "learnings": [
+        "Good incident process optimizes decision quality under stress",
+        "The value is in repeatable response, not process theater"
+      ],
+      "themes": ["reliability", "delivery", "quality"],
+      "stackHints": ["Cloud-hosted backends", "Distributed APIs"],
+      "snippet": "detect -> triage severity -> assign incident owner -> stabilize service -> communicate status -> run post-incident review -> track prevention task"
+    }
+  ],
+  "redFlags": [
+    "Scope expansion without owner-level tradeoff decisions",
+    "Architecture-by-fashion without operational need",
+    "Coverage metrics used as a proxy for product risk reduction"
+  ]
+}
