@@ -13,6 +13,8 @@ interface Props {
   schemaType?: 'WebPage' | 'ProfilePage' | 'CollectionPage';
   schemaExtras?: Record<string, unknown>;
   ogType?: 'website' | 'profile';
+  showBuildVersion?: boolean;
+  showLiveBuildBadge?: boolean;
 }
 
 const {
@@ -23,6 +25,8 @@ const {
   schemaType = 'WebPage',
   schemaExtras = {},
   ogType = 'website',
+  showBuildVersion = true,
+  showLiveBuildBadge = true,
 } = Astro.props;
 
 const canonicalUrl = new URL(canonicalPath, Astro.site);
@@ -98,9 +102,13 @@ const structuredData = {
         <small class="site-footer-copy">
           &copy; {new Date().getFullYear()}
           {siteName}
-          <span class="build-version"> | Build {BUILD_VERSION}</span>
+          {
+            showBuildVersion && (
+              <span class="build-version"> | Build {BUILD_VERSION}</span>
+            )
+          }
         </small>
-        <LiveBuildBadge />
+        {showLiveBuildBadge && <LiveBuildBadge />}
       </footer>
     </main>
     <RoleClientEnhancements />

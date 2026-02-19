@@ -105,120 +105,164 @@ const hiringExperience = [
   message="Forward this profile to one teammate hiring for backend product engineering."
 />
 
-<section class="card" aria-labelledby="hiring-summary">
-  <h2 id="hiring-summary">Profile Snapshot</h2>
-  <p>
-    Professional engineer since 2015 focused on C# and .NET systems. Strong fit
-    for teams that need dependable backend ownership, practical communication,
-    and low-risk onboarding into existing product architecture.
-  </p>
-</section>
-
-<section class="card" aria-labelledby="hiring-skills">
-  <h2 id="hiring-skills">Core Technical Scope</h2>
+<section class="card" aria-labelledby="hiring-fit-snapshot">
+  <h2 id="hiring-fit-snapshot">Fast Fit Snapshot</h2>
   <ul>
-    <li>C#, .NET (Framework/Core/modern .NET), ASP.NET Core, REST APIs</li>
-    <li>Relational data modeling, query optimization, performance tuning</li>
-    <li>Production troubleshooting, legacy-system debugging, safe refactors</li>
-    <li>CI/CD collaboration, code reviews, cross-functional delivery</li>
+    <li>
+      Professional .NET engineer since 2015 with backend/API delivery focus
+    </li>
+    <li>Best fit: product teams modernizing existing backend services</li>
+    <li>
+      Availability: full-time or long-term product roles, remote EU overlap
+    </li>
+    <li>
+      Core scope: C#, .NET, ASP.NET Core, SQL performance, reliability work
+    </li>
   </ul>
 </section>
 
 <section class="card" aria-labelledby="hiring-experience">
-  <h2 id="hiring-experience">Experience Highlights</h2>
+  <h2 id="hiring-experience">Experience Timeline</h2>
   {
-    hiringExperience.map((role) => (
-      <article>
-        <h3>{role.title}</h3>
-        <p>
-          {role.company} | {role.period}
-        </p>
+    hiringExperience.map((role, index) => (
+      <details class="timeline-role" open={index === 0}>
+        <summary class="timeline-role__summary">
+          <span class="timeline-role__title">{role.title}</span>
+          <span class="timeline-role__meta">
+            {role.company} | {role.period}
+          </span>
+        </summary>
         <ul>
           {role.details.map((item) => (
             <li>{item}</li>
           ))}
         </ul>
-      </article>
+      </details>
     ))
   }
 </section>
 
-<section class="card" aria-labelledby="hiring-availability">
-  <h2 id="hiring-availability">Availability</h2>
-  <ul>
-    <li>Open to full-time or long-term product roles</li>
-    <li>Remote collaboration in EU-aligned time zones</li>
-    <li>Structured onboarding and direct communication preferred</li>
-  </ul>
-</section>
-
-<section class="card" aria-labelledby="hiring-workflow">
-  <h2 id="hiring-workflow">Hiring Workflow (Fast Path)</h2>
+<section class="card" aria-labelledby="hiring-next-step">
+  <h2 id="hiring-next-step">Next Step To Hire Fast</h2>
   <ol>
     <li>
-      Send role context with the <strong>Request Resume</strong> CTA: title, team
-      setup, timezone expectations, and compensation range.
+      Use <strong>Request Resume</strong> with role title, team setup, timezone expectations,
+      and compensation band.
     </li>
     <li>
-      For intro calls, use <strong>Schedule Intro</strong> with a preferred window
-      and interview format.
+      Use <strong>Schedule Intro</strong> with a preferred time window and interview
+      format.
     </li>
     <li>
-      Initial screening should focus on role fit, onboarding constraints, and
-      ownership expectations for the first quarter.
+      Initial screening should confirm role fit, onboarding constraints, and
+      first-quarter ownership scope.
     </li>
   </ol>
-  <h3>What I Need To Qualify Fast</h3>
-  <ul>
-    <li>
-      Role scope for the first 90 days, not just generic stack requirements
-    </li>
-    <li>Decision owners in the process and expected interview stages</li>
-    <li>Compensation band and employment setup before deep technical rounds</li>
-  </ul>
+  <p>
+    If you include these items in first contact, I can confirm fit and process
+    readiness quickly.
+  </p>
 </section>
 
-<section class="card" aria-labelledby="hiring-evidence">
-  <h2 id="hiring-evidence">Evidence Boundary</h2>
-  <ul>
-    <li>
-      Public profile highlights ownership scope and technical context, not
-      confidential internal KPIs.
-    </li>
-    <li>
-      Role history is intentionally conservative: no inflated titles, no
-      fabricated leadership claims.
-    </li>
-    <li>
-      If your process requires quantified outcomes, ask directly for role-level
-      examples suitable for interview discussion.
-    </li>
-  </ul>
-  <h3>Observable Facts On This Page</h3>
-  <ul>
-    <li>Role history is listed from 2015 through 2026-present</li>
-    <li>Named employers and role periods are shown for each listed role</li>
-    <li>Scope is explicitly backend-focused (.NET, APIs, reliability work)</li>
-  </ul>
-  <h3>Not Verified On-Page</h3>
-  <ul>
-    <li>Quantified production impact deltas</li>
-    <li>Public references from former managers or teams</li>
-    <li>Exact legal/employment setup and start-date commitment</li>
-  </ul>
-</section>
+<details class="card" aria-labelledby="hiring-extra-summary">
+  <summary id="hiring-extra-summary"
+    ><strong>Additional Hiring Context</strong></summary
+  >
+  <section aria-labelledby="hiring-context-fit">
+    <h3 id="hiring-context-fit">Best Team Fit</h3>
+    <ul>
+      <li>Product teams modernizing existing backend services</li>
+      <li>Organizations prioritizing reliability and predictable delivery</li>
+      <li>Teams that value ownership and sustainable engineering pace</li>
+    </ul>
+    <h3>Known Misfit Conditions</h3>
+    <ul>
+      <li>Roles that require relocation or non-EU timezone-first overlap</li>
+      <li>Processes that hide compensation until late-stage interviews</li>
+      <li>Undefined ownership boundaries in the first quarter</li>
+    </ul>
+  </section>
+  <section aria-labelledby="hiring-context-proof">
+    <h3 id="hiring-context-proof">Evidence Boundary</h3>
+    <ul>
+      <li>
+        Public profile highlights ownership scope and technical context, not
+        confidential internal KPIs.
+      </li>
+      <li>
+        Role history is intentionally conservative with no inflated leadership
+        claims.
+      </li>
+      <li>
+        If you require quantified outcomes, ask for role-level examples during
+        interview discussion.
+      </li>
+    </ul>
+    <h3>Not Verified On-Page</h3>
+    <ul>
+      <li>Quantified production impact deltas</li>
+      <li>Public references from former managers or teams</li>
+      <li>Exact legal/employment setup and start-date commitment</li>
+    </ul>
+  </section>
+</details>
 
-<section class="card" aria-labelledby="hiring-fit">
-  <h2 id="hiring-fit">Best Team Fit</h2>
-  <ul>
-    <li>Product teams modernizing existing backend services</li>
-    <li>Organizations prioritizing reliability and predictable delivery</li>
-    <li>Teams that value ownership and sustainable engineering pace</li>
-  </ul>
-  <h3>Known Misfit Conditions</h3>
-  <ul>
-    <li>Roles that require relocation or non-EU timezone-first overlap</li>
-    <li>Processes that hide compensation until late-stage interviews</li>
-    <li>Positions with undefined ownership boundaries in the first quarter</li>
-  </ul>
-</section>
+<style>
+  .timeline-role + .timeline-role {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .timeline-role__summary {
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    list-style: none;
+    min-height: 44px;
+    justify-content: center;
+  }
+
+  .timeline-role__summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .timeline-role__summary::after {
+    content: 'Show details';
+    color: var(--accent);
+    font-size: 0.82rem;
+    font-weight: 600;
+    margin-top: 0.15rem;
+  }
+
+  .timeline-role[open] .timeline-role__summary::after {
+    content: 'Hide details';
+  }
+
+  .timeline-role__title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .timeline-role__meta {
+    color: var(--muted);
+    font-size: 0.92rem;
+    overflow-wrap: anywhere;
+  }
+
+  .timeline-role ul {
+    margin-top: 0.65rem;
+  }
+
+  @media (orientation: landscape) and (max-width: 932px) {
+    .timeline-role__title {
+      font-size: 0.96rem;
+    }
+
+    .timeline-role__meta {
+      font-size: 0.88rem;
+    }
+  }
+</style>
