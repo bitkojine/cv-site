@@ -30,6 +30,7 @@ const {
 } = Astro.props;
 
 const canonicalUrl = new URL(canonicalPath, Astro.site);
+const isHomePage = canonicalPath === '/';
 const siteName = 'Robertas Rudys';
 const structuredData = {
   '@context': 'https://schema.org',
@@ -92,8 +93,17 @@ const structuredData = {
     <a class="skip-link" href="#main-content">Skip to content</a>
     <header class="mail-topbar" aria-label="Page header">
       <div class="mail-topbar__inner">
-        <p class="mail-topbar__eyebrow">{siteName}</p>
-        <p class="mail-topbar__title">{roleLabel ?? 'Inbox'}</p>
+        <div class="mail-topbar__meta">
+          <p class="mail-topbar__eyebrow">{siteName}</p>
+          <p class="mail-topbar__title">{roleLabel ?? 'Inbox'}</p>
+        </div>
+        {
+          !isHomePage && (
+            <a class="mail-topbar__home" href="/" aria-label="Go to homepage">
+              Home
+            </a>
+          )
+        }
       </div>
     </header>
     <main id="main-content" class="site-shell">
