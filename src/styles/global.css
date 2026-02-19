@@ -17,6 +17,7 @@
   --shell-gap: 1.25rem;
   --section-top-padding: 1rem;
   --hero-top-padding: 0.2rem;
+  --echo-gap: 1.05rem;
 }
 
 * {
@@ -156,12 +157,14 @@ body {
 .site-shell--hero {
   --shell-gap: 1.05rem;
   --section-top-padding: 0.9rem;
+  --echo-gap: 1.05rem;
 }
 
 .site-shell--dense {
   --shell-gap: 0.95rem;
   --section-top-padding: 0.72rem;
   --hero-top-padding: 0.08rem;
+  --echo-gap: 0.9rem;
 }
 
 body:has([data-role-indicator]) .site-shell,
@@ -522,7 +525,7 @@ body[data-current-role]:not([data-current-role='']) .site-shell {
 }
 
 .site-global-echo {
-  margin: 0 auto;
+  margin: 0.28rem auto var(--echo-gap);
 }
 
 .site-shell > .site-global-echo {
@@ -952,6 +955,18 @@ body[data-current-role]:not([data-current-role='']) .site-shell {
 
 .brand-modal__button {
   width: 100%;
+}
+
+.brand-modal__cancel {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  min-height: 44px;
+  padding: 0.56rem 0.95rem;
+  background: color-mix(in oklab, var(--surface) 95%, var(--surface-muted));
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 500;
 }
 
 .ui-skeleton {

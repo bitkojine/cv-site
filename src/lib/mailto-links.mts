@@ -177,8 +177,8 @@ function ensureMailtoModal(doc: MailtoModalDocument): MailtoModalParts | null {
       <h2 class="brand-modal__title" data-mailto-title>Email draft action</h2>
       <p class="brand-modal__body" data-mailto-body></p>
       <div class="brand-modal__actions">
-        <button class="cta-secondary brand-modal__button" data-mailto-cancel type="button">Cancel</button>
-        <button class="cta-primary brand-modal__button" data-mailto-confirm type="button">Open email draft</button>
+        <button class="brand-modal__button brand-modal__cancel" data-mailto-cancel type="button">Cancel</button>
+        <button autofocus class="cta-primary brand-modal__button" data-mailto-confirm type="button">Open email draft</button>
       </div>
     </form>
   `;
