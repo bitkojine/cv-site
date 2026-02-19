@@ -5,4 +5,10 @@ echo "Running pre-push checks..."
 echo "1. Dead Branch Protection..."
 ./scripts/check-dead-branch.sh || exit 1
 
+echo "2. Branch Sync Protection..."
+./scripts/check-branch-sync.sh || exit 1
+
+echo "3. Workflow Lint..."
+npm run lint:workflows || exit 1
+
 echo "All push checks passed!"
