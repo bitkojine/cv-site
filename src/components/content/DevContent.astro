@@ -332,7 +332,13 @@ const devPhilosophy = [
         } else if (event.type === 'CreateEvent') {
           const refType = event.payload?.ref_type || 'resource';
           const ref = event.payload?.ref || '';
-          content = `Created ${refType} <strong>${ref}</strong> in <strong>${event.repo.name}</strong>`;
+          const target = ref ? `<strong>${ref}</strong>` : 'repository scope';
+          content = `Created ${refType} ${target} in <strong>${event.repo.name}</strong>`;
+        } else if (event.type === 'DeleteEvent') {
+          const refType = event.payload?.ref_type || 'resource';
+          const ref = event.payload?.ref || '';
+          const target = ref ? `<strong>${ref}</strong>` : 'repository scope';
+          content = `Deleted ${refType} ${target} in <strong>${event.repo.name}</strong>`;
         } else if (event.type === 'WatchEvent') {
           content = `Starred <strong>${event.repo.name}</strong>`;
         } else if (event.type === 'PullRequestEvent') {
