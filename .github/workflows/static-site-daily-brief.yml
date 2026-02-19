@@ -26,6 +26,11 @@ jobs:
         run: |
           set -euo pipefail
 
+          ALERT_DAYS="${ALERT_DAYS:-21}"
+          CRITICAL_DAYS="${CRITICAL_DAYS:-7}"
+          ENFORCE_ORIGIN_VALIDATION="${ENFORCE_ORIGIN_VALIDATION:-false}"
+          MAX_URL_CHECKS="${MAX_URL_CHECKS:-250}"
+
           now_utc="$(date -u +'%Y-%m-%d %H:%M:%S UTC')"
           headers_file="$(mktemp)"
           report_file="$(mktemp)"
