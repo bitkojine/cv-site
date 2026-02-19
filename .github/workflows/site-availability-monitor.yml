@@ -4,6 +4,11 @@ on:
   schedule:
     - cron: '*/15 * * * *'
   workflow_dispatch:
+    inputs:
+      force_alert:
+        description: 'Force alert path for testing notifications'
+        required: false
+        default: 'false'
 
 permissions:
   contents: read
@@ -18,6 +23,8 @@ jobs:
       - name: Check edge availability
         id: edge
         shell: bash
+        env:
+          FORCE_ALERT: ${{ github.event.inputs.force_alert || 'false' }}
         run: |
           set -euo pipefail
 
@@ -38,6 +45,11 @@ jobs:
           elif [ "${status}" -ge 500 ]; then
             alert=true
             reason="site unavailable: HTTP ${status}"
+          fi
+
+          if [ "${FORCE_ALERT}" = "true" ]; then
+            alert=true
+            reason="manual alert test requested via workflow_dispatch"
           fi
 
           {
@@ -102,7 +114,7 @@ jobs:
           CF_RAY: ${{ steps.edge.outputs.cf_ray }}
 
       - name: Send alert email
-        if: steps.edge.outputs.alert == 'true' && secrets.ALERT_SMTP_SERVER != '' && secrets.ALERT_SMTP_USERNAME != '' && secrets.ALERT_SMTP_PASSWORD != '' && secrets.ALERT_EMAIL_TO != '' && secrets.ALERT_EMAIL_FROM != ''
+        if: steps.edge.outputs.alert == 'true'
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: ${{ secrets.ALERT_SMTP_SERVER }}
