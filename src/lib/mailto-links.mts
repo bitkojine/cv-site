@@ -9,7 +9,11 @@ type MailtoDocument = Pick<
 
 type MailtoWindow = Pick<Window, 'location'> & {
   __cvMailtoInstallerReady?: boolean;
+  confirm?: (message?: string) => boolean;
 };
+
+const DEFAULT_CONFIRM_MESSAGE =
+  'This will open your email client with a pre-filled template message to send to me. Continue?';
 
 export function buildMailtoHref(link: MailtoLink): string | null {
   const local = link.getAttribute('data-email-local') || '',
@@ -33,7 +37,7 @@ export function buildMailtoHref(link: MailtoLink): string | null {
 
 export function bindMailtoLinks(
   doc: Pick<Document, 'querySelectorAll'>,
-  win: Pick<Window, 'location'>
+  win: MailtoWindow
 ): void {
   const links = doc.querySelectorAll<MailtoLink>('[data-mailto-link]');
   links.forEach((link) => {
@@ -48,6 +52,12 @@ export function bindMailtoLinks(
         return;
       }
       event.preventDefault();
+      const confirmMessage =
+        link.getAttribute('data-mailto-confirm-message') ||
+        DEFAULT_CONFIRM_MESSAGE;
+      if (typeof win.confirm === 'function' && !win.confirm(confirmMessage)) {
+        return;
+      }
       win.location.href = href;
     });
   });

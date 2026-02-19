@@ -273,7 +273,7 @@ const evidenceIndex = new Map(
       >
         <h2 id={section.id}>{section.title}</h2>
         <div class="evidence-grid">
-          {section.items.map((item, index) => (
+          {section.items.map((item) => (
             <article
               class="evidence-item"
               data-evidence-item
@@ -290,60 +290,52 @@ const evidenceIndex = new Map(
                 </p>
               </header>
               <p>{item.context}</p>
-              <details
-                data-evidence-details
-                data-evidence-id={item.id}
-                data-evidence-type={section.type}
-                open={index === 0}
-              >
-                <summary>Open drilldown</summary>
-                <div class="evidence-details-body">
+              <div class="evidence-details-body">
+                <p>
+                  <strong>Situation:</strong> {item.situation}
+                </p>
+                <p>
+                  <strong>Constraints:</strong> {item.constraints.join('; ')}
+                </p>
+                <p>
+                  <strong>Options:</strong> {item.options.join('; ')}
+                </p>
+                <p>
+                  <strong>Decision:</strong> {item.decision}
+                </p>
+                <p>
+                  <strong>Tradeoffs:</strong> {item.tradeoffs.join('; ')}
+                </p>
+                <p>
+                  <strong>Outcome:</strong> {item.outcome}
+                </p>
+                <p>
+                  <strong>Learnings:</strong> {item.learnings.join('; ')}
+                </p>
+                {item.discussionPrompts && (
                   <p>
-                    <strong>Situation:</strong> {item.situation}
+                    <strong>Discussion prompts:</strong>
+                    {item.discussionPrompts.join('; ')}
                   </p>
+                )}
+                {item.evaluationSignals && (
                   <p>
-                    <strong>Constraints:</strong> {item.constraints.join('; ')}
+                    <strong>What strong answers include:</strong>
+                    {item.evaluationSignals.join('; ')}
                   </p>
+                )}
+                {item.antiPatterns && (
                   <p>
-                    <strong>Options:</strong> {item.options.join('; ')}
+                    <strong>Anti-patterns to watch for:</strong>
+                    {item.antiPatterns.join('; ')}
                   </p>
-                  <p>
-                    <strong>Decision:</strong> {item.decision}
-                  </p>
-                  <p>
-                    <strong>Tradeoffs:</strong> {item.tradeoffs.join('; ')}
-                  </p>
-                  <p>
-                    <strong>Outcome:</strong> {item.outcome}
-                  </p>
-                  <p>
-                    <strong>Learnings:</strong> {item.learnings.join('; ')}
-                  </p>
-                  {item.discussionPrompts && (
-                    <p>
-                      <strong>Discussion prompts:</strong>
-                      {item.discussionPrompts.join('; ')}
-                    </p>
-                  )}
-                  {item.evaluationSignals && (
-                    <p>
-                      <strong>What strong answers include:</strong>
-                      {item.evaluationSignals.join('; ')}
-                    </p>
-                  )}
-                  {item.antiPatterns && (
-                    <p>
-                      <strong>Anti-patterns to watch for:</strong>
-                      {item.antiPatterns.join('; ')}
-                    </p>
-                  )}
-                  {item.snippet && (
-                    <pre class="pattern-snippet">
-                      <code>{item.snippet}</code>
-                    </pre>
-                  )}
-                </div>
-              </details>
+                )}
+                {item.snippet && (
+                  <pre class="pattern-snippet">
+                    <code>{item.snippet}</code>
+                  </pre>
+                )}
+              </div>
             </article>
           ))}
         </div>
@@ -474,20 +466,8 @@ const evidenceIndex = new Map(
     margin: 0.55rem 0 0;
   }
 
-  .evidence-item details {
-    margin-top: 0.55rem;
-  }
-
-  .evidence-item summary {
-    cursor: pointer;
-    color: var(--accent);
-    min-height: 36px;
-    display: inline-flex;
-    align-items: center;
-  }
-
   .evidence-details-body {
-    margin-top: 0.45rem;
+    margin-top: 0.55rem;
     display: grid;
     gap: 0.45rem;
   }
@@ -644,25 +624,8 @@ const evidenceIndex = new Map(
       applyFilters();
     };
 
-    const initEvidenceInteractions = () => {
-      document.querySelectorAll('[data-evidence-details]').forEach((node) => {
-        if (!(node instanceof HTMLDetailsElement)) return;
-        if (node.dataset.boundEvidenceToggle === '1') return;
-        node.dataset.boundEvidenceToggle = '1';
-        node.addEventListener('toggle', () => {
-          if (!node.open) return;
-          reportEvent('evidence_opened', {
-            source: 'hiring_evidence_library',
-            evidence_id: node.dataset.evidenceId || 'unknown',
-            evidence_type: node.dataset.evidenceType || 'unknown',
-          });
-        });
-      });
-    };
-
     const init = () => {
       initEvidenceFiltering();
-      initEvidenceInteractions();
     };
 
     document.addEventListener('astro:page-load', init);

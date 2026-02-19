@@ -112,7 +112,7 @@ describe('bindMailtoLinks', () => {
       }),
       doc = new MockDocument();
     doc.links = [link];
-    const win = { location: { href: '' } };
+    const win = { location: { href: '' }, confirm: () => true };
 
     bindMailtoLinks(doc as unknown as Document, win as unknown as Window);
     bindMailtoLinks(doc as unknown as Document, win as unknown as Window);
@@ -129,12 +129,28 @@ describe('bindMailtoLinks', () => {
       }),
       doc = new MockDocument();
     doc.links = [link];
-    const win = { location: { href: 'unchanged' } };
+    const win = { location: { href: 'unchanged' }, confirm: () => true };
 
     bindMailtoLinks(doc as unknown as Document, win as unknown as Window);
     const event = link.click();
 
     expect(event.defaultPrevented).toBe(false);
+    expect(win.location.href).toBe('unchanged');
+  });
+
+  it('does not navigate when user cancels confirmation', () => {
+    const link = new MockLink({
+        'data-email-local': 'john',
+        'data-email-domain': 'example.com',
+      }),
+      doc = new MockDocument();
+    doc.links = [link];
+    const win = { location: { href: 'unchanged' }, confirm: () => false };
+
+    bindMailtoLinks(doc as unknown as Document, win as unknown as Window);
+    const event = link.click();
+
+    expect(event.defaultPrevented).toBe(true);
     expect(win.location.href).toBe('unchanged');
   });
 });
@@ -152,7 +168,7 @@ describe('installMailtoLinkHandler', () => {
       doc = new MockDocument();
     doc.readyState = 'complete';
     doc.links = [initialLink];
-    const win = { location: { href: '' } };
+    const win = { location: { href: '' }, confirm: () => true };
 
     installMailtoLinkHandler(
       win as unknown as Window,
@@ -180,7 +196,7 @@ describe('installMailtoLinkHandler', () => {
       'data-email-domain': 'example.com',
     });
     doc.links = [link];
-    const win = { location: { href: '' } };
+    const win = { location: { href: '' }, confirm: () => true };
 
     installMailtoLinkHandler(
       win as unknown as Window,
@@ -195,7 +211,7 @@ describe('installMailtoLinkHandler', () => {
 
   it('marks the window as installed', () => {
     const doc = new MockDocument(),
-      win = { location: { href: '' } };
+      win = { location: { href: '' }, confirm: () => true };
 
     installMailtoLinkHandler(
       win as unknown as Window,
