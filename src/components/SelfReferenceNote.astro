@@ -163,7 +163,9 @@ const notePayload = JSON.stringify(note).replaceAll('<', '\\u003c');
       const pathname = root.dataset.echoPathname || window.location.pathname;
       const messageEl = root.querySelector('[data-echo-message]');
       const dynamicEl = root.querySelector('[data-echo-dynamic]');
+      const panelEl = root.querySelector('.self-reference__panel');
       if (!(messageEl instanceof HTMLElement)) return;
+      if (!(panelEl instanceof HTMLDetailsElement)) return;
 
       const pathVisitKey = `echo:visit:${pathname}`;
       const globalVisitKey = 'echo:visit:global';
@@ -173,11 +175,22 @@ const notePayload = JSON.stringify(note).replaceAll('<', '\\u003c');
       localStorage.setItem(pathVisitKey, String(pathVisits));
       localStorage.setItem(globalVisitKey, String(globalVisits));
 
-      messageEl.textContent = chooseVariant(pathVisits, note.variants);
+      const applyVariantIfCollapsed = () => {
+        if (panelEl.open) return;
+        messageEl.textContent = chooseVariant(pathVisits, note.variants);
+      };
+
+      applyVariantIfCollapsed();
       bindModes(root, note);
 
       if (!(dynamicEl instanceof HTMLElement)) return;
       const dynamicMessages = [];
+      let pendingDynamicText = '';
+      const applyDynamicIfCollapsed = () => {
+        if (panelEl.open || !pendingDynamicText) return;
+        dynamicEl.hidden = false;
+        dynamicEl.textContent = pendingDynamicText;
+      };
 
       const referrer = document.referrer.toLowerCase();
       if (referrer.includes('linkedin.com')) {
@@ -225,10 +238,17 @@ const notePayload = JSON.stringify(note).replaceAll('<', '\\u003c');
           );
         }
         if (dynamicMessages.length > 0) {
-          dynamicEl.hidden = false;
-          dynamicEl.textContent = dynamicMessages.join(' ');
+          pendingDynamicText = dynamicMessages.join(' ');
+          applyDynamicIfCollapsed();
         }
       }, 20000);
+
+      panelEl.addEventListener('toggle', () => {
+        if (!panelEl.open) {
+          applyVariantIfCollapsed();
+          applyDynamicIfCollapsed();
+        }
+      });
     };
 
     const init = () => {
