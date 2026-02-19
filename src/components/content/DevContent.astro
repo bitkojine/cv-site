@@ -301,6 +301,10 @@ const deepDivePosts = (
 </style>
 
 <script>
+  const FEED_INIT_KEY = '__cvGithubFeedInit';
+  const FEED_CACHE_KEY = '__cvGithubFeedCache';
+  const FEED_CACHE_AT_KEY = '__cvGithubFeedCacheAt';
+  const FEED_CACHE_TTL_MS = 120000;
   const activityDateFormatter = new Intl.DateTimeFormat('en-GB', {
     timeZone: 'Europe/Vilnius',
     month: 'short',
@@ -325,11 +329,27 @@ const deepDivePosts = (
     if (!username) return;
 
     try {
-      const response = await fetch('/github-activity.json');
-
-      if (!response.ok) throw new Error('Failed to load static activity');
-
-      const events = await response.json();
+      const now = Date.now();
+      const cachedAt = window[FEED_CACHE_AT_KEY] || 0;
+      const canUseCache =
+        Array.isArray(window[FEED_CACHE_KEY]) &&
+        now - cachedAt < FEED_CACHE_TTL_MS;
+      const events = canUseCache
+        ? window[FEED_CACHE_KEY]
+        : await (async () => {
+            const ac = new AbortController();
+            const timer = window.setTimeout(() => ac.abort(), 2500);
+            const response = await fetch('/github-activity.json', {
+              signal: ac.signal,
+              cache: 'no-store',
+            });
+            window.clearTimeout(timer);
+            if (!response.ok) throw new Error('Failed to load static activity');
+            const parsed = await response.json();
+            window[FEED_CACHE_KEY] = parsed;
+            window[FEED_CACHE_AT_KEY] = now;
+            return parsed;
+          })();
 
       if (!events || !events.length) {
         feed.innerHTML =
@@ -408,13 +428,15 @@ const deepDivePosts = (
     }
   }
 
-  fetchGitHubActivity();
-  document.addEventListener('astro:page-load', fetchGitHubActivity);
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', fetchGitHubActivity, {
-      once: true,
-    });
-  } else {
-    fetchGitHubActivity();
+  if (!window[FEED_INIT_KEY]) {
+    window[FEED_INIT_KEY] = true;
+    document.addEventListener('astro:page-load', fetchGitHubActivity);
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', fetchGitHubActivity, {
+        once: true,
+      });
+    } else {
+      void fetchGitHubActivity();
+    }
   }
 </script>

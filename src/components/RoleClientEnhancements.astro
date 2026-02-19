@@ -78,6 +78,20 @@
 
     const initPage = () => {
       sentDepth = new Set();
+      const getSessionValue = (key) => {
+        try {
+          return window.sessionStorage.getItem(key);
+        } catch {
+          return null;
+        }
+      };
+      const setSessionValue = (key, value) => {
+        try {
+          window.sessionStorage.setItem(key, value);
+        } catch {
+          void 0;
+        }
+      };
 
       const path = normalizePath(window.location.pathname);
       const currentRole = ROLE_BY_PATH[path] || '';
@@ -85,13 +99,13 @@
       const params = new URLSearchParams(window.location.search);
       const ref = params.get('ref');
       const sessionKey = `share-visit:${window.location.pathname}${window.location.search}`;
-      if (ref === 'peer_share' && !window.sessionStorage.getItem(sessionKey)) {
+      if (ref === 'peer_share' && !getSessionValue(sessionKey)) {
         reportEvent('share_visit', {
           mode: roleForAnalytics,
           ref,
           shared_role: params.get('shared_role') || 'unknown',
         });
-        window.sessionStorage.setItem(sessionKey, '1');
+        setSessionValue(sessionKey, '1');
       }
 
       document.querySelectorAll('[data-role-door]').forEach((link) => {
@@ -172,7 +186,7 @@
               updateShareButtonLabel(button, 'Shared');
               return;
             } catch (err) {
-              console.warn('Share canceled or failed', err);
+              void err;
             }
           }
 
@@ -185,7 +199,7 @@
             });
             updateShareButtonLabel(button, 'Link copied');
           } catch (err) {
-            console.warn('Copy failed', err);
+            void err;
             updateShareButtonLabel(button, 'Copy failed');
           }
         });
@@ -220,12 +234,12 @@
           const sharedRole =
             params.get('shared_role') || currentRole || 'unknown';
           const promptSessionKey = `peer-share-prompt:${path}:${sharedRole}`;
-          if (!window.sessionStorage.getItem(promptSessionKey)) {
+          if (!getSessionValue(promptSessionKey)) {
             reportEvent('peer_share_prompt_viewed', {
               mode: roleForAnalytics,
               shared_role: sharedRole,
             });
-            window.sessionStorage.setItem(promptSessionKey, '1');
+            setSessionValue(promptSessionKey, '1');
           }
 
           bindOnce(peerShareButton, 'PeerShareForward', 'click', async () => {
@@ -252,7 +266,7 @@
                 resetPeerShareLabel();
                 return;
               } catch (err) {
-                console.warn('Share canceled or failed', err);
+                void err;
               }
             }
 
@@ -266,7 +280,7 @@
               setPeerShareLabel('Link copied');
               resetPeerShareLabel();
             } catch (err) {
-              console.warn('Copy failed', err);
+              void err;
               setPeerShareLabel('Copy failed');
               resetPeerShareLabel();
             }
