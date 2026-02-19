@@ -1,236 +1,163 @@
 # cv-site
 
-Personal Astro site centered on a role-based entry experience.
+Static Astro site for [robertasrudys.com](https://robertasrudys.com), deployed on GitHub Pages behind Cloudflare.
 
-## Stack
+## Why This Repo Exists
+
+- Serve a fast static personal site with role-based landing flows.
+- Keep quality high with strict local hooks and CI gates.
+- Monitor availability, TLS health, and daily site posture without a backend.
+
+## Live URLs
+
+- Primary: [https://robertasrudys.com](https://robertasrudys.com)
+- GitHub Pages origin: [https://bitkojine.github.io/cv-site/](https://bitkojine.github.io/cv-site/)
+
+## Tech Stack
 
 - Astro 5 + TypeScript
-- Zod (data schema validation)
-- Vitest (unit tests)
-- Playwright (E2E tests)
+- Zod for schema validation
+- Vitest for unit tests
+- Playwright for E2E/UI stress tests
 - ESLint + Prettier
+- GitHub Actions for CI/CD + monitoring
 
-## Main Routes
+## Site Routes
 
-- `/`: role selection entry (`Recruiter / Hiring Manager`, `Founder / Operator`, `Investor / Advisor`, `Developer / Builder`)
-- `/hiring`: hiring-focused profile and CTA flow
-- `/build`: founder/operator execution offer page
-- `/vision`: investor/advisor strategy and milestone page
-- `/dev`: developer/builder open source and methodology page
-- `/blog`: blog index
-- `/blog/[slug]`: blog posts
-- `/linkedin`: LinkedIn copy-kit page
-- `/test/workflow-badge`: workflow badge visual test page
-
-## Navigation Reachability (From Homepage)
-
-Verified internal journey from `/`:
-
-1. `/` links to `/hiring`, `/build`, `/vision` via `src/components/DoorSelection.astro`.
-2. Each role page links back to `/?choose=1` and across the three role pages via `src/components/ModeSwitch.astro`.
-3. Share flow in `src/components/RoleClientEnhancements.astro` stays on the current role page and appends query params (`ref=peer_share`, `shared_role`).
-
-Currently not linked from the homepage journey:
-
-- `/blog` and `/blog/[slug]`
+- `/` role selector
+- `/hiring`
+- `/build`
+- `/vision`
+- `/dev`
+- `/operating-system`
 - `/linkedin`
-- `/test/workflow-badge`
+- `/blog`
+- `/blog/[slug]`
+- `/test/workflow-badge` (test fixture route)
 
-These routes are still built and present in sitemap output unless explicitly excluded.
+## Quick Start
 
-## Current Architecture (Active)
+Requirements:
 
-- Active route/layout path:
-  - `src/pages/index.astro`
-  - `src/pages/hiring.astro`
-  - `src/pages/build.astro`
-  - `src/pages/vision.astro`
-  - `src/layouts/SiteLayout.astro`
-  - `src/components/DoorSelection.astro`
-  - `src/components/ModeSwitch.astro`
-  - `src/components/content/*.astro`
-  - `src/components/RoleClientEnhancements.astro`
-- Supporting libraries:
-  - `src/lib/event-reporting.mts`
-  - `src/lib/mailto-links.mts`
-  - `src/lib/email-drafts.mts`
-  - `src/lib/github-actions.mts`
-  - `src/lib/github-status.mts`
-  - `src/lib/build-version.mts`
-
-## Legacy/Disconnected Pieces (Still in Repo)
-
-- Legacy layout not used by current pages:
-  - `src/layouts/Layout.astro`
-- Legacy helper component only used by legacy layout:
-  - `src/components/Controls.astro`
-- Components with no active imports in current route stack:
-  - `src/components/Header.astro`
-  - `src/components/Section.astro`
-  - `src/components/BlogCard.astro`
-  - `src/components/BuildStatus.astro`
-  - `src/components/ExperienceItem.astro`
-  - `src/components/ExperienceTimelineItem.astro`
-
-## Local Development
-
-Prerequisites:
-
-- Node.js 20+ (CI uses Node 20)
+- Node.js 20+
 - npm
 
-Install and run:
+Commands:
 
 ```bash
 npm ci
 npm run dev
 ```
 
-Open `http://localhost:4321`.
+Local site: `http://localhost:4321`
 
 ## Scripts
 
-- `npm run dev` / `npm start`: Astro dev server
-- `npm run build`: production build to `dist/`
-- `npm run preview`: preview built site
-- `npm run lint`: ESLint
-- `npm run lint:comments`: Zero Comment Policy audit
-- `npm run format`: Prettier write
-- `npm run test`: unit tests alias
-- `npm run test:unit`: Vitest
-- `npm run test:e2e`: Playwright (CI suite)
+| Command                  | Purpose                                     |
+| ------------------------ | ------------------------------------------- |
+| `npm run dev`            | Start dev server                            |
+| `npm run build`          | Build static output to `dist/`              |
+| `npm run preview`        | Preview built output                        |
+| `npm run lint`           | ESLint                                      |
+| `npm run lint:workflows` | Lint GitHub workflows via `actionlint`      |
+| `npm run lint:comments`  | Enforce zero-comment policy in `src/`       |
+| `npm run test:unit`      | Run Vitest                                  |
+| `npm run test:e2e`       | Run Playwright suite                        |
+| `npm run test:e2e:ci`    | Run Playwright with `--fail-on-flaky-tests` |
+| `npm run fetch-activity` | Refresh cached GitHub activity data         |
 
-`npm run fetch-activity` uses this token lookup order:
+## Quality Gates
 
-- `GITHUB_TOKEN`
-- `GH_TOKEN`
-- `gh auth token` (if GitHub CLI is logged in)
+Local hooks (`.husky`):
 
-If no token is available and `public/github-activity.json` already exists, it keeps the existing file and skips API fetch to avoid rate-limit churn during local hooks/builds.
+- `pre-commit`: zero-comment policy, lint, workflow lint, format check, unit tests, build, E2E
+- `pre-push`: dead-branch protection, branch-sync protection vs `origin/main`, workflow lint
 
-## Zero Comment Policy
+CI workflows (`.github/workflows`):
 
-This repository enforces a strict **Zero Comment Policy** for all production source files under `src/`.
+- `ci.yml`: lint, workflow lint, format check, unit tests, build, and PR branch-sync enforcement
+- `e2e.yml`: dedicated E2E workflow (fails on flaky tests)
+- `deploy.yml`: build + deploy to GitHub Pages
 
-### How it Works
+## Monitoring and Alerts
 
-- **Pre-commit Hook**: Every commit is automatically scanned (via Husky/Git Hooks). If any disallowed comments are found in `src/`, the commit is blocked (exit code 1).
-- **Scanner**: A substring-based detection script looks for `//` and `/*` tokens. It is intentionally simple and avoids complex parsing.
-- **Fail-Safe**: If the check cannot run reliably (e.g., Git errors), it fails closed and blocks the commit (exit code 2).
+Production monitoring workflows:
 
-### Whitelist
+- `site-availability-monitor.yml` (every 15 min)
+  - Checks edge status and alerts on request failures / 5xx / Cloudflare 526
+- `ssl-monitor.yml` (daily)
+  - Checks edge cert and origin cert expiry state
+- `static-site-daily-brief.yml` (daily)
+  - Sends operations/security snapshot email
 
-The following patterns are permitted:
+Alert channels:
 
-- `http://` and `https://`
-- `/// <reference ...` (TypeScript reference tags)
-
-### Violation Workflow
-
-If a violation is detected:
-
-1. **Move Documentation**: Transfer all reasoning, explanations, or context to `docs/ai-reasoning/inline-comment-attempts.md`.
-2. **Cleanup**: Remove the comments from the source code.
-3. **Retry**: Stage the changes and retry the commit.
-
-### manual Audit
-
-To check the entire codebase for comments:
-
-```bash
-npm run lint:comments
-```
-
-## Role-System Guardrails (Current UX)
-
-- Keep exactly three role options on `/`.
-- Keep each role page content isolated to its own route.
-- Keep role switching reversible via the `ModeSwitch` UI.
-- Preserve mobile-first interaction and layout behavior.
-
-## Event Instrumentation
-
-`src/lib/event-reporting.mts` installs `window.cvReportEvent` and `window.cvTrack`, which push to `window.dataLayer` when available.
-
-`src/components/RoleClientEnhancements.astro` emits events including:
-
-- `mode_selected`
-- `mode_switched`
-- `cta_clicked`
-- `scroll_depth`
-- `share_visit`
-- `share_clicked`
-- `share_completed`
-- `peer_share_prompt_viewed`
-- `peer_share_forwarded`
-
-Attributes used by instrumentation:
-
-- `data-role-door`
-- `data-role-switch`
-- `data-return-door`
-- `data-cta`
-- `data-cta-mode`
-- `data-role-share`
-- `data-peer-share-prompt`
-- `data-peer-share-forward`
-- `data-progressive`
-
-## Email CTA Model
-
-- CTA copy and draft templates live in `src/lib/email-drafts.mts`.
-- Emails use tagged aliases for intent tracking (for example `+www-build`, `+www-vision-invest`).
-- Click handling is obfuscated and hydrated client-side through `src/lib/mailto-links.mts` using `data-mailto-link` attributes.
-
-## GitHub Build Status Badge
-
-- Footer badge component: `src/components/LiveBuildBadge.astro`
-- Fetches GitHub Actions runs from `bitkojine/cv-site` and resolves status via `src/lib/github-status.mts`
-- Falls back to workflow URL if API calls fail during build
-
-## CI and Deploy
-
-- CI workflow: `.github/workflows/ci.yml`
-  - lint, prettier check, unit tests, build, Playwright tests
-- Deploy workflow: `.github/workflows/deploy.yml`
-  - builds `dist/` and deploys to GitHub Pages on `main` pushes or manual dispatch
-- SSL monitor workflow: `.github/workflows/ssl-monitor.yml`
-  - runs daily and opens/updates a GitHub issue if origin certificate expiry risk is detected
-- Availability monitor workflow: `.github/workflows/site-availability-monitor.yml`
-  - runs every 15 minutes and alerts on request failures, HTTP 5xx, and Cloudflare `526`
-
-## Alerting
-
-Alerts are sent to:
-
-- GitHub Issues (created/updated by monitor workflows)
-- GitHub Actions run failures
+- GitHub Actions failures
+- GitHub Issues (automated alert issues)
 - Email (if SMTP secrets are configured)
 
-Email secrets to configure in repository settings:
+Required SMTP secrets for email alerts:
 
-- `ALERT_SMTP_SERVER` (for example `smtp.gmail.com`)
+- `ALERT_SMTP_SERVER`
 - `ALERT_SMTP_PORT` (optional, default `587`)
 - `ALERT_SMTP_USERNAME`
 - `ALERT_SMTP_PASSWORD`
 - `ALERT_EMAIL_FROM`
 - `ALERT_EMAIL_TO`
 
-Site config is in `astro.config.mts` with:
+## Cloudflare + GitHub Pages TLS Notes
 
-- `site: https://robertasrudys.com`
-- sitemap integration enabled
+If Cloudflare is set to `Full (Strict)`, GitHub Pages origin cert validity must be healthy. If GitHub is still provisioning certs, strict mode can fail.
 
-## Content and Data
+Current safe operational pattern:
 
-- CV/profile source data: `src/data/cv.json`
-- Data schema: `src/data/schema.mts`
-- Blog content collection:
-  - config: `src/content/config.ts`
-  - posts: `src/content/blog/*.md`
+- Use Cloudflare `Full` while GitHub Pages cert is provisioning or unstable.
+- Switch to `Full (Strict)` when origin cert checks are healthy.
+- Keep monitor enforcement flags aligned with current mode.
 
-## Testing
+## Stress Testing
 
-- Unit tests: `tests/unit`
-- E2E tests: `tests/e2e`
-- Workflow badge test route fixture: `src/pages/test/workflow-badge.astro`
+Burst stress harness is available under `stress/`:
+
+```bash
+BASE_URL=http://127.0.0.1:4321 ./stress/run_all.sh
+```
+
+Artifacts are written to `stress/artifacts/<timestamp>/`.
+
+## Project Structure
+
+- `src/pages/` routes
+- `src/components/` UI components
+- `src/layouts/` page layouts
+- `src/lib/` client/runtime helpers
+- `src/data/` schema + data source
+- `tests/unit/` unit tests
+- `tests/e2e/` Playwright suites
+- `scripts/` repo automation and policy scripts
+- `.github/workflows/` CI/CD and monitoring workflows
+- `stress/` load/stability harness and artifacts
+
+## Contributor Workflow
+
+1. Create a fresh `codex/*` branch from latest `main`.
+2. Run local checks before push.
+3. Open PR to `main`.
+4. Merge only when `CI` and `E2E` workflows are green.
+
+Branch protections are intentionally strict to prevent stale branch pushes and branch drift.
+
+## Troubleshooting
+
+- CI skipped after merge:
+  - Check `ci.yml` dependency/`if` logic for skipped prerequisite jobs.
+- Workflow passes locally but fails in GitHub:
+  - Run `npm run lint:workflows` locally (Linux-grade `actionlint` + shellcheck coverage).
+  - Rebase onto latest `origin/main` and re-run checks.
+- Cloudflare SSL issues:
+  - Validate both edge and origin cert state in `ssl-monitor.yml` outputs.
+
+## Site Configuration
+
+- Astro site URL is configured in `astro.config.mts`.
+- Sitemap generation is enabled.
