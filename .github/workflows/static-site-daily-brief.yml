@@ -152,9 +152,9 @@ jobs:
           security_actions=""
           [ -z "${hsts}" ] && security_actions="${security_actions}\n- Add HSTS at Cloudflare edge (response header)."
           [ "${csp_ok}" != "true" ] && security_actions="${security_actions}\n- Add CSP (edge header preferred; meta fallback currently checked)."
-          [ "${frame_protection_ok}" != "true" ] && security_actions="${security_actions}\n- Add frame protection (`X-Frame-Options` or CSP `frame-ancestors`)."
-          [ -z "${xcto}" ] && security_actions="${security_actions}\n- Add `X-Content-Type-Options: nosniff` at Cloudflare edge."
-          [ "${refpol_ok}" != "true" ] && security_actions="${security_actions}\n- Add `Referrer-Policy` header (meta fallback currently checked)."
+          [ "${frame_protection_ok}" != "true" ] && security_actions="${security_actions}\n- Add frame protection (X-Frame-Options or CSP frame-ancestors)."
+          [ -z "${xcto}" ] && security_actions="${security_actions}\n- Add X-Content-Type-Options: nosniff at Cloudflare edge."
+          [ "${refpol_ok}" != "true" ] && security_actions="${security_actions}\n- Add Referrer-Policy header (meta fallback currently checked)."
 
           robots_status="$(curl -sS -o /dev/null -w '%{http_code}' --max-time 15 "${URL}/robots.txt" || true)"
           sitemap_index_status="$(curl -sS -o /dev/null -w '%{http_code}' --max-time 15 "${URL}/sitemap-index.xml" || true)"
