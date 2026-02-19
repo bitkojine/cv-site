@@ -262,6 +262,19 @@ body[data-current-role]:not([data-current-role='']) .site-shell {
   font-size: 0.9rem;
 }
 
+.self-reference {
+  margin-top: 0.8rem;
+  padding: 0.62rem 0.72rem;
+  border: 1px solid #b8a2ff;
+  border-radius: 10px;
+  background: #f3eeff;
+  color: #3d2678;
+}
+
+.self-reference strong {
+  color: #5933b7;
+}
+
 .mode-indicator {
   position: fixed;
   left: max(0.75rem, var(--safe-left));
