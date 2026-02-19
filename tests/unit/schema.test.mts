@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { CVSchema } from '../../src/data/schema';
+import rawCvData from '../../src/data/cv.json';
+import { cvData } from '../../src/data/cv.mts';
 
 describe('CVSchema', () => {
   it('validates a correct CV object', () => {
@@ -38,11 +40,20 @@ describe('CVSchema', () => {
     const invalidCV = {
       personalInfo: {
         name: 'John Doe',
-        // Missing other required fields
       },
     };
 
     const result = CVSchema.safeParse(invalidCV);
     expect(result.success).toBe(false);
+  });
+
+  it('validates the repository cv.json fixture', () => {
+    const result = CVSchema.safeParse(rawCvData);
+    expect(result.success).toBe(true);
+  });
+
+  it('exposes parsed cvData through the runtime accessor', () => {
+    expect(cvData.personalInfo.name).toBeTypeOf('string');
+    expect(cvData.coreSkills.length).toBeGreaterThan(0);
   });
 });

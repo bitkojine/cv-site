@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ZERO COMMENT POLICY
-# Purpose: Block commits or lint codebase to ensure no comments in production source files.
+# Purpose: Block commits or lint codebase to ensure no comments in source and test files.
 
 # Exit codes:
 # 0: No violations.
@@ -27,11 +27,11 @@ fi
 
 # 1. Identify files to scan
 if [ "$CHECK_ALL" = true ]; then
-  # Scan all files under src/ (working tree), ignoring md files
-  FILES=$(find src -type f | grep -vE 'src/(generated|vendor|dist|build)/|\.md$' || true)
+  # Scan all files under src/ and tests/ (working tree), ignoring md files
+  FILES=$(find src tests -type f | grep -vE '/(generated|vendor|dist|build)/|\.md$' || true)
 else
   # Scan staged files only (Git index), ignoring md files
-  FILES=$(git diff --cached --name-only --diff-filter=ACM | grep '^src/' | grep -vE 'src/(generated|vendor|dist|build)/|\.md$' || true)
+  FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '^(src|tests)/' | grep -vE '/(generated|vendor|dist|build)/|\.md$' || true)
 fi
 
 if [ -z "$FILES" ]; then
@@ -59,14 +59,15 @@ for FILE in $FILES; do
   # Matching logic
   FILE_VIOLATIONS=$($CONTENT_CMD | awk -v path="$FILE" '
     {
-      line = $0
-      sanitized = line
+      sanitized = $0
       
       # Whitelist: http://, https://, /// <reference
       gsub(/https?:\/\//, "", sanitized)
       gsub(/\/\/\/ <reference/, "", sanitized)
+      gsub(/"([^"\\]|\\.)*"/, "", sanitized)
+      gsub(/'\''([^'\''\\]|\\.)*'\''/, "", sanitized)
 
-      if (index(sanitized, "//") > 0 || index(sanitized, "/*") > 0) {
+      if (index(sanitized, "//") > 0 || index(sanitized, "/*") > 0 || index(sanitized, "<!--") > 0) {
         print path ":" NR
       }
     }
@@ -85,7 +86,7 @@ if [ "$HAS_VIOLATIONS" = true ]; then
   echo "#                                                                              #"
   echo "################################################################################"
   echo ""
-  echo "Comments are not allowed in src/."
+  echo "Comments are not allowed in src/ or tests/."
   echo ""
   echo "Violating file paths and line numbers:"
   echo "$VIOLATIONS" | sed '/^$/d' | sed 's/^/  - /'

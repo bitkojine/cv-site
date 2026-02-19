@@ -16,7 +16,7 @@ Static Astro site for [robertasrudys.com](https://robertasrudys.com), deployed o
 ## Tech Stack
 
 - Astro 5 + TypeScript
-- Zod for schema validation
+- Zod for runtime data validation (CV data, content schemas, and script inputs)
 - Vitest for unit tests
 - Playwright for E2E/UI stress tests
 - ESLint + Prettier
@@ -53,18 +53,24 @@ Local site: `http://localhost:4321`
 
 ## Scripts
 
-| Command                  | Purpose                                     |
-| ------------------------ | ------------------------------------------- |
-| `npm run dev`            | Start dev server                            |
-| `npm run build`          | Build static output to `dist/`              |
-| `npm run preview`        | Preview built output                        |
-| `npm run lint`           | ESLint                                      |
-| `npm run lint:workflows` | Lint GitHub workflows via `actionlint`      |
-| `npm run lint:comments`  | Enforce zero-comment policy in `src/`       |
-| `npm run test:unit`      | Run Vitest                                  |
-| `npm run test:e2e`       | Run Playwright suite                        |
-| `npm run test:e2e:ci`    | Run Playwright with `--fail-on-flaky-tests` |
-| `npm run fetch-activity` | Refresh cached GitHub activity data         |
+| Command                  | Purpose                                            |
+| ------------------------ | -------------------------------------------------- |
+| `npm run dev`            | Start dev server                                   |
+| `npm run build`          | Build static output to `dist/`                     |
+| `npm run preview`        | Preview built output                               |
+| `npm run lint`           | ESLint                                             |
+| `npm run lint:workflows` | Lint GitHub workflows via `actionlint`             |
+| `npm run lint:comments`  | Enforce zero-comment policy in `src/` and `tests/` |
+| `npm run test:unit`      | Run Vitest                                         |
+| `npm run test:e2e`       | Run Playwright suite                               |
+| `npm run test:e2e:ci`    | Run Playwright with `--fail-on-flaky-tests`        |
+| `npm run fetch-activity` | Refresh cached GitHub activity data                |
+
+## Data Validation
+
+- `src/data/cv.mts` validates `src/data/cv.json` at import-time using `CVSchema`.
+- `src/content/config.ts` validates blog frontmatter via Astro content schema.
+- `src/scripts/fetch-github-activity.mts` validates cache metadata and GitHub API JSON shape before writing outputs.
 
 ## Quality Gates
 

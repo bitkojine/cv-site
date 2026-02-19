@@ -1,12 +1,15 @@
 import { writeFileSync, mkdirSync, existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { execSync } from 'node:child_process';
+import { z } from 'zod';
 
 const GITHUB_USERNAME = 'bitkojine';
 const OUTPUT_DIR = join(process.cwd(), 'public');
 const OUTPUT_FILE = join(OUTPUT_DIR, 'github-activity.json');
 const CACHE_DIR = join(process.cwd(), '.cache');
 const METADATA_FILE = join(CACHE_DIR, 'github-metadata.json');
+const MetadataSchema = z.object({ etag: z.string().optional() });
+const GitHubEventsSchema = z.array(z.unknown());
 
 function setChangedOutput(changed: boolean) {
   if (!process.env.GITHUB_OUTPUT) return;
@@ -50,7 +53,9 @@ async function fetchActivity() {
   let lastEtag = '';
   if (existsSync(METADATA_FILE)) {
     try {
-      const metadata = JSON.parse(readFileSync(METADATA_FILE, 'utf-8'));
+      const metadata = MetadataSchema.parse(
+        JSON.parse(readFileSync(METADATA_FILE, 'utf-8'))
+      );
       lastEtag = metadata.etag || '';
       if (lastEtag) {
         headers['If-None-Match'] = lastEtag;
@@ -78,7 +83,7 @@ async function fetchActivity() {
       );
     }
 
-    const events = await response.json();
+    const events = GitHubEventsSchema.parse(await response.json());
     const newEtag = response.headers.get('etag') || '';
 
     if (!existsSync(OUTPUT_DIR)) {
