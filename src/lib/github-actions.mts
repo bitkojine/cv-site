@@ -1,20 +1,9 @@
-export interface WorkflowRun {
-  workflow_id: number;
-  name: string;
-  html_url: string;
-  status: 'completed' | 'in_progress' | 'queued';
-  conclusion: string | null;
-}
-
-export interface GitHubCommit {
-  html_url: string;
-  commit: {
-    message: string;
-    author: {
-      date: string;
-    };
-  };
-}
+import {
+  GitHubCommitsSchema,
+  WorkflowRunsResponseSchema,
+  type GitHubCommit,
+  type WorkflowRun,
+} from './schemas/github.mts';
 
 interface FetchResponse {
   ok: boolean;
@@ -55,9 +44,10 @@ export const getGithubData = async (
   let latestWorkflowRuns: WorkflowRun[] = [];
   if (runsResponse.ok) {
     const data = await runsResponse.json();
-    if (data && typeof data === 'object' && 'workflow_runs' in data) {
-      const runs = (data as { workflow_runs?: WorkflowRun[] }).workflow_runs;
-      if (Array.isArray(runs) && runs.length) {
+    const parsedRunsResponse = WorkflowRunsResponseSchema.safeParse(data);
+    if (parsedRunsResponse.success) {
+      const runs = parsedRunsResponse.data.workflow_runs;
+      if (runs.length) {
         workflowRuns = runs;
         const latestRuns = new Map<number, WorkflowRun>();
         for (const run of runs) {
@@ -82,8 +72,9 @@ export const getGithubData = async (
   let latestCommits: GitHubCommit[] = [];
   if (commitsResponse.ok) {
     const data = await commitsResponse.json();
-    if (Array.isArray(data) && data.length) {
-      latestCommits = data as GitHubCommit[];
+    const parsedCommits = GitHubCommitsSchema.safeParse(data);
+    if (parsedCommits.success && parsedCommits.data.length) {
+      latestCommits = parsedCommits.data;
     }
   }
 

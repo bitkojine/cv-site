@@ -301,6 +301,8 @@ const deepDivePosts = (
 </style>
 
 <script>
+  import { parseGitHubActivityEvents } from '../../lib/github-activity-guard.mts';
+
   const FEED_INIT_KEY = '__cvGithubFeedInit';
   const FEED_CACHE_KEY = '__cvGithubFeedCache';
   const FEED_CACHE_AT_KEY = '__cvGithubFeedCacheAt';
@@ -331,11 +333,13 @@ const deepDivePosts = (
     try {
       const now = Date.now();
       const cachedAt = window[FEED_CACHE_AT_KEY] || 0;
+      const parsedCachedEvents = parseGitHubActivityEvents(
+        window[FEED_CACHE_KEY]
+      );
       const canUseCache =
-        Array.isArray(window[FEED_CACHE_KEY]) &&
-        now - cachedAt < FEED_CACHE_TTL_MS;
+        !!parsedCachedEvents && now - cachedAt < FEED_CACHE_TTL_MS;
       const events = canUseCache
-        ? window[FEED_CACHE_KEY]
+        ? parsedCachedEvents
         : await (async () => {
             const ac = new AbortController();
             const timer = window.setTimeout(() => ac.abort(), 2500);
@@ -345,7 +349,8 @@ const deepDivePosts = (
             });
             window.clearTimeout(timer);
             if (!response.ok) throw new Error('Failed to load static activity');
-            const parsed = await response.json();
+            const parsed = parseGitHubActivityEvents(await response.json());
+            if (!parsed) throw new Error('Invalid static activity payload');
             window[FEED_CACHE_KEY] = parsed;
             window[FEED_CACHE_AT_KEY] = now;
             return parsed;
