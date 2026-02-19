@@ -667,6 +667,8 @@ body[data-current-role]:not([data-current-role='']) .site-shell {
 }
 
 .build-version {
+  display: block;
+  margin-top: 0.2rem;
   white-space: nowrap;
 }
 
