@@ -1,5 +1,6 @@
 import { writeFileSync, mkdirSync, existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { execSync } from 'node:child_process';
 
 const GITHUB_USERNAME = 'bitkojine';
 const OUTPUT_DIR = join(process.cwd(), 'public');
@@ -7,16 +8,43 @@ const OUTPUT_FILE = join(OUTPUT_DIR, 'github-activity.json');
 const CACHE_DIR = join(process.cwd(), '.cache');
 const METADATA_FILE = join(CACHE_DIR, 'github-metadata.json');
 
+function setChangedOutput(changed: boolean) {
+  if (!process.env.GITHUB_OUTPUT) return;
+  writeFileSync(process.env.GITHUB_OUTPUT, `changed=${changed}\n`, {
+    flag: 'a',
+  });
+}
+
+function resolveToken() {
+  if (process.env.GITHUB_TOKEN) return process.env.GITHUB_TOKEN;
+  if (process.env.GH_TOKEN) return process.env.GH_TOKEN;
+  try {
+    const token = execSync('gh auth token', {
+      stdio: ['ignore', 'pipe', 'ignore'],
+      encoding: 'utf-8',
+    }).trim();
+    return token || '';
+  } catch {
+    return '';
+  }
+}
+
 async function fetchActivity() {
   console.log(`Checking GitHub activity for ${GITHUB_USERNAME}...`);
 
-  const token = process.env.GITHUB_TOKEN;
+  const token = resolveToken();
   const headers: Record<string, string> = {
     'User-Agent': 'cv-site-builder',
   };
 
   if (token) {
     headers['Authorization'] = `token ${token}`;
+  } else if (existsSync(OUTPUT_FILE)) {
+    console.log(
+      'No GitHub token available. Skipping fetch and keeping existing activity data.'
+    );
+    setChangedOutput(false);
+    process.exit(0);
   }
 
   let lastEtag = '';
@@ -40,11 +68,7 @@ async function fetchActivity() {
 
     if (response.status === 304) {
       console.log('Activity unchanged (304 Not Modified).');
-      if (process.env.GITHUB_OUTPUT) {
-        writeFileSync(process.env.GITHUB_OUTPUT, 'changed=false\n', {
-          flag: 'a',
-        });
-      }
+      setChangedOutput(false);
       process.exit(0);
     }
 
@@ -68,15 +92,14 @@ async function fetchActivity() {
     writeFileSync(METADATA_FILE, JSON.stringify({ etag: newEtag }, null, 2));
 
     console.log(`Successfully updated activity. New ETag: ${newEtag}`);
-    if (process.env.GITHUB_OUTPUT) {
-      writeFileSync(process.env.GITHUB_OUTPUT, 'changed=true\n', { flag: 'a' });
-    }
+    setChangedOutput(true);
     process.exit(0);
   } catch (error) {
     console.error('Failed to fetch GitHub activity:', error);
     if (!existsSync(OUTPUT_FILE)) {
       writeFileSync(OUTPUT_FILE, JSON.stringify([]));
     }
+    setChangedOutput(false);
     process.exit(0);
   }
 }
