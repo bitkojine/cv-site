@@ -2,18 +2,26 @@
 import { Github } from '@lucide/astro';
 
 const githubOwner = 'bitkojine',
- githubRepo = 'cv-site',
- deployWorkflowName = 'Deploy to GitHub Pages',
- fallbackUrl = `https://github.com/${githubOwner}/${githubRepo}/actions/workflows/deploy.yml`,
-
- badgeHref = fallbackUrl,
- badgeLabel = 'Deploy Status',
- badgeStatus = 'Live',
- badgeState: 'running' | 'success' | 'failure' | 'unknown' = 'unknown';
+  githubRepo = 'cv-site',
+  deployWorkflowName = 'Deploy to GitHub Pages',
+  fallbackUrl = `https://github.com/${githubOwner}/${githubRepo}/actions/workflows/deploy.yml`,
+  badgeHref = fallbackUrl,
+  badgeLabel = 'Deploy Status',
+  badgeStatus = 'Live',
+  badgeState: 'running' | 'success' | 'failure' | 'unknown' = 'unknown';
 ---
 
 <a
-  aria-label={`Live deploy status: ${badgeStatus}. Open workflow logs in GitHub.`}   class="footer-build-badge"   data-github-owner={githubOwner}   data-github-repo={githubRepo}   data-live-build-badge="1"   data-status={badgeState}   data-workflow-name={deployWorkflowName}   href={badgeHref}   rel="noopener noreferrer"   target="_blank"
+  aria-label={`Live deploy status: ${badgeStatus}. Open workflow logs in GitHub.`}
+  class="footer-build-badge"
+  data-github-owner={githubOwner}
+  data-github-repo={githubRepo}
+  data-live-build-badge="1"
+  data-status={badgeState}
+  data-workflow-name={deployWorkflowName}
+  href={badgeHref}
+  rel="noopener noreferrer"
+  target="_blank"
 >
   <span aria-hidden="true" class="footer-build-badge__icon">
     <Github size={14} />

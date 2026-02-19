@@ -5,22 +5,28 @@ import { z } from 'zod';
 import { GitHubActivityEventsSchema } from '../lib/schemas/github.mts';
 
 const GITHUB_USERNAME = 'bitkojine',
- OUTPUT_DIR = join(process.cwd(), 'public'),
- OUTPUT_FILE = join(OUTPUT_DIR, 'github-activity.json'),
- CACHE_DIR = join(process.cwd(), '.cache'),
- METADATA_FILE = join(CACHE_DIR, 'github-metadata.json'),
- MetadataSchema = z.object({ etag: z.string().optional() });
+  OUTPUT_DIR = join(process.cwd(), 'public'),
+  OUTPUT_FILE = join(OUTPUT_DIR, 'github-activity.json'),
+  CACHE_DIR = join(process.cwd(), '.cache'),
+  METADATA_FILE = join(CACHE_DIR, 'github-metadata.json'),
+  MetadataSchema = z.object({ etag: z.string().optional() });
 
 function setChangedOutput(changed: boolean) {
-  if (!process.env.GITHUB_OUTPUT) {return;}
-  writeFileSync(process.env.GITHUB_OUTPUT, `changed=${changed}\n`, {
+  if (!process.env.GITHUB_OUTPUT) {
+    return;
+  }
+  writeFileSync(process.env.GITHUB_OUTPUT, `changed=${String(changed)}\n`, {
     flag: 'a',
   });
 }
 
 function resolveToken() {
-  if (process.env.GITHUB_TOKEN) {return process.env.GITHUB_TOKEN;}
-  if (process.env.GH_TOKEN) {return process.env.GH_TOKEN;}
+  if (process.env.GITHUB_TOKEN) {
+    return process.env.GITHUB_TOKEN;
+  }
+  if (process.env.GH_TOKEN) {
+    return process.env.GH_TOKEN;
+  }
   try {
     const token = execSync('gh auth token', {
       stdio: ['ignore', 'pipe', 'ignore'],
@@ -36,9 +42,9 @@ async function fetchActivity() {
   console.log(`Checking GitHub activity for ${GITHUB_USERNAME}...`);
 
   const token = resolveToken(),
-   headers: Record<string, string> = {
-    'User-Agent': 'cv-site-builder',
-  };
+    headers: Record<string, string> = {
+      'User-Agent': 'cv-site-builder',
+    };
 
   if (token) {
     headers.Authorization = `token ${token}`;
@@ -79,12 +85,12 @@ async function fetchActivity() {
 
     if (!response.ok) {
       throw new Error(
-        `GitHub API error: ${response.status} ${response.statusText}`
+        `GitHub API error: ${String(response.status)} ${response.statusText}`
       );
     }
 
     const events = GitHubActivityEventsSchema.parse(await response.json()),
-     newEtag = response.headers.get('etag') || '';
+      newEtag = response.headers.get('etag') || '';
 
     if (!existsSync(OUTPUT_DIR)) {
       mkdirSync(OUTPUT_DIR, { recursive: true });
@@ -109,4 +115,4 @@ async function fetchActivity() {
   }
 }
 
-fetchActivity();
+void fetchActivity();

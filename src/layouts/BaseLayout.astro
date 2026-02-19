@@ -10,16 +10,16 @@ interface Props {
 }
 
 const {
-  title = 'Robertas Rudys',
-  description = 'Resume and writing by Robertas Rudys.',
-} = Astro.props,
- currentYear = Number(
-  new Intl.DateTimeFormat('lt-LT', {
-    timeZone: 'Europe/Vilnius',
-    year: 'numeric',
-  }).format(new Date())
-),
- { personalInfo, coreSkills, experience, independentProjects } = cvData;
+    title = 'Robertas Rudys',
+    description = 'Resume and writing by Robertas Rudys.',
+  } = Astro.props,
+  currentYear = Number(
+    new Intl.DateTimeFormat('lt-LT', {
+      timeZone: 'Europe/Vilnius',
+      year: 'numeric',
+    }).format(new Date())
+  ),
+  { personalInfo, coreSkills, experience, independentProjects } = cvData;
 
 function toIsoMonth(value: string) {
   return value.length === 4 ? `${value}-01` : value;
@@ -27,65 +27,64 @@ function toIsoMonth(value: string) {
 
 function toSortableMonth(value: string) {
   const normalized = toIsoMonth(value),
-   [year, month] = normalized.split('-').map(Number);
+    [year, month] = normalized.split('-').map(Number);
   return year * 100 + month;
 }
 
 const experienceTimeline = [...experience, ...independentProjects].sort(
-  (a, b) => toSortableMonth(b.startDate) - toSortableMonth(a.startDate)
-),
- knowsAbout = coreSkills.flatMap((skill) =>
-  skill.value
-    .split(',')
-    .map((entry) => entry.trim())
-    .filter(Boolean)
-),
-
- jsonLd = {
-  '@context': 'https://schema.org',
-  '@graph': [
-    {
-      '@type': 'Person',
-      '@id': 'https://robertasrudys.com/#person',
-      name: personalInfo.name,
-      jobTitle: personalInfo.title,
-      description,
-      url: 'https://robertasrudys.com',
-      email: personalInfo.contact.email,
-      address: {
-        '@type': 'PostalAddress',
-        addressLocality: personalInfo.contact.location,
-      },
-      sameAs: [
-        'https://github.com/bitkojine',
-        'https://www.linkedin.com/in/robertasr/',
-      ],
-      knowsAbout,
-    },
-    {
-      '@type': 'ItemList',
-      '@id': 'https://robertasrudys.com/#experience',
-      name: 'Professional Experience',
-      itemListOrder: 'https://schema.org/ItemListOrderDescending',
-      numberOfItems: experienceTimeline.length,
-      itemListElement: experienceTimeline.map((item, index) => ({
-        '@type': 'ListItem',
-        position: index + 1,
-        item: {
-          '@type': 'Role',
-          roleName: item.title,
-          startDate: toIsoMonth(item.startDate),
-          ...(item.endDate ? { endDate: toIsoMonth(item.endDate) } : {}),
-          worksFor: {
-            '@type': 'Organization',
-            name: item.company,
-          },
-          description: item.description.join(' '),
+    (a, b) => toSortableMonth(b.startDate) - toSortableMonth(a.startDate)
+  ),
+  knowsAbout = coreSkills.flatMap((skill) =>
+    skill.value
+      .split(',')
+      .map((entry) => entry.trim())
+      .filter(Boolean)
+  ),
+  jsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Person',
+        '@id': 'https://robertasrudys.com/#person',
+        name: personalInfo.name,
+        jobTitle: personalInfo.title,
+        description,
+        url: 'https://robertasrudys.com',
+        email: personalInfo.contact.email,
+        address: {
+          '@type': 'PostalAddress',
+          addressLocality: personalInfo.contact.location,
         },
-      })),
-    },
-  ],
-};
+        sameAs: [
+          'https://github.com/bitkojine',
+          'https://www.linkedin.com/in/robertasr/',
+        ],
+        knowsAbout,
+      },
+      {
+        '@type': 'ItemList',
+        '@id': 'https://robertasrudys.com/#experience',
+        name: 'Professional Experience',
+        itemListOrder: 'https://schema.org/ItemListOrderDescending',
+        numberOfItems: experienceTimeline.length,
+        itemListElement: experienceTimeline.map((item, index) => ({
+          '@type': 'ListItem',
+          position: index + 1,
+          item: {
+            '@type': 'Role',
+            roleName: item.title,
+            startDate: toIsoMonth(item.startDate),
+            ...(item.endDate ? { endDate: toIsoMonth(item.endDate) } : {}),
+            worksFor: {
+              '@type': 'Organization',
+              name: item.company,
+            },
+            description: item.description.join(' '),
+          },
+        })),
+      },
+    ],
+  };
 ---
 
 <!doctype html>
@@ -93,7 +92,8 @@ const experienceTimeline = [...experience, ...independentProjects].sort(
   <head>
     <meta charset="UTF-8" />
     <meta
-      content="width=device-width, initial-scale=1, viewport-fit=cover"       name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+      name="viewport"
     />
     <meta content="light" name="color-scheme" />
     <title>{title}</title>

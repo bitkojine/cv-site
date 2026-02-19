@@ -7,35 +7,34 @@ import PeerSharePrompt from '../PeerSharePrompt.astro';
 import { roleEmailCtas, visitorModes } from '../../lib/email-drafts.mts';
 
 const devPhilosophy = [
-  {
-    title: 'Radical Determinism',
-    points: [
-      'Managed effects via MVU (Model-View-Update) patterns.',
-      'Pure business logic, isolated from platform side-effects.',
-      'Full replayability for debugging and testing.',
-    ],
-  },
-  {
-    title: 'Zero Comment Policy',
-    points: [
-      'Production code contains zero comments.',
-      'Documentation lives in /docs, logic lives in the code.',
-      'Forced clarity: if it needs a comment, it needs a refactor.',
-    ],
-  },
-  {
-    title: 'AI-First Execution',
-    points: [
-      'High-speed iteration with agentic coding partners.',
-      'Automated guardrails (Husky, Playwright, Vitest).',
-      'Code as a formal spec for AI collaboration.',
-    ],
-  },
-],
-
- deepDivePosts = (
-  await getCollection('blog', ({ data }) => !data.draft)
-).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+    {
+      title: 'Radical Determinism',
+      points: [
+        'Managed effects via MVU (Model-View-Update) patterns.',
+        'Pure business logic, isolated from platform side-effects.',
+        'Full replayability for debugging and testing.',
+      ],
+    },
+    {
+      title: 'Zero Comment Policy',
+      points: [
+        'Production code contains zero comments.',
+        'Documentation lives in /docs, logic lives in the code.',
+        'Forced clarity: if it needs a comment, it needs a refactor.',
+      ],
+    },
+    {
+      title: 'AI-First Execution',
+      points: [
+        'High-speed iteration with agentic coding partners.',
+        'Automated guardrails (Husky, Playwright, Vitest).',
+        'Code as a formal spec for AI collaboration.',
+      ],
+    },
+  ],
+  deepDivePosts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
+    (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+  );
 ---
 
 <section aria-labelledby="dev-heading" class="mode-hero">
@@ -50,8 +49,11 @@ const devPhilosophy = [
       ))
     }
     <PageShareButton
-      label="Share with developer"       shareRole="Developer / Builder"
-      shareText="Sharing this open source profile and engineering methodology."       shareTitle="Robertas Rudys | Developer / Builder"       source="dev_hero_cta"
+      label="Share with developer"
+      shareRole="Developer / Builder"
+      shareText="Sharing this open source profile and engineering methodology."
+      shareTitle="Robertas Rudys | Developer / Builder"
+      source="dev_hero_cta"
     />
   </div>
   <noscript>
@@ -73,7 +75,9 @@ const devPhilosophy = [
   <h2 id="dev-activity-heading">Live Activity Feed</h2>
   <p class="activity-hint">Scroll to see more activity.</p>
   <div
-    class="activity-feed"     data-github-user="bitkojine"     id="github-activity-feed"
+    class="activity-feed"
+    data-github-user="bitkojine"
+    id="github-activity-feed"
   >
     <p class="activity-feed__loading">
       Fetching latest activity from GitHub...

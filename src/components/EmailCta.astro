@@ -20,32 +20,38 @@ interface Props {
 }
 
 const { cta, mode } = Astro.props,
- className = cta.variant === 'primary' ? 'cta-primary' : 'cta-secondary',
- [recipientLocalPart = '', recipientDomain = ''] =
-  cta.recipientEmail.split('@'),
- encodedSubject = encodeURIComponent(cta.draft.subject),
- encodedBody = encodeURIComponent(cta.draft.body),
-
- iconByLabel = {
-  'Request Resume': Briefcase,
-  'Schedule Intro': CalendarClock,
-  'Work Together': Handshake,
-  'Book a Call': PhoneCall,
-  'Get Product Updates': Radio,
-  'Request Investment Details': Landmark,
-  'Discuss Website System': Landmark,
-  'Get This Website Flow Summary': Radio,
-  'Explore Advisory Fit': Handshake,
-  'Get Updates': Github,
-  Collaborate: Mail,
-} as const,
-
- Icon = iconByLabel[cta.label] ?? Briefcase;
+  className = cta.variant === 'primary' ? 'cta-primary' : 'cta-secondary',
+  [recipientLocalPart = '', recipientDomain = ''] =
+    cta.recipientEmail.split('@'),
+  encodedSubject = encodeURIComponent(cta.draft.subject),
+  encodedBody = encodeURIComponent(cta.draft.body),
+  iconByLabel = {
+    'Request Resume': Briefcase,
+    'Schedule Intro': CalendarClock,
+    'Work Together': Handshake,
+    'Book a Call': PhoneCall,
+    'Get Product Updates': Radio,
+    'Request Investment Details': Landmark,
+    'Discuss Website System': Landmark,
+    'Get This Website Flow Summary': Radio,
+    'Explore Advisory Fit': Handshake,
+    'Get Updates': Github,
+    Collaborate: Mail,
+  } as const,
+  Icon = iconByLabel[cta.label] ?? Briefcase;
 ---
 
 <a
   class:list={className}
-  data-cta={cta.label}   data-cta-mode={mode}   data-email-body={encodedBody}   data-email-domain={recipientDomain}   data-email-local={recipientLocalPart}   data-email-subject={encodedSubject}   data-mailto-link   href="#contact-email"   title={createDraftTooltip(cta.draft)}
+  data-cta={cta.label}
+  data-cta-mode={mode}
+  data-email-body={encodedBody}
+  data-email-domain={recipientDomain}
+  data-email-local={recipientLocalPart}
+  data-email-subject={encodedSubject}
+  data-mailto-link
+  href="#contact-email"
+  title={createDraftTooltip(cta.draft)}
 >
   <span aria-hidden="true" class="cta-icon"><Icon size={16} /></span>
   <span>{cta.label}</span>

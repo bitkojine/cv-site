@@ -2,23 +2,26 @@
 import SiteLayout from '../layouts/SiteLayout.astro';
 
 const now = new Date(),
- lastUpdated = new Intl.DateTimeFormat('lt-LT', {
-  timeZone: 'Europe/Vilnius',
-  year: 'numeric',
-  month: '2-digit',
-  day: '2-digit',
-}).format(now),
- lastUpdatedDateParts = new Intl.DateTimeFormat('lt-LT', {
-  timeZone: 'Europe/Vilnius',
-  year: 'numeric',
-  month: '2-digit',
-  day: '2-digit',
-}).formatToParts(now),
- lastUpdatedDateTime = `${lastUpdatedDateParts.find((part) => part.type === 'year')?.value ?? '0000'}-${lastUpdatedDateParts.find((part) => part.type === 'month')?.value ?? '00'}-${lastUpdatedDateParts.find((part) => part.type === 'day')?.value ?? '00'}`;
+  lastUpdated = new Intl.DateTimeFormat('lt-LT', {
+    timeZone: 'Europe/Vilnius',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(now),
+  lastUpdatedDateParts = new Intl.DateTimeFormat('lt-LT', {
+    timeZone: 'Europe/Vilnius',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).formatToParts(now),
+  lastUpdatedDateTime = `${lastUpdatedDateParts.find((part) => part.type === 'year')?.value ?? '0000'}-${lastUpdatedDateParts.find((part) => part.type === 'month')?.value ?? '00'}-${lastUpdatedDateParts.find((part) => part.type === 'day')?.value ?? '00'}`;
 ---
 
 <SiteLayout
-  canonicalPath="/linkedin"   description="Copy-paste LinkedIn text blocks for Robertas Rudys."   roleLabel="LinkedIn"   title="LinkedIn Copy Kit - Robertas Rudys"
+  canonicalPath="/linkedin"
+  description="Copy-paste LinkedIn text blocks for Robertas Rudys."
+  roleLabel="LinkedIn"
+  title="LinkedIn Copy Kit - Robertas Rudys"
 >
   <h1>LinkedIn Copy Kit</h1>
   <p><a class="touch-link" href="/">Back to homepage</a></p>

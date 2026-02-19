@@ -13,8 +13,8 @@ interface Props {
 }
 
 const { name, title, contact } = Astro.props,
- [emailLocalPart = '', emailDomain = ''] = contact.email.split('@'),
- emailDisplay = `${emailLocalPart} [at] ${emailDomain}`;
+  [emailLocalPart = '', emailDomain = ''] = contact.email.split('@'),
+  emailDisplay = `${emailLocalPart} [at] ${emailDomain}`;
 ---
 
 <header class="cv-header">
@@ -24,7 +24,11 @@ const { name, title, contact } = Astro.props,
     <div class="contact-item">
       <Mail aria-hidden="true" class="icon" size={18} />
       <a
-        aria-label="Email"         data-email-domain={emailDomain}         data-email-local={emailLocalPart}         data-mailto-link         href="#contact-email"
+        aria-label="Email"
+        data-email-domain={emailDomain}
+        data-email-local={emailLocalPart}
+        data-mailto-link
+        href="#contact-email"
       >
         {emailDisplay}
       </a>

@@ -39,7 +39,9 @@ class MockLink {
         defaultPrevented = true;
       },
     };
-    this.clickHandlers.forEach((handler) => { handler(event); });
+    this.clickHandlers.forEach((handler) => {
+      handler(event);
+    });
     return { defaultPrevented };
   }
 }
@@ -62,7 +64,9 @@ class MockDocument {
 
   emit(eventName: string): void {
     const handlers = this.listeners.get(eventName) || [];
-    handlers.forEach((handler) => { handler(); });
+    handlers.forEach((handler) => {
+      handler();
+    });
   }
 }
 
@@ -103,10 +107,10 @@ describe('buildMailtoHref', () => {
 describe('bindMailtoLinks', () => {
   it('binds click once and navigates on valid link', () => {
     const link = new MockLink({
-      'data-email-local': 'john',
-      'data-email-domain': 'example.com',
-    }),
-     doc = new MockDocument();
+        'data-email-local': 'john',
+        'data-email-domain': 'example.com',
+      }),
+      doc = new MockDocument();
     doc.links = [link];
     const win = { location: { href: '' } };
 
@@ -121,9 +125,9 @@ describe('bindMailtoLinks', () => {
 
   it('does not prevent default when link is missing required attributes', () => {
     const link = new MockLink({
-      'data-email-local': 'john',
-    }),
-     doc = new MockDocument();
+        'data-email-local': 'john',
+      }),
+      doc = new MockDocument();
     doc.links = [link];
     const win = { location: { href: 'unchanged' } };
 
@@ -138,14 +142,14 @@ describe('bindMailtoLinks', () => {
 describe('installMailtoLinkHandler', () => {
   it('installs handlers only once and binds again on astro:page-load', () => {
     const initialLink = new MockLink({
-      'data-email-local': 'first',
-      'data-email-domain': 'example.com',
-    }),
-     nextLink = new MockLink({
-      'data-email-local': 'second',
-      'data-email-domain': 'example.com',
-    }),
-     doc = new MockDocument();
+        'data-email-local': 'first',
+        'data-email-domain': 'example.com',
+      }),
+      nextLink = new MockLink({
+        'data-email-local': 'second',
+        'data-email-domain': 'example.com',
+      }),
+      doc = new MockDocument();
     doc.readyState = 'complete';
     doc.links = [initialLink];
     const win = { location: { href: '' } };
@@ -191,7 +195,7 @@ describe('installMailtoLinkHandler', () => {
 
   it('marks the window as installed', () => {
     const doc = new MockDocument(),
-     win = { location: { href: '' } };
+      win = { location: { href: '' } };
 
     installMailtoLinkHandler(
       win as unknown as Window,

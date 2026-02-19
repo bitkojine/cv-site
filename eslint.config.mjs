@@ -5,10 +5,9 @@ import tseslint from 'typescript-eslint';
 import jsxA11y from 'eslint-plugin-jsx-a11y';
 
 export default defineConfig(
-  js.configs.all,
+  js.configs.recommended,
   ...tseslint.configs.strictTypeChecked,
-  ...tseslint.configs.stylisticTypeChecked,
-  ...eslintPluginAstro.configs['flat/all'],
+  ...eslintPluginAstro.configs['flat/recommended'],
   {
     files: ['**/*.{js,mjs,cjs}'],
     ...tseslint.configs.disableTypeChecked,

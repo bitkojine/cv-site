@@ -42,9 +42,10 @@ test.describe('peer share prompt', () => {
         Object.defineProperty(navigator, 'clipboard', {
           configurable: true,
           value: {
-            writeText: async (value: string) => {
+            writeText: (value: string) => {
               (window as typeof window & { __copied?: string }).__copied =
                 value;
+              return Promise.resolve();
             },
           },
         });
@@ -71,14 +72,14 @@ test.describe('peer share prompt', () => {
       );
 
       const events = await page.evaluate(
-        () =>
-          (
-            window as typeof window & {
-              dataLayer: Record<string, unknown>[];
-            }
-          ).dataLayer
-      ),
-       eventNames = events.map((event) => event.event);
+          () =>
+            (
+              window as typeof window & {
+                dataLayer: Record<string, unknown>[];
+              }
+            ).dataLayer
+        ),
+        eventNames = events.map((event) => event.event);
       expect(eventNames).toContain('peer_share_prompt_viewed');
       expect(eventNames).toContain('peer_share_forwarded');
     });

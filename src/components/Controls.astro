@@ -102,13 +102,17 @@ const isCvPage = Astro.url.pathname === '/' || Astro.url.pathname === '';
 
 <div class="controls-dock no-print">
   <button
-    aria-label="Download CV as PDF"     class:list={[`btn-primary download-btn cv-only`,{"hidden": !isCvPage}]}     type="button"
+    aria-label="Download CV as PDF"
+    class:list={[`btn-primary download-btn cv-only`, { hidden: !isCvPage }]}
+    type="button"
   >
     <FileText size={20} />
     <span>PDF</span>
   </button>
   <a
-    aria-label="Back to CV"     class:list={[`btn-primary cv-btn non-cv-only`,{"hidden": isCvPage}]}     href="/"
+    aria-label="Back to CV"
+    class:list={[`btn-primary cv-btn non-cv-only`, { hidden: isCvPage }]}
+    href="/"
   >
     <FileText size={20} />
     <span>CV</span>

@@ -1,8 +1,8 @@
 import { defineConfig, devices } from '@playwright/test';
 
 const baseURL = process.env.BASE_URL || 'http://127.0.0.1:4321',
- isLocalBaseUrl =
-  baseURL.includes('127.0.0.1') || baseURL.includes('localhost');
+  isLocalBaseUrl =
+    baseURL.includes('127.0.0.1') || baseURL.includes('localhost');
 
 export default defineConfig({
   testDir: './tests/e2e',

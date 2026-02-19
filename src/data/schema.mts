@@ -26,7 +26,7 @@ export const SkillSchema = z
   .strict();
 
 const NormalizedDateSchema = z.string().regex(/^\d{4}(-(0[1-9]|1[0-2]))?$/),
- EndDateSchema = z.union([NormalizedDateSchema, z.literal('Present')]);
+  EndDateSchema = z.union([NormalizedDateSchema, z.literal('Present')]);
 
 export const ExperienceSchema = z
   .object({

@@ -19,21 +19,33 @@ const isRecordLike = (value: unknown): value is RecordLike =>
 export const isGitHubActivityEvent = (
   value: unknown
 ): value is GitHubActivityEvent => {
-  if (!isRecordLike(value)) {return false;}
-  if (typeof value.type !== 'string') {return false;}
-  if (typeof value.created_at !== 'string') {return false;}
+  if (!isRecordLike(value)) {
+    return false;
+  }
+  if (typeof value.type !== 'string') {
+    return false;
+  }
+  if (typeof value.created_at !== 'string') {
+    return false;
+  }
 
   if (!isRecordLike(value.repo) || typeof value.repo.name !== 'string') {
     return false;
   }
 
-  if (value.payload === undefined) {return true;}
-  if (!isRecordLike(value.payload)) {return false;}
+  if (value.payload === undefined) {
+    return true;
+  }
+  if (!isRecordLike(value.payload)) {
+    return false;
+  }
 
-  const {payload} = value;
+  const { payload } = value;
 
   if (payload.commits !== undefined) {
-    if (!Array.isArray(payload.commits)) {return false;}
+    if (!Array.isArray(payload.commits)) {
+      return false;
+    }
     if (
       !payload.commits.every(
         (commit) => isRecordLike(commit) && typeof commit.message === 'string'
@@ -43,8 +55,9 @@ export const isGitHubActivityEvent = (
     }
   }
 
-  if (payload.ref !== undefined && typeof payload.ref !== 'string')
-    {return false;}
+  if (payload.ref !== undefined && typeof payload.ref !== 'string') {
+    return false;
+  }
   if (payload.ref_type !== undefined && typeof payload.ref_type !== 'string') {
     return false;
   }
@@ -52,7 +65,9 @@ export const isGitHubActivityEvent = (
     return false;
   }
   if (payload.pull_request !== undefined) {
-    if (!isRecordLike(payload.pull_request)) {return false;}
+    if (!isRecordLike(payload.pull_request)) {
+      return false;
+    }
     if (
       payload.pull_request.title !== undefined &&
       typeof payload.pull_request.title !== 'string'
@@ -67,6 +82,8 @@ export const isGitHubActivityEvent = (
 export const parseGitHubActivityEvents = (
   value: unknown
 ): GitHubActivityEvent[] | null => {
-  if (!Array.isArray(value)) {return null;}
+  if (!Array.isArray(value)) {
+    return null;
+  }
   return value.every((event) => isGitHubActivityEvent(event)) ? value : null;
 };

@@ -12,15 +12,20 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props,
- { Content } = await post.render();
+  { Content } = await post.render();
 ---
 
 <SiteLayout
-  canonicalPath={`/blog/${post.slug}`}   description={post.data.description}   ogType="website"   roleLabel={post.data.title}   title={`${post.data.title} | Robertas Rudys`}
+  canonicalPath={`/blog/${post.slug}`}
+  description={post.data.description}
+  ogType="website"
+  roleLabel={post.data.title}
+  title={`${post.data.title} | Robertas Rudys`}
 >
   <nav aria-label="Post navigation" class="mode-indicator" data-role-indicator>
     <a
-      class="switch-button"       href="/blog"
+      class="switch-button"
+      href="/blog"
       style="text-decoration: none; display: flex; align-items: center; gap: 0.5rem; color: var(--accent); font-weight: 500;"
     >
       <ChevronLeft size={18} />
