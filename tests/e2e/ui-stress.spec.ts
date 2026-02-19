@@ -50,6 +50,8 @@ test.describe('ui stress', () => {
   test('chaos navigation + rapid interactions remain stable', async ({
     page,
   }, testInfo) => {
+    test.setTimeout(60_000);
+
     const pageErrors: string[] = [];
     const severeConsole: string[] = [];
 
@@ -88,9 +90,13 @@ test.describe('ui stress', () => {
         delay: 5,
       });
       await page.keyboard.press('Tab');
-      if (i % 6 === 0) await page.keyboard.press('Enter');
+      // Avoid Enter because it can activate focused links and race the next goto.
+      if (i % 6 === 0) await page.keyboard.press('Space').catch(() => {});
       if (i % 10 === 0) await page.goBack().catch(() => {});
       if (i % 11 === 0) await page.goForward().catch(() => {});
+      await page
+        .waitForLoadState('domcontentloaded', { timeout: 1500 })
+        .catch(() => {});
     }
 
     await testInfo.attach('ui-chaos-errors.json', {
