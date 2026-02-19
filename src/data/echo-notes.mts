@@ -288,28 +288,191 @@ const ECHO_NOTES_BY_PATH: Record<string, EchoNote> = {
   },
 };
 
-const BLOG_POST_NOTE: EchoNote = {
-  id: 'blog-post',
-  severity: 'diagnostic',
-  variants: {
-    full: 'Use this post to complete a full learning loop: extract the decision pattern, state the tradeoff, and name the failure mode to monitor.',
-    compressed: 'Close the loop: pattern, tradeoff, failure mode.',
-    lens: 'If you cannot teach it, you did not learn it.',
+export const ECHO_BLOG_POST_NOTES: Record<string, EchoNote> = {
+  '/blog/bitcoin-vs-usd': {
+    id: 'blog-post-bitcoin-vs-usd',
+    severity: 'diagnostic',
+    variants: {
+      full: 'Use this post to evaluate monetary-risk reasoning: compare custody, inflation exposure, and failure boundaries rather than brand narratives.',
+      compressed: 'Compare risk models, not slogans.',
+      lens: 'Economic tradeoffs must be explicit.',
+    },
+    actionPrompts: [
+      'Which risk is reduced and which risk is introduced?',
+      'What assumptions make this comparison valid?',
+      'Which failure mode would invalidate the conclusion?',
+    ],
+    checklist: [
+      'Decision pattern extracted',
+      'Tradeoff stated',
+      'Failure mode named',
+    ],
+    whyExists:
+      'Financial-opinion content should teach explicit reasoning structure, not just position statements.',
+    focusSection: 'Post body',
+    minimumWordCount: 180,
   },
-  actionPrompts: [
-    'What reusable decision pattern does this post teach?',
-    'What tradeoff makes that pattern valid in context?',
-    'Which failure mode becomes more likely if misapplied?',
-  ],
-  checklist: [
-    'Decision pattern extracted',
-    'Tradeoff stated',
-    'Failure mode named',
-  ],
-  whyExists:
-    'Posts should produce transferable decision quality, not passive consumption.',
-  focusSection: 'Post body',
-  minimumWordCount: 180,
+  '/blog/building-with-ai': {
+    id: 'blog-post-building-with-ai',
+    severity: 'diagnostic',
+    variants: {
+      full: 'Use this post to study AI-assisted delivery loops: prompt quality, guardrails, and verification discipline under speed pressure.',
+      compressed: 'Speed without guardrails is debt.',
+      lens: 'AI output quality is process quality.',
+    },
+    actionPrompts: [
+      'Which guardrail prevented low-quality automation?',
+      'What review step preserved correctness?',
+      'Where does human judgment remain non-negotiable?',
+    ],
+    checklist: [
+      'Decision pattern extracted',
+      'Tradeoff stated',
+      'Failure mode named',
+    ],
+    whyExists:
+      'AI workflow posts should teach repeatable execution patterns, not novelty demos.',
+    focusSection: 'Post body',
+    minimumWordCount: 180,
+  },
+  '/blog/choosing-orms': {
+    id: 'blog-post-choosing-orms',
+    severity: 'diagnostic',
+    variants: {
+      full: 'Use this post to evaluate abstraction boundaries: where ORM speed helps and where direct query control protects reliability.',
+      compressed: 'Pick abstraction per risk profile.',
+      lens: 'Abstraction choices are operational choices.',
+    },
+    actionPrompts: [
+      'Where does abstraction hide critical performance risk?',
+      'Which boundary needs direct query visibility?',
+      'What tradeoff justified the final data-access approach?',
+    ],
+    checklist: [
+      'Decision pattern extracted',
+      'Tradeoff stated',
+      'Failure mode named',
+    ],
+    whyExists:
+      'Tool-choice content should map decisions to runtime behavior and failure cost.',
+    focusSection: 'Post body',
+    minimumWordCount: 180,
+  },
+  '/blog/latest-dotnet-features': {
+    id: 'blog-post-latest-dotnet-features',
+    severity: 'diagnostic',
+    variants: {
+      full: 'Use this post to separate novelty from adoption value: assess which runtime features improve delivery, reliability, or maintainability now.',
+      compressed: 'Adopt by impact, not release hype.',
+      lens: 'Feature value depends on constraints.',
+    },
+    actionPrompts: [
+      'Which feature changes production behavior materially?',
+      'What migration risk accompanies adoption?',
+      'What should remain untouched in this cycle?',
+    ],
+    checklist: [
+      'Decision pattern extracted',
+      'Tradeoff stated',
+      'Failure mode named',
+    ],
+    whyExists:
+      'Release-summary posts should teach prioritization logic, not feature cataloging.',
+    focusSection: 'Post body',
+    minimumWordCount: 180,
+  },
+  '/blog/latest-postgresql-features': {
+    id: 'blog-post-latest-postgresql-features',
+    severity: 'diagnostic',
+    variants: {
+      full: 'Use this post to evaluate database feature adoption through migration safety, observability impact, and rollback practicality.',
+      compressed: 'Database change is risk management.',
+      lens: 'Adoption requires rollback discipline.',
+    },
+    actionPrompts: [
+      'Which feature justifies migration effort?',
+      'How is rollback handled if behavior regresses?',
+      'What metric confirms the change is worth it?',
+    ],
+    checklist: [
+      'Decision pattern extracted',
+      'Tradeoff stated',
+      'Failure mode named',
+    ],
+    whyExists:
+      'Database posts should teach safe-change strategy, not just announce capabilities.',
+    focusSection: 'Post body',
+    minimumWordCount: 180,
+  },
+  '/blog/stopping-the-zombie-attack': {
+    id: 'blog-post-stopping-the-zombie-attack',
+    severity: 'diagnostic',
+    variants: {
+      full: 'Use this post to analyze branch protection as system control: prevent stale flow, enforce freshness, and reduce merge debt.',
+      compressed: 'Process controls protect code quality.',
+      lens: 'Workflow design shapes delivery safety.',
+    },
+    actionPrompts: [
+      'Which control removed the highest-risk workflow failure?',
+      'What developer friction was intentionally accepted?',
+      'How is policy effectiveness measured over time?',
+    ],
+    checklist: [
+      'Decision pattern extracted',
+      'Tradeoff stated',
+      'Failure mode named',
+    ],
+    whyExists:
+      'Process posts should teach enforceable controls, not optional conventions.',
+    focusSection: 'Post body',
+    minimumWordCount: 180,
+  },
+  '/blog/welcome': {
+    id: 'blog-post-welcome',
+    severity: 'informational',
+    variants: {
+      full: 'Use this post to understand the learning contract: every entry should teach a reusable decision pattern with explicit constraints.',
+      compressed: 'Set the learning standard early.',
+      lens: 'Clarity of intent drives content quality.',
+    },
+    actionPrompts: [
+      'What kind of decision patterns will this blog prioritize?',
+      'Which low-signal content patterns are explicitly rejected?',
+      'How will future posts prove practical usefulness?',
+    ],
+    checklist: [
+      'Decision pattern extracted',
+      'Tradeoff stated',
+      'Failure mode named',
+    ],
+    whyExists:
+      'Introductory posts should establish standards that future content can be audited against.',
+    focusSection: 'Post body',
+    minimumWordCount: 150,
+  },
+  '/blog/why-i-left-linkedin': {
+    id: 'blog-post-why-i-left-linkedin',
+    severity: 'diagnostic',
+    variants: {
+      full: 'Use this post to study channel strategy tradeoffs: control vs reach, signal quality vs platform convenience, and long-term compounding.',
+      compressed: 'Own the channel, own the signal.',
+      lens: 'Distribution strategy is a product decision.',
+    },
+    actionPrompts: [
+      'Which channel constraint became unacceptable?',
+      'What was gained and lost by moving platforms?',
+      'How does this decision improve long-term signal quality?',
+    ],
+    checklist: [
+      'Decision pattern extracted',
+      'Tradeoff stated',
+      'Failure mode named',
+    ],
+    whyExists:
+      'Career-channel posts should teach strategic distribution thinking, not personal branding theater.',
+    focusSection: 'Post body',
+    minimumWordCount: 180,
+  },
 };
 
 const DEFAULT_ECHO_NOTE: EchoNote = {
@@ -333,7 +496,31 @@ const DEFAULT_ECHO_NOTE: EchoNote = {
 
 export function resolveEchoNote(pathname: string): EchoNote {
   if (pathname.startsWith('/blog/')) {
-    return BLOG_POST_NOTE;
+    return (
+      ECHO_BLOG_POST_NOTES[pathname] ?? {
+        id: 'blog-post-generic',
+        severity: 'diagnostic',
+        variants: {
+          full: 'Use this post to complete a full learning loop: extract the decision pattern, state the tradeoff, and name the failure mode to monitor.',
+          compressed: 'Close the loop: pattern, tradeoff, failure mode.',
+          lens: 'If you cannot teach it, you did not learn it.',
+        },
+        actionPrompts: [
+          'What reusable decision pattern does this post teach?',
+          'What tradeoff makes that pattern valid in context?',
+          'Which failure mode becomes more likely if misapplied?',
+        ],
+        checklist: [
+          'Decision pattern extracted',
+          'Tradeoff stated',
+          'Failure mode named',
+        ],
+        whyExists:
+          'Posts should produce transferable decision quality, not passive consumption.',
+        focusSection: 'Post body',
+        minimumWordCount: 180,
+      }
+    );
   }
   return ECHO_NOTES_BY_PATH[pathname] ?? DEFAULT_ECHO_NOTE;
 }
@@ -341,7 +528,7 @@ export function resolveEchoNote(pathname: string): EchoNote {
 export function getEchoSignalMetrics() {
   const notes = [
     ...Object.values(ECHO_NOTES_BY_PATH),
-    BLOG_POST_NOTE,
+    ...Object.values(ECHO_BLOG_POST_NOTES),
     DEFAULT_ECHO_NOTE,
   ];
   const decisionWords = ['tradeoff', 'constraint', 'failure', 'outcome'];
