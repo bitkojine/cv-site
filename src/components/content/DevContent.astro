@@ -287,6 +287,7 @@ const devPhilosophy = [
 
       feed.innerHTML = '';
       events.forEach((event) => {
+        if (!event || !event.type || !event.repo?.name) return;
         const item = document.createElement('div');
         item.className = 'activity-item';
 
@@ -301,17 +302,33 @@ const devPhilosophy = [
         let typeLabel = event.type.replace('Event', '');
 
         if (event.type === 'PushEvent') {
-          const count = event.payload.commits.length;
+          const commits = Array.isArray(event.payload?.commits)
+            ? event.payload.commits
+            : [];
+          const count = commits.length;
           const repo = event.repo.name;
-          const msg = event.payload.commits[0]?.message || '';
-          content = `Pushed ${count} commit(s) to <strong>${repo}</strong>: "${msg.split('\n')[0]}"`;
+          const msg = commits[0]?.message || '';
+          const ref = event.payload?.ref?.replace('refs/heads/', '') || '';
+          const summary =
+            count > 0
+              ? `${count} commit(s)`
+              : ref
+                ? `updates on ${ref}`
+                : 'updates';
+          content = msg
+            ? `Pushed ${summary} to <strong>${repo}</strong>: "${msg.split('\n')[0]}"`
+            : `Pushed ${summary} to <strong>${repo}</strong>`;
         } else if (event.type === 'CreateEvent') {
-          content = `Created ${event.payload.ref_type} <strong>${event.payload.ref || ''}</strong> in <strong>${event.repo.name}</strong>`;
+          const refType = event.payload?.ref_type || 'resource';
+          const ref = event.payload?.ref || '';
+          content = `Created ${refType} <strong>${ref}</strong> in <strong>${event.repo.name}</strong>`;
         } else if (event.type === 'WatchEvent') {
           content = `Starred <strong>${event.repo.name}</strong>`;
           typeLabel = 'Star';
         } else if (event.type === 'PullRequestEvent') {
-          content = `${event.payload.action} Pull Request in <strong>${event.repo.name}</strong>: "${event.payload.pull_request.title}"`;
+          const action = event.payload?.action || 'updated';
+          const title = event.payload?.pull_request?.title || 'pull request';
+          content = `${action} Pull Request in <strong>${event.repo.name}</strong>: "${title}"`;
         } else if (event.type === 'IssueCommentEvent') {
           content = `Commented on issue in <strong>${event.repo.name}</strong>`;
         } else {
