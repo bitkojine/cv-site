@@ -141,6 +141,50 @@ export const emailDrafts = {
       ]),
     },
   },
+  ops: {
+    discussWebsiteSystem: {
+      subject: 'Discuss Website System',
+      body: joinLines([
+        'Hi Robertas,',
+        '',
+        'I want to discuss how your website system can scale from inbound traffic to signed outcomes.',
+        '',
+        'I am visiting as:',
+        'What I want to evaluate:',
+        'Preferred call window (optional):',
+        '',
+        'Please share suggested next steps.',
+      ]),
+    },
+    requestPipelineSnapshot: {
+      subject: 'Get This Website Flow Summary',
+      body: joinLines([
+        'Hi Robertas,',
+        '',
+        'I would like a compact summary of this website flow and conversion system.',
+        '',
+        'I care most about:',
+        'Time horizon:',
+        'Optional context:',
+        '',
+        'Please share relevant details.',
+      ]),
+    },
+    exploreAdvisoryFit: {
+      subject: 'Explore Advisory Fit',
+      body: joinLines([
+        'Hi Robertas,',
+        '',
+        'I am interested in an advisory/operator conversation about your website system.',
+        '',
+        'My role:',
+        'How I could help:',
+        'Preferred next step:',
+        '',
+        'Open to a short intro if useful.',
+      ]),
+    },
+  },
   dev: {
     getUpdates: {
       subject: 'Get Open Source Updates',
@@ -197,6 +241,18 @@ export const contactEmailAliases = {
       websiteEmailBase,
       'www-vision-invest'
     ),
+    opsDiscussWebsiteSystem: buildTaggedGmailAddress(
+      websiteEmailBase,
+      'www-ops'
+    ),
+    opsRequestPipelineSnapshot: buildTaggedGmailAddress(
+      websiteEmailBase,
+      'www-ops-pipeline'
+    ),
+    opsExploreAdvisoryFit: buildTaggedGmailAddress(
+      websiteEmailBase,
+      'www-ops-advisory'
+    ),
     devGetUpdates: buildTaggedGmailAddress(websiteEmailBase, 'www-dev-updates'),
     devCollaborate: buildTaggedGmailAddress(websiteEmailBase, 'www-dev-collab'),
   },
@@ -206,6 +262,7 @@ export const visitorModes = {
   hiring: 'Recruiter / Hiring Manager',
   build: 'Founder / Operator',
   vision: 'Investor / Advisor',
+  ops: 'Investor / Advisor / Operator',
   dev: 'Developer / Builder',
 } as const;
 
@@ -250,6 +307,26 @@ export const roleEmailCtas = {
       'secondary',
       emailDrafts.vision.requestInvestmentDetails,
       'www-vision-invest'
+    ),
+  ],
+  ops: [
+    createEmailCta(
+      'Discuss Website System',
+      'primary',
+      emailDrafts.ops.discussWebsiteSystem,
+      'www-ops'
+    ),
+    createEmailCta(
+      'Get This Website Flow Summary',
+      'secondary',
+      emailDrafts.ops.requestPipelineSnapshot,
+      'www-ops-pipeline'
+    ),
+    createEmailCta(
+      'Explore Advisory Fit',
+      'secondary',
+      emailDrafts.ops.exploreAdvisoryFit,
+      'www-ops-advisory'
     ),
   ],
   dev: [
