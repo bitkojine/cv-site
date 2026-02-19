@@ -121,6 +121,30 @@ jobs:
           MIN_NOT_AFTER: ${{ steps.cert.outputs.min_not_after }}
           DETAILS: ${{ steps.cert.outputs.details }}
 
+      - name: Send alert email
+        if: steps.cert.outputs.alert == 'true' && secrets.ALERT_SMTP_SERVER != '' && secrets.ALERT_SMTP_USERNAME != '' && secrets.ALERT_SMTP_PASSWORD != '' && secrets.ALERT_EMAIL_TO != '' && secrets.ALERT_EMAIL_FROM != ''
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: ${{ secrets.ALERT_SMTP_SERVER }}
+          server_port: ${{ secrets.ALERT_SMTP_PORT || '587' }}
+          username: ${{ secrets.ALERT_SMTP_USERNAME }}
+          password: ${{ secrets.ALERT_SMTP_PASSWORD }}
+          secure: false
+          subject: '[ALERT] robertasrudys.com origin SSL certificate'
+          to: ${{ secrets.ALERT_EMAIL_TO }}
+          from: ${{ secrets.ALERT_EMAIL_FROM }}
+          body: |
+            SSL monitor alert for robertasrudys.com
+
+            Reason: ${{ steps.cert.outputs.reason }}
+            Minimum days left: ${{ steps.cert.outputs.min_days_left }}
+            Earliest notAfter: ${{ steps.cert.outputs.min_not_after }}
+
+            Per-origin details:
+            ${{ steps.cert.outputs.details }}
+
+            Workflow run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
       - name: Fail workflow when alerting
         if: steps.cert.outputs.alert == 'true'
         run: |
