@@ -12,9 +12,9 @@ import { roleEmailCtas, visitorModes } from '../../lib/email-drafts.mts';
     </h1>
   </div>
   <div class="cta-row">
-    <EmailCta cta={roleEmailCtas.hiring[1]} mode={visitorModes.hiring} />
-    <EmailCta cta={roleEmailCtas.build[0]} mode={visitorModes.build} />
-    <EmailCta cta={roleEmailCtas.vision[1]} mode={visitorModes.vision} />
+    <EmailCta cta={roleEmailCtas.ops[0]} mode={visitorModes.ops} />
+    <EmailCta cta={roleEmailCtas.ops[1]} mode={visitorModes.ops} />
+    <EmailCta cta={roleEmailCtas.ops[2]} mode={visitorModes.ops} />
   </div>
   <p class="cta-note">
     This page explains how this website works as a system: traffic sources, page
@@ -48,57 +48,67 @@ import { roleEmailCtas, visitorModes } from '../../lib/email-drafts.mts';
   </ol>
 </section>
 
-<section class="card" aria-labelledby="ops-cadence">
-  <h2 id="ops-cadence">System Operating Cadence</h2>
-  <ul>
-    <li>Daily: triage inbound messages and respond by priority.</li>
-    <li>
-      Weekly: review visitor volume, CTA clicks, and conversation quality.
-    </li>
-    <li>
-      Bi-weekly: refine role-page copy, CTA prompts, and qualification rules.
-    </li>
-    <li>
-      Monthly: update proof artifacts from shipped work and signed outcomes.
-    </li>
-  </ul>
-</section>
+<details class="card" aria-labelledby="ops-details-summary">
+  <summary id="ops-details-summary"
+    ><strong>Operational Details</strong></summary
+  >
 
-<section class="card" aria-labelledby="ops-capacity">
-  <h2 id="ops-capacity">Capacity and Scale Constraints</h2>
-  <ul>
-    <li>Current execution mode is solo and quality-gated.</li>
-    <li>Pilot delivery capacity remains intentionally limited.</li>
-    <li>Scale trigger is sustained qualified pipeline, not vanity traffic.</li>
-    <li>
-      Team expansion starts only when pipeline supports predictable, repeatable
-      throughput.
-    </li>
-  </ul>
-</section>
+  <section aria-labelledby="ops-cadence">
+    <h2 id="ops-cadence">System Operating Cadence</h2>
+    <ul>
+      <li>Daily: triage inbound messages and respond by priority.</li>
+      <li>
+        Weekly: review visitor volume, CTA clicks, and conversation quality.
+      </li>
+      <li>
+        Bi-weekly: refine role-page copy, CTA prompts, and qualification rules.
+      </li>
+      <li>
+        Monthly: update proof artifacts from shipped work and signed outcomes.
+      </li>
+    </ul>
+  </section>
 
-<section class="card" aria-labelledby="ops-controls">
-  <h2 id="ops-controls">Website-to-Deal Quality Controls</h2>
-  <ul>
-    <li>No inflated claims: evidence boundaries are explicitly declared.</li>
-    <li>Role clarity: each page states who it is for and what to do next.</li>
-    <li>CTA clarity: first contact asks for minimal input only.</li>
-    <li>
-      Deal discipline: scope and acceptance rules are explicit before start.
-    </li>
-  </ul>
-</section>
+  <section aria-labelledby="ops-capacity">
+    <h2 id="ops-capacity">Capacity and Scale Constraints</h2>
+    <ul>
+      <li>Current execution mode is solo and quality-gated.</li>
+      <li>Pilot delivery capacity remains intentionally limited.</li>
+      <li>
+        Scale trigger is sustained qualified pipeline, not vanity traffic.
+      </li>
+      <li>
+        Team expansion starts only when pipeline supports predictable,
+        repeatable throughput.
+      </li>
+    </ul>
+  </section>
 
-<section class="card" aria-labelledby="ops-roadmap">
-  <h2 id="ops-roadmap">Website System Roadmap</h2>
-  <ol>
-    <li>Increase qualified inbound from hiring and operator channels.</li>
-    <li>
-      Publish compact case snapshots with measurable, non-sensitive outcomes.
-    </li>
-    <li>Improve per-route conversion from page visit to conversation start.</li>
-    <li>
-      Shift from solo execution to organization mode as signed flow compounds.
-    </li>
-  </ol>
-</section>
+  <section aria-labelledby="ops-controls">
+    <h2 id="ops-controls">Website-to-Deal Quality Controls</h2>
+    <ul>
+      <li>No inflated claims: evidence boundaries are explicitly declared.</li>
+      <li>Role clarity: each page states who it is for and what to do next.</li>
+      <li>CTA clarity: first contact asks for minimal input only.</li>
+      <li>
+        Deal discipline: scope and acceptance rules are explicit before start.
+      </li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="ops-roadmap">
+    <h2 id="ops-roadmap">Website System Roadmap</h2>
+    <ol>
+      <li>Increase qualified inbound from hiring and operator channels.</li>
+      <li>
+        Publish compact case snapshots with measurable, non-sensitive outcomes.
+      </li>
+      <li>
+        Improve per-route conversion from page visit to conversation start.
+      </li>
+      <li>
+        Shift from solo execution to organization mode as signed flow compounds.
+      </li>
+    </ol>
+  </section>
+</details>
