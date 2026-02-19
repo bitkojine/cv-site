@@ -44,15 +44,22 @@ cd "${ROOT_DIR}"
 
 # Ensure actionlint gets a real shellcheck binary path (not npm wrapper output).
 shellcheck_bin=""
-if [ -x "${ROOT_DIR}/node_modules/shellcheck/bin/shellcheck" ]; then
-  shellcheck_bin="${ROOT_DIR}/node_modules/shellcheck/bin/shellcheck"
-elif command -v shellcheck >/dev/null 2>&1; then
-  shellcheck_bin="$(command -v shellcheck)"
-elif [ -x "${ROOT_DIR}/node_modules/.bin/shellcheck" ]; then
+npm_shellcheck_bin="${ROOT_DIR}/node_modules/shellcheck/bin/shellcheck"
+npm_shellcheck_wrapper="${ROOT_DIR}/node_modules/.bin/shellcheck"
+
+if [ -x "${npm_shellcheck_bin}" ]; then
+  shellcheck_bin="${npm_shellcheck_bin}"
+elif [ -x "${npm_shellcheck_wrapper}" ]; then
   # Pre-warm npm shellcheck wrapper so it downloads the binary quietly.
-  "${ROOT_DIR}/node_modules/.bin/shellcheck" --version >/dev/null 2>&1 || true
-  if [ -x "${ROOT_DIR}/node_modules/shellcheck/bin/shellcheck" ]; then
-    shellcheck_bin="${ROOT_DIR}/node_modules/shellcheck/bin/shellcheck"
+  "${npm_shellcheck_wrapper}" --version >/dev/null 2>&1 || true
+  if [ -x "${npm_shellcheck_bin}" ]; then
+    shellcheck_bin="${npm_shellcheck_bin}"
+  fi
+elif command -v shellcheck >/dev/null 2>&1; then
+  candidate="$(command -v shellcheck)"
+  # Ignore npm wrapper; it emits logs that break actionlint's JSON parsing.
+  if [ "${candidate}" != "${npm_shellcheck_wrapper}" ]; then
+    shellcheck_bin="${candidate}"
   fi
 fi
 
