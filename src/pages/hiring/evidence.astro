@@ -1,0 +1,543 @@
+---
+import { LibraryBig } from '@lucide/astro';
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import ModeSwitch from '../../components/ModeSwitch.astro';
+import { hiringEvidenceData } from '../../data/hiring-evidence.mts';
+
+const themeOrder = [
+  'reliability',
+  'performance',
+  'architecture',
+  'delivery',
+  'data',
+  'quality',
+];
+
+const sectionedEvidence = [
+  {
+    id: 'case-studies',
+    title: 'Case Studies',
+    type: 'case-study',
+    items: hiringEvidenceData.caseStudies,
+  },
+  {
+    id: 'decision-records',
+    title: 'Decision Records',
+    type: 'decision',
+    items: hiringEvidenceData.decisionRecords,
+  },
+  {
+    id: 'production-patterns',
+    title: 'Production Patterns',
+    type: 'pattern',
+    items: hiringEvidenceData.productionPatterns,
+  },
+] as const;
+
+const schemaExtras = {
+  about:
+    'Structured backend engineering evidence library with case studies, decision records, and production patterns.',
+};
+
+const toTitleCase = (value: string) =>
+  value.charAt(0).toUpperCase() + value.slice(1);
+---
+
+<SiteLayout
+  canonicalPath="/hiring/evidence"
+  description="Evidence library for senior backend hiring: case studies, decision records, production patterns, and interview prompts."
+  ogType="profile"
+  roleLabel="Recruiter / Hiring Manager"
+  schemaExtras={schemaExtras}
+  schemaType="CollectionPage"
+  title="Robertas Rudys | Hiring Evidence"
+>
+  <ModeSwitch currentRole="Recruiter / Hiring Manager" />
+
+  <section aria-labelledby="evidence-heading" class="mode-hero">
+    <div class="headline-row">
+      <span aria-hidden="true" class="headline-icon"
+        ><LibraryBig size={86} /></span
+      >
+      <h1 id="evidence-heading">Hiring Evidence Library</h1>
+    </div>
+    <p class="cta-note">
+      Use this page to run a senior-level interview. Open artifacts and discuss
+      tradeoffs, risk, and outcomes instead of tool trivia.
+    </p>
+    <div class="cta-row">
+      <a
+        class="cta-primary"
+        data-cta="Open Hiring Pack"
+        data-cta-mode="Recruiter / Hiring Manager"
+        href="/hiring/pack"
+      >
+        Open Hiring Pack
+      </a>
+      <a
+        class="cta-secondary"
+        data-cta="Back To Hiring"
+        data-cta-mode="Recruiter / Hiring Manager"
+        href="/hiring"
+      >
+        Back to /hiring
+      </a>
+    </div>
+  </section>
+
+  <section aria-labelledby="evidence-controls" class="card">
+    <h2 id="evidence-controls">Search And Filters</h2>
+    <div class="evidence-controls-grid">
+      <label class="control-group" for="evidence-search">
+        <span>Search evidence</span>
+        <input
+          autocomplete="off"
+          id="evidence-search"
+          name="evidence-search"
+          placeholder="Search by situation, tradeoff, outcome, or learning"
+          type="search"
+        />
+      </label>
+      <label class="control-group" for="stack-match">
+        <span>Match my stack (optional)</span>
+        <select id="stack-match" name="stack-match">
+          <option value="">All contexts</option>
+          {
+            hiringEvidenceData.stackMatchOptions.map((option) => (
+              <option value={option}>{option}</option>
+            ))
+          }
+        </select>
+      </label>
+    </div>
+    <div aria-label="Theme filters" class="theme-filter-row">
+      {
+        themeOrder.map((theme) => (
+          <button class="theme-filter" data-theme-filter={theme} type="button">
+            {toTitleCase(theme)}
+          </button>
+        ))
+      }
+    </div>
+    <p class="result-count" data-evidence-result-count>
+      Showing all evidence items.
+    </p>
+    <p class="empty-state" data-evidence-empty hidden>
+      No evidence matched this filter combination. Clear filters or broaden
+      search terms.
+    </p>
+  </section>
+
+  {
+    sectionedEvidence.map((section) => (
+      <section
+        aria-labelledby={section.id}
+        class="card evidence-section"
+        data-evidence-section
+      >
+        <h2 id={section.id}>{section.title}</h2>
+        <div class="evidence-grid">
+          {section.items.map((item, index) => (
+            <article
+              class="evidence-item"
+              data-evidence-item
+              data-evidence-type={section.type}
+              data-search={`${item.title} ${item.context} ${item.situation} ${item.decision} ${item.outcome} ${item.learnings.join(' ')}`.toLowerCase()}
+              data-stack={item.stackHints.join('|').toLowerCase()}
+              data-themes={item.themes.join('|')}
+              id={`evidence-${item.id}`}
+            >
+              <header>
+                <h3>{item.title}</h3>
+                <p class="evidence-tags">
+                  {item.themes.map((theme) => toTitleCase(theme)).join(' · ')}
+                </p>
+              </header>
+              <p>{item.context}</p>
+              <details
+                data-evidence-details
+                data-evidence-id={item.id}
+                data-evidence-type={section.type}
+                open={index === 0}
+              >
+                <summary>Open drilldown</summary>
+                <div class="evidence-details-body">
+                  <p>
+                    <strong>Situation:</strong> {item.situation}
+                  </p>
+                  <p>
+                    <strong>Constraints:</strong> {item.constraints.join('; ')}
+                  </p>
+                  <p>
+                    <strong>Options:</strong> {item.options.join('; ')}
+                  </p>
+                  <p>
+                    <strong>Decision:</strong> {item.decision}
+                  </p>
+                  <p>
+                    <strong>Tradeoffs:</strong> {item.tradeoffs.join('; ')}
+                  </p>
+                  <p>
+                    <strong>Outcome:</strong> {item.outcome}
+                  </p>
+                  <p>
+                    <strong>Learnings:</strong> {item.learnings.join('; ')}
+                  </p>
+                  {item.snippet && (
+                    <pre class="pattern-snippet">
+                      <code>{item.snippet}</code>
+                    </pre>
+                  )}
+                </div>
+              </details>
+              <div class="evidence-actions">
+                <a href={`#evidence-${item.id}`}>Deep link</a>
+                <button
+                  data-copy-link
+                  data-link-target={`evidence-${item.id}`}
+                  type="button"
+                >
+                  Copy link
+                </button>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+    ))
+  }
+
+  <section aria-labelledby="evidence-red-flags" class="card">
+    <h2 id="evidence-red-flags">Red Flags I Avoid</h2>
+    <ul>
+      {hiringEvidenceData.redFlags.map((flag) => <li>{flag}</li>)}
+    </ul>
+  </section>
+</SiteLayout>
+
+<style>
+  .evidence-controls-grid {
+    margin-top: 0.8rem;
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .control-group {
+    display: grid;
+    gap: 0.3rem;
+    color: var(--muted);
+    font-size: 0.92rem;
+  }
+
+  .control-group input,
+  .control-group select {
+    min-height: 44px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 0.6rem 0.7rem;
+    font: inherit;
+    color: var(--text);
+    background: var(--surface);
+  }
+
+  .theme-filter-row {
+    margin-top: 0.8rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .theme-filter {
+    min-height: 38px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0.35rem 0.78rem;
+    background: var(--surface);
+    color: var(--text);
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.88rem;
+  }
+
+  .theme-filter[aria-pressed='true'] {
+    border-color: color-mix(in oklab, var(--accent) 45%, white);
+    background: color-mix(in oklab, var(--accent-soft) 62%, white);
+    color: var(--accent);
+  }
+
+  .result-count,
+  .empty-state {
+    margin-top: 0.75rem;
+    color: var(--muted);
+    font-size: 0.92rem;
+  }
+
+  .evidence-grid {
+    margin-top: 0.8rem;
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .evidence-item {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 0.7rem;
+    background: var(--surface);
+  }
+
+  .evidence-item h3 {
+    margin: 0;
+    font-size: 1rem;
+  }
+
+  .evidence-tags {
+    margin-top: 0.3rem;
+    font-size: 0.86rem;
+    color: var(--muted);
+  }
+
+  .evidence-item > p {
+    margin: 0.55rem 0 0;
+  }
+
+  .evidence-item details {
+    margin-top: 0.55rem;
+  }
+
+  .evidence-item summary {
+    cursor: pointer;
+    color: var(--accent);
+    min-height: 36px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .evidence-details-body {
+    margin-top: 0.45rem;
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  .evidence-details-body p {
+    margin: 0;
+  }
+
+  .pattern-snippet {
+    margin: 0;
+    background: color-mix(in oklab, var(--surface-muted) 80%, white);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0.55rem;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    font-size: 0.84rem;
+  }
+
+  .evidence-actions {
+    margin-top: 0.6rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+  }
+
+  .evidence-actions button {
+    min-height: 36px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0.2rem 0.6rem;
+    background: var(--surface);
+    color: var(--text);
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.86rem;
+  }
+
+  @media (min-width: 900px) {
+    .evidence-controls-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .evidence-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>
+
+<script>
+  (() => {
+    const reportEvent = (eventName, props = {}) => {
+      const sendEvent = window.cvReportEvent ?? window.cvTrack;
+      if (typeof sendEvent === 'function') {
+        sendEvent(eventName, props);
+      }
+    };
+
+    const normalize = (value) => value.trim().toLowerCase();
+
+    const initEvidenceFiltering = () => {
+      const searchInput = document.querySelector('#evidence-search');
+      const stackSelect = document.querySelector('#stack-match');
+      const themeButtons = Array.from(
+        document.querySelectorAll('[data-theme-filter]')
+      );
+      const evidenceItems = Array.from(
+        document.querySelectorAll('[data-evidence-item]')
+      );
+      const evidenceSections = Array.from(
+        document.querySelectorAll('[data-evidence-section]')
+      );
+      const resultNode = document.querySelector('[data-evidence-result-count]');
+      const emptyNode = document.querySelector('[data-evidence-empty]');
+
+      if (
+        !(searchInput instanceof HTMLInputElement) ||
+        !(stackSelect instanceof HTMLSelectElement) ||
+        !resultNode ||
+        !emptyNode
+      ) {
+        return;
+      }
+
+      const activeThemes = new Set();
+      let searchTimer;
+      let lastAnalyticsSignature = '';
+
+      const applyFilters = () => {
+        const query = normalize(searchInput.value);
+        const selectedStack = normalize(stackSelect.value);
+        let visibleCount = 0;
+
+        evidenceItems.forEach((itemNode) => {
+          if (!(itemNode instanceof HTMLElement)) return;
+          const haystack = itemNode.dataset.search || '';
+          const itemThemes = (itemNode.dataset.themes || '').split('|');
+          const itemStacks = (itemNode.dataset.stack || '').split('|');
+          const queryMatch = !query || haystack.includes(query);
+          const themeMatch =
+            activeThemes.size === 0 ||
+            Array.from(activeThemes).every((theme) =>
+              itemThemes.includes(theme)
+            );
+          const stackMatch =
+            !selectedStack || itemStacks.includes(selectedStack);
+          const isVisible = queryMatch && themeMatch && stackMatch;
+
+          itemNode.hidden = !isVisible;
+          if (isVisible) {
+            visibleCount += 1;
+          }
+        });
+
+        evidenceSections.forEach((section) => {
+          if (!(section instanceof HTMLElement)) return;
+          const hasVisibleItems = Array.from(
+            section.querySelectorAll('[data-evidence-item]')
+          ).some((node) => !node.hidden);
+          section.hidden = !hasVisibleItems;
+        });
+
+        if (visibleCount === evidenceItems.length) {
+          resultNode.textContent = 'Showing all evidence items.';
+        } else {
+          resultNode.textContent = `Showing ${visibleCount} matching evidence item${visibleCount === 1 ? '' : 's'}.`;
+        }
+
+        emptyNode.hidden = visibleCount !== 0;
+
+        const analyticsSignature = `${query}|${selectedStack}|${Array.from(activeThemes).sort().join(',')}|${visibleCount}`;
+        if (analyticsSignature !== lastAnalyticsSignature) {
+          lastAnalyticsSignature = analyticsSignature;
+          reportEvent('evidence_search', {
+            source: 'hiring_evidence_library',
+            query_length: query.length,
+            result_count: visibleCount,
+            selected_stack: selectedStack || 'all',
+            active_themes: Array.from(activeThemes),
+          });
+        }
+      };
+
+      searchInput.addEventListener('input', () => {
+        window.clearTimeout(searchTimer);
+        searchTimer = window.setTimeout(applyFilters, 250);
+      });
+
+      stackSelect.addEventListener('change', applyFilters);
+
+      themeButtons.forEach((button) => {
+        if (!(button instanceof HTMLButtonElement)) return;
+        button.setAttribute('aria-pressed', 'false');
+        button.addEventListener('click', () => {
+          const theme = button.dataset.themeFilter || '';
+          if (!theme) return;
+          if (activeThemes.has(theme)) {
+            activeThemes.delete(theme);
+            button.setAttribute('aria-pressed', 'false');
+          } else {
+            activeThemes.add(theme);
+            button.setAttribute('aria-pressed', 'true');
+          }
+          applyFilters();
+        });
+      });
+
+      applyFilters();
+    };
+
+    const initEvidenceInteractions = () => {
+      document.querySelectorAll('[data-evidence-details]').forEach((node) => {
+        if (!(node instanceof HTMLDetailsElement)) return;
+        if (node.dataset.boundEvidenceToggle === '1') return;
+        node.dataset.boundEvidenceToggle = '1';
+        node.addEventListener('toggle', () => {
+          if (!node.open) return;
+          reportEvent('evidence_opened', {
+            source: 'hiring_evidence_library',
+            evidence_id: node.dataset.evidenceId || 'unknown',
+            evidence_type: node.dataset.evidenceType || 'unknown',
+          });
+        });
+      });
+
+      document.querySelectorAll('[data-copy-link]').forEach((button) => {
+        if (!(button instanceof HTMLButtonElement)) return;
+        if (button.dataset.boundCopyLink === '1') return;
+        button.dataset.boundCopyLink = '1';
+
+        const defaultLabel = button.textContent || 'Copy link';
+        button.addEventListener('click', async () => {
+          const targetId = button.dataset.linkTarget || '';
+          if (!targetId) return;
+          const link = `${window.location.origin}${window.location.pathname}#${targetId}`;
+
+          try {
+            await navigator.clipboard.writeText(link);
+            button.textContent = 'Link copied';
+            reportEvent('evidence_link_copied', {
+              source: 'hiring_evidence_library',
+              target: targetId,
+            });
+          } catch {
+            button.textContent = 'Copy failed';
+          }
+
+          window.setTimeout(() => {
+            button.textContent = defaultLabel;
+          }, 1400);
+        });
+      });
+    };
+
+    const init = () => {
+      initEvidenceFiltering();
+      initEvidenceInteractions();
+    };
+
+    document.addEventListener('astro:page-load', init);
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init, { once: true });
+    } else {
+      init();
+    }
+  })();
+</script>

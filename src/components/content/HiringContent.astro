@@ -4,69 +4,50 @@ import EmailCta from '../EmailCta.astro';
 import PageShareButton from '../PageShareButton.astro';
 import PeerSharePrompt from '../PeerSharePrompt.astro';
 import { roleEmailCtas, visitorModes } from '../../lib/email-drafts.mts';
+import { hiringEvidenceData } from '../../data/hiring-evidence.mts';
 
-const hiringExperience = [
-  {
-    title: 'Senior .NET Software Engineer',
-    company: 'Product Company (EU, Remote)',
-    period: '2026 - Present',
-    details: [
-      'Owns backend services and APIs supporting core product workflows.',
-      'Improves performance and production reliability in mature systems.',
-      'Delivers roadmap work with product and data stakeholders.',
-    ],
-  },
-  {
-    title: 'Senior .NET Software Engineer',
-    company: 'Adform Lithuania',
-    period: '2025',
-    details: [
-      'Built backend services in a high-concurrency production environment.',
-      'Delivered mission-critical features in large existing codebases.',
-      'Worked within mature testing and reliability standards.',
-    ],
-  },
-  {
-    title: 'Senior Software Engineer (.NET)',
-    company: 'Ignitis Group Services Center',
-    period: '2023',
-    details: [
-      'Refactored and maintained enterprise .NET systems used by business teams.',
-      'Extended legacy code while preserving stability and maintainability.',
-      'Improved maintainability in systems with complex operational context.',
-    ],
-  },
-  {
-    title: 'Software Engineer (.NET / Blockchain)',
-    company: 'Super How',
-    period: '2021 - 2022',
-    details: [
-      'Delivered end-to-end features in a fast-moving product setting.',
-      'Built decentralized application integrations and service logic.',
-      'Shipped practical outcomes under changing product constraints.',
-    ],
-  },
-  {
-    title: 'Software Engineer (.NET / SQL)',
-    company: 'Euromonitor International',
-    period: '2018 - 2020',
-    details: [
-      'Implemented data-heavy SQL solutions for research products.',
-      'Delivered product modules with .NET and Angular.',
-      'Maintained long-lived business systems used across global teams.',
-    ],
-  },
-  {
-    title: 'Software Engineer (C# / Unity)',
-    company: 'Invenis',
-    period: '2015',
-    details: [
-      'Developed interactive applications using C# and Unity3D.',
-      'Implemented gameplay logic and UI systems for client projects.',
-      'Built delivery discipline in early professional engineering work.',
-    ],
-  },
+const allEvidence = [
+  ...hiringEvidenceData.caseStudies.map((item) => ({
+    ...item,
+    type: 'case-study' as const,
+  })),
+  ...hiringEvidenceData.decisionRecords.map((item) => ({
+    ...item,
+    type: 'decision' as const,
+  })),
+  ...hiringEvidenceData.productionPatterns.map((item) => ({
+    ...item,
+    type: 'pattern' as const,
+  })),
 ];
+
+const evidenceById = new Map(allEvidence.map((item) => [item.id, item]));
+
+const seniorSignals = hiringEvidenceData.seniorSignals.reduce<
+  Array<
+    (typeof hiringEvidenceData.seniorSignals)[number] & {
+      evidence: (typeof allEvidence)[number];
+    }
+  >
+>((acc, signal) => {
+  const evidence = evidenceById.get(signal.evidenceRef);
+  if (!evidence) {
+    return acc;
+  }
+  acc.push({ ...signal, evidence });
+  return acc;
+}, []);
+
+const previewEvidence = [
+  ...hiringEvidenceData.caseStudies.slice(0, 2),
+  ...hiringEvidenceData.decisionRecords.slice(0, 1),
+  ...hiringEvidenceData.productionPatterns.slice(0, 1),
+];
+
+const toTitleCase = (value: string) =>
+  value.charAt(0).toUpperCase() + value.slice(1);
+
+const evidenceHref = (id: string) => `/hiring/evidence#evidence-${id}`;
 ---
 
 <section aria-labelledby="hiring-heading" class="mode-hero">
@@ -74,7 +55,8 @@ const hiringExperience = [
     <span aria-hidden="true" class="headline-icon"><Briefcase size={86} /></span
     >
     <h1 id="hiring-heading">
-      Senior .NET engineer for stable, long-term product delivery.
+      Senior backend engineer for teams that need scope ownership, reliable
+      delivery, and tradeoff-aware decisions.
     </h1>
   </div>
   <div class="cta-row">
@@ -83,6 +65,14 @@ const hiringExperience = [
         <EmailCta cta={cta} mode={visitorModes.hiring} />
       ))
     }
+    <a
+      class="cta-secondary"
+      data-cta="View Hiring Pack"
+      data-cta-mode={visitorModes.hiring}
+      href="/hiring/pack"
+    >
+      View Evidence Pack
+    </a>
     <PageShareButton
       label="Share with hiring team"
       shareRole="Recruiter / Hiring Manager"
@@ -97,7 +87,8 @@ const hiringExperience = [
     </p>
   </noscript>
   <p class="cta-note">
-    Hiring for a role now: request the resume or book a short intro.
+    If you want to assess me, use the evidence below and discuss tradeoffs in
+    real production scenarios.
   </p>
 </section>
 
@@ -105,164 +96,254 @@ const hiringExperience = [
   message="Forward this profile to one teammate hiring for backend product engineering."
 />
 
-<section aria-labelledby="hiring-fit-snapshot" class="card">
-  <h2 id="hiring-fit-snapshot">Fast Fit Snapshot</h2>
+<section aria-labelledby="hiring-fit-summary" class="card">
+  <h2 id="hiring-fit-summary">60-Second Fit Summary</h2>
   <ul>
     <li>
-      Professional .NET engineer since 2015 with backend/API delivery focus
-    </li>
-    <li>Best fit: product teams modernizing existing backend services</li>
-    <li>
-      Availability: full-time or long-term product roles, remote EU overlap
+      <strong>Role focus:</strong>
+      {hiringEvidenceData.fitSummary.roleFocus}
     </li>
     <li>
-      Core scope: C#, .NET, ASP.NET Core, SQL performance, reliability work
+      <strong>Experience:</strong>
+      {hiringEvidenceData.fitSummary.yearsExperience}
+    </li>
+    <li>
+      <strong>Domains:</strong>
+      {hiringEvidenceData.fitSummary.domains.join('; ')}
+    </li>
+    <li>
+      <strong>Collaboration style:</strong>
+      {hiringEvidenceData.fitSummary.collaborationStyle}
+    </li>
+    <li>
+      <strong>Timezone overlap:</strong>
+      {hiringEvidenceData.fitSummary.timezoneOverlap}
+    </li>
+    <li>
+      <strong>Availability:</strong>
+      {hiringEvidenceData.fitSummary.availability}
     </li>
   </ul>
-</section>
-
-<section aria-labelledby="hiring-experience" class="card">
-  <h2 id="hiring-experience">Experience Timeline</h2>
-  {
-    hiringExperience.map((role, index) => (
-      <details class="timeline-role" open={index === 0}>
-        <summary class="timeline-role__summary">
-          <span class="timeline-role__title">{role.title}</span>
-          <span class="timeline-role__meta">
-            {role.company} | {role.period}
-          </span>
-        </summary>
-        <ul>
-          {role.details.map((item) => (
-            <li>{item}</li>
-          ))}
-        </ul>
-      </details>
-    ))
-  }
-</section>
-
-<section aria-labelledby="hiring-next-step" class="card">
-  <h2 id="hiring-next-step">Next Step To Hire Fast</h2>
-  <ol>
-    <li>
-      Use <strong>Request Resume</strong> with role title, team setup, timezone expectations,
-      and compensation band.
-    </li>
-    <li>
-      Use <strong>Schedule Intro</strong> with a preferred time window and interview
-      format.
-    </li>
-    <li>
-      Initial screening should confirm role fit, onboarding constraints, and
-      first-quarter ownership scope.
-    </li>
-  </ol>
   <p>
-    If you include these items in first contact, I can confirm fit and process
-    readiness quickly.
+    <strong>How I interview:</strong>
+    {hiringEvidenceData.interviewPolicy.statement}
+  </p>
+  <p>{hiringEvidenceData.interviewPolicy.prompt}</p>
+  <p>
+    Start here:
+    <a href="/hiring/evidence">Evidence library</a>
+    for case studies, decision records, and production patterns.
   </p>
 </section>
 
-<details aria-labelledby="hiring-extra-summary" class="card">
-  <summary id="hiring-extra-summary"
-    ><strong>Additional Hiring Context</strong></summary
-  >
-  <section aria-labelledby="hiring-context-fit">
-    <h3 id="hiring-context-fit">Best Team Fit</h3>
-    <ul>
-      <li>Product teams modernizing existing backend services</li>
-      <li>Organizations prioritizing reliability and predictable delivery</li>
-      <li>Teams that value ownership and sustainable engineering pace</li>
-    </ul>
-    <h3>Known Misfit Conditions</h3>
-    <ul>
-      <li>Roles that require relocation or non-EU timezone-first overlap</li>
-      <li>Processes that hide compensation until late-stage interviews</li>
-      <li>Undefined ownership boundaries in the first quarter</li>
-    </ul>
-  </section>
-  <section aria-labelledby="hiring-context-proof">
-    <h3 id="hiring-context-proof">Evidence Boundary</h3>
-    <ul>
-      <li>
-        Public profile highlights ownership scope and technical context, not
-        confidential internal KPIs.
-      </li>
-      <li>
-        Role history is intentionally conservative with no inflated leadership
-        claims.
-      </li>
-      <li>
-        If you require quantified outcomes, ask for role-level examples during
-        interview discussion.
-      </li>
-    </ul>
-    <h3>Not Verified On-Page</h3>
-    <ul>
-      <li>Quantified production impact deltas</li>
-      <li>Public references from former managers or teams</li>
-      <li>Exact legal/employment setup and start-date commitment</li>
-    </ul>
-  </section>
-</details>
+<section aria-labelledby="hiring-signals" class="card">
+  <h2 id="hiring-signals">Senior Signals</h2>
+  <p>
+    Claims are paired with concrete artifacts. Open any signal to review
+    context, decision, tradeoffs, and outcomes.
+  </p>
+  <div class="signals-grid">
+    {
+      seniorSignals.map((signal, index) => (
+        <details
+          class="signal-tile"
+          data-evidence-details
+          data-evidence-id={signal.evidence.id}
+          data-evidence-type={signal.evidence.type}
+          open={index === 0}
+        >
+          <summary>
+            <strong>{signal.title}</strong>
+            <span>{signal.claim}</span>
+          </summary>
+          <div class="signal-proof">
+            <p>
+              <strong>Context:</strong> {signal.evidence.context}
+            </p>
+            <p>
+              <strong>Decision:</strong> {signal.evidence.decision}
+            </p>
+            <p>
+              <strong>Tradeoffs:</strong>
+              {signal.evidence.tradeoffs.join('; ')}
+            </p>
+            <p>
+              <strong>Outcome:</strong> {signal.evidence.outcome}
+            </p>
+            <p>
+              <strong>What I would improve:</strong>
+              {signal.evidence.learnings[0]}
+            </p>
+            <p class="signal-themes">
+              {signal.themes.map((theme) => toTitleCase(theme)).join(' · ')}
+            </p>
+            <a href={evidenceHref(signal.evidence.id)}>Open proof artifact</a>
+          </div>
+        </details>
+      ))
+    }
+  </div>
+</section>
+
+<section aria-labelledby="hiring-evidence-preview" class="card">
+  <h2 id="hiring-evidence-preview">Evidence Library Preview</h2>
+  <p>
+    Review the full library at <a href="/hiring/evidence">/hiring/evidence</a>
+    with filters for reliability, performance, architecture, delivery, and data.
+  </p>
+  <ul class="evidence-preview-list">
+    {
+      previewEvidence.map((item) => (
+        <li>
+          <article>
+            <h3>{item.title}</h3>
+            <p>{item.situation}</p>
+            <p>
+              <strong>Outcome:</strong>
+              {item.outcome}
+            </p>
+            <a href={evidenceHref(item.id)}>Read full record</a>
+          </article>
+        </li>
+      ))
+    }
+  </ul>
+</section>
+
+<section aria-labelledby="hiring-working-style" class="card">
+  <h2 id="hiring-working-style">Working Style And Process Filters</h2>
+  <h3>How I De-Risk Delivery</h3>
+  <ul>
+    <li>Align scope to business risk before implementation starts</li>
+    <li>Make tradeoffs explicit with product and engineering stakeholders</li>
+    <li>Instrument reliability feedback into each delivery cycle</li>
+    <li>Prefer reversible rollouts for high-impact changes</li>
+  </ul>
+  <h3>Interview Bypass Pack</h3>
+  <p>
+    Share <a href="/hiring/pack">/hiring/pack</a> for a concise recruiter-friendly
+    brief and print-ready PDF export.
+  </p>
+  <h3>Misfit Filter</h3>
+  <p>
+    If your process depends on trivia screening (tool checklists, definition
+    quizzes, or language gotchas) and not real decision discussion, we are
+    unlikely to be a strong fit.
+  </p>
+  <h3>Higher-Signal Interview Prompts</h3>
+  <ul>
+    <li>Talk me through a system you owned and the tradeoffs you made</li>
+    <li>How do you approach reliability and incidents in production?</li>
+    <li>How do you deliver under hard constraints and changing context?</li>
+  </ul>
+</section>
 
 <style>
-  .timeline-role + .timeline-role {
-    margin-top: 0.75rem;
-    padding-top: 0.75rem;
-    border-top: 1px solid var(--line);
+  .signals-grid {
+    margin-top: 0.8rem;
+    display: grid;
+    gap: 0.75rem;
   }
 
-  .timeline-role__summary {
+  .signal-tile {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 0.65rem;
+    background: color-mix(in oklab, var(--surface) 92%, var(--accent-soft));
+  }
+
+  .signal-tile summary {
     cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    gap: 0.2rem;
     list-style: none;
-    min-height: 44px;
-    justify-content: center;
+    display: grid;
+    gap: 0.3rem;
   }
 
-  .timeline-role__summary::-webkit-details-marker {
+  .signal-tile summary::-webkit-details-marker {
     display: none;
   }
 
-  .timeline-role__summary::after {
-    content: 'Show details';
-    color: var(--accent);
-    font-size: 0.82rem;
-    font-weight: 600;
-    margin-top: 0.15rem;
-  }
-
-  .timeline-role[open] .timeline-role__summary::after {
-    content: 'Hide details';
-  }
-
-  .timeline-role__title {
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--text);
-  }
-
-  .timeline-role__meta {
+  .signal-tile summary span {
     color: var(--muted);
-    font-size: 0.92rem;
-    overflow-wrap: anywhere;
   }
 
-  .timeline-role ul {
-    margin-top: 0.65rem;
+  .signal-proof {
+    margin-top: 0.6rem;
+    display: grid;
+    gap: 0.45rem;
   }
 
-  @media (orientation: landscape) and (max-width: 932px) {
-    .timeline-role__title {
-      font-size: 0.96rem;
-    }
+  .signal-proof p {
+    margin: 0;
+  }
 
-    .timeline-role__meta {
-      font-size: 0.88rem;
+  .signal-themes {
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
+  .evidence-preview-list {
+    margin-top: 0.75rem;
+    padding-left: 1.1rem;
+    display: grid;
+    gap: 0.8rem;
+  }
+
+  .evidence-preview-list article h3 {
+    margin: 0;
+    font-size: 1rem;
+  }
+
+  .evidence-preview-list article p {
+    margin: 0.45rem 0 0;
+  }
+
+  .evidence-preview-list article a {
+    display: inline-flex;
+    margin-top: 0.5rem;
+  }
+
+  @media (min-width: 760px) {
+    .signals-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
 </style>
+
+<script>
+  (() => {
+    const reportEvent = (eventName, props = {}) => {
+      const sendEvent = window.cvReportEvent ?? window.cvTrack;
+      if (typeof sendEvent === 'function') {
+        sendEvent(eventName, props);
+      }
+    };
+
+    const bindSignalTracking = () => {
+      document
+        .querySelectorAll('[data-evidence-details]')
+        .forEach((detailsElement) => {
+          if (!(detailsElement instanceof HTMLDetailsElement)) return;
+          if (detailsElement.dataset.boundEvidenceToggle === '1') return;
+          detailsElement.dataset.boundEvidenceToggle = '1';
+          detailsElement.addEventListener('toggle', () => {
+            if (!detailsElement.open) return;
+            reportEvent('evidence_opened', {
+              source: 'hiring_signals',
+              evidence_id: detailsElement.dataset.evidenceId || 'unknown',
+              evidence_type: detailsElement.dataset.evidenceType || 'unknown',
+            });
+          });
+        });
+    };
+
+    document.addEventListener('astro:page-load', bindSignalTracking);
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', bindSignalTracking, {
+        once: true,
+      });
+    } else {
+      bindSignalTracking();
+    }
+  })();
+</script>

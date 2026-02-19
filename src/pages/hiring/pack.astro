@@ -1,0 +1,223 @@
+---
+import { FileText } from '@lucide/astro';
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import { hiringEvidenceData } from '../../data/hiring-evidence.mts';
+
+const topCaseStudies = hiringEvidenceData.caseStudies.slice(0, 2);
+const topDecision = hiringEvidenceData.decisionRecords[0];
+const interviewPrompts = [
+  'Talk me through a system you owned and the tradeoffs you made.',
+  'How do you approach reliability and incidents?',
+  'How do you deliver under constraints?',
+];
+
+const schemaExtras = {
+  about:
+    'Shareable hiring pack for senior backend interview evaluation and tradeoff-led discussion.',
+};
+---
+
+<SiteLayout
+  canonicalPath="/hiring/pack"
+  description="Shareable hiring pack: fit summary, top evidence, and high-signal interview prompts."
+  ogType="profile"
+  roleLabel="Hiring Pack"
+  schemaExtras={schemaExtras}
+  schemaType="CollectionPage"
+  showBuildVersion={false}
+  showLiveBuildBadge={false}
+  title="Robertas Rudys | Hiring Pack"
+>
+  <section aria-labelledby="pack-heading" class="mode-hero pack-hero">
+    <div class="headline-row">
+      <span aria-hidden="true" class="headline-icon"
+        ><FileText size={86} /></span
+      >
+      <h1 id="pack-heading">Hiring Pack</h1>
+    </div>
+    <p class="cta-note">
+      Forward this page to interviewers. It is designed to replace trivia
+      screens with evidence and tradeoff discussion.
+    </p>
+    <div class="cta-row pack-actions">
+      <a
+        class="cta-primary"
+        data-cta="Open Evidence Library"
+        data-cta-mode="Recruiter / Hiring Manager"
+        href="/hiring/evidence"
+      >
+        Open Evidence Library
+      </a>
+      <a
+        class="cta-secondary"
+        data-cta="Back To Hiring"
+        data-cta-mode="Recruiter / Hiring Manager"
+        href="/hiring"
+      >
+        Back to /hiring
+      </a>
+      <button class="cta-secondary" data-pack-print type="button"
+        >Export PDF</button
+      >
+    </div>
+  </section>
+
+  <section aria-labelledby="pack-fit" class="card pack-card">
+    <h2 id="pack-fit">60-Second Fit</h2>
+    <ul>
+      <li>
+        <strong>Role focus:</strong>
+        {hiringEvidenceData.fitSummary.roleFocus}
+      </li>
+      <li>
+        <strong>Experience:</strong>
+        {hiringEvidenceData.fitSummary.yearsExperience}
+      </li>
+      <li>
+        <strong>Availability:</strong>
+        {hiringEvidenceData.fitSummary.availability}
+      </li>
+      <li>
+        <strong>Timezone overlap:</strong>
+        {hiringEvidenceData.fitSummary.timezoneOverlap}
+      </li>
+      <li>
+        <strong>Collaboration style:</strong>
+        {hiringEvidenceData.fitSummary.collaborationStyle}
+      </li>
+    </ul>
+    <p>
+      <strong>Interview policy:</strong>
+      {hiringEvidenceData.interviewPolicy.statement}
+    </p>
+  </section>
+
+  <section aria-labelledby="pack-evidence" class="card pack-card">
+    <h2 id="pack-evidence">Top Evidence</h2>
+    {
+      topCaseStudies.map((study) => (
+        <article>
+          <h3>{study.title}</h3>
+          <p>
+            <strong>Situation:</strong> {study.situation}
+          </p>
+          <p>
+            <strong>Decision:</strong> {study.decision}
+          </p>
+          <p>
+            <strong>Tradeoffs:</strong> {study.tradeoffs.join('; ')}
+          </p>
+          <p>
+            <strong>Outcome:</strong> {study.outcome}
+          </p>
+        </article>
+      ))
+    }
+    <article>
+      <h3>{topDecision.title}</h3>
+      <p><strong>Situation:</strong> {topDecision.situation}</p>
+      <p><strong>Decision:</strong> {topDecision.decision}</p>
+      <p><strong>Outcome:</strong> {topDecision.outcome}</p>
+    </article>
+  </section>
+
+  <section aria-labelledby="pack-interview" class="card pack-card">
+    <h2 id="pack-interview">How To Interview Me</h2>
+    <p>
+      Use one artifact from <a href="/hiring/evidence">/hiring/evidence</a> and discuss
+      these prompts:
+    </p>
+    <ol>
+      {interviewPrompts.map((prompt) => <li>{prompt}</li>)}
+    </ol>
+    <h3>Misfit Filter</h3>
+    <p>
+      If your process prioritizes definitions, tool lists, or language trivia
+      over production decision-making, this is likely not the right mutual fit.
+    </p>
+  </section>
+</SiteLayout>
+
+<style>
+  .pack-card article + article {
+    margin-top: 0.8rem;
+    padding-top: 0.8rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .pack-actions button {
+    width: 100%;
+    cursor: pointer;
+  }
+
+  @media print {
+    .mail-topbar,
+    .site-footer,
+    .pack-actions {
+      display: none !important;
+    }
+
+    body {
+      background: #fff;
+      color: #111;
+      font-size: 11pt;
+      line-height: 1.4;
+    }
+
+    .site-shell {
+      width: 100%;
+      max-width: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .card {
+      margin-top: 0.8rem;
+      padding-top: 0.8rem;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    .mode-hero {
+      padding-top: 0;
+    }
+
+    .headline-icon {
+      display: none;
+    }
+
+    a {
+      color: #111;
+      text-decoration: none;
+    }
+  }
+</style>
+
+<script>
+  (() => {
+    const reportEvent = (eventName, props = {}) => {
+      const sendEvent = window.cvReportEvent ?? window.cvTrack;
+      if (typeof sendEvent === 'function') {
+        sendEvent(eventName, props);
+      }
+    };
+
+    const init = () => {
+      const printButton = document.querySelector('[data-pack-print]');
+      if (!(printButton instanceof HTMLButtonElement)) return;
+      if (printButton.dataset.boundPrint === '1') return;
+      printButton.dataset.boundPrint = '1';
+      printButton.addEventListener('click', () => {
+        reportEvent('hiring_pack_exported', { method: 'print_dialog' });
+        window.print();
+      });
+    };
+
+    document.addEventListener('astro:page-load', init);
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init, { once: true });
+    } else {
+      init();
+    }
+  })();
+</script>
