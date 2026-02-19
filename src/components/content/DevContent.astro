@@ -265,6 +265,13 @@ const devPhilosophy = [
 </style>
 
 <script>
+  function formatTypeLabel(eventType) {
+    if (!eventType) return 'Activity';
+    if (eventType === 'WatchEvent') return 'Star';
+    const raw = eventType.replace(/Event$/, '');
+    return raw.replace(/([a-z0-9])([A-Z])/g, '$1 $2');
+  }
+
   async function fetchGitHubActivity() {
     const feed = document.getElementById('github-activity-feed');
     if (!feed) return;
@@ -299,7 +306,7 @@ const devPhilosophy = [
         });
 
         let content = '';
-        let typeLabel = event.type.replace('Event', '');
+        const typeLabel = formatTypeLabel(event.type);
 
         if (event.type === 'PushEvent') {
           const commits = Array.isArray(event.payload?.commits)
@@ -324,7 +331,6 @@ const devPhilosophy = [
           content = `Created ${refType} <strong>${ref}</strong> in <strong>${event.repo.name}</strong>`;
         } else if (event.type === 'WatchEvent') {
           content = `Starred <strong>${event.repo.name}</strong>`;
-          typeLabel = 'Star';
         } else if (event.type === 'PullRequestEvent') {
           const action = event.payload?.action || 'updated';
           const title = event.payload?.pull_request?.title || 'pull request';
