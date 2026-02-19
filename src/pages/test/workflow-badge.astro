@@ -1,4 +1,5 @@
 ---
+import SiteLayout from '../../layouts/SiteLayout.astro';
 import WorkflowStatusBadge from '../../components/WorkflowStatusBadge.astro';
 import type { WorkflowRun } from '../../lib/github-actions.mts';
 
@@ -34,15 +35,16 @@ const runs: WorkflowRun[] = [
 ];
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-    <title>Workflow Badge Test</title>
-  </head>
-  <body>
-    <main>
+<SiteLayout
+  title="Workflow Badge Test | Robertas Rudys"
+  description="Visual test page for workflow status badges."
+  canonicalPath="/test/workflow-badge"
+  roleLabel="Badge Test"
+>
+  <section class="card">
+    <h1>Workflow Badge Test</h1>
+    <div style="display: grid; gap: 0.75rem;">
       {runs.map((run) => <WorkflowStatusBadge run={run} />)}
-    </main>
-  </body>
-</html>
+    </div>
+  </section>
+</SiteLayout>

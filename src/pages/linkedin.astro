@@ -1,5 +1,5 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
+import SiteLayout from '../layouts/SiteLayout.astro';
 
 const now = new Date();
 const lastUpdated = new Intl.DateTimeFormat('lt-LT', {
@@ -17,9 +17,11 @@ const lastUpdatedDateParts = new Intl.DateTimeFormat('lt-LT', {
 const lastUpdatedDateTime = `${lastUpdatedDateParts.find((part) => part.type === 'year')?.value ?? '0000'}-${lastUpdatedDateParts.find((part) => part.type === 'month')?.value ?? '00'}-${lastUpdatedDateParts.find((part) => part.type === 'day')?.value ?? '00'}`;
 ---
 
-<BaseLayout
+<SiteLayout
   title="LinkedIn Copy Kit - Robertas Rudys"
   description="Copy-paste LinkedIn text blocks for Robertas Rudys."
+  canonicalPath="/linkedin"
+  roleLabel="LinkedIn"
 >
   <h1>LinkedIn Copy Kit</h1>
   <p><a class="touch-link" href="/">Back to homepage</a></p>
@@ -170,7 +172,7 @@ Clear scope, fixed execution blocks, AI-assisted delivery model, and direct cont
   </section>
 
   <p><a class="touch-link" href="/">Back to homepage</a></p>
-</BaseLayout>
+</SiteLayout>
 
 <script>
   const buttons = document.querySelectorAll<HTMLButtonElement>('.copy-button');
