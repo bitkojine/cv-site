@@ -87,8 +87,8 @@ const evidenceHref = (id: string) => `/hiring/evidence#evidence-${id}`;
     </p>
   </noscript>
   <p class="cta-note">
-    If you want to assess me, use the evidence below and discuss tradeoffs in
-    real production scenarios.
+    If you want to assess me, use the evidence below and ask me to teach the
+    decision logic behind real tradeoffs in production scenarios.
   </p>
 </section>
 
@@ -130,32 +130,40 @@ const evidenceHref = (id: string) => `/hiring/evidence#evidence-${id}`;
   </p>
   <p>{hiringEvidenceData.interviewPolicy.prompt}</p>
   <p>
+    Proof standard: if I truly understand a system, I can teach it clearly. Weak
+    understanding shows up as vague, tool-first explanations.
+  </p>
+  <p>
     Start here:
     <a href="/hiring/evidence">Evidence library</a>
     for case studies, decision records, and production patterns.
   </p>
 </section>
 
-<section aria-labelledby="hiring-signals" class="card">
-  <h2 id="hiring-signals">Senior Signals</h2>
+<section aria-labelledby="hiring-learn" class="card">
+  <h2 id="hiring-learn">What You Will Learn Here</h2>
+  <ul>
+    <li>How to assess senior backend capability through decision evidence</li>
+    <li>How to run interviews around tradeoffs, risk, and delivery context</li>
+    <li>How reliability and incident behavior reflect engineering maturity</li>
+    <li>How to distinguish tool familiarity from ownership-level judgment</li>
+  </ul>
+</section>
+
+<section aria-labelledby="hiring-proof-highlights" class="card">
+  <h2 id="hiring-proof-highlights">Proof Highlights</h2>
   <p>
-    Claims are paired with concrete artifacts. Open any signal to review
-    context, decision, tradeoffs, and outcomes.
+    Claims are paired with concrete artifacts. Open any item to review context,
+    decision, tradeoffs, and outcomes.
   </p>
   <div class="signals-grid">
     {
-      seniorSignals.map((signal, index) => (
-        <details
-          class="signal-tile"
-          data-evidence-details
-          data-evidence-id={signal.evidence.id}
-          data-evidence-type={signal.evidence.type}
-          open={index === 0}
-        >
-          <summary>
+      seniorSignals.map((signal) => (
+        <article class="signal-tile">
+          <p class="signal-head">
             <strong>{signal.title}</strong>
             <span>{signal.claim}</span>
-          </summary>
+          </p>
           <div class="signal-proof">
             <p>
               <strong>Context:</strong> {signal.evidence.context}
@@ -177,9 +185,16 @@ const evidenceHref = (id: string) => `/hiring/evidence#evidence-${id}`;
             <p class="signal-themes">
               {signal.themes.map((theme) => toTitleCase(theme)).join(' · ')}
             </p>
-            <a href={evidenceHref(signal.evidence.id)}>Open proof artifact</a>
+            <a
+              data-signal-artifact-link
+              data-evidence-id={signal.evidence.id}
+              data-evidence-type={signal.evidence.type}
+              href={evidenceHref(signal.evidence.id)}
+            >
+              Open proof artifact
+            </a>
           </div>
-        </details>
+        </article>
       ))
     }
   </div>
@@ -252,23 +267,18 @@ const evidenceHref = (id: string) => `/hiring/evidence#evidence-${id}`;
     background: color-mix(in oklab, var(--surface) 92%, var(--accent-soft));
   }
 
-  .signal-tile summary {
-    cursor: pointer;
-    list-style: none;
+  .signal-head {
+    margin: 0;
     display: grid;
     gap: 0.3rem;
   }
 
-  .signal-tile summary::-webkit-details-marker {
-    display: none;
-  }
-
-  .signal-tile summary span {
+  .signal-head span {
     color: var(--muted);
   }
 
   .signal-proof {
-    margin-top: 0.6rem;
+    margin-top: 0.5rem;
     display: grid;
     gap: 0.45rem;
   }
@@ -321,17 +331,16 @@ const evidenceHref = (id: string) => `/hiring/evidence#evidence-${id}`;
 
     const bindSignalTracking = () => {
       document
-        .querySelectorAll('[data-evidence-details]')
-        .forEach((detailsElement) => {
-          if (!(detailsElement instanceof HTMLDetailsElement)) return;
-          if (detailsElement.dataset.boundEvidenceToggle === '1') return;
-          detailsElement.dataset.boundEvidenceToggle = '1';
-          detailsElement.addEventListener('toggle', () => {
-            if (!detailsElement.open) return;
+        .querySelectorAll('[data-signal-artifact-link]')
+        .forEach((linkElement) => {
+          if (!(linkElement instanceof HTMLAnchorElement)) return;
+          if (linkElement.dataset.boundSignalLink === '1') return;
+          linkElement.dataset.boundSignalLink = '1';
+          linkElement.addEventListener('click', () => {
             reportEvent('evidence_opened', {
               source: 'hiring_signals',
-              evidence_id: detailsElement.dataset.evidenceId || 'unknown',
-              evidence_type: detailsElement.dataset.evidenceType || 'unknown',
+              evidence_id: linkElement.dataset.evidenceId || 'unknown',
+              evidence_type: linkElement.dataset.evidenceType || 'unknown',
             });
           });
         });

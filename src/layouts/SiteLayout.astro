@@ -1,5 +1,6 @@
 ---
 import { ClientRouter } from 'astro:transitions';
+import { House } from '@lucide/astro';
 import '../styles/global.css';
 import RoleClientEnhancements from '../components/RoleClientEnhancements.astro';
 import LiveBuildBadge from '../components/LiveBuildBadge.astro';
@@ -110,6 +111,9 @@ const {
         {
           !isHomePage && (
             <a aria-label="Go to homepage" class="mail-topbar__home" href="/">
+              <span aria-hidden="true" class="menu-icon">
+                <House size={16} />
+              </span>
               Home
             </a>
           )

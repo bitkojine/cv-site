@@ -67,7 +67,7 @@
       "id": "signal-quality-risk-based",
       "title": "Quality",
       "claim": "I design testing strategy around business risk and failure modes, not checklist coverage.",
-      "evidenceRef": "dr-observability-reliability-loop",
+      "evidenceRef": "dr-test-strategy-risk-map",
       "evidenceType": "decision",
       "themes": ["quality", "reliability"]
     },
@@ -75,7 +75,7 @@
       "id": "signal-stakeholder-alignment",
       "title": "Stakeholder Management",
       "claim": "I keep delivery predictable by making decision tradeoffs explicit to non-engineering partners.",
-      "evidenceRef": "cs-subscription-migration",
+      "evidenceRef": "cs-release-train-stabilization",
       "evidenceType": "case-study",
       "themes": ["delivery", "architecture"]
     },
@@ -86,6 +86,22 @@
       "evidenceRef": "pp-incident-playbook",
       "evidenceType": "pattern",
       "themes": ["reliability", "delivery"]
+    },
+    {
+      "id": "signal-consistency-messaging",
+      "title": "Consistency",
+      "claim": "I choose delivery guarantees explicitly and build compensating mechanisms where strict consistency is too costly.",
+      "evidenceRef": "pp-outbox-inbox",
+      "evidenceType": "pattern",
+      "themes": ["architecture", "data", "reliability"]
+    },
+    {
+      "id": "signal-planning-under-pressure",
+      "title": "Planning",
+      "claim": "I can reset failing delivery plans by narrowing scope and adding explicit risk checkpoints.",
+      "evidenceRef": "cs-incident-storm-containment",
+      "evidenceType": "case-study",
+      "themes": ["delivery", "reliability"]
     }
   ],
   "caseStudies": [
@@ -113,6 +129,18 @@
       "learnings": [
         "Profiling before refactoring avoids expensive false starts",
         "Latency and reliability should be treated as one system"
+      ],
+      "discussionPrompts": [
+        "How would you prioritize fixes if the bottleneck shifts every week?",
+        "Which latency regressions can be accepted temporarily and why?"
+      ],
+      "evaluationSignals": [
+        "Explains baseline and bottleneck identification before solutioning",
+        "Discusses cost, risk, and rollback while improving performance"
+      ],
+      "antiPatterns": [
+        "Jumping to rewrite without profiling",
+        "Treating retries as reliability without idempotency guarantees"
       ],
       "themes": ["performance", "reliability", "data", "delivery"],
       "stackHints": [
@@ -146,12 +174,104 @@
         "Boundary decisions must map to team ownership, not only technical purity",
         "Migration safety wins over implementation speed when financial correctness is involved"
       ],
+      "discussionPrompts": [
+        "When does incremental extraction become too slow to justify?",
+        "How do you keep product delivery moving during domain migration?"
+      ],
+      "evaluationSignals": [
+        "Can articulate ownership boundaries and coupling costs",
+        "Can explain staged rollout and fallback strategy"
+      ],
+      "antiPatterns": [
+        "Big-bang migration without compatibility windows",
+        "Service split based only on technical layers"
+      ],
       "themes": ["architecture", "delivery", "data", "reliability"],
       "stackHints": [
         "Legacy modernization",
         "Distributed APIs",
         "Event-driven workflows"
       ]
+    },
+    {
+      "id": "cs-incident-storm-containment",
+      "title": "Incident storm containment without roadmap freeze",
+      "context": "A burst of production incidents consumed delivery capacity and created stakeholder distrust.",
+      "situation": "Multiple unrelated failures appeared across API, queue processing, and reporting paths over two release cycles.",
+      "constraints": [
+        "Customer commitments already announced",
+        "No room for hiring or major platform migration",
+        "On-call fatigue and limited senior bandwidth"
+      ],
+      "options": [
+        "Pause all feature work until incidents disappear",
+        "Continue roadmap as planned and address incidents ad-hoc",
+        "Split roadmap into reliability-critical and business-critical lanes with explicit acceptance gates"
+      ],
+      "decision": "Introduced a two-lane delivery plan with reliability gates, weekly failure class review, and a short incident-prevention backlog.",
+      "tradeoffs": [
+        "Some non-critical features were delayed",
+        "Team had to adopt stricter definition-of-done criteria"
+      ],
+      "outcome": "Incident frequency dropped over the following release window while core commitments continued, restoring delivery predictability.",
+      "learnings": [
+        "Reliability work must be planned as delivery work, not side work",
+        "Explicit gate criteria reduce conflict during prioritization"
+      ],
+      "discussionPrompts": [
+        "How would you negotiate reliability work with sales pressure?",
+        "Which incidents justify immediate roadmap interruption?"
+      ],
+      "evaluationSignals": [
+        "Shows prioritization model under competing constraints",
+        "Connects reliability investment to business outcomes"
+      ],
+      "antiPatterns": [
+        "Treating incidents as random noise",
+        "Declaring reliability priority without scope changes"
+      ],
+      "themes": ["reliability", "delivery", "quality"],
+      "stackHints": ["Cloud-hosted backends", "Distributed APIs"]
+    },
+    {
+      "id": "cs-release-train-stabilization",
+      "title": "Release train stabilization in a multi-team backend",
+      "context": "Frequent release slips came from late integration failures and unclear dependency ownership.",
+      "situation": "Three teams shipped into the same release train with hidden coupling discovered only in final validation.",
+      "constraints": [
+        "Quarterly release commitments to enterprise clients",
+        "Mixed maturity in engineering planning practices",
+        "No budget for heavy new tooling"
+      ],
+      "options": [
+        "Introduce a heavyweight release board process",
+        "Keep current process and absorb delays",
+        "Adopt lightweight dependency mapping and pre-integration checkpoints"
+      ],
+      "decision": "Implemented dependency declarations, cutline ownership, and pre-integration checks one sprint earlier.",
+      "tradeoffs": [
+        "Slightly higher upfront planning overhead",
+        "Required product owners to make earlier tradeoff calls"
+      ],
+      "outcome": "Reduced late-stage surprises and improved release confidence, with fewer last-week rollbacks.",
+      "learnings": [
+        "Delivery failure often starts at planning interfaces, not implementation",
+        "Earlier integration checkpoints lower end-stage stress"
+      ],
+      "discussionPrompts": [
+        "How early should cross-team dependency risk be surfaced?",
+        "What should be the minimum release-readiness evidence?"
+      ],
+      "evaluationSignals": [
+        "Makes dependency risk visible before coding completes",
+        "Balances process overhead with practical release outcomes"
+      ],
+      "antiPatterns": [
+        "Relying on heroics in release week",
+        "Keeping dependency ownership implicit"
+      ],
+      "themes": ["delivery", "architecture", "quality"],
+      "stackHints": ["Distributed APIs", "Legacy modernization"]
     }
   ],
   "decisionRecords": [
@@ -178,6 +298,18 @@
       "learnings": [
         "Ownership boundaries should drive architecture decisions",
         "Contract clarity matters more than internal elegance"
+      ],
+      "discussionPrompts": [
+        "How do you choose boundaries when team ownership is unstable?",
+        "What contracts are mandatory before extraction?"
+      ],
+      "evaluationSignals": [
+        "Ties architecture to organization and failure isolation",
+        "Can explain coupling costs in delivery terms"
+      ],
+      "antiPatterns": [
+        "Splitting services by framework conventions",
+        "Ignoring ownership model in boundary design"
       ],
       "themes": ["architecture", "delivery", "reliability"],
       "stackHints": ["Distributed APIs", "Legacy modernization"]
@@ -207,6 +339,18 @@
         "Migration confidence comes from reversible steps",
         "Operational rehearsals are part of engineering work"
       ],
+      "discussionPrompts": [
+        "How do you prove a migration is safe before final cutover?",
+        "When should you abandon a migration strategy mid-flight?"
+      ],
+      "evaluationSignals": [
+        "Defines rollback at each phase",
+        "Discusses data correctness checks beyond happy path"
+      ],
+      "antiPatterns": [
+        "Coupling schema cutover to one deploy",
+        "Skipping validation between phases"
+      ],
       "themes": ["data", "reliability", "delivery"],
       "stackHints": ["Data-heavy systems", "Legacy modernization"]
     },
@@ -234,8 +378,137 @@
         "Visibility without response design is noise",
         "Incident reviews should produce concrete prevention actions"
       ],
+      "discussionPrompts": [
+        "Which alerts should page someone at 3am and why?",
+        "How do you keep runbooks from becoming stale artifacts?"
+      ],
+      "evaluationSignals": [
+        "Can connect metrics to operational decisions",
+        "Can define ownership and escalation paths clearly"
+      ],
+      "antiPatterns": [
+        "More alerts as the default reliability strategy",
+        "No feedback loop from incident review to backlog"
+      ],
       "themes": ["reliability", "quality", "delivery"],
       "stackHints": ["Cloud-hosted backends", "Distributed APIs"]
+    },
+    {
+      "id": "dr-cache-coherency-strategy",
+      "title": "Cache strategy: freshness budget over blanket caching",
+      "context": "Read pressure increased infrastructure cost and occasional stale data complaints.",
+      "situation": "Teams wanted aggressive caching, but data freshness requirements varied heavily by workflow.",
+      "constraints": [
+        "Mixed read consistency requirements",
+        "Limited team time for complex invalidation logic"
+      ],
+      "options": [
+        "Cache everything with long TTL",
+        "No cache and absorb database cost",
+        "Define freshness budgets per workflow and choose cache strategy accordingly"
+      ],
+      "decision": "Introduced freshness tiers with explicit TTL and invalidation strategy per endpoint category.",
+      "tradeoffs": [
+        "More upfront design discussion",
+        "Needed endpoint-level observability for hit ratio and staleness"
+      ],
+      "outcome": "Reduced read load and cost while preserving correctness in freshness-sensitive paths.",
+      "learnings": [
+        "Caching is a product decision as much as an infrastructure decision",
+        "Freshness expectations should be explicit in API design"
+      ],
+      "discussionPrompts": [
+        "Where would you avoid caching even under heavy load?",
+        "How do you monitor cache correctness, not only cache hit ratio?"
+      ],
+      "evaluationSignals": [
+        "Recognizes different consistency needs per workflow",
+        "Understands invalidation and stale data risk"
+      ],
+      "antiPatterns": [
+        "Blanket caching policy",
+        "Using cache as a substitute for bad query design"
+      ],
+      "themes": ["performance", "data", "architecture"],
+      "stackHints": ["Cloud-hosted backends", "Data-heavy systems"]
+    },
+    {
+      "id": "dr-test-strategy-risk-map",
+      "title": "Testing strategy: risk map before framework choice",
+      "context": "Team debates focused on test tooling, while high-risk flows remained under-tested.",
+      "situation": "Coverage increased but production failures still came from integration boundaries and migration paths.",
+      "constraints": [
+        "Limited CI time budget",
+        "Need to keep developer feedback fast"
+      ],
+      "options": [
+        "Target high global coverage percentages",
+        "Rely primarily on manual QA",
+        "Map failure risk by workflow and align test depth by risk"
+      ],
+      "decision": "Set risk tiers and used focused integration tests for critical paths, lighter coverage for low-risk flows.",
+      "tradeoffs": [
+        "Requires periodic risk-map updates",
+        "Some low-risk regressions may still slip"
+      ],
+      "outcome": "Improved signal from test failures and reduced escaped defects in high-impact workflows.",
+      "learnings": [
+        "Coverage is an input, not a product quality guarantee",
+        "Testing strategy should evolve with system risk profile"
+      ],
+      "discussionPrompts": [
+        "How do you explain risk-based testing to non-technical stakeholders?",
+        "When do you promote a workflow from low-risk to high-risk testing?"
+      ],
+      "evaluationSignals": [
+        "Can reason about risk rather than tool preference",
+        "Balances confidence with execution speed"
+      ],
+      "antiPatterns": [
+        "Coverage theater",
+        "One-size-fits-all test pyramid rhetoric"
+      ],
+      "themes": ["quality", "delivery", "reliability"],
+      "stackHints": ["Distributed APIs", "Legacy modernization"]
+    },
+    {
+      "id": "dr-job-processing-model",
+      "title": "Background processing model: at-least-once with compensations",
+      "context": "Business workflow required asynchronous processing across external systems with intermittent failure.",
+      "situation": "Team initially expected exactly-once behavior from queue delivery and hit duplicate side effects.",
+      "constraints": [
+        "External providers with limited reliability guarantees",
+        "Need for auditable processing history"
+      ],
+      "options": [
+        "Attempt strict exactly-once transport",
+        "Disable retries and accept data loss risk",
+        "Adopt at-least-once handling with idempotent consumers and compensating actions"
+      ],
+      "decision": "Standardized at-least-once processing with explicit deduplication and reconciliation jobs.",
+      "tradeoffs": [
+        "Additional complexity in state tracking",
+        "Requires clear ownership for compensation workflows"
+      ],
+      "outcome": "Processing became more predictable under partial failures, with fewer unresolved data mismatches.",
+      "learnings": [
+        "Consistency guarantees must be explicit in architecture docs",
+        "Compensation flows are product behavior, not just technical plumbing"
+      ],
+      "discussionPrompts": [
+        "Where would you use compensation over strict transactional guarantees?",
+        "How do you surface reconciliation debt to product owners?"
+      ],
+      "evaluationSignals": [
+        "Understands delivery guarantees and failure semantics",
+        "Connects processing model to business correctness"
+      ],
+      "antiPatterns": [
+        "Assuming queue equals exactly-once",
+        "Ignoring reconciliation and audit requirements"
+      ],
+      "themes": ["architecture", "reliability", "data"],
+      "stackHints": ["Event-driven workflows", "Distributed APIs"]
     }
   ],
   "productionPatterns": [
@@ -263,6 +536,18 @@
         "Retries without idempotency create hidden reliability debt",
         "Failure-path design is first-class architecture"
       ],
+      "discussionPrompts": [
+        "Which operations need idempotency keys first?",
+        "How do you manage key retention policy?"
+      ],
+      "evaluationSignals": [
+        "Understands idempotency boundary and state model",
+        "Discusses retry policy with dead-letter handling"
+      ],
+      "antiPatterns": [
+        "Infinite retries",
+        "Idempotency implemented only at transport layer"
+      ],
       "themes": ["reliability", "architecture", "delivery"],
       "stackHints": ["Event-driven workflows", "Distributed APIs"],
       "snippet": "receive request -> check idempotency key -> if seen return prior result -> execute operation -> persist result -> ack"
@@ -287,6 +572,18 @@
       "learnings": [
         "Migration sequencing is operational engineering",
         "Safety checkpoints prevent irreversible mistakes"
+      ],
+      "discussionPrompts": [
+        "What makes a migration phase reversible?",
+        "How do you monitor backfill safety under live traffic?"
+      ],
+      "evaluationSignals": [
+        "Defines checkpoints and rollback criteria",
+        "Discusses lock behavior and traffic safety"
+      ],
+      "antiPatterns": [
+        "Single-step destructive migrations",
+        "Backfill jobs without verification checkpoints"
       ],
       "themes": ["data", "reliability", "delivery"],
       "stackHints": ["Data-heavy systems", "Legacy modernization"],
@@ -316,14 +613,148 @@
         "Good incident process optimizes decision quality under stress",
         "The value is in repeatable response, not process theater"
       ],
+      "discussionPrompts": [
+        "How do you keep communication useful under pressure?",
+        "Which post-incident actions deserve immediate prioritization?"
+      ],
+      "evaluationSignals": [
+        "Can run incident flow with clear ownership",
+        "Connects incident outcomes to prevention backlog"
+      ],
+      "antiPatterns": [
+        "Retrospectives with no tracked actions",
+        "Escalation rules based on personalities"
+      ],
       "themes": ["reliability", "delivery", "quality"],
       "stackHints": ["Cloud-hosted backends", "Distributed APIs"],
       "snippet": "detect -> triage severity -> assign incident owner -> stabilize service -> communicate status -> run post-incident review -> track prevention task"
+    },
+    {
+      "id": "pp-outbox-inbox",
+      "title": "Outbox + inbox for cross-service consistency",
+      "context": "Domain events were occasionally lost between write and publish, causing downstream state drift.",
+      "situation": "Direct publish after transaction commit created race conditions during transient failures.",
+      "constraints": [
+        "No global distributed transaction",
+        "Need replayable event history"
+      ],
+      "options": [
+        "Best-effort publish without persistence",
+        "Synchronous cross-service call chain",
+        "Persist outbox in same transaction and consume with deduplicated inbox"
+      ],
+      "decision": "Implemented transactional outbox on producer side and inbox deduplication on consumer side.",
+      "tradeoffs": [
+        "More storage and operational complexity",
+        "Eventual consistency requires stakeholder alignment"
+      ],
+      "outcome": "Reduced lost updates and gave teams a reliable reconciliation path for cross-service messaging.",
+      "learnings": [
+        "Event guarantees must be explicit, not assumed",
+        "Reconciliation tools are part of production readiness"
+      ],
+      "discussionPrompts": [
+        "When does eventual consistency become unacceptable?",
+        "How do you expose reconciliation state to operators?"
+      ],
+      "evaluationSignals": [
+        "Explains producer and consumer guarantees clearly",
+        "Understands replay, dedupe, and ordering tradeoffs"
+      ],
+      "antiPatterns": [
+        "Assuming broker durability solves producer atomicity",
+        "No consumer dedupe strategy"
+      ],
+      "themes": ["architecture", "data", "reliability"],
+      "stackHints": ["Event-driven workflows", "Distributed APIs"],
+      "snippet": "db tx: write business row + outbox row -> outbox worker publishes -> consumer inbox dedupe -> apply handler"
+    },
+    {
+      "id": "pp-circuit-breaker-fallback",
+      "title": "Circuit breaker with controlled degradation",
+      "context": "Dependency outages cascaded into full API failure for non-critical operations.",
+      "situation": "Synchronous calls to unstable downstreams blocked threads and exhausted resources.",
+      "constraints": [
+        "Must keep core user path available",
+        "Downstream recovery windows unpredictable"
+      ],
+      "options": [
+        "Keep retrying until downstream recovers",
+        "Fail all dependent requests immediately",
+        "Use circuit breaker thresholds with fallback responses for non-critical paths"
+      ],
+      "decision": "Added failure thresholds and fallback behavior for non-critical dependency calls, preserving critical workflows.",
+      "tradeoffs": [
+        "Users may see reduced functionality during outage",
+        "Needs clear monitoring to avoid stuck-open circuits"
+      ],
+      "outcome": "Prevented cascading failures and preserved core path availability during partner downtime.",
+      "learnings": [
+        "Graceful degradation is a product decision",
+        "Circuit policies need continuous tuning"
+      ],
+      "discussionPrompts": [
+        "Which flows deserve fallback versus hard fail?",
+        "How do you detect circuit misconfiguration in production?"
+      ],
+      "evaluationSignals": [
+        "Can define failure thresholds and fallback scope",
+        "Understands tradeoff between availability and feature completeness"
+      ],
+      "antiPatterns": [
+        "Using breaker without fallback semantics",
+        "Fallbacks that hide critical data loss"
+      ],
+      "themes": ["reliability", "architecture", "delivery"],
+      "stackHints": ["Cloud-hosted backends", "Distributed APIs"],
+      "snippet": "if downstream failure rate > threshold -> open circuit -> return fallback -> half-open probe -> close on healthy responses"
+    },
+    {
+      "id": "pp-slo-burn-rate",
+      "title": "SLO burn-rate alerting for incident triage",
+      "context": "Teams lacked a shared threshold for deciding when reliability degradation was truly urgent.",
+      "situation": "Alert noise was high and severity decisions were inconsistent between responders.",
+      "constraints": [
+        "Limited on-call capacity",
+        "Need objective escalation criteria"
+      ],
+      "options": [
+        "Alert on every threshold breach",
+        "Use only static latency alarms",
+        "Alert on burn-rate against error budgets over short and long windows"
+      ],
+      "decision": "Adopted multi-window burn-rate alerts tied to severity levels and escalation policy.",
+      "tradeoffs": [
+        "Requires reliable SLI definitions",
+        "Needs team education on error-budget concepts"
+      ],
+      "outcome": "Improved triage consistency and reduced unnecessary high-severity paging.",
+      "learnings": [
+        "Alert quality matters more than alert quantity",
+        "Shared severity language reduces response friction"
+      ],
+      "discussionPrompts": [
+        "How would you define SLIs for mixed workloads?",
+        "What burn-rate thresholds are practical for small teams?"
+      ],
+      "evaluationSignals": [
+        "Understands relationship between SLOs and incident urgency",
+        "Can operationalize thresholds into response policy"
+      ],
+      "antiPatterns": [
+        "SLO targets without operational usage",
+        "Single-window alerting causing flapping"
+      ],
+      "themes": ["reliability", "quality", "delivery"],
+      "stackHints": ["Cloud-hosted backends", "Distributed APIs"],
+      "snippet": "window short burn-rate > X and window long burn-rate > Y -> page; else ticket and review"
     }
   ],
   "redFlags": [
     "Scope expansion without owner-level tradeoff decisions",
     "Architecture-by-fashion without operational need",
-    "Coverage metrics used as a proxy for product risk reduction"
+    "Coverage metrics used as a proxy for product risk reduction",
+    "Interview processes that optimize for definitions over decision quality",
+    "Platform rewrites proposed before baseline bottlenecks are measured"
   ]
 }

@@ -8,6 +8,11 @@ Static Astro site for [robertasrudys.com](https://robertasrudys.com), deployed o
 - Keep quality high with strict local hooks and CI gates.
 - Monitor availability, TLS health, and daily site posture without a backend.
 
+## Core Content Principle
+
+- Proof comes from teachability: if I can teach a system or decision clearly, it is strong evidence of deep understanding.
+- The site should keep moving toward this standard across hiring content: less trivia, more clear explanation of scope, tradeoffs, reliability, and delivery decisions.
+
 ## Live URLs
 
 - Primary: [https://robertasrudys.com](https://robertasrudys.com)

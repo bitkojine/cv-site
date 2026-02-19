@@ -41,6 +41,86 @@ const schemaExtras = {
 
 const toTitleCase = (value: string) =>
   value.charAt(0).toUpperCase() + value.slice(1);
+
+const learningTracks = [
+  {
+    id: 'track-reliability',
+    title: 'Reliability Under Pressure',
+    description:
+      'Learn how to detect, triage, and prevent recurring production failures without stopping delivery.',
+    evidenceIds: [
+      'cs-incident-storm-containment',
+      'dr-observability-reliability-loop',
+      'pp-incident-playbook',
+      'pp-slo-burn-rate',
+    ],
+  },
+  {
+    id: 'track-data-safety',
+    title: 'Data Change Safety',
+    description:
+      'Study reversible migration and consistency patterns for high-risk data flows.',
+    evidenceIds: [
+      'dr-zero-downtime-migration-strategy',
+      'pp-safe-migration-rollout',
+      'pp-outbox-inbox',
+      'dr-job-processing-model',
+    ],
+  },
+  {
+    id: 'track-delivery-tradeoffs',
+    title: 'Delivery And Scope Tradeoffs',
+    description:
+      'Understand how scope, architecture, and reliability decisions are balanced in real release cycles.',
+    evidenceIds: [
+      'cs-release-train-stabilization',
+      'cs-subscription-migration',
+      'dr-bounded-context-orders-payments',
+      'dr-test-strategy-risk-map',
+    ],
+  },
+];
+
+const rubricRows = [
+  {
+    lens: 'Scope and prioritization',
+    strong:
+      'Frames problem in business impact terms, then narrows scope to highest-risk work first.',
+    weak: 'Jumps to implementation details before clarifying impact, constraints, and ownership.',
+  },
+  {
+    lens: 'Tradeoff quality',
+    strong:
+      'Names alternatives, explains rejection reasons, and can defend chosen cost/risk profile.',
+    weak: 'Presents one solution as obvious with little discussion of alternatives or consequences.',
+  },
+  {
+    lens: 'Reliability thinking',
+    strong:
+      'Designs for failure paths, rollback, observability, and incident prevention loops.',
+    weak: 'Talks only about happy path and treats incidents as isolated operational events.',
+  },
+  {
+    lens: 'Delivery behavior',
+    strong:
+      'Shows how decisions changed under timeline pressure while maintaining correctness boundaries.',
+    weak: 'Uses process language without examples of constrained decision-making.',
+  },
+  {
+    lens: 'Teachability',
+    strong:
+      'Explains the system clearly enough that another engineer can reason, implement, and debug it.',
+    weak: 'Leans on jargon, namedrops tools, or cannot explain why a decision worked.',
+  },
+];
+
+const evidenceIndex = new Map(
+  [
+    ...hiringEvidenceData.caseStudies,
+    ...hiringEvidenceData.decisionRecords,
+    ...hiringEvidenceData.productionPatterns,
+  ].map((item) => [item.id, item])
+);
 ---
 
 <SiteLayout
@@ -63,7 +143,8 @@ const toTitleCase = (value: string) =>
     </div>
     <p class="cta-note">
       Use this page to run a senior-level interview. Open artifacts and discuss
-      tradeoffs, risk, and outcomes instead of tool trivia.
+      tradeoffs, risk, and outcomes. The core proof signal is teachability:
+      strong engineers can teach their decision logic clearly.
     </p>
     <div class="cta-row">
       <a
@@ -128,6 +209,61 @@ const toTitleCase = (value: string) =>
     </p>
   </section>
 
+  <section aria-labelledby="evidence-learn" class="card">
+    <h2 id="evidence-learn">How To Learn From This Library</h2>
+    <p>
+      This library is not just proof of experience. It is a practical study set
+      for senior backend decision-making. Pick one track, then review each
+      artifact with the prompts inside and ask for the reasoning as if you are
+      learning it from scratch.
+    </p>
+    <div class="track-grid">
+      {
+        learningTracks.map((track) => (
+          <article class="track-card">
+            <h3>{track.title}</h3>
+            <p>{track.description}</p>
+            <ul>
+              {track.evidenceIds.map((id) => {
+                const item = evidenceIndex.get(id);
+                if (!item) return null;
+                return (
+                  <li>
+                    <a href={`#evidence-${id}`}>{item.title}</a>
+                  </li>
+                );
+              })}
+            </ul>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <section aria-labelledby="evidence-rubric" class="card">
+    <h2 id="evidence-rubric">Interviewer Rubric</h2>
+    <p>
+      Use this rubric when discussing any artifact. It keeps interviews focused
+      on senior-level signal instead of trivia, with clarity of teaching as a
+      core indicator of true depth.
+    </p>
+    <div class="rubric-grid">
+      {
+        rubricRows.map((row) => (
+          <article class="rubric-card">
+            <h3>{row.lens}</h3>
+            <p>
+              <strong>Strong signal:</strong> {row.strong}
+            </p>
+            <p>
+              <strong>Weak signal:</strong> {row.weak}
+            </p>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
   {
     sectionedEvidence.map((section) => (
       <section
@@ -183,6 +319,24 @@ const toTitleCase = (value: string) =>
                   <p>
                     <strong>Learnings:</strong> {item.learnings.join('; ')}
                   </p>
+                  {item.discussionPrompts && (
+                    <p>
+                      <strong>Discussion prompts:</strong>
+                      {item.discussionPrompts.join('; ')}
+                    </p>
+                  )}
+                  {item.evaluationSignals && (
+                    <p>
+                      <strong>What strong answers include:</strong>
+                      {item.evaluationSignals.join('; ')}
+                    </p>
+                  )}
+                  {item.antiPatterns && (
+                    <p>
+                      <strong>Anti-patterns to watch for:</strong>
+                      {item.antiPatterns.join('; ')}
+                    </p>
+                  )}
                   {item.snippet && (
                     <pre class="pattern-snippet">
                       <code>{item.snippet}</code>
@@ -190,16 +344,6 @@ const toTitleCase = (value: string) =>
                   )}
                 </div>
               </details>
-              <div class="evidence-actions">
-                <a href={`#evidence-${item.id}`}>Deep link</a>
-                <button
-                  data-copy-link
-                  data-link-target={`evidence-${item.id}`}
-                  type="button"
-                >
-                  Copy link
-                </button>
-              </div>
             </article>
           ))}
         </div>
@@ -278,6 +422,36 @@ const toTitleCase = (value: string) =>
     gap: 0.75rem;
   }
 
+  .track-grid,
+  .rubric-grid {
+    margin-top: 0.8rem;
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .track-card,
+  .rubric-card {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 0.7rem;
+    background: var(--surface);
+  }
+
+  .track-card h3,
+  .rubric-card h3 {
+    margin: 0;
+    font-size: 1rem;
+  }
+
+  .track-card p,
+  .rubric-card p {
+    margin: 0.5rem 0 0;
+  }
+
+  .track-card ul {
+    margin-top: 0.55rem;
+  }
+
   .evidence-item {
     border: 1px solid var(--line);
     border-radius: 12px;
@@ -333,31 +507,17 @@ const toTitleCase = (value: string) =>
     font-size: 0.84rem;
   }
 
-  .evidence-actions {
-    margin-top: 0.6rem;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.55rem;
-  }
-
-  .evidence-actions button {
-    min-height: 36px;
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    padding: 0.2rem 0.6rem;
-    background: var(--surface);
-    color: var(--text);
-    cursor: pointer;
-    font: inherit;
-    font-size: 0.86rem;
-  }
-
   @media (min-width: 900px) {
     .evidence-controls-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .evidence-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .track-grid,
+    .rubric-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
@@ -496,34 +656,6 @@ const toTitleCase = (value: string) =>
             evidence_id: node.dataset.evidenceId || 'unknown',
             evidence_type: node.dataset.evidenceType || 'unknown',
           });
-        });
-      });
-
-      document.querySelectorAll('[data-copy-link]').forEach((button) => {
-        if (!(button instanceof HTMLButtonElement)) return;
-        if (button.dataset.boundCopyLink === '1') return;
-        button.dataset.boundCopyLink = '1';
-
-        const defaultLabel = button.textContent || 'Copy link';
-        button.addEventListener('click', async () => {
-          const targetId = button.dataset.linkTarget || '';
-          if (!targetId) return;
-          const link = `${window.location.origin}${window.location.pathname}#${targetId}`;
-
-          try {
-            await navigator.clipboard.writeText(link);
-            button.textContent = 'Link copied';
-            reportEvent('evidence_link_copied', {
-              source: 'hiring_evidence_library',
-              target: targetId,
-            });
-          } catch {
-            button.textContent = 'Copy failed';
-          }
-
-          window.setTimeout(() => {
-            button.textContent = defaultLabel;
-          }, 1400);
         });
       });
     };
