@@ -8,16 +8,17 @@ on:
 
 jobs:
   branch-sync:
-    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout PR head commit
+        if: github.event_name == 'pull_request'
         uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
 
       - name: Ensure PR branch includes latest base branch
+        if: github.event_name == 'pull_request'
         shell: bash
         run: |
           set -euo pipefail
@@ -33,6 +34,10 @@ jobs:
 
           echo "PR branch is behind ${BASE_REF}. Rebase/merge ${BASE_REF} and push again."
           exit 1
+
+      - name: Skip branch sync on push
+        if: github.event_name != 'pull_request'
+        run: echo "Branch sync check is only required for pull_request events."
 
   check:
     needs: [branch-sync]
