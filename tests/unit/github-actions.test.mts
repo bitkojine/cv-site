@@ -92,4 +92,44 @@ describe('getGithubData', () => {
       workflowRuns[2],
     ]);
   });
+
+  it('drops malformed workflow entries that fail schema validation', async () => {
+    let call = 0;
+    const fetchImpl = async (): Promise<MockResponse> => {
+      call += 1;
+      if (call === 1) {
+        return {
+          ok: true,
+          json: async () => ({
+            workflow_runs: [
+              {
+                workflow_id: 10,
+                name: 'CI',
+                html_url: 'https://example.com/runs/1',
+                status: 'completed',
+                conclusion: 'success',
+              },
+              {
+                workflow_id: 11,
+                name: 'Deploy',
+                html_url: 'https://example.com/runs/2',
+                status: 'done',
+                conclusion: 'success',
+              },
+            ],
+          }),
+        };
+      }
+      return { ok: true, json: async () => [] };
+    };
+
+    const result = await getGithubData({
+      owner: 'owner',
+      repo: 'repo',
+      fetchImpl,
+    });
+
+    expect(result.workflowRuns).toEqual([]);
+    expect(result.latestWorkflowRuns).toEqual([]);
+  });
 });

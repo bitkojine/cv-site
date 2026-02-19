@@ -1,3 +1,35 @@
+import { z } from 'zod';
+
+const WorkflowRunSchema = z
+  .object({
+    workflow_id: z.number(),
+    name: z.string(),
+    html_url: z.string(),
+    status: z.enum(['completed', 'in_progress', 'queued']),
+    conclusion: z.string().nullable(),
+  })
+  .strict();
+
+const WorkflowRunsResponseSchema = z.object({
+  workflow_runs: z.array(WorkflowRunSchema),
+});
+
+const GitHubCommitSchema = z
+  .object({
+    html_url: z.string(),
+    commit: z
+      .object({
+        message: z.string(),
+        author: z
+          .object({
+            date: z.string(),
+          })
+          .strict(),
+      })
+      .strict(),
+  })
+  .strict();
+
 export interface WorkflowRun {
   workflow_id: number;
   name: string;
@@ -55,9 +87,10 @@ export const getGithubData = async (
   let latestWorkflowRuns: WorkflowRun[] = [];
   if (runsResponse.ok) {
     const data = await runsResponse.json();
-    if (data && typeof data === 'object' && 'workflow_runs' in data) {
-      const runs = (data as { workflow_runs?: WorkflowRun[] }).workflow_runs;
-      if (Array.isArray(runs) && runs.length) {
+    const parsedRunsResponse = WorkflowRunsResponseSchema.safeParse(data);
+    if (parsedRunsResponse.success) {
+      const runs = parsedRunsResponse.data.workflow_runs;
+      if (runs.length) {
         workflowRuns = runs;
         const latestRuns = new Map<number, WorkflowRun>();
         for (const run of runs) {
@@ -82,8 +115,9 @@ export const getGithubData = async (
   let latestCommits: GitHubCommit[] = [];
   if (commitsResponse.ok) {
     const data = await commitsResponse.json();
-    if (Array.isArray(data) && data.length) {
-      latestCommits = data as GitHubCommit[];
+    const parsedCommits = z.array(GitHubCommitSchema).safeParse(data);
+    if (parsedCommits.success && parsedCommits.data.length) {
+      latestCommits = parsedCommits.data;
     }
   }
 
