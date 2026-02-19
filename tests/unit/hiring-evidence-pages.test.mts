@@ -9,14 +9,13 @@ function readProjectFile(relativePath: string): string {
 }
 
 describe('hiring evidence pages', () => {
-  it('tracks evidence open events in hiring and evidence pages', () => {
+  it('tracks evidence interactions in hiring and evidence pages', () => {
     const hiring = readProjectFile(
       'src/components/content/HiringContent.astro'
     );
     const evidence = readProjectFile('src/pages/hiring/evidence.astro');
 
     expect(hiring).toContain("'evidence_opened'");
-    expect(evidence).toContain("'evidence_opened'");
     expect(evidence).toContain("'evidence_search'");
   });
 

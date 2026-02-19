@@ -8,10 +8,9 @@ import { readdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 describe('echo notes', () => {
-  it('resolves route-specific notes with severity and prompts', () => {
+  it('resolves route-specific notes with prompts', () => {
     const hiring = resolveEchoNote('/hiring');
     expect(hiring.id).toBe('hiring');
-    expect(hiring.severity).toBe('critical');
     expect(hiring.actionPrompts.length).toBeGreaterThanOrEqual(3);
     expect(hiring.modes?.length).toBe(2);
   });
