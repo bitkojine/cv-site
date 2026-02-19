@@ -15,32 +15,32 @@ const { currentRole } = Astro.props;
 <aside class="mode-indicator" data-role-indicator hidden>
   <details class="switch-details" data-role-switch-details>
     <summary class="switch-summary">
-      Visitor role: <strong data-role-label>{currentRole}</strong>
-      <span class="switch-button">(Switch role)</span>
+      You are visiting as: <strong data-role-label>{currentRole}</strong>
+      <span class="switch-button">(Change visitor role)</span>
     </summary>
     <nav class="switch-list" data-role-switch-list aria-label="Switch role">
       <a href="/?choose=1" data-return-door class="switch-return-link">
         <span class="menu-icon" aria-hidden="true"><House size={16} /></span>
-        Back to visitor role selection
+        Return to visitor role picker
       </a>
       <a href="/hiring" data-role-switch="Recruiter / Hiring Manager">
         <span class="menu-icon" aria-hidden="true"><Briefcase size={16} /></span
         >
-        Recruiter / Hiring Manager
+        Visit as Recruiter / Hiring Manager
       </a>
       <a href="/build" data-role-switch="Founder / Operator">
         <span class="menu-icon" aria-hidden="true"><Cog size={16} /></span>
-        Founder / Operator
+        Visit as Founder / Operator
       </a>
       <a href="/vision" data-role-switch="Investor / Advisor">
         <span class="menu-icon" aria-hidden="true"
           ><DollarSign size={16} /></span
         >
-        Investor / Advisor
+        Visit as Investor / Advisor
       </a>
       <a href="/dev" data-role-switch="Developer / Builder">
         <span class="menu-icon" aria-hidden="true"><Code2 size={16} /></span>
-        Developer / Builder
+        Visit as Developer / Builder
       </a>
     </nav>
   </details>

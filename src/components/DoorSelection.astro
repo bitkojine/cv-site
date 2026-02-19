@@ -1,73 +1,36 @@
----
-import { Briefcase, Cog, DollarSign, Code2 } from '@lucide/astro';
----
-
-<section class="door-screen" aria-labelledby="door-heading">
-  <p class="eyebrow">Choose your fastest path</p>
-  <h1 id="door-heading">What do you need right now?</h1>
-  <p>
-    Pick the route that matches your decision so you can evaluate fit quickly.
+<section class="home-inbox" aria-labelledby="home-heading">
+  <p class="eyebrow">Recruiter Path</p>
+  <h1 id="home-heading">Review backend hiring fit in under a minute.</h1>
+  <p class="home-lead">
+    Open the hiring profile first to check role fit, availability, and next
+    steps.
   </p>
-  <ul class="door-proof-list">
-    <li>Recruiters: role fit, availability, and hiring workflow</li>
-    <li>Founders: scoped execution offers and start criteria</li>
-    <li>Investors: model logic, milestones, and known constraints</li>
-    <li>Developers: open source, engineering blog, and live activity</li>
-  </ul>
-  <p class="door-cta-copy">Select one route to continue.</p>
-  <nav aria-label="Visitor options" class="door-grid door-grid--four">
-    <a class="door" href="/hiring" data-role-door="Recruiter / Hiring Manager">
-      <span class="door-head">
-        <span class="door-icon" aria-hidden="true">
-          <Briefcase size={20} />
-        </span>
-        <span class="door-label">I’m a Recruiter / Hiring Manager</span>
-      </span>
-      <span class="door-subtext">Hiring for an open position</span>
-      <span class="door-promise">
-        Resume-first profile with role-fit, availability, and hiring workflow
-        details.
-      </span>
+
+  <div class="home-actions">
+    <a
+      class="home-primary-cta"
+      href="/hiring"
+      data-role-door="Recruiter / Hiring Manager"
+    >
+      Review Candidate Fit
     </a>
-    <a class="door" href="/build" data-role-door="Founder / Operator">
-      <span class="door-head">
-        <span class="door-icon" aria-hidden="true">
-          <Cog size={20} />
-        </span>
-        <span class="door-label">I’m a Founder / Operator</span>
-      </span>
-      <span class="door-subtext">Building or scaling a product</span>
-      <span class="door-promise">
-        Product bottleneck execution offers with concrete scope and handoff
-        model.
-      </span>
-    </a>
-    <a class="door" href="/vision" data-role-door="Investor / Advisor">
-      <span class="door-head">
-        <span class="door-icon" aria-hidden="true">
-          <DollarSign size={20} />
-        </span>
-        <span class="door-label">I’m an Investor / Advisor</span>
-      </span>
-      <span class="door-subtext">
-        Evaluating traction, execution quality, and long-term potential
-      </span>
-      <span class="door-promise">
-        Service-first business model, milestone gates, and funding-readiness
-        constraints.
-      </span>
-    </a>
-    <a class="door" href="/dev" data-role-door="Developer / Builder">
-      <span class="door-head">
-        <span class="door-icon" aria-hidden="true">
-          <Code2 size={20} />
-        </span>
-        <span class="door-label">I’m a Developer / Builder</span>
-      </span>
-      <span class="door-subtext">Following or contributing to open source</span>
-      <span class="door-promise">
-        Architecture patterns, engineering blog, and live build telemetry.
-      </span>
-    </a>
+    <p class="home-primary-note">
+      Includes experience snapshot, resume request, and intro scheduling.
+    </p>
+  </div>
+
+  <nav class="home-secondary" aria-label="Other visitor paths">
+    <p class="home-secondary-label">Not visiting as recruiter?</p>
+    <div class="home-secondary-links">
+      <a href="/build" data-role-door="Founder / Operator"
+        >I am a Founder / Operator</a
+      >
+      <a href="/vision" data-role-door="Investor / Advisor"
+        >I am an Investor / Advisor</a
+      >
+      <a href="/dev" data-role-door="Developer / Builder"
+        >I am a Developer / Builder</a
+      >
+    </div>
   </nav>
 </section>

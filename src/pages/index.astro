@@ -4,21 +4,23 @@ import DoorSelection from '../components/DoorSelection.astro';
 
 const schemaExtras = {
   about:
-    'Role-based entry point for a personal site with dedicated hiring, builder, and vision routes.',
+    'Hiring-first entry point with a direct recruiter path and secondary role routes.',
   potentialAction: {
     '@type': 'ChooseAction',
-    target: ['/hiring', '/build', '/vision'],
+    target: ['/hiring', '/build', '/vision', '/dev'],
   },
 };
 ---
 
 <SiteLayout
-  title="Robertas Rudys | Choose Your Role"
-  description="Select the role-based profile that matches your intent."
+  title="Robertas Rudys | Hiring Inbox"
+  description="Review backend hiring fit quickly, then request resume or schedule an intro."
   canonicalPath="/"
-  roleLabel="Home"
+  roleLabel="Visitor: Recruiter / Hiring Manager"
   schemaType="WebPage"
   schemaExtras={schemaExtras}
+  showBuildVersion={false}
+  showLiveBuildBadge={false}
 >
   <DoorSelection />
 </SiteLayout>
