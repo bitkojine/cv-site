@@ -320,11 +320,12 @@ const devPhilosophy = [
           const repo = event.repo.name;
           const msg = commits[0]?.message || '';
           const ref = event.payload?.ref?.replace('refs/heads/', '') || '';
+          const refTarget = ref ? `<strong>${ref}</strong>` : '';
           const summary =
             count > 0
               ? `${count} commit(s)`
-              : ref
-                ? `updates on ${ref}`
+              : refTarget
+                ? `updates on ${refTarget}`
                 : 'updates';
           content = msg
             ? `Pushed ${summary} to <strong>${repo}</strong>: "${msg.split('\n')[0]}"`
