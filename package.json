@@ -13,6 +13,7 @@
     "test:e2e": "env -u NO_COLOR playwright test",
     "test:e2e:ui-stress": "env -u NO_COLOR playwright test tests/e2e/ui-stress.spec.ts",
     "test": "npm run test:unit",
+    "lint:workflows": "./scripts/lint-workflows.sh",
     "lint": "eslint .",
     "lint:comments": "./scripts/zero-comment-policy.sh --all",
     "format": "prettier --write .",

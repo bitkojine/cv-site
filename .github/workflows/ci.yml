@@ -25,6 +25,9 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Lint Workflows
+        run: npm run lint:workflows
+
       - name: Check Format
         run: npx prettier --check .
 

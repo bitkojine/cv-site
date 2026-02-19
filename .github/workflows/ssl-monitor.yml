@@ -32,6 +32,12 @@ jobs:
         run: |
           set -euo pipefail
 
+          ALERT_DAYS="${ALERT_DAYS:-21}"
+          CRITICAL_DAYS="${CRITICAL_DAYS:-7}"
+          ORIGIN_IPS="${ORIGIN_IPS:-}"
+          ENFORCE_ORIGIN_VALIDATION="${ENFORCE_ORIGIN_VALIDATION:-false}"
+          FORCE_ALERT="${FORCE_ALERT:-false}"
+
           now_epoch="$(date -u +%s)"
 
           cert_days_left() {
