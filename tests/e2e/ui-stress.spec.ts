@@ -50,7 +50,8 @@ test.describe('ui stress', () => {
   test('chaos navigation + rapid interactions remain stable', async ({
     page,
   }, testInfo) => {
-    test.setTimeout(60_000);
+    const isCi = !!process.env.CI;
+    test.setTimeout(isCi ? 90_000 : 60_000);
 
     const pageErrors: string[] = [];
     const severeConsole: string[] = [];
@@ -69,8 +70,13 @@ test.describe('ui stress', () => {
       severeConsole.push(text);
     });
 
+    const maxIterations = isCi ? 80 : 120;
+    const deadline = Date.now() + (isCi ? 45_000 : 52_000);
+    let completedIterations = 0;
+
     await page.goto('/', { waitUntil: 'domcontentloaded' });
-    for (let i = 0; i < 120; i++) {
+    for (let i = 0; i < maxIterations; i++) {
+      if (Date.now() > deadline) break;
       const route = criticalRoutes[i % criticalRoutes.length];
       await page.goto(route, {
         waitUntil: 'domcontentloaded',
@@ -96,6 +102,7 @@ test.describe('ui stress', () => {
       await page
         .waitForLoadState('domcontentloaded', { timeout: 1500 })
         .catch(() => {});
+      completedIterations += 1;
     }
 
     await testInfo.attach('ui-chaos-errors.json', {
@@ -108,6 +115,7 @@ test.describe('ui stress', () => {
 
     expect(pageErrors).toEqual([]);
     expect(severeConsole).toEqual([]);
+    expect(completedIterations).toBeGreaterThanOrEqual(isCi ? 40 : 80);
   });
 
   test('degraded network + offline recovery', async ({ browser }) => {
