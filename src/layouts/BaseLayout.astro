@@ -122,9 +122,11 @@ const experienceTimeline = [...experience, ...independentProjects].sort(
         <a class="page-home-link" href="/">Home</a>
       </nav>
       <article class="markdown-body">
-        <SelfReferenceNote className="site-global-echo">
-          {echoNote}
-        </SelfReferenceNote>
+        <SelfReferenceNote
+          className="site-global-echo"
+          note={echoNote}
+          pathname={Astro.url.pathname}
+        />
         <slot />
         <footer aria-label="Site footer" class="site-footer-note">
           <p>
