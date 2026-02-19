@@ -11,6 +11,7 @@
     "astro": "astro",
     "test:unit": "vitest run",
     "test:e2e": "env -u NO_COLOR playwright test",
+    "test:e2e:ui-stress": "env -u NO_COLOR playwright test tests/e2e/ui-stress.spec.ts",
     "test": "npm run test:unit",
     "lint": "eslint .",
     "lint:comments": "./scripts/zero-comment-policy.sh --all",
@@ -25,6 +26,7 @@
     "zod": "^3.25.76"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.11.1",
     "@playwright/test": "^1.58.2",
     "@typescript-eslint/eslint-plugin": "^8.54.0",
     "@typescript-eslint/parser": "^8.54.0",

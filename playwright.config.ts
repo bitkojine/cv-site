@@ -1,5 +1,9 @@
 import { defineConfig, devices } from '@playwright/test';
 
+const baseURL = process.env.BASE_URL || 'http://127.0.0.1:4321';
+const isLocalBaseUrl =
+  baseURL.includes('127.0.0.1') || baseURL.includes('localhost');
+
 export default defineConfig({
   testDir: './tests/e2e',
   fullyParallel: true,
@@ -8,16 +12,19 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: 'html',
   use: {
-    baseURL: 'http://127.0.0.1:4321',
+    baseURL,
     trace: 'on-first-retry',
   },
-  webServer: {
-    command: 'npm run build && npm run preview -- --host 127.0.0.1 --port 4321',
-    url: 'http://127.0.0.1:4321',
-    reuseExistingServer: !process.env.CI,
-    stdout: 'ignore',
-    stderr: 'pipe',
-  },
+  webServer: isLocalBaseUrl
+    ? {
+        command:
+          'npm run build && npm run preview -- --host 127.0.0.1 --port 4321',
+        url: 'http://127.0.0.1:4321',
+        reuseExistingServer: !process.env.CI,
+        stdout: 'ignore',
+        stderr: 'pipe',
+      }
+    : undefined,
   projects: [
     {
       name: 'chromium',
