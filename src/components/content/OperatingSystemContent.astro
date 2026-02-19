@@ -1,0 +1,104 @@
+---
+import { Layers } from '@lucide/astro';
+import EmailCta from '../EmailCta.astro';
+import { roleEmailCtas, visitorModes } from '../../lib/email-drafts.mts';
+---
+
+<section class="mode-hero" aria-labelledby="ops-heading">
+  <div class="headline-row">
+    <span class="headline-icon" aria-hidden="true"><Layers size={86} /></span>
+    <h1 id="ops-heading">
+      Website System: from visitor traffic to signed deals and contracts.
+    </h1>
+  </div>
+  <div class="cta-row">
+    <EmailCta cta={roleEmailCtas.hiring[1]} mode={visitorModes.hiring} />
+    <EmailCta cta={roleEmailCtas.build[0]} mode={visitorModes.build} />
+    <EmailCta cta={roleEmailCtas.vision[1]} mode={visitorModes.vision} />
+  </div>
+  <p class="cta-note">
+    This page explains how this website works as a system: traffic sources, page
+    roles, visitor flows, CTA actions, and conversion outcomes.
+  </p>
+</section>
+
+<section class="card" aria-labelledby="ops-goal">
+  <h2 id="ops-goal">Website System Goal</h2>
+  <p>
+    Primary goal: route the right visitors into the right pages and convert
+    qualified conversations into signed roles, contracts, and repeat engagements
+    without lowering delivery quality.
+  </p>
+</section>
+
+<section class="card" aria-labelledby="ops-pipeline">
+  <h2 id="ops-pipeline">Visitor Flow Stages</h2>
+  <ol>
+    <li>Traffic source: direct, referral, LinkedIn, and peer shares.</li>
+    <li>
+      Intent routing: visitor selects hiring, build, vision, developer, or this
+      system page.
+    </li>
+    <li>
+      Page value: each route gives role-specific proof and a clear next step.
+    </li>
+    <li>CTA action: visitor sends a low-friction first-contact message.</li>
+    <li>Qualification: role/scope fit, timeline, and decision ownership.</li>
+    <li>Signed outcome: role offer, paid engagement, or follow-on mandate.</li>
+  </ol>
+</section>
+
+<section class="card" aria-labelledby="ops-cadence">
+  <h2 id="ops-cadence">System Operating Cadence</h2>
+  <ul>
+    <li>Daily: triage inbound messages and respond by priority.</li>
+    <li>
+      Weekly: review visitor volume, CTA clicks, and conversation quality.
+    </li>
+    <li>
+      Bi-weekly: refine role-page copy, CTA prompts, and qualification rules.
+    </li>
+    <li>
+      Monthly: update proof artifacts from shipped work and signed outcomes.
+    </li>
+  </ul>
+</section>
+
+<section class="card" aria-labelledby="ops-capacity">
+  <h2 id="ops-capacity">Capacity and Scale Constraints</h2>
+  <ul>
+    <li>Current execution mode is solo and quality-gated.</li>
+    <li>Pilot delivery capacity remains intentionally limited.</li>
+    <li>Scale trigger is sustained qualified pipeline, not vanity traffic.</li>
+    <li>
+      Team expansion starts only when pipeline supports predictable, repeatable
+      throughput.
+    </li>
+  </ul>
+</section>
+
+<section class="card" aria-labelledby="ops-controls">
+  <h2 id="ops-controls">Website-to-Deal Quality Controls</h2>
+  <ul>
+    <li>No inflated claims: evidence boundaries are explicitly declared.</li>
+    <li>Role clarity: each page states who it is for and what to do next.</li>
+    <li>CTA clarity: first contact asks for minimal input only.</li>
+    <li>
+      Deal discipline: scope and acceptance rules are explicit before start.
+    </li>
+  </ul>
+</section>
+
+<section class="card" aria-labelledby="ops-roadmap">
+  <h2 id="ops-roadmap">Website System Roadmap</h2>
+  <ol>
+    <li>Increase qualified inbound from hiring and operator channels.</li>
+    <li>
+      Publish compact case snapshots with measurable, non-sensitive outcomes.
+    </li>
+    <li>Improve per-route conversion from page visit to conversation start.</li>
+    <li>
+      Shift from solo execution to organization mode as signed flow compounds.
+    </li>
+  </ol>
+</section>
