@@ -114,7 +114,7 @@ jobs:
           CF_RAY: ${{ steps.edge.outputs.cf_ray }}
 
       - name: Send alert email
-        if: steps.edge.outputs.alert == 'true' && secrets.ALERT_SMTP_SERVER != '' && secrets.ALERT_SMTP_USERNAME != '' && secrets.ALERT_SMTP_PASSWORD != '' && secrets.ALERT_EMAIL_TO != '' && secrets.ALERT_EMAIL_FROM != ''
+        if: steps.edge.outputs.alert == 'true'
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: ${{ secrets.ALERT_SMTP_SERVER }}

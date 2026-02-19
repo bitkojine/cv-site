@@ -134,7 +134,7 @@ jobs:
           DETAILS: ${{ steps.cert.outputs.details }}
 
       - name: Send alert email
-        if: steps.cert.outputs.alert == 'true' && secrets.ALERT_SMTP_SERVER != '' && secrets.ALERT_SMTP_USERNAME != '' && secrets.ALERT_SMTP_PASSWORD != '' && secrets.ALERT_EMAIL_TO != '' && secrets.ALERT_EMAIL_FROM != ''
+        if: steps.cert.outputs.alert == 'true'
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: ${{ secrets.ALERT_SMTP_SERVER }}
