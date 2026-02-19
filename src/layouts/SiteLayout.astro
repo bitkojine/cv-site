@@ -32,6 +32,12 @@ const {
 const canonicalUrl = new URL(canonicalPath, Astro.site);
 const isHomePage = canonicalPath === '/';
 const siteName = 'Robertas Rudys';
+const currentYear = Number(
+  new Intl.DateTimeFormat('lt-LT', {
+    timeZone: 'Europe/Vilnius',
+    year: 'numeric',
+  }).format(new Date())
+);
 const structuredData = {
   '@context': 'https://schema.org',
   '@type': schemaType,
@@ -115,7 +121,7 @@ const structuredData = {
       <slot />
       <footer class="site-footer">
         <small class="site-footer-copy">
-          &copy; {new Date().getFullYear()}
+          &copy; {currentYear}
           {siteName}
           {
             showBuildVersion && (

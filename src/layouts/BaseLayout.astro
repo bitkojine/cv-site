@@ -13,7 +13,12 @@ const {
   title = 'Robertas Rudys',
   description = 'Resume and writing by Robertas Rudys.',
 } = Astro.props;
-const currentYear = new Date().getFullYear();
+const currentYear = Number(
+  new Intl.DateTimeFormat('lt-LT', {
+    timeZone: 'Europe/Vilnius',
+    year: 'numeric',
+  }).format(new Date())
+);
 const { personalInfo, coreSkills, experience, independentProjects } = cvData;
 
 function toIsoMonth(value: string) {
