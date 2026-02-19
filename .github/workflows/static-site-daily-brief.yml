@@ -1,0 +1,244 @@
+name: Static Site Daily Brief
+
+on:
+  schedule:
+    - cron: '30 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  daily-brief:
+    runs-on: ubuntu-latest
+    env:
+      URL: https://robertasrudys.com
+      DOMAIN: robertasrudys.com
+      ALERT_DAYS: '21'
+      CRITICAL_DAYS: '7'
+      ORIGIN_IPS: '185.199.108.153 185.199.109.153 185.199.110.153 185.199.111.153'
+      ENFORCE_ORIGIN_VALIDATION: 'false'
+      MAX_URL_CHECKS: '250'
+    steps:
+      - name: Collect daily website brief
+        id: brief
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          now_utc="$(date -u +'%Y-%m-%d %H:%M:%S UTC')"
+          headers_file="$(mktemp)"
+          report_file="$(mktemp)"
+
+          classify_state() {
+            local days_left="$1"
+            local alert_days="$2"
+            local critical_days="$3"
+
+            if [ -z "${days_left}" ]; then
+              echo "error"
+            elif [ "${days_left}" -lt 0 ]; then
+              echo "expired"
+            elif [ "${days_left}" -le "${critical_days}" ]; then
+              echo "critical"
+            elif [ "${days_left}" -le "${alert_days}" ]; then
+              echo "warning"
+            else
+              echo "healthy"
+            fi
+          }
+
+          cert_days_left() {
+            local connect_target="$1"
+            local sni="$2"
+            local now_epoch
+            local end_date
+            local cert_epoch
+            local days_left
+
+            now_epoch="$(date -u +%s)"
+            end_date="$(echo | openssl s_client -servername "${sni}" -connect "${connect_target}" 2>/dev/null | openssl x509 -noout -enddate | cut -d= -f2 || true)"
+            if [ -z "${end_date}" ]; then
+              echo "|"
+              return 0
+            fi
+
+            cert_epoch="$(date -u -d "${end_date}" +%s)"
+            days_left="$(( (cert_epoch - now_epoch) / 86400 ))"
+            echo "${end_date}|${days_left}"
+          }
+
+          edge_status="$(curl -sS -o /dev/null -D "${headers_file}" -w '%{http_code}' --max-time 20 "${URL}" || true)"
+          edge_ttfb="$(curl -sS -o /dev/null -w '%{time_starttransfer}' --max-time 20 "${URL}" || echo "n/a")"
+          edge_total="$(curl -sS -o /dev/null -w '%{time_total}' --max-time 20 "${URL}" || echo "n/a")"
+          edge_server="$(grep -i '^server:' "${headers_file}" | tail -n1 | cut -d' ' -f2- | tr -d '\r' || true)"
+          edge_cf_ray="$(grep -i '^cf-ray:' "${headers_file}" | tail -n1 | cut -d' ' -f2- | tr -d '\r' || true)"
+
+          edge_cert_data="$(cert_days_left "${DOMAIN}:443" "${DOMAIN}")"
+          edge_not_after="$(echo "${edge_cert_data}" | cut -d'|' -f1)"
+          edge_days_left="$(echo "${edge_cert_data}" | cut -d'|' -f2)"
+          edge_state="$(classify_state "${edge_days_left}" "${ALERT_DAYS}" "${CRITICAL_DAYS}")"
+
+          origin_min_days_left=999999
+          origin_min_not_after=""
+          origin_state="healthy"
+          origin_details=""
+          origin_has_error=0
+          for ip in ${ORIGIN_IPS}; do
+            origin_data="$(cert_days_left "${ip}:443" "${DOMAIN}")"
+            origin_not_after="$(echo "${origin_data}" | cut -d'|' -f1)"
+            origin_days_left="$(echo "${origin_data}" | cut -d'|' -f2)"
+            if [ -z "${origin_not_after}" ] || [ -z "${origin_days_left}" ]; then
+              origin_has_error=1
+              origin_details="${origin_details}\n- ${ip}: failed to read certificate"
+              continue
+            fi
+            origin_details="${origin_details}\n- ${ip}: ${origin_not_after} (${origin_days_left} days)"
+            if [ "${origin_days_left}" -lt "${origin_min_days_left}" ]; then
+              origin_min_days_left="${origin_days_left}"
+              origin_min_not_after="${origin_not_after}"
+            fi
+          done
+          if [ "${origin_has_error}" -eq 1 ] && [ "${origin_min_days_left}" -eq 999999 ]; then
+            origin_state="error"
+            origin_min_days_left=""
+          else
+            origin_state="$(classify_state "${origin_min_days_left}" "${ALERT_DAYS}" "${CRITICAL_DAYS}")"
+          fi
+
+          dns_ns="$(dig +short "${DOMAIN}" NS | tr '\n' ' ' || true)"
+          dns_a="$(dig +short "${DOMAIN}" A | tr '\n' ' ' || true)"
+          dns_aaaa="$(dig +short "${DOMAIN}" AAAA | tr '\n' ' ' || true)"
+          dns_www_cname="$(dig +short "www.${DOMAIN}" CNAME | tr '\n' ' ' || true)"
+          dns_caa="$(dig +short "${DOMAIN}" CAA | tr '\n' ' ' || true)"
+
+          hsts="$(grep -i '^strict-transport-security:' "${headers_file}" | cut -d' ' -f2- | tr -d '\r' || true)"
+          csp="$(grep -i '^content-security-policy:' "${headers_file}" | cut -d' ' -f2- | tr -d '\r' || true)"
+          xfo="$(grep -i '^x-frame-options:' "${headers_file}" | cut -d' ' -f2- | tr -d '\r' || true)"
+          xcto="$(grep -i '^x-content-type-options:' "${headers_file}" | cut -d' ' -f2- | tr -d '\r' || true)"
+          refpol="$(grep -i '^referrer-policy:' "${headers_file}" | cut -d' ' -f2- | tr -d '\r' || true)"
+          missing_headers=""
+          [ -z "${hsts}" ] && missing_headers="${missing_headers} HSTS"
+          [ -z "${csp}" ] && missing_headers="${missing_headers} CSP"
+          [ -z "${xfo}" ] && missing_headers="${missing_headers} X-Frame-Options"
+          [ -z "${xcto}" ] && missing_headers="${missing_headers} X-Content-Type-Options"
+          [ -z "${refpol}" ] && missing_headers="${missing_headers} Referrer-Policy"
+
+          robots_status="$(curl -sS -o /dev/null -w '%{http_code}' --max-time 15 "${URL}/robots.txt" || true)"
+          sitemap_index_status="$(curl -sS -o /dev/null -w '%{http_code}' --max-time 15 "${URL}/sitemap-index.xml" || true)"
+
+          sitemap_tmp="$(mktemp)"
+          sitemap_urls_tmp="$(mktemp)"
+          checked_urls=0
+          bad_urls=0
+          bad_details=""
+
+          if curl -fsSL --max-time 20 "${URL}/sitemap-index.xml" > "${sitemap_tmp}"; then
+            grep -oE '<loc>[^<]+' "${sitemap_tmp}" | sed 's/<loc>//' > "${sitemap_urls_tmp}" || true
+            while IFS= read -r sitemap_url; do
+              [ -z "${sitemap_url}" ] && continue
+              page_tmp="$(mktemp)"
+              if curl -fsSL --max-time 20 "${sitemap_url}" > "${page_tmp}"; then
+                grep -oE '<loc>[^<]+' "${page_tmp}" | sed 's/<loc>//'
+              fi
+              rm -f "${page_tmp}"
+            done < "${sitemap_urls_tmp}" | awk '!seen[$0]++' | head -n "${MAX_URL_CHECKS}" > "${sitemap_urls_tmp}.all"
+
+            while IFS= read -r page_url; do
+              [ -z "${page_url}" ] && continue
+              checked_urls=$((checked_urls + 1))
+              code="$(curl -sS -o /dev/null -w '%{http_code}' --max-time 15 "${page_url}" || echo 000)"
+              if ! echo "${code}" | grep -Eq '^(200|301|302|304)$'; then
+                bad_urls=$((bad_urls + 1))
+                if [ "${bad_urls}" -le 20 ]; then
+                  bad_details="${bad_details}\n- ${page_url} -> ${code}"
+                fi
+              fi
+            done < "${sitemap_urls_tmp}.all"
+          fi
+
+          status="OK"
+          if [ -z "${edge_status}" ] || [ "${edge_status}" = "000" ] || [ "${edge_status}" -ge 500 ]; then
+            status="CRITICAL"
+          elif [ "${edge_state}" = "error" ] || [ "${edge_state}" = "expired" ] || [ "${edge_state}" = "critical" ]; then
+            status="CRITICAL"
+          elif [ "${ENFORCE_ORIGIN_VALIDATION}" = "true" ] && { [ "${origin_state}" = "error" ] || [ "${origin_state}" = "expired" ] || [ "${origin_state}" = "critical" ]; }; then
+            status="CRITICAL"
+          elif [ "${bad_urls}" -gt 0 ] || [ -n "${missing_headers}" ] || [ "${edge_state}" = "warning" ] || [ "${origin_state}" = "warning" ] || [ "${origin_state}" = "expired" ] || [ "${origin_state}" = "critical" ] || [ "${origin_state}" = "error" ]; then
+            status="WARN"
+          fi
+
+          {
+            echo "Static Site Daily Brief"
+            echo "Generated: ${now_utc}"
+            echo ""
+            echo "Overall status: ${status}"
+            echo ""
+            echo "Edge availability"
+            echo "- URL: ${URL}"
+            echo "- HTTP status: ${edge_status}"
+            echo "- Server: ${edge_server:-unknown}"
+            echo "- CF-Ray: ${edge_cf_ray:-unknown}"
+            echo "- TTFB (s): ${edge_ttfb}"
+            echo "- Total time (s): ${edge_total}"
+            echo ""
+            echo "TLS"
+            echo "- Edge cert: state=${edge_state}, days_left=${edge_days_left:-unknown}, not_after=${edge_not_after:-unknown}"
+            echo "- Origin cert: state=${origin_state}, min_days_left=${origin_min_days_left:-unknown}, min_not_after=${origin_min_not_after:-unknown}"
+            printf '%b\n' "${origin_details}"
+            echo "- ENFORCE_ORIGIN_VALIDATION=${ENFORCE_ORIGIN_VALIDATION}"
+            echo ""
+            echo "DNS snapshot"
+            echo "- NS: ${dns_ns:-none}"
+            echo "- A: ${dns_a:-none}"
+            echo "- AAAA: ${dns_aaaa:-none}"
+            echo "- www CNAME: ${dns_www_cname:-none}"
+            echo "- CAA: ${dns_caa:-none}"
+            echo ""
+            echo "Security headers"
+            echo "- HSTS: ${hsts:-missing}"
+            echo "- CSP: ${csp:-missing}"
+            echo "- X-Frame-Options: ${xfo:-missing}"
+            echo "- X-Content-Type-Options: ${xcto:-missing}"
+            echo "- Referrer-Policy: ${refpol:-missing}"
+            echo "- Missing headers:${missing_headers:- none}"
+            echo ""
+            echo "Robots + sitemap"
+            echo "- /robots.txt status: ${robots_status}"
+            echo "- /sitemap-index.xml status: ${sitemap_index_status}"
+            echo "- URLs checked from sitemap: ${checked_urls}"
+            echo "- Non-OK URLs: ${bad_urls}"
+            if [ "${bad_urls}" -gt 0 ]; then
+              printf '%b\n' "${bad_details}"
+            fi
+          } > "${report_file}"
+
+          {
+            echo "status=${status}"
+            echo "report<<EOF"
+            cat "${report_file}"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+          cat "${report_file}"
+
+      - name: Send daily brief email
+        if: ${{ secrets.ALERT_SMTP_SERVER != '' && secrets.ALERT_EMAIL_TO != '' && secrets.ALERT_EMAIL_FROM != '' && secrets.ALERT_SMTP_USERNAME != '' && secrets.ALERT_SMTP_PASSWORD != '' }}
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: ${{ secrets.ALERT_SMTP_SERVER }}
+          server_port: ${{ secrets.ALERT_SMTP_PORT || '587' }}
+          username: ${{ secrets.ALERT_SMTP_USERNAME }}
+          password: ${{ secrets.ALERT_SMTP_PASSWORD }}
+          secure: false
+          subject: '[DAILY][${{ steps.brief.outputs.status }}] robertasrudys.com static site brief'
+          to: ${{ secrets.ALERT_EMAIL_TO }}
+          from: ${{ secrets.ALERT_EMAIL_FROM }}
+          body: |
+            ${{ steps.brief.outputs.report }}
+
+            Workflow run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+      - name: Warn if SMTP is not configured
+        if: ${{ !(secrets.ALERT_SMTP_SERVER != '' && secrets.ALERT_EMAIL_TO != '' && secrets.ALERT_EMAIL_FROM != '' && secrets.ALERT_SMTP_USERNAME != '' && secrets.ALERT_SMTP_PASSWORD != '') }}
+        run: echo "SMTP secrets missing, skipped email delivery."
