@@ -62,7 +62,7 @@ async function fetchActivity() {
 
   try {
     const response = await fetch(
-      `https://api.github.com/users/${GITHUB_USERNAME}/events/public?per_page=15`,
+      `https://api.github.com/users/${GITHUB_USERNAME}/events/public?per_page=50`,
       { headers }
     );
 

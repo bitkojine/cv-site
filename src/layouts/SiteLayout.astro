@@ -86,6 +86,12 @@ const structuredData = {
   <body data-current-role={roleLabel ?? ''}>
     <ClientRouter />
     <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="mail-topbar" aria-label="Page header">
+      <div class="mail-topbar__inner">
+        <p class="mail-topbar__eyebrow">{siteName}</p>
+        <p class="mail-topbar__title">{roleLabel ?? 'Inbox'}</p>
+      </div>
+    </header>
     <main id="main-content" class="site-shell">
       <slot />
       <footer class="site-footer">
