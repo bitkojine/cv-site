@@ -185,7 +185,9 @@ Attributes used by instrumentation:
 - CI workflow: `.github/workflows/ci.yml`
   - lint, prettier check, unit tests, build, Playwright tests
 - Deploy workflow: `.github/workflows/deploy.yml`
-  - builds `dist/` and deploys to GitHub Pages
+  - builds `dist/` and deploys to GitHub Pages on `main` pushes or manual dispatch
+- SSL monitor workflow: `.github/workflows/ssl-monitor.yml`
+  - runs daily and opens/updates a GitHub issue if origin certificate expiry risk is detected
 
 Site config is in `astro.config.mts` with:
 

@@ -1,0 +1,128 @@
+name: SSL Monitor
+
+on:
+  schedule:
+    - cron: '15 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check-origin-cert:
+    runs-on: ubuntu-latest
+    env:
+      DOMAIN: robertasrudys.com
+      ALERT_DAYS: '21'
+      ORIGIN_IPS: '185.199.108.153 185.199.109.153 185.199.110.153 185.199.111.153'
+    steps:
+      - name: Check certificate expiry on all GitHub Pages origin IPs
+        id: cert
+        shell: bash
+        run: |
+          set -euo pipefail
+          now_epoch="$(date -u +%s)"
+          min_days_left=999999
+          min_not_after=""
+          has_error=0
+          details=""
+
+          for ip in ${ORIGIN_IPS}; do
+            cert_end="$(echo | openssl s_client -servername "${DOMAIN}" -connect "${ip}:443" 2>/dev/null | openssl x509 -noout -enddate | cut -d= -f2)"
+            if [ -z "${cert_end}" ]; then
+              has_error=1
+              details="${details}\n- ${ip}: failed to read certificate end date"
+              continue
+            fi
+
+            cert_epoch="$(date -u -d "${cert_end}" +%s)"
+            days_left="$(( (cert_epoch - now_epoch) / 86400 ))"
+            details="${details}\n- ${ip}: expires ${cert_end} (${days_left} days left)"
+
+            if [ "${days_left}" -lt "${min_days_left}" ]; then
+              min_days_left="${days_left}"
+              min_not_after="${cert_end}"
+            fi
+          done
+
+          if [ "${has_error}" -eq 1 ]; then
+            alert=true
+            reason="certificate check failed for one or more origin IPs"
+          elif [ "${min_days_left}" -lt 0 ]; then
+            alert=true
+            reason="origin certificate already expired"
+          elif [ "${min_days_left}" -le "${ALERT_DAYS}" ]; then
+            alert=true
+            reason="origin certificate expires within ${ALERT_DAYS} days"
+          else
+            alert=false
+            reason="origin certificate is healthy"
+          fi
+
+          {
+            echo "alert=${alert}"
+            echo "reason=${reason}"
+            echo "min_days_left=${min_days_left}"
+            echo "min_not_after=${min_not_after}"
+            echo "details<<EOF"
+            printf '%b\n' "${details}"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+          echo "Result: ${reason}"
+          printf '%b\n' "${details}"
+
+      - name: Open or update alert issue
+        if: steps.cert.outputs.alert == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = 'SSL alert: robertasrudys.com origin certificate';
+            const body = [
+              'Detected by `.github/workflows/ssl-monitor.yml`.',
+              '',
+              `Reason: ${process.env.REASON}`,
+              `Minimum days left: ${process.env.MIN_DAYS_LEFT}`,
+              `Earliest notAfter: ${process.env.MIN_NOT_AFTER}`,
+              '',
+              'Per-origin details:',
+              process.env.DETAILS || '(none)',
+            ].join('\n');
+
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              creator: 'github-actions[bot]',
+              per_page: 100,
+            });
+
+            const existing = issues.find((i) => i.title === title);
+            if (existing) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existing.number,
+                body,
+              });
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title,
+                body,
+                labels: ['ops', 'ssl'],
+              });
+            }
+        env:
+          REASON: ${{ steps.cert.outputs.reason }}
+          MIN_DAYS_LEFT: ${{ steps.cert.outputs.min_days_left }}
+          MIN_NOT_AFTER: ${{ steps.cert.outputs.min_not_after }}
+          DETAILS: ${{ steps.cert.outputs.details }}
+
+      - name: Fail workflow when alerting
+        if: steps.cert.outputs.alert == 'true'
+        run: |
+          echo "SSL monitor alert: ${{ steps.cert.outputs.reason }}"
+          exit 1
