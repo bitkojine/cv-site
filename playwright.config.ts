@@ -1,13 +1,13 @@
 import { defineConfig, devices } from '@playwright/test';
 
-const baseURL = process.env.BASE_URL || 'http://127.0.0.1:4321';
-const isLocalBaseUrl =
-  baseURL.includes('127.0.0.1') || baseURL.includes('localhost');
+const baseURL = process.env.BASE_URL || 'http://127.0.0.1:4321',
+  isLocalBaseUrl =
+    baseURL.includes('127.0.0.1') || baseURL.includes('localhost');
 
 export default defineConfig({
   testDir: './tests/e2e',
   fullyParallel: true,
-  forbidOnly: !!process.env.CI,
+  forbidOnly: Boolean(process.env.CI),
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
   reporter: 'html',

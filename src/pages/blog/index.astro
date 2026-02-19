@@ -9,15 +9,15 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
 ---
 
 <SiteLayout
-  title="Blog | Robertas Rudys"
-  description="Technical articles, opinions, and notes by Robertas Rudys."
   canonicalPath="/blog"
+  description="Technical articles, opinions, and notes by Robertas Rudys."
   roleLabel="Blog"
+  title="Blog | Robertas Rudys"
 >
-  <nav class="mode-indicator" aria-label="Blog navigation" data-role-indicator>
+  <nav aria-label="Blog navigation" class="mode-indicator" data-role-indicator>
     <a
-      href="/"
       class="switch-button"
+      href="/"
       style="text-decoration: none; display: flex; align-items: center; gap: 0.5rem; color: var(--accent); font-weight: 500;"
     >
       <House size={18} />
@@ -25,9 +25,9 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
     </a>
   </nav>
 
-  <section class="mode-hero" aria-labelledby="blog-heading">
+  <section aria-labelledby="blog-heading" class="mode-hero">
     <div class="headline-row">
-      <span class="headline-icon" aria-hidden="true"
+      <span aria-hidden="true" class="headline-icon"
         ><BookText size={86} /></span
       >
       <h1 id="blog-heading">Engineering notes and building in public.</h1>

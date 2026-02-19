@@ -1,18 +1,21 @@
 import { describe, expect, it } from 'vitest';
 import { getGithubData } from '../../src/lib/github-actions.mts';
 
-type MockResponse = {
+interface MockResponse {
   ok: boolean;
   json: () => Promise<unknown>;
-};
+}
 
 describe('getGithubData', () => {
   it('includes the branch query parameter', async () => {
-    const calls: string[] = [];
-    const fetchImpl = async (url: string): Promise<MockResponse> => {
-      calls.push(url);
-      return { ok: true, json: async () => ({ workflow_runs: [] }) };
-    };
+    const calls: string[] = [],
+      fetchImpl = (url: string): Promise<MockResponse> => {
+        calls.push(url);
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({ workflow_runs: [] }),
+        });
+      };
 
     await getGithubData({
       owner: 'owner',
@@ -26,16 +29,15 @@ describe('getGithubData', () => {
 
   it('returns empty arrays on non-ok responses', async () => {
     let call = 0;
-    const fetchImpl = async (): Promise<MockResponse> => {
-      call += 1;
-      return { ok: false, json: async () => ({}) };
-    };
-
-    const result = await getGithubData({
-      owner: 'owner',
-      repo: 'repo',
-      fetchImpl,
-    });
+    const fetchImpl = (): Promise<MockResponse> => {
+        call += 1;
+        return Promise.resolve({ ok: false, json: () => Promise.resolve({}) });
+      },
+      result = await getGithubData({
+        owner: 'owner',
+        repo: 'repo',
+        fetchImpl,
+      });
 
     expect(call).toBe(2);
     expect(result.workflowRuns).toEqual([]);
@@ -69,22 +71,21 @@ describe('getGithubData', () => {
     ];
 
     let call = 0;
-    const fetchImpl = async (): Promise<MockResponse> => {
-      call += 1;
-      if (call === 1) {
-        return {
-          ok: true,
-          json: async () => ({ workflow_runs: workflowRuns }),
-        };
-      }
-      return { ok: true, json: async () => [] };
-    };
-
-    const result = await getGithubData({
-      owner: 'owner',
-      repo: 'repo',
-      fetchImpl,
-    });
+    const fetchImpl = (): Promise<MockResponse> => {
+        call += 1;
+        if (call === 1) {
+          return Promise.resolve({
+            ok: true,
+            json: () => Promise.resolve({ workflow_runs: workflowRuns }),
+          });
+        }
+        return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
+      },
+      result = await getGithubData({
+        owner: 'owner',
+        repo: 'repo',
+        fetchImpl,
+      });
 
     expect(result.workflowRuns).toEqual(workflowRuns);
     expect(result.latestWorkflowRuns).toEqual([
@@ -95,39 +96,39 @@ describe('getGithubData', () => {
 
   it('drops malformed workflow entries that fail schema validation', async () => {
     let call = 0;
-    const fetchImpl = async (): Promise<MockResponse> => {
-      call += 1;
-      if (call === 1) {
-        return {
-          ok: true,
-          json: async () => ({
-            workflow_runs: [
-              {
-                workflow_id: 10,
-                name: 'CI',
-                html_url: 'https://example.com/runs/1',
-                status: 'completed',
-                conclusion: 'success',
-              },
-              {
-                workflow_id: 11,
-                name: 'Deploy',
-                html_url: 'https://example.com/runs/2',
-                status: 'done',
-                conclusion: 'success',
-              },
-            ],
-          }),
-        };
-      }
-      return { ok: true, json: async () => [] };
-    };
-
-    const result = await getGithubData({
-      owner: 'owner',
-      repo: 'repo',
-      fetchImpl,
-    });
+    const fetchImpl = (): Promise<MockResponse> => {
+        call += 1;
+        if (call === 1) {
+          return Promise.resolve({
+            ok: true,
+            json: () =>
+              Promise.resolve({
+                workflow_runs: [
+                  {
+                    workflow_id: 10,
+                    name: 'CI',
+                    html_url: 'https://example.com/runs/1',
+                    status: 'completed',
+                    conclusion: 'success',
+                  },
+                  {
+                    workflow_id: 11,
+                    name: 'Deploy',
+                    html_url: 'https://example.com/runs/2',
+                    status: 'done',
+                    conclusion: 'success',
+                  },
+                ],
+              }),
+          });
+        }
+        return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
+      },
+      result = await getGithubData({
+        owner: 'owner',
+        repo: 'repo',
+        fetchImpl,
+      });
 
     expect(result.workflowRuns).toEqual([]);
     expect(result.latestWorkflowRuns).toEqual([]);

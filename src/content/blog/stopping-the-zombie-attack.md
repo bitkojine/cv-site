@@ -5,15 +5,15 @@ description: "How we implemented a cryptographic-proof protection against 'necro
 tags: ['git', 'devops', 'engineering', 'automation']
 ---
 
-### The Problem: Necromancy in Git
+## The Problem: Necromancy in Git
 
 If you work on a long-lived feature branch, merge it, and then accidentally keep working on it locally, you are creating a "Zombie Branch". The original branch was dead (merged), but you are "necroing" it by adding new commits on top of old history.
 
 This is bad hygiene. It leads to:
 
-1.  **Confusing History:** New PRs contain old commits that are already in `main`.
-2.  **Merge Conflicts:** You are basing work on stale code.
-3.  **CI Waste:** Checksum-based caches miss because the base is old.
+1. **Confusing History:** New PRs contain old commits that are already in `main`.
+2. **Merge Conflicts:** You are basing work on stale code.
+3. **CI Waste:** Checksum-based caches miss because the base is old.
 
 We wanted to block this at the source: **The `git push` command.**
 
@@ -59,10 +59,10 @@ What if the developer (or GitHub auto-delete) **deletes the branch on remote** a
 
 When I try to push my local "necro" branch:
 
-1.  Git looks for `origin/fix-bug`.
-2.  It's gone (deleted).
-3.  Git assumes I am pushing a **Brand New Feature Branch**.
-4.  The script sees "New branch detected" and allows the push.
+1. Git looks for `origin/fix-bug`.
+2. It's gone (deleted).
+3. Git assumes I am pushing a **Brand New Feature Branch**.
+4. The script sees "New branch detected" and allows the push.
 
 The zombie rises again! We effectively re-created the branch from the dead.
 
@@ -95,8 +95,8 @@ Why? Because a Merge Commit preserves the original commit hash in its ancestry g
 
 With Merge Commits, our "Zombie Detector" is mathematically perfect:
 
-1.  Is `origin/fix-bug` reachable from `origin/main`? **YES.**
-2.  Is the _start_ of my local branch reachable from `origin/main`? **YES.**
+1. Is `origin/fix-bug` reachable from `origin/main`? **YES.**
+2. Is the _start_ of my local branch reachable from `origin/main`? **YES.**
 
 We now strip away all the grep hacks and rely purely on the Graph.
 

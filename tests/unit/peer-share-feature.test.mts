@@ -20,12 +20,10 @@ describe('peer share viral loop', () => {
 
   it('injects the peer share prompt into all role content pages', () => {
     const hiring = readProjectFile(
-      'src/components/content/HiringContent.astro'
-    );
-    const build = readProjectFile('src/components/content/BuildContent.astro');
-    const vision = readProjectFile(
-      'src/components/content/VisionContent.astro'
-    );
+        'src/components/content/HiringContent.astro'
+      ),
+      build = readProjectFile('src/components/content/BuildContent.astro'),
+      vision = readProjectFile('src/components/content/VisionContent.astro');
 
     expect(hiring).toContain(
       "import PeerSharePrompt from '../PeerSharePrompt.astro';"

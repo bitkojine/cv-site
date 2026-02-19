@@ -1,26 +1,32 @@
-import { writeFileSync, mkdirSync, existsSync, readFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { execSync } from 'node:child_process';
 import { z } from 'zod';
 import { GitHubActivityEventsSchema } from '../lib/schemas/github.mts';
 
-const GITHUB_USERNAME = 'bitkojine';
-const OUTPUT_DIR = join(process.cwd(), 'public');
-const OUTPUT_FILE = join(OUTPUT_DIR, 'github-activity.json');
-const CACHE_DIR = join(process.cwd(), '.cache');
-const METADATA_FILE = join(CACHE_DIR, 'github-metadata.json');
-const MetadataSchema = z.object({ etag: z.string().optional() });
+const GITHUB_USERNAME = 'bitkojine',
+  OUTPUT_DIR = join(process.cwd(), 'public'),
+  OUTPUT_FILE = join(OUTPUT_DIR, 'github-activity.json'),
+  CACHE_DIR = join(process.cwd(), '.cache'),
+  METADATA_FILE = join(CACHE_DIR, 'github-metadata.json'),
+  MetadataSchema = z.object({ etag: z.string().optional() });
 
 function setChangedOutput(changed: boolean) {
-  if (!process.env.GITHUB_OUTPUT) return;
-  writeFileSync(process.env.GITHUB_OUTPUT, `changed=${changed}\n`, {
+  if (!process.env.GITHUB_OUTPUT) {
+    return;
+  }
+  writeFileSync(process.env.GITHUB_OUTPUT, `changed=${String(changed)}\n`, {
     flag: 'a',
   });
 }
 
 function resolveToken() {
-  if (process.env.GITHUB_TOKEN) return process.env.GITHUB_TOKEN;
-  if (process.env.GH_TOKEN) return process.env.GH_TOKEN;
+  if (process.env.GITHUB_TOKEN) {
+    return process.env.GITHUB_TOKEN;
+  }
+  if (process.env.GH_TOKEN) {
+    return process.env.GH_TOKEN;
+  }
   try {
     const token = execSync('gh auth token', {
       stdio: ['ignore', 'pipe', 'ignore'],
@@ -35,13 +41,13 @@ function resolveToken() {
 async function fetchActivity() {
   console.log(`Checking GitHub activity for ${GITHUB_USERNAME}...`);
 
-  const token = resolveToken();
-  const headers: Record<string, string> = {
-    'User-Agent': 'cv-site-builder',
-  };
+  const token = resolveToken(),
+    headers: Record<string, string> = {
+      'User-Agent': 'cv-site-builder',
+    };
 
   if (token) {
-    headers['Authorization'] = `token ${token}`;
+    headers.Authorization = `token ${token}`;
   } else if (existsSync(OUTPUT_FILE)) {
     console.log(
       'No GitHub token available. Skipping fetch and keeping existing activity data.'
@@ -79,12 +85,12 @@ async function fetchActivity() {
 
     if (!response.ok) {
       throw new Error(
-        `GitHub API error: ${response.status} ${response.statusText}`
+        `GitHub API error: ${String(response.status)} ${response.statusText}`
       );
     }
 
-    const events = GitHubActivityEventsSchema.parse(await response.json());
-    const newEtag = response.headers.get('etag') || '';
+    const events = GitHubActivityEventsSchema.parse(await response.json()),
+      newEtag = response.headers.get('etag') || '';
 
     if (!existsSync(OUTPUT_DIR)) {
       mkdirSync(OUTPUT_DIR, { recursive: true });
@@ -109,4 +115,4 @@ async function fetchActivity() {
   }
 }
 
-fetchActivity();
+void fetchActivity();

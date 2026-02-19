@@ -64,9 +64,8 @@ describe('GitHub activity guard parity', () => {
     ];
 
     for (const fixture of fixtures) {
-      const guardAccepts = parseGitHubActivityEvents(fixture) !== null;
-      const schemaAccepts =
-        GitHubActivityEventsSchema.safeParse(fixture).success;
+      const guardAccepts = parseGitHubActivityEvents(fixture) !== null,
+        schemaAccepts = GitHubActivityEventsSchema.safeParse(fixture).success;
       expect(guardAccepts).toBe(schemaAccepts);
     }
   });

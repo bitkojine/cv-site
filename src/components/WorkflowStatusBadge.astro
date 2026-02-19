@@ -6,18 +6,18 @@ interface Props {
   run: WorkflowRun;
 }
 
-const { run } = Astro.props;
-const resolved = resolveWorkflowBadge(run.status, run.conclusion);
+const { run } = Astro.props,
+  resolved = resolveWorkflowBadge(run.status, run.conclusion);
 ---
 
 <a
-  href={run.html_url}
-  target="_blank"
-  rel="noopener noreferrer"
+  aria-label={`${run.name} workflow status: ${resolved.label}`}
   class="workflow-badge"
   data-status={resolved.state}
   data-workflow-id={run.workflow_id}
-  aria-label={`${run.name} workflow status: ${resolved.label}`}
+  href={run.html_url}
+  rel="noopener noreferrer"
+  target="_blank"
 >
   <span class="workflow-badge__meta">
     <span class="workflow-badge__name">{run.name}</span>

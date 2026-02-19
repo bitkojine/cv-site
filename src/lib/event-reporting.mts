@@ -2,11 +2,11 @@ export type EventProps = Record<string, unknown>;
 
 export type EventReporter = (eventName: string, props?: EventProps) => void;
 
-type EventWindow = {
+interface EventWindow {
   dataLayer?: unknown;
   cvReportEvent?: EventReporter;
   cvTrack?: EventReporter;
-};
+}
 
 export function reportToDataLayer(
   dataLayer: unknown,

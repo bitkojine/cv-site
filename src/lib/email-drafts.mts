@@ -17,8 +17,8 @@ function joinLines(lines: string[]): string {
 }
 
 function getBaseEmailAddress(email: string): string {
-  const [localPart, domain] = email.split('@');
-  const baseLocalPart = localPart.split('+')[0];
+  const [localPart, domain] = email.split('@'),
+    baseLocalPart = localPart.split('+')[0];
   return `${baseLocalPart}@${domain}`;
 }
 

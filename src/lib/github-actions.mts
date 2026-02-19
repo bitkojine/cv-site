@@ -1,8 +1,8 @@
 import {
-  GitHubCommitsSchema,
-  WorkflowRunsResponseSchema,
   type GitHubCommit,
+  GitHubCommitsSchema,
   type WorkflowRun,
+  WorkflowRunsResponseSchema,
 } from './schemas/github.mts';
 
 interface FetchResponse {
@@ -24,11 +24,10 @@ export const getGithubData = async (
   latestWorkflowRuns: WorkflowRun[];
   latestCommits: GitHubCommit[];
 }> => {
-  const { owner, repo, branch, fetchImpl = fetch } = options;
-
-  const runsUrl = new URL(
-    `https://api.github.com/repos/${owner}/${repo}/actions/runs`
-  );
+  const { owner, repo, branch, fetchImpl = fetch } = options,
+    runsUrl = new URL(
+      `https://api.github.com/repos/${owner}/${repo}/actions/runs`
+    );
   runsUrl.searchParams.set('per_page', '30');
   if (branch) {
     runsUrl.searchParams.set('branch', branch);
@@ -40,11 +39,11 @@ export const getGithubData = async (
     },
   });
 
-  let workflowRuns: WorkflowRun[] = [];
-  let latestWorkflowRuns: WorkflowRun[] = [];
+  let workflowRuns: WorkflowRun[] = [],
+    latestWorkflowRuns: WorkflowRun[] = [];
   if (runsResponse.ok) {
-    const data = await runsResponse.json();
-    const parsedRunsResponse = WorkflowRunsResponseSchema.safeParse(data);
+    const data: unknown = await runsResponse.json(),
+      parsedRunsResponse = WorkflowRunsResponseSchema.safeParse(data);
     if (parsedRunsResponse.success) {
       const runs = parsedRunsResponse.data.workflow_runs;
       if (runs.length) {
@@ -71,8 +70,8 @@ export const getGithubData = async (
 
   let latestCommits: GitHubCommit[] = [];
   if (commitsResponse.ok) {
-    const data = await commitsResponse.json();
-    const parsedCommits = GitHubCommitsSchema.safeParse(data);
+    const data: unknown = await commitsResponse.json(),
+      parsedCommits = GitHubCommitsSchema.safeParse(data);
     if (parsedCommits.success && parsedCommits.data.length) {
       latestCommits = parsedCommits.data;
     }

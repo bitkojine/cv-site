@@ -4,13 +4,18 @@ import {
   reportToDataLayer,
 } from '../../src/lib/event-reporting.mts';
 
+interface EventWindow {
+  dataLayer?: Record<string, unknown>[];
+  cvReportEvent?: (eventName: string, props?: Record<string, unknown>) => void;
+  cvTrack?: (eventName: string, props?: Record<string, unknown>) => void;
+}
+
 describe('reportToDataLayer', () => {
   it('pushes an event payload when dataLayer exists', () => {
-    const dataLayer: Array<Record<string, unknown>> = [];
-
-    const pushed = reportToDataLayer(dataLayer, 'share_completed', {
-      method: 'copy_link',
-    });
+    const dataLayer: Record<string, unknown>[] = [],
+      pushed = reportToDataLayer(dataLayer, 'share_completed', {
+        method: 'copy_link',
+      });
 
     expect(pushed).toBe(true);
     expect(dataLayer).toEqual([
@@ -19,9 +24,8 @@ describe('reportToDataLayer', () => {
   });
 
   it('returns false for empty event names', () => {
-    const dataLayer: Array<Record<string, unknown>> = [];
-
-    const pushed = reportToDataLayer(dataLayer, '');
+    const dataLayer: Record<string, unknown>[] = [],
+      pushed = reportToDataLayer(dataLayer, '');
 
     expect(pushed).toBe(false);
     expect(dataLayer).toEqual([]);
@@ -36,26 +40,18 @@ describe('reportToDataLayer', () => {
 
 describe('installGlobalEventReporter', () => {
   it('installs both cvReportEvent and cvTrack aliases', () => {
-    const targetWindow: {
-      dataLayer?: Array<Record<string, unknown>>;
-      cvReportEvent?: (
-        eventName: string,
-        props?: Record<string, unknown>
-      ) => void;
-      cvTrack?: (eventName: string, props?: Record<string, unknown>) => void;
-    } = {
-      dataLayer: [],
-    };
-
-    const reporter = installGlobalEventReporter(targetWindow);
+    const targetWindow: EventWindow = {
+        dataLayer: [],
+      },
+      reporter = installGlobalEventReporter(targetWindow);
 
     expect(targetWindow.cvReportEvent).toBe(reporter);
     expect(targetWindow.cvTrack).toBe(reporter);
   });
 
   it('forwards events through cvTrack to dataLayer', () => {
-    const dataLayer: Array<Record<string, unknown>> = [];
-    const targetWindow = { dataLayer };
+    const dataLayer: Record<string, unknown>[] = [],
+      targetWindow: EventWindow = { dataLayer };
 
     installGlobalEventReporter(targetWindow);
     targetWindow.cvTrack?.('mode_selected', { role: 'Founder / Operator' });

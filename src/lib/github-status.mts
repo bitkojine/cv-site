@@ -16,11 +16,11 @@ export const resolveWorkflowBadge = (
     return { state: 'running', label: 'Running' };
   }
 
-  if (status === 'completed' && conclusion === 'success') {
+  if (conclusion === 'success') {
     return { state: 'success', label: 'Success' };
   }
 
-  if (status === 'completed' && conclusion === 'failure') {
+  if (conclusion === 'failure') {
     return { state: 'failure', label: 'Failure' };
   }
 

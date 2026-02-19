@@ -41,4 +41,30 @@ if [ ! -x "${BIN_PATH}" ]; then
 fi
 
 cd "${ROOT_DIR}"
-"${BIN_PATH}" -color -oneline
+
+# Ensure actionlint gets a real shellcheck binary path (not npm wrapper output).
+shellcheck_bin=""
+npm_shellcheck_bin="${ROOT_DIR}/node_modules/shellcheck/bin/shellcheck"
+npm_shellcheck_wrapper="${ROOT_DIR}/node_modules/.bin/shellcheck"
+
+if [ -x "${npm_shellcheck_bin}" ]; then
+  shellcheck_bin="${npm_shellcheck_bin}"
+elif [ -x "${npm_shellcheck_wrapper}" ]; then
+  # Pre-warm npm shellcheck wrapper so it downloads the binary quietly.
+  "${npm_shellcheck_wrapper}" --version >/dev/null 2>&1 || true
+  if [ -x "${npm_shellcheck_bin}" ]; then
+    shellcheck_bin="${npm_shellcheck_bin}"
+  fi
+elif command -v shellcheck >/dev/null 2>&1; then
+  candidate="$(command -v shellcheck)"
+  # Ignore npm wrapper; it emits logs that break actionlint's JSON parsing.
+  if [ "${candidate}" != "${npm_shellcheck_wrapper}" ]; then
+    shellcheck_bin="${candidate}"
+  fi
+fi
+
+if [ -n "${shellcheck_bin}" ]; then
+  "${BIN_PATH}" -color -oneline -shellcheck "${shellcheck_bin}"
+else
+  "${BIN_PATH}" -color -oneline -shellcheck=
+fi

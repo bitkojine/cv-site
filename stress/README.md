@@ -1,7 +1,7 @@
 # Stress Test Report
 
 - Run timestamp: 2026-02-19T16:42:50.097Z
-- Base URL: http://127.0.0.1:4321
+- Base URL: <http://127.0.0.1:4321>
 - Total wall-clock: 40.5s
 - Budget check (<= 300s): PASS
 
