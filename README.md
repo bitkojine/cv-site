@@ -1,44 +1,49 @@
 # cv-site
 
+[![CI](https://github.com/bitkojine/cv-site/actions/workflows/ci.yml/badge.svg)](https://github.com/bitkojine/cv-site/actions/workflows/ci.yml)
+[![E2E](https://github.com/bitkojine/cv-site/actions/workflows/e2e.yml/badge.svg)](https://github.com/bitkojine/cv-site/actions/workflows/e2e.yml)
+[![Deploy](https://github.com/bitkojine/cv-site/actions/workflows/deploy.yml/badge.svg)](https://github.com/bitkojine/cv-site/actions/workflows/deploy.yml)
+[![Lighthouse](https://github.com/bitkojine/cv-site/actions/workflows/lighthouse.yml/badge.svg)](https://github.com/bitkojine/cv-site/actions/workflows/lighthouse.yml)
+
 Static Astro site for [robertasrudys.com](https://robertasrudys.com), deployed on GitHub Pages behind Cloudflare.
 
-## Why This Repo Exists
-
-- Serve a fast static personal site with role-based landing flows.
-- Keep quality high with strict local hooks and CI gates.
-- Monitor availability, TLS health, and daily site posture without a backend.
-
-## Core Content Principle
-
-- Proof comes from teachability: if I can teach a system or decision clearly, it is strong evidence of deep understanding.
-- The site should keep moving toward this standard across hiring content: less trivia, more clear explanation of scope, tradeoffs, reliability, and delivery decisions.
-
-## Live URLs
+## Live Site
 
 - Primary: [https://robertasrudys.com](https://robertasrudys.com)
 - GitHub Pages origin: [https://bitkojine.github.io/cv-site/](https://bitkojine.github.io/cv-site/)
 
+## Highlights
+
+- Astro 5 + TypeScript static site with role-based landing flow
+- Strict local and CI quality gates (lint, format, tests, build, workflow lint)
+- Production monitors for availability, TLS health, and daily ops/security brief
+- Audit tooling for Lighthouse and Sonar issue triage
+
 ## Tech Stack
 
-- Astro 5 + TypeScript
-- Zod for runtime data validation (CV data, content schemas, and script inputs)
-- Vitest for unit tests
-- Playwright for E2E/UI stress tests
-- ESLint + Prettier
-- GitHub Actions for CI/CD + monitoring
+- Astro 5, TypeScript, Zod
+- Vitest + Playwright
+- ESLint, Prettier, Stylelint, markdownlint, shellcheck, yamllint
+- GitHub Actions (CI/CD + monitoring)
+- GitHub Pages + Cloudflare
 
-## Site Routes
+## Site Map
 
-- `/` role selector
+- `/`
 - `/hiring`
+- `/hiring/evidence`
+- `/hiring/pack`
+- `/cv`
 - `/build`
 - `/vision`
 - `/dev`
 - `/operating-system`
+- `/system-map`
+- `/library`
 - `/linkedin`
 - `/blog`
 - `/blog/[slug]`
-- `/test/workflow-badge` (test fixture route)
+- `/test/workflow-badge` (test fixture)
 
 ## Quick Start
 
@@ -47,72 +52,76 @@ Requirements:
 - Node.js 20+
 - npm
 
-Commands:
+Install and run:
 
 ```bash
 npm ci
 npm run dev
 ```
 
-Local site: `http://localhost:4321`
+Local URL: `http://localhost:4321`
 
 ## Scripts
 
-| Command                       | Purpose                                             |
-| ----------------------------- | --------------------------------------------------- |
-| `npm run dev`                 | Start dev server                                    |
-| `npm run build`               | Build static output to `dist/`                      |
-| `npm run preview`             | Preview built output                                |
-| `npm run lint`                | ESLint                                              |
-| `npm run lint:workflows`      | Lint GitHub workflows via `actionlint`              |
-| `npm run lint:comments`       | Enforce zero-comment policy in `src/` and `tests/`  |
-| `npm run test:unit`           | Run Vitest                                          |
-| `npm run test:e2e`            | Run Playwright suite                                |
-| `npm run test:e2e:ci`         | Run Playwright with `--fail-on-flaky-tests`         |
-| `npm run audit:lighthouse`    | Run Lighthouse sweep + archive artifacts            |
-| `npm run audit:lighthouse:ci` | Run Lighthouse with 100-score threshold enforcement |
-| `npm run audit:sonar:issues`  | Fetch Sonar open issues and write audit artifacts   |
-| `npm run audit:sonar:next`    | Print prioritized next issue batch to fix           |
-| `npm run fetch-activity`      | Refresh cached GitHub activity data                 |
-
-## Data Validation
-
-- `src/data/cv.mts` validates `src/data/cv.json` at import-time using `CVSchema`.
-- `src/content/config.ts` validates blog frontmatter via Astro content schema.
-- `src/scripts/fetch-github-activity.mts` validates cache metadata and GitHub API JSON shape before writing outputs.
+| Command                            | Purpose                                              |
+| ---------------------------------- | ---------------------------------------------------- |
+| `npm run dev`                      | Start local Astro dev server                         |
+| `npm run start`                    | Alias for `npm run dev`                              |
+| `npm run build`                    | Build static output into `dist/`                     |
+| `npm run preview`                  | Preview the built site                               |
+| `npm run fetch-activity`           | Refresh cached GitHub activity data                  |
+| `npm run lint`                     | Main lint gate (policy checks + Astro sync + ESLint) |
+| `npm run lint:workflows`           | Lint GitHub workflows via `actionlint`               |
+| `npm run lint:no-plus-years`       | Block relative year strings like `+X years`          |
+| `npm run lint:no-javascript-files` | Enforce no `.js` source files policy                 |
+| `npm run lint:md`                  | Markdown lint                                        |
+| `npm run lint:css`                 | CSS lint                                             |
+| `npm run lint:sh`                  | Shell script lint                                    |
+| `npm run lint:yaml`                | Workflow YAML lint                                   |
+| `npm run lint:json`                | JSON validation                                      |
+| `npm run lint:extra`               | Run markdown/CSS/shell/YAML/JSON lint bundle         |
+| `npm run lint:comments`            | Enforce zero-comment policy                          |
+| `npm run format`                   | Format repo with Prettier                            |
+| `npm run test`                     | Run unit tests (`test:unit`)                         |
+| `npm run test:unit`                | Run Vitest                                           |
+| `npm run test:e2e`                 | Run Playwright E2E suite                             |
+| `npm run test:e2e:ci`              | E2E with fail-on-flaky enabled                       |
+| `npm run test:e2e:ui-stress`       | Run UI stress Playwright spec only                   |
+| `npm run audit:lighthouse`         | Lighthouse audit and artifact archive                |
+| `npm run audit:lighthouse:ci`      | Lighthouse audit with `LIGHTHOUSE_MIN_SCORE=100`     |
+| `npm run audit:sonar:issues`       | Pull open Sonar issues into audit artifacts          |
+| `npm run audit:sonar:next`         | Print prioritized next Sonar fix batch               |
 
 ## Quality Gates
 
 Local hooks (`.husky`):
 
 - `pre-commit`: zero-comment policy, lint, workflow lint, format check, unit tests, build, E2E
-- `pre-push`: dead-branch protection, branch-sync protection vs `origin/main`, workflow lint
+- `pre-push`: dead-branch protection, branch sync protection, workflow lint
 
-CI workflows (`.github/workflows`):
+GitHub workflows (`.github/workflows`):
 
-- `ci.yml`: lint, workflow lint, format check, unit tests, build, and PR branch-sync enforcement
-- `e2e.yml`: dedicated E2E workflow (fails on flaky tests)
-- `lighthouse.yml`: dedicated Lighthouse workflow (100-threshold enforcement + artifact upload)
+- `ci.yml`: lint, workflow lint, format check, unit tests, build, PR branch-sync check
+- `e2e.yml`: Playwright E2E with fail-on-flaky
+- `lighthouse.yml`: Lighthouse CI run + artifact upload
 - `deploy.yml`: build + deploy to GitHub Pages
+- `sonar.yml`: Sonar scan on push/PR/manual trigger
 
-## Monitoring and Alerts
+## Monitoring
 
-Production monitoring workflows:
+Production monitors:
 
-- `site-availability-monitor.yml` (every 15 min)
-  - Checks edge status and alerts on request failures / 5xx / Cloudflare 526
+- `site-availability-monitor.yml` (every 15 minutes)
 - `ssl-monitor.yml` (daily)
-  - Checks edge cert and origin cert expiry state
 - `static-site-daily-brief.yml` (daily)
-  - Sends operations/security snapshot email
 
 Alert channels:
 
 - GitHub Actions failures
-- GitHub Issues (automated alert issues)
-- Email (if SMTP secrets are configured)
+- GitHub Issues (automated monitor issues)
+- Email (when SMTP secrets are configured)
 
-Required SMTP secrets for email alerts:
+SMTP secrets for monitor emails:
 
 - `ALERT_SMTP_SERVER`
 - `ALERT_SMTP_PORT` (optional, default `587`)
@@ -121,19 +130,15 @@ Required SMTP secrets for email alerts:
 - `ALERT_EMAIL_FROM`
 - `ALERT_EMAIL_TO`
 
-## Cloudflare + GitHub Pages TLS Notes
+## Deployment and TLS
 
-If Cloudflare is set to `Full (Strict)`, GitHub Pages origin cert validity must be healthy. If GitHub is still provisioning certs, strict mode can fail.
-
-Current safe operational pattern:
-
-- Use Cloudflare `Full` while GitHub Pages cert is provisioning or unstable.
-- Switch to `Full (Strict)` when origin cert checks are healthy.
-- Keep monitor enforcement flags aligned with current mode.
+- Hosting: GitHub Pages (published `dist/`) behind Cloudflare.
+- If Cloudflare mode is `Full (Strict)`, GitHub Pages origin cert must be valid.
+- During origin cert provisioning windows, use `Full` and switch back to `Full (Strict)` once checks are healthy.
 
 ## Stress Testing
 
-Burst stress harness is available under `stress/`:
+Run the burst harness in `stress/`:
 
 ```bash
 BASE_URL=http://127.0.0.1:4321 ./stress/run_all.sh
@@ -141,41 +146,9 @@ BASE_URL=http://127.0.0.1:4321 ./stress/run_all.sh
 
 Artifacts are written to `stress/artifacts/<timestamp>/`.
 
-## Project Structure
-
-- `src/pages/` routes
-- `src/components/` UI components
-- `src/layouts/` page layouts
-- `src/lib/` client/runtime helpers
-- `src/data/` schema + data source
-- `tests/unit/` unit tests
-- `tests/e2e/` Playwright suites
-- `scripts/` repo automation and policy scripts
-- `.github/workflows/` CI/CD and monitoring workflows
-- `stress/` load/stability harness and artifacts
-
-## Contributor Workflow
-
-1. Create a fresh `codex/*` branch from latest `main`.
-2. Run local checks before push.
-3. Open PR to `main`.
-4. Merge only when `CI` and `E2E` workflows are green.
-
-Branch protections are intentionally strict to prevent stale branch pushes and branch drift.
-
-## Troubleshooting
-
-- CI skipped after merge:
-  - Check `ci.yml` dependency/`if` logic for skipped prerequisite jobs.
-- Workflow passes locally but fails in GitHub:
-  - Run `npm run lint:workflows` locally (Linux-grade `actionlint` + shellcheck coverage).
-  - Rebase onto latest `origin/main` and re-run checks.
-- Cloudflare SSL issues:
-  - Validate both edge and origin cert state in `ssl-monitor.yml` outputs.
-
 ## Sonar Fix Loop
 
-Set environment variables:
+Required/optional environment variables:
 
 - `SONAR_TOKEN` (required)
 - `SONAR_PROJECT_KEY` (required)
@@ -190,9 +163,30 @@ npm run audit:sonar:issues
 npm run audit:sonar:next
 ```
 
-Artifacts are written to `audit/sonar/<timestamp>/` with `latest-run.txt` pointing to the current run.
+Artifacts are written to `audit/sonar/<timestamp>/` and linked by `audit/sonar/latest-run.txt`.
 
-## Site Configuration
+## Project Structure
 
-- Astro site URL is configured in `astro.config.mts`.
-- Sitemap generation is enabled.
+- `src/pages/`: routes
+- `src/components/`: UI components
+- `src/layouts/`: page layouts
+- `src/lib/`: runtime helpers
+- `src/data/`: CV schema/data source
+- `src/content/`: blog content
+- `src/scripts/`: TypeScript utility scripts
+- `tests/unit/`: unit tests
+- `tests/e2e/`: Playwright suites
+- `scripts/`: shell/automation scripts
+- `stress/`: load and stress harness
+- `.github/workflows/`: CI/CD and monitoring workflows
+
+## Contributing
+
+1. Branch from latest `main` using `codex/*`.
+2. Run local checks before pushing.
+3. Open a PR to `main`.
+4. Merge only when required workflows are green.
+
+## Notes
+
+- Site URL and sitemap integration are configured in `astro.config.mts`.
