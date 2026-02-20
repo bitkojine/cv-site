@@ -9,7 +9,10 @@ const pagesToCheck = [
     '/vision',
     '/dev',
     '/operating-system',
+    '/system-map',
+    '/library',
     '/linkedin',
+    '/cv',
     '/blog',
     '/blog/bitcoin-vs-usd',
     '/blog/building-with-ai',
@@ -43,7 +46,11 @@ test.describe('mobile layout', () => {
 
       for (const path of pagesToCheck) {
         await page.goto(path);
-        await expect(page.locator('.mail-topbar')).toBeVisible();
+        if (path === '/cv') {
+          await expect(page.locator('#main-content')).toBeVisible();
+        } else {
+          await expect(page.locator('.mail-topbar')).toBeVisible();
+        }
 
         const hasOverflow = await page.evaluate(() => {
           const viewportWidth = window.innerWidth,
