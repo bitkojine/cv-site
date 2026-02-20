@@ -3,7 +3,6 @@
 [![CI](https://github.com/bitkojine/cv-site/actions/workflows/ci.yml/badge.svg)](https://github.com/bitkojine/cv-site/actions/workflows/ci.yml)
 [![E2E](https://github.com/bitkojine/cv-site/actions/workflows/e2e.yml/badge.svg)](https://github.com/bitkojine/cv-site/actions/workflows/e2e.yml)
 [![Deploy](https://github.com/bitkojine/cv-site/actions/workflows/deploy.yml/badge.svg)](https://github.com/bitkojine/cv-site/actions/workflows/deploy.yml)
-[![Lighthouse](https://github.com/bitkojine/cv-site/actions/workflows/lighthouse.yml/badge.svg)](https://github.com/bitkojine/cv-site/actions/workflows/lighthouse.yml)
 
 Static Astro site for [robertasrudys.com](https://robertasrudys.com), deployed on GitHub Pages behind Cloudflare.
 
@@ -103,7 +102,6 @@ GitHub workflows (`.github/workflows`):
 
 - `ci.yml`: lint, workflow lint, format check, unit tests, build, PR branch-sync check
 - `e2e.yml`: Playwright E2E with fail-on-flaky
-- `lighthouse.yml`: Lighthouse CI run + artifact upload
 - `deploy.yml`: build + deploy to GitHub Pages
 - `sonar.yml`: Sonar scan on push/PR/manual trigger
 
