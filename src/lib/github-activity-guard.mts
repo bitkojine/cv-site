@@ -16,67 +16,64 @@ type GitHubActivityEvent = {
 const isRecordLike = (value: unknown): value is RecordLike =>
   typeof value === 'object' && value !== null;
 
+const hasStringProp = (value: RecordLike, key: string) =>
+  typeof value[key] === 'string';
+
+const hasOptionalStringProp = (value: RecordLike, key: string) =>
+  value[key] === undefined || typeof value[key] === 'string';
+
+const isCommit = (value: unknown) =>
+  isRecordLike(value) && typeof value.message === 'string';
+
+const hasValidCommits = (payload: RecordLike) =>
+  payload.commits === undefined ||
+  (Array.isArray(payload.commits) && payload.commits.every(isCommit));
+
+const hasValidPullRequest = (payload: RecordLike) => {
+  if (payload.pull_request === undefined) {
+    return true;
+  }
+  if (!isRecordLike(payload.pull_request)) {
+    return false;
+  }
+  return hasOptionalStringProp(payload.pull_request, 'title');
+};
+
+const hasValidPayloadShape = (payload: unknown) => {
+  if (payload === undefined) {
+    return true;
+  }
+  if (!isRecordLike(payload)) {
+    return false;
+  }
+
+  return (
+    hasValidCommits(payload) &&
+    hasOptionalStringProp(payload, 'ref') &&
+    hasOptionalStringProp(payload, 'ref_type') &&
+    hasOptionalStringProp(payload, 'action') &&
+    hasValidPullRequest(payload)
+  );
+};
+
 export const isGitHubActivityEvent = (
   value: unknown
 ): value is GitHubActivityEvent => {
   if (!isRecordLike(value)) {
     return false;
   }
-  if (typeof value.type !== 'string') {
+  if (!hasStringProp(value, 'type')) {
     return false;
   }
-  if (typeof value.created_at !== 'string') {
-    return false;
-  }
-
-  if (!isRecordLike(value.repo) || typeof value.repo.name !== 'string') {
+  if (!hasStringProp(value, 'created_at')) {
     return false;
   }
 
-  if (value.payload === undefined) {
-    return true;
-  }
-  if (!isRecordLike(value.payload)) {
-    return false;
-  }
-
-  const { payload } = value;
-
-  if (payload.commits !== undefined) {
-    if (!Array.isArray(payload.commits)) {
-      return false;
-    }
-    if (
-      !payload.commits.every(
-        (commit) => isRecordLike(commit) && typeof commit.message === 'string'
-      )
-    ) {
-      return false;
-    }
-  }
-
-  if (payload.ref !== undefined && typeof payload.ref !== 'string') {
-    return false;
-  }
-  if (payload.ref_type !== undefined && typeof payload.ref_type !== 'string') {
-    return false;
-  }
-  if (payload.action !== undefined && typeof payload.action !== 'string') {
-    return false;
-  }
-  if (payload.pull_request !== undefined) {
-    if (!isRecordLike(payload.pull_request)) {
-      return false;
-    }
-    if (
-      payload.pull_request.title !== undefined &&
-      typeof payload.pull_request.title !== 'string'
-    ) {
-      return false;
-    }
-  }
-
-  return true;
+  return (
+    isRecordLike(value.repo) &&
+    hasStringProp(value.repo, 'name') &&
+    hasValidPayloadShape(value.payload)
+  );
 };
 
 export const parseGitHubActivityEvents = (

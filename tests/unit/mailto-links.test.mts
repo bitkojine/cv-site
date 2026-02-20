@@ -9,12 +9,24 @@ type ClickHandler = (event: { preventDefault: () => void }) => void;
 
 class MockLink {
   dataset: Record<string, string> = {};
-  private attributes = new Map<string, string>();
-  private clickHandlers: ClickHandler[] = [];
+  private readonly attributes = new Map<string, string>();
+  private readonly clickHandlers: ClickHandler[] = [];
 
   constructor(attributes: Record<string, string>) {
     for (const [key, value] of Object.entries(attributes)) {
       this.attributes.set(key, value);
+      if (key.startsWith('data-')) {
+        const normalizedKey = key
+          .slice('data-'.length)
+          .split('-')
+          .map((part, index) =>
+            index === 0
+              ? part
+              : `${part.slice(0, 1).toUpperCase()}${part.slice(1)}`
+          )
+          .join('');
+        this.dataset[normalizedKey] = value;
+      }
     }
   }
 
@@ -52,7 +64,9 @@ class MockDocument {
   listeners = new Map<string, (() => void)[]>();
 
   querySelectorAll<T>(selector: string): NodeListOf<T> {
-    void selector;
+    if (selector === '') {
+      return this.links as unknown as NodeListOf<T>;
+    }
     return this.links as unknown as NodeListOf<T>;
   }
 

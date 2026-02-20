@@ -29,7 +29,7 @@ test.describe('peer share prompt', () => {
     }) => {
       await page.addInitScript(() => {
         (
-          window as typeof window & {
+          globalThis as typeof globalThis & {
             dataLayer: Record<string, unknown>[];
           }
         ).dataLayer = [];
@@ -43,8 +43,9 @@ test.describe('peer share prompt', () => {
           configurable: true,
           value: {
             writeText: (value: string) => {
-              (window as typeof window & { __copied?: string }).__copied =
-                value;
+              (
+                globalThis as typeof globalThis & { __copied?: string }
+              ).__copied = value;
               return Promise.resolve();
             },
           },
@@ -64,17 +65,17 @@ test.describe('peer share prompt', () => {
       );
 
       const copiedUrl = await page.evaluate(
-        () => (window as typeof window & { __copied?: string }).__copied
+        () => (globalThis as typeof globalThis & { __copied?: string }).__copied
       );
       expect(copiedUrl).toContain('ref=peer_share');
       expect(copiedUrl).toContain(
-        `shared_role=${encodeURIComponent(sharedRole).replace(/%20/g, '+')}`
+        `shared_role=${encodeURIComponent(sharedRole).replaceAll('%20', '+')}`
       );
 
       const events = await page.evaluate(
           () =>
             (
-              window as typeof window & {
+              globalThis as typeof globalThis & {
                 dataLayer: Record<string, unknown>[];
               }
             ).dataLayer

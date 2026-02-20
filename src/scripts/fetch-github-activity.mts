@@ -115,4 +115,4 @@ async function fetchActivity() {
   }
 }
 
-void fetchActivity();
+await fetchActivity();

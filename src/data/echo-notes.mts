@@ -530,7 +530,7 @@ export function getEchoSignalMetrics() {
     DEFAULT_ECHO_NOTE,
   ];
   const decisionWords = ['tradeoff', 'constraint', 'failure', 'outcome'];
-  const imperativeStarters = [
+  const imperativeStarters = new Set([
     'use',
     'treat',
     'run',
@@ -540,7 +540,7 @@ export function getEchoSignalMetrics() {
     'measure',
     'extract',
     'define',
-  ];
+  ]);
   const variantTexts = notes.flatMap((note) => [
     note.variants.full,
     note.variants.compressed,
@@ -551,7 +551,7 @@ export function getEchoSignalMetrics() {
   }, 0);
   const imperativeCount = variantTexts.reduce((sum, text) => {
     const first = text.trim().split(/\s+/)[0]?.toLowerCase() ?? '';
-    return sum + (imperativeStarters.includes(first) ? 1 : 0);
+    return sum + (imperativeStarters.has(first) ? 1 : 0);
   }, 0);
   const questionCount = notes.reduce((sum, note) => {
     return (

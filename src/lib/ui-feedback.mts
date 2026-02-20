@@ -69,9 +69,9 @@ export function showToast(
     toast.dataset.visible = '1';
   }
 
-  window.setTimeout(() => {
+  globalThis.setTimeout(() => {
     toast.dataset.visible = '0';
-    window.setTimeout(() => {
+    globalThis.setTimeout(() => {
       toast.remove();
     }, 180);
   }, 1800);
