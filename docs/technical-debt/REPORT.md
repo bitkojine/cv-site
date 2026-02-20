@@ -51,7 +51,10 @@ Checks performed:
 - ✅ `npm run lint` passed.
 - ✅ `npm run test:unit` passed.
 - ✅ `npm run build` passed.
-- ❌ `npx tsc --noEmit` failed with many type errors.
+- ❌ `npx tsc --noEmit` failed immediately (exit code 2) during full-project compile.
+  - First error appears in `eslint.config.mts` (`TS7016`: missing declaration file for `eslint-plugin-jsx-a11y`).
+  - Error concentration by file from this run: `stress/run_all.mts` (77), `scripts/lighthouse-audit.mts` (21), `src/lib/mailto-links.mts` (4), `tests/unit/mailto-links.test.mts` (3), plus single-file errors in `vitest.config.mts`, `src/lib/ui-feedback.mts`, `src/content/config.ts`, and `eslint.config.mts`.
+  - Dominant error families: implicit `any` (`TS7006`/`TS7031`/`TS7034`), invalid property/index access (`TS2339`/`TS7053`), incompatible DOM utility types (`TS2345`/`TS2559`/`TS2741`), and config typing mismatch (`TS2353`).
 - ❌ `npm run test:e2e:ci` failed locally due missing Playwright browser binaries.
 
 ## Executive summary (top priorities)
@@ -78,7 +81,10 @@ Checks performed:
 - **Evidence:**
   - `tsconfig.json` uses `strict: true`, `allowJs: true`, and broad include (`"**/*`).
   - `.github/workflows/ci.yml` does not run `tsc`.
-  - `npx tsc --noEmit` fails across `scripts/lighthouse-audit.mts`, `stress/run_all.mts`, `src/lib/mailto-links.mts`, `src/lib/ui-feedback.mts`, `vitest.config.mts`, and `eslint.config.mts`.
+  - `npx tsc --noEmit` fails before completion (exit 2) as soon as typecheck reaches repo-wide includes.
+  - Failure starts at config-layer typing (`eslint.config.mts`: missing `eslint-plugin-jsx-a11y` declaration), then cascades into tooling scripts and shared libs because `tsconfig.json` includes `**/*`.
+  - Highest-volume failures are concentrated in non-runtime tooling scripts: `stress/run_all.mts` (77 errors, mostly implicit `any`/indexing/`never` misuse) and `scripts/lighthouse-audit.mts` (21 errors, largely implicit `any` and report-shape drift).
+  - Additional structural type errors appear in app-adjacent code (`src/lib/mailto-links.mts`, `src/lib/ui-feedback.mts`) where custom document abstractions do not satisfy DOM interfaces.
 - **Cost of inaction:** Hidden type regressions can ship unnoticed.
 - **Suggested fix:**
   1. Add `npm run typecheck`.
