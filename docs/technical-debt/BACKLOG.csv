@@ -1,0 +1,14 @@
+ID,Title,Category,Severity,Confidence,Effort,Risk,Area,Files,Short Fix
+TD-001,Strict TypeScript not enforceable in CI,Type Safety,High,High,Large,Medium,Type System,"tsconfig.json|.github/workflows/ci.yml|scripts/lighthouse-audit.mts|stress/run_all.mts|src/lib/mailto-links.mts|src/lib/ui-feedback.mts",Add typecheck script+CI gate and split/fix tsconfig scopes
+TD-002,Deploy uses npm install instead of npm ci,CI/CD,High,High,Small,Low,Release,".github/workflows/deploy.yml|.github/workflows/ci.yml",Use npm ci for deterministic deploy builds
+TD-003,Local E2E preconditions differ from CI,Testing,High,High,Small,Low,Dev Workflow,"package.json|.husky/pre-commit|.github/workflows/e2e.yml",Add playwright setup command and adjust hook gating
+TD-004,15-minute availability monitor can flood issue comments,Ops/Monitoring,Medium,High,Medium,Low,Alerting,".github/workflows/site-availability-monitor.yml",Add dedupe/cooldown and recovery close logic
+TD-005,Monitoring logic duplicated across workflows,Ops/Monitoring,Medium,High,Medium,Medium,Ops Automation,".github/workflows/ssl-monitor.yml|.github/workflows/static-site-daily-brief.yml",Extract shared monitor scripts and test shared logic
+TD-006,CSP allows unsafe-inline for scripts/styles,Security,Medium,High,Medium,Medium,Web Security,src/layouts/SiteLayout.astro,Move inline JS/CSS to nonce/hash based policy and edge headers
+TD-007,Dead layouts/components kept in main source tree,Architecture,Medium,High,Small,Low,Codebase Hygiene,"src/layouts/Layout.astro|src/layouts/BaseLayout.astro|src/components/BuildStatus.astro",Remove/archive unused files and add unused-code check
+TD-008,Role mapping and labels duplicated in many files,Architecture,Medium,High,Medium,Low,Domain Model,"src/components/RoleClientEnhancements.astro|src/components/ModeSwitch.astro|src/components/DoorSelection.astro|src/pages/index.astro|src/lib/email-drafts.mts",Create central role registry module
+TD-009,RoleClientEnhancements mixes many responsibilities,Astro,Medium,High,Medium,Medium,Client Runtime,src/components/RoleClientEnhancements.astro,Split into typed modules by concern and test individually
+TD-010,Unit tests assert source strings not behavior,Testing,Medium,High,Medium,Low,Test Quality,"tests/unit/layout-event-wiring.test.mts|tests/unit/peer-share-feature.test.mts",Replace string checks with runtime behavior assertions
+TD-011,actionlint binary downloaded without checksum verification,Security,Medium,High,Small,Low,Supply Chain,scripts/lint-workflows.sh,Pin and verify SHA256 before extraction
+TD-012,No coverage gates for critical interaction logic,Testing,Low,Medium,Medium,Low,Quality Signals,"vitest.config.mts|src/components/RoleClientEnhancements.astro",Enable coverage and set thresholds for critical modules
+TD-013,Local setup assumptions under-documented,Docs,Low,High,Small,Low,Onboarding,README.md,Document Playwright/local prerequisites and troubleshooting
