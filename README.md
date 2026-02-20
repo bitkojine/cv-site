@@ -58,18 +58,20 @@ Local site: `http://localhost:4321`
 
 ## Scripts
 
-| Command                  | Purpose                                            |
-| ------------------------ | -------------------------------------------------- |
-| `npm run dev`            | Start dev server                                   |
-| `npm run build`          | Build static output to `dist/`                     |
-| `npm run preview`        | Preview built output                               |
-| `npm run lint`           | ESLint                                             |
-| `npm run lint:workflows` | Lint GitHub workflows via `actionlint`             |
-| `npm run lint:comments`  | Enforce zero-comment policy in `src/` and `tests/` |
-| `npm run test:unit`      | Run Vitest                                         |
-| `npm run test:e2e`       | Run Playwright suite                               |
-| `npm run test:e2e:ci`    | Run Playwright with `--fail-on-flaky-tests`        |
-| `npm run fetch-activity` | Refresh cached GitHub activity data                |
+| Command                       | Purpose                                             |
+| ----------------------------- | --------------------------------------------------- |
+| `npm run dev`                 | Start dev server                                    |
+| `npm run build`               | Build static output to `dist/`                      |
+| `npm run preview`             | Preview built output                                |
+| `npm run lint`                | ESLint                                              |
+| `npm run lint:workflows`      | Lint GitHub workflows via `actionlint`              |
+| `npm run lint:comments`       | Enforce zero-comment policy in `src/` and `tests/`  |
+| `npm run test:unit`           | Run Vitest                                          |
+| `npm run test:e2e`            | Run Playwright suite                                |
+| `npm run test:e2e:ci`         | Run Playwright with `--fail-on-flaky-tests`         |
+| `npm run audit:lighthouse`    | Run Lighthouse sweep + archive artifacts            |
+| `npm run audit:lighthouse:ci` | Run Lighthouse with 100-score threshold enforcement |
+| `npm run fetch-activity`      | Refresh cached GitHub activity data                 |
 
 ## Data Validation
 
@@ -88,6 +90,7 @@ CI workflows (`.github/workflows`):
 
 - `ci.yml`: lint, workflow lint, format check, unit tests, build, and PR branch-sync enforcement
 - `e2e.yml`: dedicated E2E workflow (fails on flaky tests)
+- `lighthouse.yml`: dedicated Lighthouse workflow (100-threshold enforcement + artifact upload)
 - `deploy.yml`: build + deploy to GitHub Pages
 
 ## Monitoring and Alerts

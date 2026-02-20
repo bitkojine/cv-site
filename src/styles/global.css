@@ -603,7 +603,7 @@ body[data-current-role]:not([data-current-role='']) .site-shell {
 }
 
 .switch-button {
-  color: var(--accent);
+  color: #005ecb;
   min-height: 44px;
   display: inline-flex;
   align-items: center;
@@ -1037,7 +1037,7 @@ body[data-current-role]:not([data-current-role='']) .site-shell {
 
 .cta-secondary {
   background: color-mix(in oklab, var(--accent-soft) 55%, white);
-  color: var(--accent);
+  color: #005ecb;
   border-color: color-mix(in oklab, var(--accent) 24%, white);
 }
 
