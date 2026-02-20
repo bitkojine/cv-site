@@ -519,6 +519,36 @@ body[data-current-role]:not([data-current-role='']) .site-shell {
   margin: 0.28rem auto var(--echo-gap);
 }
 
+.visually-hidden-anchor {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.self-reference__word-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.24rem;
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  border: 1px solid #b8a2ff;
+  background: #ece3ff;
+  color: #4f2fab;
+  font-size: 0.72rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.self-reference__word-count strong {
+  font-size: 0.73rem;
+}
+
 .site-shell > .site-global-echo {
   justify-self: stretch;
 }

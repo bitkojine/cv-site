@@ -86,25 +86,25 @@ const ECHO_NOTES_BY_PATH: Record<string, EchoNote> = {
       'Hiring pages should reduce noise. This note enforces evidence-led evaluation so interviews target ownership-level thinking.',
     focusSection: '60-Second Fit Summary',
     crossRoute: {
-      href: '/hiring/evidence',
-      label: 'Go deeper in /hiring/evidence',
+      href: '/library',
+      label: 'Go deeper in /library',
     },
     minimumWordCount: 260,
   },
-  '/hiring/evidence': {
-    id: 'hiring-evidence',
+  '/library': {
+    id: 'engineering-learning-library',
     variants: {
-      full: 'Run the interview from artifacts. Ask for context, option analysis, tradeoffs, and outcomes, then check how clearly the decision can be taught back.',
-      compressed: 'Interview from artifacts, not memory.',
-      lens: 'Test teachability under constraints.',
+      full: 'Use this library to learn practical backend patterns from real decisions, tradeoffs, and outcomes.',
+      compressed: 'Learn from real decisions and tradeoffs.',
+      lens: 'Focus on reusable engineering patterns.',
     },
     actionPrompts: [
-      'Which option was rejected and why?',
-      'What incident or failure changed the design afterward?',
-      'What metric proved the decision worked?',
+      'Pick one artifact and explain the decision in your own words.',
+      'Identify one tradeoff and one alternative option.',
+      'Extract one pattern you can apply to your own system.',
     ],
     whyExists:
-      'Evidence libraries are only useful if they change interview behavior from trivia to decision analysis.',
+      'This page is a learning resource first: practical examples you can reuse in your own backend work.',
     focusSection: 'Case Studies',
     crossRoute: {
       href: '/hiring/pack',
@@ -128,8 +128,8 @@ const ECHO_NOTES_BY_PATH: Record<string, EchoNote> = {
       'Hiring loops degrade when context gets re-explained manually. This artifact keeps evaluation signal consistent across interviewers.',
     focusSection: 'Top Evidence',
     crossRoute: {
-      href: '/hiring/evidence',
-      label: 'Review full artifacts on /hiring/evidence',
+      href: '/library',
+      label: 'Review full artifacts on /library',
     },
     minimumWordCount: 220,
   },
@@ -199,7 +199,7 @@ const ECHO_NOTES_BY_PATH: Record<string, EchoNote> = {
   '/operating-system': {
     id: 'operating-system',
     variants: {
-      full: 'Read this as a systems brief: visitor intent routing, signal filtering, and feedback loops that convert traffic into qualified outcomes.',
+      full: 'Read this as the top-level system view: visitor intent routing, page links, word counts, and feedback loops that convert traffic into qualified outcomes.',
       compressed: 'Optimize system loops, not page vanity.',
       lens: 'Funnel quality is a systems property.',
     },
@@ -207,10 +207,11 @@ const ECHO_NOTES_BY_PATH: Record<string, EchoNote> = {
       'Where is signal lost in the current visitor flow?',
       'Which loop increases qualified conversations?',
       'What metric confirms conversion quality improved?',
+      'Does every route have clear reachability and bounded content length?',
     ],
     whyExists:
       'Meta pages must show operational mechanics, not branding narratives.',
-    focusSection: 'Visitor Flow Stages',
+    focusSection: 'Admin Top View',
     crossRoute: {
       href: '/hiring',
       label: 'Inspect the primary loop at /hiring',

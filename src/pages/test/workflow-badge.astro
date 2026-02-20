@@ -7,28 +7,31 @@ const runs: WorkflowRun[] = [
   {
     workflow_id: 1,
     name: 'CI',
-    html_url: 'https://example.com/ci',
+    html_url: 'https://docs.github.com/actions',
     status: 'completed',
     conclusion: 'success',
   },
   {
     workflow_id: 2,
     name: 'Deploy',
-    html_url: 'https://example.com/deploy',
+    html_url:
+      'https://docs.github.com/actions/deployment/about-deployments/deploying-with-github-actions',
     status: 'in_progress',
     conclusion: null,
   },
   {
     workflow_id: 3,
     name: 'Publish',
-    html_url: 'https://example.com/publish',
+    html_url:
+      'https://docs.github.com/actions/using-workflows/storing-workflow-data-as-artifacts',
     status: 'completed',
     conclusion: 'failure',
   },
   {
     workflow_id: 4,
     name: 'Docs',
-    html_url: 'https://example.com/docs',
+    html_url:
+      'https://docs.github.com/actions/automating-builds-and-tests/building-and-testing-net',
     status: 'completed',
     conclusion: 'cancelled',
   },

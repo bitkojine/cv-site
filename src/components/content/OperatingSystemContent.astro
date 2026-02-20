@@ -2,6 +2,7 @@
 import { Layers } from '@lucide/astro';
 import EmailCta from '../EmailCta.astro';
 import SectionLastUpdated from '../SectionLastUpdated.astro';
+import SystemMapPanel from './SystemMapPanel.astro';
 import { roleEmailCtas, visitorModes } from '../../lib/email-drafts.mts';
 ---
 
@@ -9,7 +10,7 @@ import { roleEmailCtas, visitorModes } from '../../lib/email-drafts.mts';
   <div class="headline-row">
     <span aria-hidden="true" class="headline-icon"><Layers size={86} /></span>
     <h1 id="ops-heading">
-      Website System: from visitor traffic to signed deals and contracts.
+      How this website routes visitors to the right page.
     </h1>
   </div>
   <div class="cta-row">
@@ -18,34 +19,14 @@ import { roleEmailCtas, visitorModes } from '../../lib/email-drafts.mts';
     <EmailCta cta={roleEmailCtas.ops[2]} mode={visitorModes.ops} />
   </div>
   <p class="cta-note">
-    This page explains how this website works as a system: traffic sources, page
-    roles, visitor flows, CTA actions, and conversion outcomes.
+    A simple overview of visitor routing, next steps, and conversion flow.
   </p>
 </section>
 
 <section aria-labelledby="ops-goal" class="card">
   <h2 id="ops-goal">Website System Goal</h2>
   <SectionLastUpdated />
-  <p>
-    Primary goal: route the right visitors into the right pages and convert
-    qualified conversations into signed roles, contracts, and repeat engagements
-    without lowering delivery quality.
-  </p>
-</section>
-
-<section aria-labelledby="ops-learn" class="card">
-  <h2 id="ops-learn">What You Will Learn Here</h2>
-  <SectionLastUpdated />
-  <ul>
-    <li>How role-based routing increases signal quality in inbound traffic</li>
-    <li>
-      How page structure can pre-qualify conversations before first contact
-    </li>
-    <li>How to design CTA flows that reduce friction without reducing rigor</li>
-    <li>
-      How to tie content, operations cadence, and conversion outcomes together
-    </li>
-  </ul>
+  <p>Route visitors to the right page and make the next step clear.</p>
 </section>
 
 <section aria-labelledby="ops-pipeline" class="card">
@@ -66,67 +47,4 @@ import { roleEmailCtas, visitorModes } from '../../lib/email-drafts.mts';
   </ol>
 </section>
 
-<details aria-labelledby="ops-details-summary" class="card">
-  <summary id="ops-details-summary"
-    ><strong>Operational Details</strong></summary
-  >
-
-  <section aria-labelledby="ops-cadence">
-    <h2 id="ops-cadence">System Operating Cadence</h2>
-    <ul>
-      <li>Daily: triage inbound messages and respond by priority.</li>
-      <li>
-        Weekly: review visitor volume, CTA clicks, and conversation quality.
-      </li>
-      <li>
-        Bi-weekly: refine role-page copy, CTA prompts, and qualification rules.
-      </li>
-      <li>
-        Monthly: update proof artifacts from shipped work and signed outcomes.
-      </li>
-    </ul>
-  </section>
-
-  <section aria-labelledby="ops-capacity">
-    <h2 id="ops-capacity">Capacity and Scale Constraints</h2>
-    <ul>
-      <li>Current execution mode is solo and quality-gated.</li>
-      <li>Pilot delivery capacity remains intentionally limited.</li>
-      <li>
-        Scale trigger is sustained qualified pipeline, not vanity traffic.
-      </li>
-      <li>
-        Team expansion starts only when pipeline supports predictable,
-        repeatable throughput.
-      </li>
-    </ul>
-  </section>
-
-  <section aria-labelledby="ops-controls">
-    <h2 id="ops-controls">Website-to-Deal Quality Controls</h2>
-    <ul>
-      <li>No inflated claims: evidence boundaries are explicitly declared.</li>
-      <li>Role clarity: each page states who it is for and what to do next.</li>
-      <li>CTA clarity: first contact asks for minimal input only.</li>
-      <li>
-        Deal discipline: scope and acceptance rules are explicit before start.
-      </li>
-    </ul>
-  </section>
-
-  <section aria-labelledby="ops-roadmap">
-    <h2 id="ops-roadmap">Website System Roadmap</h2>
-    <ol>
-      <li>Increase qualified inbound from hiring and operator channels.</li>
-      <li>
-        Publish compact case snapshots with measurable, non-sensitive outcomes.
-      </li>
-      <li>
-        Improve per-route conversion from page visit to conversation start.
-      </li>
-      <li>
-        Shift from solo execution to organization mode as signed flow compounds.
-      </li>
-    </ol>
-  </section>
-</details>
+<SystemMapPanel />

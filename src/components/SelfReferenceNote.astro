@@ -35,6 +35,11 @@ const notePayload = JSON.stringify(note).replaceAll('<', '\\u003c');
       </span>
       <span class="self-reference__meta">
         <span class="self-reference__mascot-name">{mascotName}</span>
+        <span class="self-reference__word-count">
+          <span>Words:</span>
+          <strong data-echo-word-count>0</strong>
+          <span data-echo-word-hint>Calculating...</span>
+        </span>
       </span>
       <span class="self-reference__summary-label">
         <span class="self-reference__summary-open">Open Echo guidance</span>
@@ -45,52 +50,15 @@ const notePayload = JSON.stringify(note).replaceAll('<', '\\u003c');
       <p class="self-reference__message" data-echo-message>
         {note.variants.full}
       </p>
-      <p class="self-reference__dynamic" data-echo-dynamic hidden></p>
-      <div class="self-reference__actions">
-        <p class="self-reference__action-label">After this page, answer:</p>
-        <ol>
-          {note.actionPrompts.map((prompt) => <li>{prompt}</li>)}
-        </ol>
-      </div>
       {
-        note.modes && (
-          <div class="self-reference__modes" data-echo-modes>
-            <div class="self-reference__mode-tabs" role="tablist">
-              {note.modes.map((mode, index) => (
-                <button
-                  aria-selected={index === 0 ? 'true' : 'false'}
-                  class="self-reference__mode-tab"
-                  data-echo-mode-tab={mode.id}
-                  role="tab"
-                  type="button"
-                >
-                  {mode.label}
-                </button>
-              ))}
-            </div>
-            <p class="self-reference__mode-summary" data-echo-mode-summary>
-              {note.modes[0]?.summary}
-            </p>
-            <ol class="self-reference__mode-prompts" data-echo-mode-prompts>
-              {note.modes[0]?.prompts.map((prompt) => (
+        note.actionPrompts.length > 0 && (
+          <div class="self-reference__actions">
+            <p class="self-reference__action-label">Use this page to:</p>
+            <ol>
+              {note.actionPrompts.map((prompt) => (
                 <li>{prompt}</li>
               ))}
             </ol>
-          </div>
-        )
-      }
-      {
-        note.checklist && (
-          <div class="self-reference__checklist">
-            <p class="self-reference__action-label">Loop completion:</p>
-            <ul>
-              {note.checklist.map((item) => (
-                <li>
-                  <span aria-hidden="true">□</span>
-                  {item}
-                </li>
-              ))}
-            </ul>
           </div>
         )
       }
@@ -101,57 +69,65 @@ const notePayload = JSON.stringify(note).replaceAll('<', '\\u003c');
           </p>
         )
       }
-      <div class="self-reference__why">
-        <p class="self-reference__action-label">Why this note exists</p>
-        <p>{note.whyExists}</p>
-      </div>
     </div>
   </details>
 </div>
 
 <script is:inline>
   (() => {
-    const getScrollDepth = () => {
-      const doc = document.documentElement;
-      const maxScroll = doc.scrollHeight - window.innerHeight;
-      if (maxScroll <= 0) return 1;
-      return window.scrollY / maxScroll;
+    const echoCountCacheKey = 'echo-word-count:v1';
+
+    const scheduleIdle = (task) => {
+      if ('requestIdleCallback' in window) {
+        window.requestIdleCallback(task, { timeout: 500 });
+        return;
+      }
+      window.setTimeout(task, 0);
     };
 
-    const chooseVariant = (visits, variants) => {
-      if (visits <= 1) return variants.full;
-      if (visits === 2) return variants.compressed;
-      return variants.lens;
+    const chooseVariant = (note) => note.variants.full || '';
+    const countWords = (text) =>
+      text.trim().split(/\s+/).filter(Boolean).length;
+
+    const computeWordCount = (routePath = window.location.pathname) => {
+      const target = routePath.startsWith('/blog/')
+        ? document.querySelector('#blog-post-content .prose') ||
+          document.querySelector('#blog-post-content') ||
+          document.querySelector('main#main-content') ||
+          document.querySelector('main.page-shell') ||
+          document.body
+        : document.querySelector('main#main-content') ||
+          document.querySelector('main.page-shell') ||
+          document.body;
+      if (!(target instanceof HTMLElement)) return 0;
+
+      const clone = target.cloneNode(true);
+      if (!(clone instanceof HTMLElement)) return 0;
+
+      clone
+        .querySelectorAll(
+          [
+            '[data-echo-root]',
+            '.mode-indicator',
+            '.site-footer',
+            '.site-footer-note',
+            'script',
+            'style',
+            'noscript',
+            'template',
+            'svg',
+          ].join(',')
+        )
+        .forEach((node) => node.remove());
+
+      const text = (clone.textContent || '').replace(/\s+/g, ' ').trim();
+      return text ? countWords(text) : 0;
     };
 
-    const bindModes = (root, note) => {
-      if (!Array.isArray(note.modes) || note.modes.length === 0) return;
-      const tabButtons = root.querySelectorAll('[data-echo-mode-tab]');
-      const summary = root.querySelector('[data-echo-mode-summary]');
-      const promptsList = root.querySelector('[data-echo-mode-prompts]');
-      if (!(summary instanceof HTMLElement)) return;
-      if (!(promptsList instanceof HTMLOListElement)) return;
-
-      tabButtons.forEach((button) => {
-        if (!(button instanceof HTMLButtonElement)) return;
-        button.addEventListener('click', () => {
-          const modeId = button.dataset.echoModeTab ?? '';
-          const mode = note.modes.find((entry) => entry.id === modeId);
-          if (!mode) return;
-          tabButtons.forEach((candidate) => {
-            if (candidate instanceof HTMLButtonElement) {
-              candidate.setAttribute(
-                'aria-selected',
-                candidate === button ? 'true' : 'false'
-              );
-            }
-          });
-          summary.textContent = mode.summary;
-          promptsList.innerHTML = mode.prompts
-            .map((prompt) => `<li>${prompt}</li>`)
-            .join('');
-        });
-      });
+    const hintForCount = (count) => {
+      if (count < 120) return 'Lean';
+      if (count > 800) return 'Dense';
+      return 'Balanced';
     };
 
     const bindEcho = (root) => {
@@ -166,93 +142,58 @@ const notePayload = JSON.stringify(note).replaceAll('<', '\\u003c');
       } catch {
         return;
       }
-      const pathname = root.dataset.echoPathname || window.location.pathname;
       const messageEl = root.querySelector('[data-echo-message]');
-      const dynamicEl = root.querySelector('[data-echo-dynamic]');
       const panelEl = root.querySelector('.self-reference__panel');
+      const countEl = root.querySelector('[data-echo-word-count]');
+      const hintEl = root.querySelector('[data-echo-word-hint]');
+      const routePath = root.dataset.echoPathname || window.location.pathname;
       if (!(messageEl instanceof HTMLElement)) return;
       if (!(panelEl instanceof HTMLDetailsElement)) return;
-
-      const pathVisitKey = `echo:visit:${pathname}`;
-      const globalVisitKey = 'echo:visit:global';
-      const pathVisits = Number(localStorage.getItem(pathVisitKey) || '0') + 1;
-      const globalVisits =
-        Number(localStorage.getItem(globalVisitKey) || '0') + 1;
-      localStorage.setItem(pathVisitKey, String(pathVisits));
-      localStorage.setItem(globalVisitKey, String(globalVisits));
+      if (!(countEl instanceof HTMLElement)) return;
+      if (!(hintEl instanceof HTMLElement)) return;
 
       const applyVariantIfCollapsed = () => {
         if (panelEl.open) return;
-        messageEl.textContent = chooseVariant(pathVisits, note.variants);
+        messageEl.textContent = chooseVariant(note);
+      };
+
+      const updateWordCount = () => {
+        const total = computeWordCount(routePath);
+        const hint = hintForCount(total);
+        countEl.textContent = total.toLocaleString('en-US');
+        hintEl.textContent = hint;
+        try {
+          const current = JSON.parse(
+            localStorage.getItem(echoCountCacheKey) || '{}'
+          );
+          current[routePath] = {
+            count: total,
+            hint,
+            updatedAt: Date.now(),
+          };
+          localStorage.setItem(echoCountCacheKey, JSON.stringify(current));
+        } catch {}
       };
 
       applyVariantIfCollapsed();
-      bindModes(root, note);
-
-      if (!(dynamicEl instanceof HTMLElement)) return;
-      const dynamicMessages = [];
-      let pendingDynamicText = '';
-      const applyDynamicIfCollapsed = () => {
-        if (panelEl.open || !pendingDynamicText) return;
-        dynamicEl.hidden = false;
-        dynamicEl.textContent = pendingDynamicText;
-      };
-
-      const referrer = document.referrer.toLowerCase();
-      if (referrer.includes('linkedin.com')) {
-        dynamicMessages.push(
-          "You came from LinkedIn. Don't skim. Validate decision signal, not personality."
+      try {
+        const current = JSON.parse(
+          localStorage.getItem(echoCountCacheKey) || '{}'
         );
-      } else if (referrer) {
-        dynamicMessages.push(
-          'You arrived via referral. Use this page to verify real evidence before any call.'
-        );
-      } else {
-        dynamicMessages.push(
-          'Direct visit detected. Start with the core evidence section before exploring side routes.'
-        );
-      }
-
-      if (globalVisits > 1) {
-        dynamicMessages.push(
-          'Welcome back. This pass: evaluate the tradeoff and failure-path sections first.'
-        );
-      }
-
-      window.setTimeout(() => {
-        const depth = getScrollDepth();
-        if (depth < 0.2) {
-          dynamicMessages.push(
-            `If you are scanning, jump to "${note.focusSection}" now.`
-          );
+        const cached = current[routePath];
+        if (cached && Number.isFinite(cached.count)) {
+          countEl.textContent = Number(cached.count).toLocaleString('en-US');
+          hintEl.textContent =
+            typeof cached.hint === 'string'
+              ? cached.hint
+              : hintForCount(Number(cached.count));
         }
-        const textBlocks = [
-          ...document.querySelectorAll(
-            'main p, main li, article p, article li'
-          ),
-        ];
-        const wordCount = textBlocks.reduce((sum, node) => {
-          const text = node.textContent ?? '';
-          return sum + text.split(/\s+/).filter(Boolean).length;
-        }, 0);
-        if (
-          typeof note.minimumWordCount === 'number' &&
-          wordCount < note.minimumWordCount
-        ) {
-          dynamicMessages.push(
-            'This page does not yet teach a full decision loop. Expand tradeoffs or remove it.'
-          );
-        }
-        if (dynamicMessages.length > 0) {
-          pendingDynamicText = dynamicMessages.join(' ');
-          applyDynamicIfCollapsed();
-        }
-      }, 20000);
+      } catch {}
+      scheduleIdle(updateWordCount);
 
       panelEl.addEventListener('toggle', () => {
         if (!panelEl.open) {
           applyVariantIfCollapsed();
-          applyDynamicIfCollapsed();
         }
       });
     };
