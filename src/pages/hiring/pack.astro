@@ -13,14 +13,13 @@ const interviewPrompts = [
 ];
 
 const schemaExtras = {
-  about:
-    'Shareable hiring pack for senior backend interview evaluation and tradeoff-led discussion.',
+  about: 'Shareable hiring pack for quick interview evaluation.',
 };
 ---
 
 <SiteLayout
   canonicalPath="/hiring/pack"
-  description="Shareable hiring pack: fit summary, top evidence, and high-signal interview prompts."
+  description="Shareable hiring pack with fit summary and key examples."
   ogType="profile"
   roleLabel="Hiring Pack"
   schemaExtras={schemaExtras}
@@ -37,9 +36,7 @@ const schemaExtras = {
       <h1 id="pack-heading">Hiring Pack</h1>
     </div>
     <p class="cta-note">
-      Forward this page to interviewers. It is designed to replace trivia
-      screens with evidence, tradeoff discussion, and clear teach-back of how
-      decisions were made.
+      Forward this page to interviewers for a fast, practical review.
     </p>
     <div class="cta-row pack-actions">
       <button class="cta-secondary" data-pack-print type="button"
@@ -116,8 +113,7 @@ const schemaExtras = {
     <h2 id="pack-interview">How To Interview Me</h2>
     <SectionLastUpdated />
     <p>
-      Use one artifact from <a href="/hiring/evidence">/hiring/evidence</a> and discuss
-      these prompts:
+      Use one artifact from <a href="/library">/library</a> and discuss these prompts:
     </p>
     <p>
       Evaluation principle: depth shows up in how clearly I can teach the
@@ -221,7 +217,7 @@ const schemaExtras = {
             'Hiring Pack Summary',
             '',
             'Fit: Senior backend engineer focused on reliability, delivery constraints, and ownership-level tradeoffs.',
-            'Interview style: Evaluate with artifact discussion and teach-back of decision logic, not trivia.',
+            'Interview style: discuss real projects and decisions, not trivia.',
             '',
             'Primary prompts:',
             '- Talk through a system owned and tradeoffs made.',

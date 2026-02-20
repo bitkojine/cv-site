@@ -5,33 +5,6 @@ import PageShareButton from '../PageShareButton.astro';
 import PeerSharePrompt from '../PeerSharePrompt.astro';
 import SectionLastUpdated from '../SectionLastUpdated.astro';
 import { roleEmailCtas, visitorModes } from '../../lib/email-drafts.mts';
-
-const visionSignals = [
-  {
-    title: 'What I Sell Now',
-    points: [
-      'One offer: Backend Reliability Sprint (5-10 business days).',
-      'Input: one live backend bottleneck. Output: shipped fix, tests, and handoff notes.',
-      'Best buyer: founder/CTO of an API-heavy product team blocked on delivery.',
-    ],
-  },
-  {
-    title: 'How It Evolves',
-    points: [
-      'Every sprint produces reusable checklists, templates, and implementation patterns.',
-      'Repeated patterns are packaged into productized reliability modules.',
-      'Goal: move from one-off delivery to repeatable service revenue with better margins.',
-    ],
-  },
-  {
-    title: 'Operating Constraint',
-    points: [
-      'This is currently a solo build with no external funding and no team.',
-      'Execution happens alongside a full-time job, so pilot slots stay limited by design.',
-      'Funding is an accelerator, not a prerequisite for starting paid work.',
-    ],
-  },
-];
 ---
 
 <section aria-labelledby="vision-heading" class="mode-hero">
@@ -40,7 +13,7 @@ const visionSignals = [
       ><DollarSign size={86} /></span
     >
     <h1 id="vision-heading">
-      Service-first: Backend Reliability Sprints for API-heavy teams.
+      Backend Reliability Sprints for API-heavy teams.
     </h1>
   </div>
   <div class="cta-row">
@@ -63,8 +36,7 @@ const visionSignals = [
     </p>
   </noscript>
   <p class="cta-note">
-    Current stage: pre-funding, solo, limited pilot capacity. Request investment
-    details for roadmap and milestone gates.
+    Current stage: solo, pre-funding, limited pilot capacity.
   </p>
 </section>
 
@@ -72,30 +44,8 @@ const visionSignals = [
   message="Forward this profile to one investor or advisor reviewing execution-focused builders."
 />
 
-<section aria-labelledby="vision-summary" class="card">
-  <h2 id="vision-summary">Overview</h2>
-  <SectionLastUpdated />
-  <p>
-    The business starts as paid, fixed-scope execution. I take one concrete
-    backend bottleneck, ship a production-safe fix, and document what was done
-    so teams can keep moving. The long-term plan is to productize repeated
-    reliability work into reusable modules and playbooks.
-  </p>
-</section>
-
-<section aria-labelledby="vision-learn" class="card">
-  <h2 id="vision-learn">What You Will Learn Here</h2>
-  <SectionLastUpdated />
-  <ul>
-    <li>How service-first execution can evolve into productized offerings</li>
-    <li>How to evaluate pre-scale opportunities with milestone-gated logic</li>
-    <li>How to separate execution signal from traction storytelling</li>
-    <li>How constraints should shape capital allocation decisions</li>
-  </ul>
-</section>
-
 <section aria-labelledby="vision-products" class="card">
-  <h2 id="vision-products">What This Is</h2>
+  <h2 id="vision-products">Current Offer</h2>
   <SectionLastUpdated />
   <ul>
     <li>Today: a productized service called Backend Reliability Sprint.</li>
@@ -111,7 +61,7 @@ const visionSignals = [
       modules, templates, and onboarding workflows.
     </li>
   </ul>
-  <h3>Commercial terms (current)</h3>
+  <h3>Commercial Terms</h3>
   <ul>
     <li>Capacity: up to 2 pilot sprints per month</li>
     <li>Start window: first available slot in 2-4 weeks</li>
@@ -122,176 +72,6 @@ const visionSignals = [
     <li>
       Pricing model: fixed-scope sprint pricing agreed before kickoff, no open
       ended time-and-materials scope
-    </li>
-  </ul>
-</section>
-
-<section aria-labelledby="vision-signals" class="card">
-  <h2 id="vision-signals">Strategic Signals</h2>
-  {
-    visionSignals.map((signal) => (
-      <article>
-        <h3>{signal.title}</h3>
-        <ul>
-          {signal.points.map((point) => (
-            <li>{point}</li>
-          ))}
-        </ul>
-      </article>
-    ))
-  }
-</section>
-
-<section aria-labelledby="vision-trajectory" class="card">
-  <h2 id="vision-trajectory">Timeline and Plan</h2>
-  <p>
-    Plan under current constraints: keep scope narrow, close paid pilots, and
-    compound each engagement into reusable assets. No fake scale assumptions.
-  </p>
-  <h3>Phase roadmap</h3>
-  <ul>
-    <li>
-      Phase 1 (0-3 months): close a small number of paid sprints and publish
-      measurable before/after case studies.
-    </li>
-    <li>
-      Phase 2 (3-9 months): standardize recurring fixes into reusable delivery
-      modules and improve time-to-ship per sprint.
-    </li>
-    <li>
-      Phase 3 (9-18 months): run a productized reliability line with repeatable
-      onboarding, stable scope, and predictable monthly throughput.
-    </li>
-  </ul>
-  <h3>Signals tracked now</h3>
-  <ul>
-    <li>Pilot-to-repeat conversion rate by cohort</li>
-    <li>Median time from signed scope to production release</li>
-    <li>Repeat revenue share and gross margin stability</li>
-    <li>Referral-driven pipeline share from delivered projects</li>
-  </ul>
-  <h3>Baseline and target discipline</h3>
-  <ul>
-    <li>
-      Current stage baseline: pre-funding and pre-scale (metrics published as
-      pilots close)
-    </li>
-    <li>
-      Phase 1 target: close paid pilots and publish measurable before/after
-      outcomes
-    </li>
-    <li>Phase 2 target: demonstrate repeat demand and improved time-to-ship</li>
-    <li>
-      Phase 3 target: show predictable monthly throughput with stable scope and
-      margin
-    </li>
-  </ul>
-  <h3>What funding changes</h3>
-  <p>
-    Funding increases capacity and speed: more sprint volume, faster
-    productization, and earlier go-to-market for reusable modules. It does not
-    change the core model.
-  </p>
-  <p>
-    Any funding remains milestone-gated and tied to shipped outcomes, repeat
-    demand, and revenue quality thresholds.
-  </p>
-</section>
-
-<section aria-labelledby="vision-gates" class="card">
-  <h2 id="vision-gates">Milestone Gates (Falsifiable)</h2>
-  <ul>
-    <li>
-      Gate 1: close at least 3 paid pilot sprints with documented baseline,
-      shipped output, and post-release check.
-    </li>
-    <li>
-      Gate 2: convert at least 1 pilot into repeat paid work under a second
-      scoped engagement.
-    </li>
-    <li>
-      Gate 3: publish a repeatable delivery playbook that reduces onboarding and
-      execution variance across engagements.
-    </li>
-    <li>
-      If gates fail: keep scope narrow, avoid scale hiring, and rework offer
-      design before capital expansion.
-    </li>
-  </ul>
-  <h3>Investor Decision Rule</h3>
-  <p>
-    Treat this as an execution thesis, not a traction story. Funding case is
-    invalid until paid pilot data shows repeat demand and delivery quality under
-    real constraints.
-  </p>
-</section>
-
-<section aria-labelledby="vision-diligence" class="card">
-  <h2 id="vision-diligence">Investor Diligence Snapshot</h2>
-  <ul>
-    <li>
-      Available now: operating model, commercial terms, scope constraints, and
-      milestone logic.
-    </li>
-    <li>
-      Not available yet: audited traction history, stable cohort data, and
-      mature unit economics.
-    </li>
-    <li>
-      Evidence publication rule: publish measurable pilot data only after enough
-      sample depth to avoid misleading conclusions.
-    </li>
-  </ul>
-  <h3>Observable Facts On This Page</h3>
-  <ul>
-    <li>
-      Current operating mode is declared: solo, pre-funding, limited capacity
-    </li>
-    <li>
-      Commercial constraints are explicit: up to 2 pilot sprints/month, 2-4 week
-      start window
-    </li>
-    <li>
-      Milestone gates include explicit fail-path behavior if targets are missed
-    </li>
-  </ul>
-  <h3>Current Hard Limits</h3>
-  <ul>
-    <li>No audited revenue history published on-page</li>
-    <li>No cohort retention curve or repeat-purchase trend published</li>
-    <li>No validated moat evidence beyond operator execution quality claims</li>
-  </ul>
-</section>
-
-<section aria-labelledby="vision-capital" class="card">
-  <h2 id="vision-capital">Capital Use Logic (If Raised)</h2>
-  <ul>
-    <li>
-      First priority: increase delivery throughput without degrading quality
-      gates.
-    </li>
-    <li>
-      Second priority: turn repeated sprint patterns into reusable modules and
-      onboarding assets.
-    </li>
-    <li>
-      Third priority: measured go-to-market experiments tied to repeat demand
-      signals, not top-line vanity metrics.
-    </li>
-  </ul>
-</section>
-
-<section aria-labelledby="vision-conversation" class="card">
-  <h2 id="vision-conversation">Best Fit For Investor Conversation</h2>
-  <ul>
-    <li>
-      Investors evaluating service-first models with a clear productization path
-    </li>
-    <li>
-      Advisors who can pressure-test milestone gates and capital allocation
-    </li>
-    <li>
-      Operators able to validate unit economics and repeat-revenue assumptions
     </li>
   </ul>
 </section>

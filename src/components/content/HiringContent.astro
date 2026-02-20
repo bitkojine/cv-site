@@ -39,16 +39,12 @@ const seniorSignals = hiringEvidenceData.seniorSignals.reduce<
   return acc;
 }, []);
 
-const previewEvidence = [
-  ...hiringEvidenceData.caseStudies.slice(0, 2),
-  ...hiringEvidenceData.decisionRecords.slice(0, 1),
-  ...hiringEvidenceData.productionPatterns.slice(0, 1),
-];
+const highlightSignals = seniorSignals.slice(0, 3);
 
 const toTitleCase = (value: string) =>
   value.charAt(0).toUpperCase() + value.slice(1);
 
-const evidenceHref = (id: string) => `/hiring/evidence#evidence-${id}`;
+const evidenceHref = (id: string) => `/library#evidence-${id}`;
 ---
 
 <section aria-labelledby="hiring-heading" class="mode-hero">
@@ -80,8 +76,7 @@ const evidenceHref = (id: string) => `/hiring/evidence#evidence-${id}`;
     </p>
   </noscript>
   <p class="cta-note">
-    If you want to assess me, use the evidence below and ask me to teach the
-    decision logic behind real tradeoffs in production scenarios.
+    For evaluation, use real project examples and tradeoff discussion.
   </p>
 </section>
 
@@ -124,29 +119,14 @@ const evidenceHref = (id: string) => `/hiring/evidence#evidence-${id}`;
   </p>
   <p>{hiringEvidenceData.interviewPolicy.prompt}</p>
   <p>
-    Proof standard: if I truly understand a system, I can teach it clearly. Weak
-    understanding shows up as vague, tool-first explanations.
-  </p>
-  <p>
     Start here:
-    <a href="/hiring/evidence">Evidence library</a>
+    <a href="/library">Learning library</a>
     for case studies, decision records, and production patterns.
   </p>
 </section>
 
-<section aria-labelledby="hiring-learn" class="card">
-  <h2 id="hiring-learn">What You Will Learn Here</h2>
-  <SectionLastUpdated />
-  <ul>
-    <li>How to assess senior backend capability through decision evidence</li>
-    <li>How to run interviews around tradeoffs, risk, and delivery context</li>
-    <li>How reliability and incident behavior reflect engineering maturity</li>
-    <li>How to distinguish tool familiarity from ownership-level judgment</li>
-  </ul>
-</section>
-
 <section aria-labelledby="hiring-proof-highlights" class="card">
-  <h2 id="hiring-proof-highlights">Proof Highlights</h2>
+  <h2 id="hiring-proof-highlights">Experience Highlights</h2>
   <SectionLastUpdated />
   <p>
     Claims are paired with concrete artifacts. Open any item to review context,
@@ -154,7 +134,7 @@ const evidenceHref = (id: string) => `/hiring/evidence#evidence-${id}`;
   </p>
   <div class="signals-grid">
     {
-      seniorSignals.map((signal) => (
+      highlightSignals.map((signal) => (
         <article class="signal-tile">
           <p class="signal-head">
             <strong>{signal.title}</strong>
@@ -196,59 +176,13 @@ const evidenceHref = (id: string) => `/hiring/evidence#evidence-${id}`;
   </div>
 </section>
 
-<section aria-labelledby="hiring-evidence-preview" class="card">
-  <h2 id="hiring-evidence-preview">Evidence Library Preview</h2>
+<section aria-labelledby="hiring-next-step" class="card">
+  <h2 id="hiring-next-step">Next Step</h2>
   <SectionLastUpdated />
   <p>
-    Review the full library at <a href="/hiring/evidence">/hiring/evidence</a>
-    with filters for reliability, performance, architecture, delivery, and data.
+    Use <a href="/library">/library</a> for full examples, or share
+    <a href="/hiring/pack">/hiring/pack</a> for a short recruiter summary.
   </p>
-  <ul class="evidence-preview-list">
-    {
-      previewEvidence.map((item) => (
-        <li>
-          <article>
-            <h3>{item.title}</h3>
-            <p>{item.situation}</p>
-            <p>
-              <strong>Outcome:</strong>
-              {item.outcome}
-            </p>
-            <a href={evidenceHref(item.id)}>Open full record</a>
-          </article>
-        </li>
-      ))
-    }
-  </ul>
-</section>
-
-<section aria-labelledby="hiring-working-style" class="card">
-  <h2 id="hiring-working-style">Working Style And Process Filters</h2>
-  <SectionLastUpdated />
-  <h3>How I De-Risk Delivery</h3>
-  <ul>
-    <li>Align scope to business risk before implementation starts</li>
-    <li>Make tradeoffs explicit with product and engineering stakeholders</li>
-    <li>Instrument reliability feedback into each delivery cycle</li>
-    <li>Prefer reversible rollouts for high-impact changes</li>
-  </ul>
-  <h3>Interview Bypass Pack</h3>
-  <p>
-    Share <a href="/hiring/pack">/hiring/pack</a> for a concise recruiter-friendly
-    brief and print-ready PDF export.
-  </p>
-  <h3>Misfit Filter</h3>
-  <p>
-    If your process depends on trivia screening (tool checklists, definition
-    quizzes, or language gotchas) and not real decision discussion, we are
-    unlikely to be a strong fit.
-  </p>
-  <h3>Higher-Signal Interview Prompts</h3>
-  <ul>
-    <li>Talk me through a system you owned and the tradeoffs you made</li>
-    <li>How do you approach reliability and incidents in production?</li>
-    <li>How do you deliver under hard constraints and changing context?</li>
-  </ul>
 </section>
 
 <style>
@@ -288,27 +222,6 @@ const evidenceHref = (id: string) => `/hiring/evidence#evidence-${id}`;
   .signal-themes {
     color: var(--muted);
     font-size: 0.9rem;
-  }
-
-  .evidence-preview-list {
-    margin-top: 0.75rem;
-    padding-left: 1.1rem;
-    display: grid;
-    gap: 0.8rem;
-  }
-
-  .evidence-preview-list article h3 {
-    margin: 0;
-    font-size: 1rem;
-  }
-
-  .evidence-preview-list article p {
-    margin: 0.45rem 0 0;
-  }
-
-  .evidence-preview-list article a {
-    display: inline-flex;
-    margin-top: 0.5rem;
   }
 
   @media (min-width: 760px) {

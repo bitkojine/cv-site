@@ -1,0 +1,521 @@
+---
+import { Route } from '@lucide/astro';
+import { getCollection } from 'astro:content';
+import SectionLastUpdated from '../SectionLastUpdated.astro';
+import { resolveEchoNote } from '../../data/echo-notes.mts';
+import { BUILD_VERSION } from '../../lib/build-version.mts';
+
+interface RouteMeta {
+  path: string;
+  title: string;
+  kind: 'core' | 'blog' | 'utility' | 'redirect';
+  initialWordCount?: number;
+}
+
+const coreRoutes: RouteMeta[] = [
+  { path: '/', title: 'Home', kind: 'core' },
+  { path: '/hiring', title: 'Hiring', kind: 'core' },
+  { path: '/library', title: 'Engineering Learning Library', kind: 'core' },
+  { path: '/hiring/pack', title: 'Hiring Pack', kind: 'core' },
+  { path: '/build', title: 'Build', kind: 'core' },
+  { path: '/vision', title: 'Vision', kind: 'core' },
+  { path: '/dev', title: 'Developer', kind: 'core' },
+  { path: '/operating-system', title: 'Website System', kind: 'core' },
+  { path: '/linkedin', title: 'LinkedIn Mirror', kind: 'utility' },
+  { path: '/blog', title: 'Blog Index', kind: 'blog' },
+  {
+    path: '/test/workflow-badge',
+    title: 'Workflow Badge Test',
+    kind: 'utility',
+  },
+  {
+    path: '/hiring/evidence',
+    title: 'Legacy Evidence Redirect',
+    kind: 'redirect',
+  },
+];
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+
+const routes: RouteMeta[] = [
+  ...coreRoutes,
+  ...posts.map((post) => ({
+    path: `/blog/${post.slug}`,
+    title: post.data.title,
+    kind: 'blog' as const,
+    initialWordCount:
+      post.body
+        .replace(/```[\s\S]*?```/g, ' ')
+        .replace(/`[^`]*`/g, ' ')
+        .replace(/!\[[^\]]*\]\([^)]*\)/g, ' ')
+        .replace(/\[[^\]]*\]\([^)]*\)/g, ' ')
+        .replace(/<[^>]+>/g, ' ')
+        .match(/[\p{L}\p{N}][\p{L}\p{N}'’.-]*/gu)?.length ?? 0,
+  })),
+];
+
+const routeMapData = routes.map((route) => {
+  const echo = resolveEchoNote(route.path);
+  return {
+    ...route,
+    echo: echo.variants.full,
+    prompts: echo.actionPrompts,
+    focusSection: echo.focusSection,
+    initialWordCount: route.initialWordCount,
+  };
+});
+---
+
+<section aria-labelledby="route-map-summary" class="card" id="admin-map">
+  <h2 id="route-map-summary">Admin Top View</h2>
+  <SectionLastUpdated />
+  <p>
+    Route count:
+    <strong data-route-total>{routeMapData.length}</strong>
+    <span aria-hidden="true"> · </span>
+    Total rendered words:
+    <strong data-total-words>Calculating...</strong>
+  </p>
+  <p>
+    One place to inspect all routes, link reachability, word counts, and Echo
+    guidance.
+  </p>
+</section>
+
+<section aria-labelledby="route-map-all" class="card">
+  <h2 id="route-map-all">All Routes</h2>
+  <SectionLastUpdated />
+  <div class="route-map-grid" data-route-map-grid>
+    {
+      routeMapData.map((route) => (
+        <article
+          class="route-map-item"
+          data-route-item
+          data-route-path={route.path}
+        >
+          <header class="route-map-item__header">
+            <div class="route-map-item__title-row">
+              <span aria-hidden="true" class="route-map-item__icon">
+                <Route size={16} />
+              </span>
+              <h3>
+                <a href={route.path}>{route.title}</a>
+              </h3>
+            </div>
+            <p class="route-map-item__meta">
+              <code>{route.path}</code>
+              <span class="route-kind">{route.kind}</span>
+              <span class="route-words" data-route-words={route.path}>
+                {typeof route.initialWordCount === 'number'
+                  ? `${route.initialWordCount.toLocaleString('en-US')} words`
+                  : 'Counting words...'}
+              </span>
+            </p>
+          </header>
+
+          <div class="route-flow-block">
+            <p class="route-flow-title">Reach this page from</p>
+            <p class="route-flow-links" data-route-inbound={route.path}>
+              Scanning links...
+            </p>
+          </div>
+
+          <div class="route-flow-block">
+            <p class="route-flow-title">This page links to</p>
+            <p class="route-flow-links" data-route-outbound={route.path}>
+              Scanning links...
+            </p>
+          </div>
+
+          <div class="route-echo">
+            <p class="route-echo__label">Echo the Horse says</p>
+            <p class="route-echo__text">{route.echo}</p>
+            <p class="route-echo__focus">
+              Focus section: <strong>{route.focusSection}</strong>
+            </p>
+            <ul>
+              {route.prompts.map((prompt) => (
+                <li>{prompt}</li>
+              ))}
+            </ul>
+          </div>
+        </article>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .route-map-grid {
+    display: grid;
+    gap: 0.85rem;
+    margin-top: 0.85rem;
+  }
+
+  .route-map-item {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 0.8rem;
+    background: color-mix(in oklab, var(--surface) 97%, var(--accent-soft));
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .route-map-item__header {
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .route-map-item__title-row {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+  }
+
+  .route-map-item__icon {
+    color: var(--accent);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .route-map-item__title-row h3 {
+    margin: 0;
+    font-size: 1.04rem;
+    line-height: 1.3;
+  }
+
+  .route-map-item__title-row h3 a {
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  .route-map-item__meta {
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    align-items: center;
+    color: var(--muted);
+    font-size: 0.88rem;
+  }
+
+  .route-kind,
+  .route-words {
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0.16rem 0.5rem;
+    background: var(--surface);
+  }
+
+  .route-flow-block {
+    display: grid;
+    gap: 0.3rem;
+  }
+
+  .route-flow-title {
+    margin: 0;
+    font-weight: 600;
+    font-size: 0.88rem;
+  }
+
+  .route-flow-links {
+    margin: 0;
+    color: var(--muted);
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+  }
+
+  .route-flow-links a {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0.16rem 0.45rem;
+    color: var(--accent);
+    text-decoration: none;
+    background: var(--surface);
+    font-size: 0.85rem;
+  }
+
+  .route-echo {
+    border-top: 1px solid var(--line);
+    padding-top: 0.6rem;
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .route-echo__label,
+  .route-echo__text,
+  .route-echo__focus,
+  .route-echo ul {
+    margin: 0;
+  }
+
+  .route-echo__label {
+    display: inline-flex;
+    width: max-content;
+    padding: 0.14rem 0.48rem;
+    border-radius: 999px;
+    border: 1px solid #b8a2ff;
+    background: #ece3ff;
+    color: #4f2fab;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: 700;
+  }
+
+  .route-echo__text {
+    color: var(--text);
+  }
+
+  .route-echo__focus {
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
+  .route-echo ul {
+    padding-left: 1rem;
+    display: grid;
+    gap: 0.22rem;
+  }
+
+  .route-echo li {
+    color: var(--muted);
+  }
+
+  @media (min-width: 860px) {
+    .route-map-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>
+
+<script define:vars={{ routeMapData, buildVersion: BUILD_VERSION }}>
+  (() => {
+    const hasOwn = (obj, key) => Object.prototype.hasOwnProperty.call(obj, key);
+    const metricsVersion = 'v4';
+    const cacheKey = `system-map-metrics:${metricsVersion}:${buildVersion}`;
+    const latestCacheKey = `system-map-metrics:${metricsVersion}:latest`;
+    const legacyCachePrefix = 'system-map-metrics:v2:';
+    let activeRunId = 0;
+
+    const scheduleIdle = () =>
+      new Promise((resolve) => {
+        if ('requestIdleCallback' in window) {
+          window.requestIdleCallback(() => resolve(), { timeout: 500 });
+          return;
+        }
+        window.setTimeout(resolve, 0);
+      });
+
+    const countWords = (text) => {
+      const matches = text
+        .replace(/\s+/g, ' ')
+        .trim()
+        .match(/[\p{L}\p{N}][\p{L}\p{N}'’.-]*/gu);
+      return matches ? matches.length : 0;
+    };
+
+    const normalizePath = (href) => {
+      try {
+        const url = new URL(href, window.location.origin);
+        return url.pathname === '' ? '/' : url.pathname;
+      } catch {
+        return null;
+      }
+    };
+
+    const renderLinks = (target, links) => {
+      if (!(target instanceof HTMLElement)) return;
+      target.innerHTML = '';
+      if (links.length === 0) {
+        target.textContent = 'No direct internal links in content.';
+        return;
+      }
+      links.forEach((path) => {
+        const a = document.createElement('a');
+        a.href = path;
+        a.textContent = path;
+        target.append(a);
+      });
+    };
+
+    const renderState = ({
+      routePaths,
+      outboundByRoute,
+      inboundByRoute,
+      wordCounts,
+    }) => {
+      routePaths.forEach((path) => {
+        const wordsTarget = document.querySelector(
+          `[data-route-words="${CSS.escape(path)}"]`
+        );
+        if (wordsTarget instanceof HTMLElement) {
+          const count = wordCounts[path];
+          wordsTarget.textContent =
+            typeof count === 'number'
+              ? `${count.toLocaleString('en-US')} words`
+              : 'Counting words...';
+        }
+
+        const inboundTarget = document.querySelector(
+          `[data-route-inbound="${CSS.escape(path)}"]`
+        );
+        const outboundTarget = document.querySelector(
+          `[data-route-outbound="${CSS.escape(path)}"]`
+        );
+        renderLinks(inboundTarget, inboundByRoute[path] || []);
+        renderLinks(outboundTarget, outboundByRoute[path] || []);
+      });
+
+      const totalWords = routePaths.reduce(
+        (sum, path) =>
+          sum + (typeof wordCounts[path] === 'number' ? wordCounts[path] : 0),
+        0
+      );
+      const totalWordsEl = document.querySelector('[data-total-words]');
+      if (totalWordsEl instanceof HTMLElement) {
+        totalWordsEl.textContent = `${totalWords.toLocaleString('en-US')} words`;
+      }
+    };
+
+    const init = async () => {
+      const runId = ++activeRunId;
+      const routePaths = routeMapData.map((route) => route.path);
+      const known = new Set(routePaths);
+      const outboundByRoute = {};
+      const inboundByRoute = {};
+      const wordCounts = {};
+
+      routePaths.forEach((path) => {
+        outboundByRoute[path] = [];
+        inboundByRoute[path] = [];
+        const routeMeta = routeMapData.find((route) => route.path === path);
+        wordCounts[path] =
+          typeof routeMeta?.initialWordCount === 'number'
+            ? routeMeta.initialWordCount
+            : undefined;
+      });
+
+      renderState({ routePaths, outboundByRoute, inboundByRoute, wordCounts });
+
+      let hasBuildFreshCache = false;
+      try {
+        const candidateCacheKeys = [
+          cacheKey,
+          latestCacheKey,
+          `system-map-metrics:v2:${buildVersion}`,
+          ...Object.keys(localStorage).filter((key) =>
+            key.startsWith(legacyCachePrefix)
+          ),
+        ];
+
+        for (const key of candidateCacheKeys) {
+          const cachedRaw = localStorage.getItem(key);
+          if (!cachedRaw) continue;
+          const cached = JSON.parse(cachedRaw);
+          const cachedPaths = Array.isArray(cached.routePaths)
+            ? cached.routePaths
+            : [];
+          const samePaths =
+            cachedPaths.length === routePaths.length &&
+            cachedPaths.every((p, i) => p === routePaths[i]);
+          if (!samePaths) continue;
+          if (runId !== activeRunId) return;
+
+          renderState({
+            routePaths,
+            outboundByRoute: cached.outboundByRoute || {},
+            inboundByRoute: cached.inboundByRoute || {},
+            wordCounts: cached.wordCounts || {},
+          });
+
+          hasBuildFreshCache = key === cacheKey;
+          if (hasBuildFreshCache) return;
+          break;
+        }
+      } catch {}
+
+      if (hasBuildFreshCache) return;
+
+      for (const path of routePaths) {
+        if (runId !== activeRunId) return;
+        await scheduleIdle();
+        if (runId !== activeRunId) return;
+
+        try {
+          const response = await fetch(path, { credentials: 'same-origin' });
+          if (!response.ok) continue;
+          const html = await response.text();
+          const doc = new DOMParser().parseFromString(html, 'text/html');
+
+          const main = path.startsWith('/blog/')
+            ? doc.querySelector('#blog-post-content .prose') ||
+              doc.querySelector('#blog-post-content') ||
+              doc.querySelector('#main-content') ||
+              doc.body
+            : doc.querySelector('#main-content') || doc.body;
+          const mainClone = main.cloneNode(true);
+          if (mainClone instanceof Element) {
+            mainClone
+              .querySelectorAll('script, style, noscript, svg')
+              .forEach((node) => node.remove());
+          }
+          const text = mainClone.textContent || '';
+          wordCounts[path] = countWords(text);
+
+          const links = new Set();
+          main.querySelectorAll('a[href]').forEach((anchor) => {
+            if (!(anchor instanceof HTMLAnchorElement)) return;
+            const normalized = normalizePath(anchor.getAttribute('href') || '');
+            if (!normalized) return;
+            if (!known.has(normalized)) return;
+            if (normalized === path) return;
+            links.add(normalized);
+          });
+          outboundByRoute[path] = Array.from(links).sort();
+        } catch {}
+      }
+
+      routePaths.forEach((fromPath) => {
+        outboundByRoute[fromPath].forEach((toPath) => {
+          if (!hasOwn(inboundByRoute, toPath)) return;
+          inboundByRoute[toPath].push(fromPath);
+        });
+      });
+
+      routePaths.forEach((path) => {
+        inboundByRoute[path] = Array.from(new Set(inboundByRoute[path])).sort();
+      });
+
+      if (runId !== activeRunId) return;
+      renderState({ routePaths, outboundByRoute, inboundByRoute, wordCounts });
+      try {
+        const payload = JSON.stringify({
+          routePaths,
+          outboundByRoute,
+          inboundByRoute,
+          wordCounts,
+          createdAt: Date.now(),
+          buildVersion,
+        });
+        localStorage.setItem(cacheKey, payload);
+        localStorage.setItem(latestCacheKey, payload);
+      } catch {}
+    };
+
+    window.addEventListener('pagehide', () => {
+      activeRunId += 1;
+    });
+
+    document.addEventListener('astro:page-load', init);
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init, { once: true });
+    } else {
+      init();
+    }
+  })();
+</script>

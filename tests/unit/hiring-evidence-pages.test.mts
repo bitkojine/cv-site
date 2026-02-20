@@ -13,17 +13,19 @@ describe('hiring evidence pages', () => {
     const hiring = readProjectFile(
       'src/components/content/HiringContent.astro'
     );
-    const evidence = readProjectFile('src/pages/hiring/evidence.astro');
+    const library = readProjectFile('src/pages/library.astro');
 
     expect(hiring).toContain("'evidence_opened'");
-    expect(evidence).toContain("'evidence_search'");
+    expect(library).toContain("'evidence_search'");
   });
 
   it('ships dedicated routes for evidence library and hiring pack', () => {
-    const evidence = readProjectFile('src/pages/hiring/evidence.astro');
+    const evidenceRedirect = readProjectFile('src/pages/hiring/evidence.astro');
+    const library = readProjectFile('src/pages/library.astro');
     const pack = readProjectFile('src/pages/hiring/pack.astro');
 
-    expect(evidence).toContain('canonicalPath="/hiring/evidence"');
+    expect(evidenceRedirect).toContain("const target = '/library'");
+    expect(library).toContain('canonicalPath="/library"');
     expect(pack).toContain('canonicalPath="/hiring/pack"');
     expect(pack).toContain('data-pack-print');
   });

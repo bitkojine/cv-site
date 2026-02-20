@@ -7,41 +7,15 @@ import PeerSharePrompt from '../PeerSharePrompt.astro';
 import SectionLastUpdated from '../SectionLastUpdated.astro';
 import { roleEmailCtas, visitorModes } from '../../lib/email-drafts.mts';
 
-const devPhilosophy = [
-    {
-      title: 'Radical Determinism',
-      points: [
-        'Managed effects via MVU (Model-View-Update) patterns.',
-        'Pure business logic, isolated from platform side-effects.',
-        'Full replayability for debugging and testing.',
-      ],
-    },
-    {
-      title: 'Zero Comment Policy',
-      points: [
-        'Production code contains zero comments.',
-        'Documentation lives in /docs, logic lives in the code.',
-        'Forced clarity: if it needs a comment, it needs a refactor.',
-      ],
-    },
-    {
-      title: 'AI-First Execution',
-      points: [
-        'High-speed iteration with agentic coding partners.',
-        'Automated guardrails (Husky, Playwright, Vitest).',
-        'Code as a formal spec for AI collaboration.',
-      ],
-    },
-  ],
-  deepDivePosts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
-    (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
-  );
+const deepDivePosts = (
+  await getCollection('blog', ({ data }) => !data.draft)
+).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 ---
 
 <section aria-labelledby="dev-heading" class="mode-hero">
   <div class="headline-row">
     <span aria-hidden="true" class="headline-icon"><Code2 size={86} /></span>
-    <h1 id="dev-heading">Building in public with radical determinism.</h1>
+    <h1 id="dev-heading">Open-source work and backend engineering notes.</h1>
   </div>
   <div class="cta-row">
     {
@@ -62,53 +36,21 @@ const devPhilosophy = [
       Email links require JavaScript. Please enable JavaScript to contact me.
     </p>
   </noscript>
-  <p class="cta-note">
-    Currently focused on Causaloop: a deterministic framework for high-integrity
-    applications. Follow the live feed below.
-  </p>
+  <p class="cta-note">Current focus: Causaloop.</p>
 </section>
 
 <PeerSharePrompt
-  message="Forward this profile to one developer interested in deterministic architecture or AI-first workflows."
+  message="Forward this profile to one developer who might find it useful."
 />
-
-<section aria-labelledby="dev-learn" class="card">
-  <h2 id="dev-learn">What You Will Learn Here</h2>
-  <SectionLastUpdated />
-  <ul>
-    <li>How deterministic design reduces non-reproducible production bugs</li>
-    <li>How to separate business logic from side-effects for replayability</li>
-    <li>How quality guardrails make AI-assisted coding safer at speed</li>
-    <li>How to evaluate open source work by architecture clarity, not hype</li>
-  </ul>
-</section>
-
-<section aria-labelledby="dev-activity-heading" class="card">
-  <h2 id="dev-activity-heading">Live Activity Feed</h2>
-  <SectionLastUpdated />
-  <p class="activity-hint">Scroll to see more activity.</p>
-  <div
-    class="activity-feed"
-    data-github-user="bitkojine"
-    id="github-activity-feed"
-  >
-    <p class="activity-feed__loading">Loading activity feed...</p>
-    <div class="activity-skeleton-list" data-activity-skeleton>
-      <div class="ui-skeleton activity-skeleton-item"></div>
-      <div class="ui-skeleton activity-skeleton-item"></div>
-      <div class="ui-skeleton activity-skeleton-item"></div>
-    </div>
-  </div>
-</section>
 
 <section aria-labelledby="dev-projects" class="card">
   <h2 id="dev-projects">Core Projects</h2>
+  <SectionLastUpdated />
   <article>
     <h3>Causaloop</h3>
     <p>
-      A managed-effect framework designed for radical determinism and
-      replayability. It eliminates non-deterministic bugs by injecting all
-      side-effects (time, random, I/O) through a controlled context.
+      A framework focused on predictable behavior and reproducible debugging by
+      handling side effects in a controlled context.
     </p>
     <ul>
       <li>
@@ -119,32 +61,6 @@ const devPhilosophy = [
       <li>Status: Active development / Alpha</li>
     </ul>
   </article>
-</section>
-
-<section aria-labelledby="dev-stack" class="card">
-  <h2 id="dev-stack">The Deterministic Stack</h2>
-  <p>
-    I optimize for predictability. My stack is chosen to minimize the surface
-    area of non-deterministic behavior and maximize verification speed.
-  </p>
-  <div class="stack-grid">
-    <div class="stack-item">
-      <strong>Causaloop</strong>
-      <span>Managed-effect engine</span>
-    </div>
-    <div class="stack-item">
-      <strong>Astro</strong>
-      <span>Static optimization</span>
-    </div>
-    <div class="stack-item">
-      <strong>Vitest</strong>
-      <span>Unit verification</span>
-    </div>
-    <div class="stack-item">
-      <strong>AI Agents</strong>
-      <span>Agentic execution</span>
-    </div>
-  </div>
 </section>
 
 <section aria-labelledby="dev-deep-dives" class="card">
@@ -164,120 +80,7 @@ const devPhilosophy = [
   </div>
 </section>
 
-<section aria-labelledby="dev-philosophy" class="card">
-  <h2 id="dev-philosophy">Engineering Methodology</h2>
-  {
-    devPhilosophy.map((item) => (
-      <article>
-        <h3>{item.title}</h3>
-        <ul>
-          {item.points.map((point) => (
-            <li>{point}</li>
-          ))}
-        </ul>
-      </article>
-    ))
-  }
-</section>
-
 <style>
-  .activity-feed {
-    margin-top: 1rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    max-height: min(55vh, 24rem);
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    scrollbar-gutter: stable both-edges;
-    padding-right: var(--scrollbar-lane);
-  }
-
-  .activity-feed__loading {
-    font-size: 0.9rem;
-    color: var(--muted);
-    font-style: italic;
-  }
-
-  .activity-skeleton-list {
-    display: grid;
-    gap: 0.55rem;
-  }
-
-  .activity-skeleton-item {
-    height: 64px;
-  }
-
-  .activity-hint {
-    margin-top: 0.7rem;
-    font-size: 0.85rem;
-    color: var(--muted);
-  }
-
-  :global(.activity-item) {
-    font-size: 0.9rem;
-    padding: 0.75rem;
-    background: transparent;
-    border-top: 1px solid var(--line);
-    border-radius: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-  }
-
-  :global(.activity-item__meta) {
-    font-size: 0.75rem;
-    color: var(--muted);
-    display: flex;
-    justify-content: space-between;
-  }
-
-  :global(.activity-item__content) {
-    color: var(--text);
-    word-break: break-word;
-  }
-
-  :global(.activity-item__type) {
-    font-weight: 600;
-    color: var(--accent);
-    text-transform: uppercase;
-    font-size: 0.7rem;
-    letter-spacing: 0.05em;
-  }
-
-  .stack-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 0.5rem;
-    margin-top: 1rem;
-  }
-
-  @media (min-width: 480px) {
-    .stack-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-
-  .stack-item {
-    padding: 0.75rem;
-    background: transparent;
-    border-top: 1px solid var(--line);
-    border-radius: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.15rem;
-  }
-
-  .stack-item strong {
-    font-size: 0.9rem;
-    color: var(--accent);
-  }
-
-  .stack-item span {
-    font-size: 0.75rem;
-    color: var(--muted);
-  }
-
   .reading-list {
     display: flex;
     flex-direction: column;
@@ -323,149 +126,3 @@ const devPhilosophy = [
     color: var(--muted);
   }
 </style>
-
-<script>
-  import { parseGitHubActivityEvents } from '../../lib/github-activity-guard.mts';
-
-  const FEED_INIT_KEY = '__cvGithubFeedInit';
-  const FEED_CACHE_KEY = '__cvGithubFeedCache';
-  const FEED_CACHE_AT_KEY = '__cvGithubFeedCacheAt';
-  const FEED_CACHE_TTL_MS = 120000;
-  const activityDateFormatter = new Intl.DateTimeFormat('lt-LT', {
-    timeZone: 'Europe/Vilnius',
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false,
-  });
-
-  function formatTypeLabel(eventType) {
-    if (!eventType) return 'Activity';
-    if (eventType === 'WatchEvent') return 'Star';
-    const raw = eventType.replace(/Event$/, '');
-    return raw.replace(/([a-z0-9])([A-Z])/g, '$1 $2');
-  }
-
-  async function fetchGitHubActivity() {
-    const feed = document.getElementById('github-activity-feed');
-    if (!feed) return;
-
-    const username = feed.getAttribute('data-github-user');
-    if (!username) return;
-
-    try {
-      const now = Date.now();
-      const cachedAt = window[FEED_CACHE_AT_KEY] || 0;
-      const parsedCachedEvents = parseGitHubActivityEvents(
-        window[FEED_CACHE_KEY]
-      );
-      const canUseCache =
-        !!parsedCachedEvents && now - cachedAt < FEED_CACHE_TTL_MS;
-      const events = canUseCache
-        ? parsedCachedEvents
-        : await (async () => {
-            const ac = new AbortController();
-            const timer = window.setTimeout(() => ac.abort(), 2500);
-            const response = await fetch('/github-activity.json', {
-              signal: ac.signal,
-              cache: 'no-store',
-            });
-            window.clearTimeout(timer);
-            if (!response.ok) throw new Error('Failed to load static activity');
-            const parsed = parseGitHubActivityEvents(await response.json());
-            if (!parsed) throw new Error('Invalid static activity payload');
-            window[FEED_CACHE_KEY] = parsed;
-            window[FEED_CACHE_AT_KEY] = now;
-            return parsed;
-          })();
-
-      if (!events || !events.length) {
-        feed.innerHTML =
-          '<p class="activity-feed__loading">No recent public activity found.</p>';
-        return;
-      }
-
-      feed.innerHTML = '';
-      events.forEach((event) => {
-        if (!event || !event.type || !event.repo?.name) return;
-        const item = document.createElement('div');
-        item.className = 'activity-item';
-
-        const date = activityDateFormatter.format(new Date(event.created_at));
-
-        let content = '';
-        const typeLabel = formatTypeLabel(event.type);
-
-        if (event.type === 'PushEvent') {
-          const commits = Array.isArray(event.payload?.commits)
-            ? event.payload.commits
-            : [];
-          const count = commits.length;
-          const repo = event.repo.name;
-          const msg = commits[0]?.message || '';
-          const ref = event.payload?.ref?.replace('refs/heads/', '') || '';
-          const refTarget = ref ? `<strong>${ref}</strong>` : '';
-          const summary =
-            count > 0
-              ? `${count} commit(s)`
-              : refTarget
-                ? `updates on ${refTarget}`
-                : 'updates';
-          content = msg
-            ? `Pushed ${summary} to <strong>${repo}</strong>: "${msg.split('\n')[0]}"`
-            : `Pushed ${summary} to <strong>${repo}</strong>`;
-        } else if (event.type === 'CreateEvent') {
-          const refType = event.payload?.ref_type || 'resource';
-          const ref = event.payload?.ref || '';
-          const target = ref ? `<strong>${ref}</strong>` : 'repository scope';
-          content = `Created ${refType} ${target} in <strong>${event.repo.name}</strong>`;
-        } else if (event.type === 'DeleteEvent') {
-          const refType = event.payload?.ref_type || 'resource';
-          const ref = event.payload?.ref || '';
-          const target = ref ? `<strong>${ref}</strong>` : 'repository scope';
-          content = `Deleted ${refType} ${target} in <strong>${event.repo.name}</strong>`;
-        } else if (event.type === 'WatchEvent') {
-          content = `Starred <strong>${event.repo.name}</strong>`;
-        } else if (event.type === 'PullRequestEvent') {
-          const action = event.payload?.action || 'updated';
-          const title = event.payload?.pull_request?.title || 'pull request';
-          content = `${action} Pull Request in <strong>${event.repo.name}</strong>: "${title}"`;
-        } else if (event.type === 'IssueCommentEvent') {
-          content = `Commented on issue in <strong>${event.repo.name}</strong>`;
-        } else {
-          content = `Performed ${typeLabel} in <strong>${event.repo.name}</strong>`;
-        }
-
-        item.innerHTML = `
-          <div class="activity-item__meta">
-            <span class="activity-item__type">${typeLabel}</span>
-            <span class="activity-item__date">${date}</span>
-          </div>
-          <div class="activity-item__content">${content}</div>
-        `;
-        feed.appendChild(item);
-      });
-    } catch {
-      feed.innerHTML = `
-        <div class="activity-feed__error">
-          <p>Unable to load activity feed.</p>
-          <a href="https://github.com/${username}" target="_blank" class="activity-feed__fallback-link">
-            View activity directly on GitHub &rarr;
-          </a>
-        </div>`;
-    }
-  }
-
-  if (!window[FEED_INIT_KEY]) {
-    window[FEED_INIT_KEY] = true;
-    document.addEventListener('astro:page-load', fetchGitHubActivity);
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', fetchGitHubActivity, {
-        once: true,
-      });
-    } else {
-      void fetchGitHubActivity();
-    }
-  }
-</script>
