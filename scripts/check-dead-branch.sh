@@ -3,7 +3,7 @@
 CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
 # Skip main
-if [ "$CURRENT_BRANCH" == "main" ]; then
+if [[ "$CURRENT_BRANCH" == "main" ]]; then
   exit 0
 fi
 
@@ -19,7 +19,7 @@ if git show-ref --verify --quiet "refs/remotes/origin/$CURRENT_BRANCH"; then
     MAIN_TIP=$(git rev-parse "origin/main")
 
     # Case 1: The branch points exactly to main (Fresh branch). Safe.
-    if [ "$ORIGIN_TIP" == "$MAIN_TIP" ]; then
+    if [[ "$ORIGIN_TIP" == "$MAIN_TIP" ]]; then
         echo "Branch is up-to-date with main. Safe to push."
         exit 0
     fi

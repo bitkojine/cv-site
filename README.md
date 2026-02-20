@@ -71,6 +71,8 @@ Local site: `http://localhost:4321`
 | `npm run test:e2e:ci`         | Run Playwright with `--fail-on-flaky-tests`         |
 | `npm run audit:lighthouse`    | Run Lighthouse sweep + archive artifacts            |
 | `npm run audit:lighthouse:ci` | Run Lighthouse with 100-score threshold enforcement |
+| `npm run audit:sonar:issues`  | Fetch Sonar open issues and write audit artifacts   |
+| `npm run audit:sonar:next`    | Print prioritized next issue batch to fix           |
 | `npm run fetch-activity`      | Refresh cached GitHub activity data                 |
 
 ## Data Validation
@@ -170,6 +172,25 @@ Branch protections are intentionally strict to prevent stale branch pushes and b
   - Rebase onto latest `origin/main` and re-run checks.
 - Cloudflare SSL issues:
   - Validate both edge and origin cert state in `ssl-monitor.yml` outputs.
+
+## Sonar Fix Loop
+
+Set environment variables:
+
+- `SONAR_TOKEN` (required)
+- `SONAR_PROJECT_KEY` (required)
+- `SONAR_HOST_URL` (optional, defaults to `https://sonarcloud.io`)
+- `SONAR_BRANCH` (optional)
+- `SONAR_PULL_REQUEST` (optional)
+
+Run:
+
+```bash
+npm run audit:sonar:issues
+npm run audit:sonar:next
+```
+
+Artifacts are written to `audit/sonar/<timestamp>/` with `latest-run.txt` pointing to the current run.
 
 ## Site Configuration
 

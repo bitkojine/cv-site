@@ -404,9 +404,6 @@ body[data-current-role]:not([data-current-role='']) .site-shell {
   color: #4b328f;
 }
 
-.self-reference__actions {
-}
-
 .self-reference__action-label {
   margin: 0;
   font-size: 0.79rem;
@@ -471,9 +468,6 @@ body[data-current-role]:not([data-current-role='']) .site-shell {
   font-size: 0.81rem;
 }
 
-.self-reference__checklist {
-}
-
 .self-reference__checklist ul {
   margin: 0.25rem 0 0;
   padding: 0;
@@ -526,7 +520,7 @@ body[data-current-role]:not([data-current-role='']) .site-shell {
   padding: 0;
   margin: -1px;
   overflow: hidden;
-  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
   white-space: nowrap;
   border: 0;
 }

@@ -13,12 +13,12 @@ set -e
 trap 'echo "" >&2; echo "ERROR: The zero-comment-policy script failed to execute properly." >&2; echo "This may be due to a Git command failure or missing tooling." >&2; exit 2' ERR
 
 CHECK_ALL=false
-if [ "$1" == "--all" ]; then
+if [[ "$1" == "--all" ]]; then
   CHECK_ALL=true
 fi
 
 # 1. Identify files to scan
-if [ "$CHECK_ALL" = true ]; then
+if [[ "$CHECK_ALL" = true ]]; then
   # Scan all files under src/ and tests/ (working tree), ignoring md files
   FILES=$(find src tests -type f | grep -vE '/(generated|vendor|dist|build)/|\.md$' || true)
 else
@@ -26,7 +26,7 @@ else
   FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '^(src|tests)/' | grep -vE '/(generated|vendor|dist|build)/|\.md$' || true)
 fi
 
-if [ -z "$FILES" ]; then
+if [[ -z "$FILES" ]]; then
   exit 0
 fi
 
@@ -35,8 +35,8 @@ HAS_VIOLATIONS=false
 
 for FILE in $FILES; do
   # Skip if file doesn't exist (e.g. deleted in working tree but still in list)
-  if [ "$CHECK_ALL" = true ]; then
-    if [ ! -f "$FILE" ]; then continue; fi
+  if [[ "$CHECK_ALL" = true ]]; then
+    if [[ ! -f "$FILE" ]]; then continue; fi
     # Check if text file
     if ! grep -qI . "$FILE"; then continue; fi
     CONTENT_CMD="cat $FILE"
@@ -65,13 +65,13 @@ for FILE in $FILES; do
     }
   ')
 
-  if [ -n "$FILE_VIOLATIONS" ]; then
+  if [[ -n "$FILE_VIOLATIONS" ]]; then
     VIOLATIONS="${VIOLATIONS}${FILE_VIOLATIONS}"$'\n'
     HAS_VIOLATIONS=true
   fi
 done
 
-if [ "$HAS_VIOLATIONS" = true ]; then
+if [[ "$HAS_VIOLATIONS" = true ]]; then
   echo "################################################################################"
   echo "#                                                                              #"
   echo "#                        ZERO COMMENT POLICY VIOLATION                         #"
@@ -87,7 +87,7 @@ if [ "$HAS_VIOLATIONS" = true ]; then
   echo "  1. Move all reasoning/documentation to:"
   echo "     docs/ai-reasoning/inline-comment-attempts.md"
   echo "  2. Remove all comments from the source files."
-  if [ "$CHECK_ALL" = false ]; then
+  if [[ "$CHECK_ALL" = false ]]; then
     echo "  3. Stage changes and retry the commit."
   fi
   echo ""

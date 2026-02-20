@@ -26,9 +26,11 @@ describe('echo notes', () => {
     const blogSlugs = readdirSync(blogDir)
       .filter((name) => name.endsWith('.md'))
       .map((name) => `/blog/${name.replace(/\.md$/, '')}`);
-    const mappedSlugs = Object.keys(ECHO_BLOG_POST_NOTES).sort();
+    const mappedSlugs = Object.keys(ECHO_BLOG_POST_NOTES).sort((a, b) =>
+      a.localeCompare(b)
+    );
 
-    expect(mappedSlugs).toEqual(blogSlugs.sort());
+    expect(mappedSlugs).toEqual(blogSlugs.sort((a, b) => a.localeCompare(b)));
     blogSlugs.forEach((slug) => {
       const note = resolveEchoNote(slug);
       expect(note.id).not.toBe('blog-post-generic');

@@ -10,7 +10,10 @@ const minScore = Number.parseInt(process.env.LIGHTHOUSE_MIN_SCORE ?? '100', 10);
 const port = Number.parseInt(process.env.LIGHTHOUSE_PORT ?? '4321', 10);
 const baseUrl =
   process.env.LIGHTHOUSE_BASE_URL ?? `http://127.0.0.1:${String(port)}`;
-const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+const timestamp = new Date()
+  .toISOString()
+  .replaceAll(':', '-')
+  .replaceAll('.', '-');
 const outDir = resolve(process.cwd(), 'audit', 'lighthouse', timestamp);
 const routes = [
   '/',

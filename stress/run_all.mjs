@@ -19,15 +19,18 @@ const {
 
 const TOTAL_BUDGET_MS = 5 * 60 * 1000;
 const START_TS = Date.now();
-const stamp = new Date().toISOString().replace(/[:.]/g, '-');
+const stamp = new Date()
+  .toISOString()
+  .replaceAll(':', '-')
+  .replaceAll('.', '-');
 const artifactsDir = join(process.cwd(), 'stress', 'artifacts', stamp);
 mkdirSync(artifactsDir, { recursive: true });
 mkdirSync(join(artifactsDir, 'screenshots'), { recursive: true });
 
-const BASE_URL = (process.env.BASE_URL || 'http://127.0.0.1:4321').replace(
-  /\/$/,
-  ''
-);
+const rawBaseUrl = process.env.BASE_URL || 'http://127.0.0.1:4321';
+const BASE_URL = rawBaseUrl.endsWith('/')
+  ? rawBaseUrl.slice(0, -1)
+  : rawBaseUrl;
 const AUTO_START_SERVER = process.env.AUTO_START_SERVER !== '0';
 const endpoints = [
   '/',
@@ -145,11 +148,9 @@ async function runWorkers({
   const endAt = startedAt + durationMs;
   const aggregate = newMetric();
   const byEndpoint = {};
-  let stop = false;
-
   const workers = Array.from({ length: concurrency }, (_, workerId) =>
     (async () => {
-      while (!stop && performance.now() < endAt) {
+      while (performance.now() < endAt) {
         const req = pickRequest(workerId);
         const endpointMetric = byEndpoint[req.path] || newMetric();
         byEndpoint[req.path] = endpointMetric;
@@ -217,7 +218,6 @@ async function runWorkers({
   );
 
   await Promise.all(workers);
-  stop = true;
   const durationActual = performance.now() - startedAt;
   const summary = {
     name,
@@ -610,15 +610,7 @@ async function runDependencyLatencySimulation() {
   return result;
 }
 
-function detectIssues() {
-  const baseline = phaseResults.A_baseline_smoke?.aggregate;
-  const burst = phaseResults.B_high_intensity_burst?.aggregate;
-  const breakpoint = phaseResults.C_breakpoint_stress_escalation;
-  const writes = phaseResults.D_concurrency_attack_writes?.aggregate;
-  const chaos = phaseResults.E_smart_ui_chaos;
-  const fuzz = phaseResults.F_api_fuzz_burst?.aggregate;
-  const dep = phaseResults.G_dependency_latency_simulation?.aggregate;
-
+function detectBaselineIssue(baseline) {
   if (baseline && baseline.p95Ms > 2000) {
     issues.push({
       title: 'Baseline p95 above 2s',
@@ -633,6 +625,9 @@ function detectIssues() {
       verification: 'Re-run baseline phase and confirm p95 < 2s.',
     });
   }
+}
+
+function detectBurstIssue(burst) {
   if (burst && burst.errorRate > 0.01) {
     issues.push({
       title: 'Error rate above 1% under high burst',
@@ -647,6 +642,9 @@ function detectIssues() {
       verification: 'Repeat burst; require errorRate <= 1%.',
     });
   }
+}
+
+function detectBreakpointIssue(breakpoint) {
   if (breakpoint?.firstFailure) {
     issues.push({
       title: `Instability threshold crossed at ${breakpoint.firstFailure.vus} VUs`,
@@ -661,6 +659,9 @@ function detectIssues() {
         'Step test should keep p99 < 5s and error rate < 5% through target load.',
     });
   }
+}
+
+function detectWriteIssue(writes) {
   if (writes && writes.statusCounts['500']) {
     issues.push({
       title: 'Server 500s during write-concurrency attack',
@@ -675,6 +676,9 @@ function detectIssues() {
       verification: 'No 5xx across 60s concurrent write attack.',
     });
   }
+}
+
+function detectChaosIssue(chaos) {
   if (
     chaos &&
     (chaos.uncaughtExceptions.length ||
@@ -713,6 +717,9 @@ function detectIssues() {
       issues.pop();
     }
   }
+}
+
+function detectFuzzIssue(fuzz) {
   if (fuzz && fuzz.statusCounts['500']) {
     issues.push({
       title: 'API fuzz produced server 500 responses',
@@ -727,6 +734,9 @@ function detectIssues() {
       verification: 'Fuzz run should have no 5xx and no stack traces.',
     });
   }
+}
+
+function detectDependencyIssue(dep) {
   if (dep && dep.errorRate > 0.05) {
     issues.push({
       title: 'Dependency slowdown caused cascading failure',
@@ -741,6 +751,18 @@ function detectIssues() {
       verification: 'Latency simulation should keep error rate < 5%.',
     });
   }
+}
+
+function detectIssues() {
+  detectBaselineIssue(phaseResults.A_baseline_smoke?.aggregate);
+  detectBurstIssue(phaseResults.B_high_intensity_burst?.aggregate);
+  detectBreakpointIssue(phaseResults.C_breakpoint_stress_escalation);
+  detectWriteIssue(phaseResults.D_concurrency_attack_writes?.aggregate);
+  detectChaosIssue(phaseResults.E_smart_ui_chaos);
+  detectFuzzIssue(phaseResults.F_api_fuzz_burst?.aggregate);
+  detectDependencyIssue(
+    phaseResults.G_dependency_latency_simulation?.aggregate
+  );
 }
 
 function buildReport() {
@@ -770,62 +792,60 @@ function buildReport() {
     (a, b) => b.p95 + b.errorRate * 1000 - (a.p95 + a.errorRate * 1000)
   )[0];
 
-  const lines = [];
-  lines.push('# Stress Test Report');
-  lines.push('');
-  lines.push(`- Run timestamp: ${new Date().toISOString()}`);
-  lines.push(`- Base URL: ${BASE_URL}`);
-  lines.push(`- Total wall-clock: ${(elapsedMs / 1000).toFixed(1)}s`);
-  lines.push(
-    `- Budget check (<= 300s): ${elapsedMs <= TOTAL_BUDGET_MS ? 'PASS' : 'FAIL'}`
-  );
-  lines.push('');
-  lines.push('## Assumptions');
-  if (!assumptions.length) lines.push('- None.');
-  for (const a of assumptions) lines.push(`- ${a}`);
-  lines.push('');
-  lines.push('## What Broke');
-  if (!issues.length)
-    lines.push(
-      '- No critical breakage detected under this 5-minute burst suite.'
-    );
-  for (const issue of issues) {
-    lines.push(`- [${issue.severity}] ${issue.title}`);
-    lines.push(`  - Repro: \`${issue.repro}\``);
-    lines.push(`  - Evidence: \`${issue.evidence}\``);
-    lines.push(`  - Suspected root cause: ${issue.suspectedRootCause}`);
-    lines.push(`  - Suggested fix: ${issue.suggestedFix}`);
-    lines.push(`  - Verification: ${issue.verification}`);
-  }
-  lines.push('');
-  lines.push('## What Degraded First');
-  lines.push(
-    `- Most degraded phase: ${firstDegraded.phase} (p95=${firstDegraded.p95}ms, errorRate=${firstDegraded.errorRate})`
-  );
-  if (breakpoint) {
-    lines.push(
-      `- Breakpoint crossed at ${breakpoint.vus} VUs (p99=${breakpoint.p99Ms}ms, errorRate=${breakpoint.errorRate})`
-    );
-  } else {
-    lines.push('- Breakpoint threshold not crossed in configured escalation.');
-  }
-  lines.push('');
-  lines.push('## Reproduction Commands');
-  lines.push('- Full suite:');
-  lines.push('```bash');
-  lines.push(`BASE_URL=${BASE_URL} ./stress/run_all.sh`);
-  lines.push('```');
-  lines.push('- Focus burst only:');
-  lines.push('```bash');
-  lines.push(`BASE_URL=${BASE_URL} BURST_VUS=180 node stress/run_all.mjs`);
-  lines.push('```');
-  lines.push('');
-  lines.push('## Evidence');
-  lines.push(`- Latency and error summaries: \`${artifactsDir}/*.json\``);
-  lines.push(`- Resource samples: \`${resourceLog}\``);
-  lines.push(`- Failed payloads: \`${failuresFile}\``);
-  lines.push(`- UI screenshots: \`${join(artifactsDir, 'screenshots')}\``);
-  lines.push(`- Runner log: \`${runnerLog}\``);
+  const assumptionsLines = assumptions.length
+    ? assumptions.map((item) => `- ${item}`)
+    : ['- None.'];
+  const issueLines = issues.length
+    ? issues.flatMap((issue) => [
+        `- [${issue.severity}] ${issue.title}`,
+        `  - Repro: \`${issue.repro}\``,
+        `  - Evidence: \`${issue.evidence}\``,
+        `  - Suspected root cause: ${issue.suspectedRootCause}`,
+        `  - Suggested fix: ${issue.suggestedFix}`,
+        `  - Verification: ${issue.verification}`,
+      ])
+    : ['- No critical breakage detected under this 5-minute burst suite.'];
+  const breakpointLines = breakpoint
+    ? [
+        `- Breakpoint crossed at ${breakpoint.vus} VUs (p99=${breakpoint.p99Ms}ms, errorRate=${breakpoint.errorRate})`,
+      ]
+    : ['- Breakpoint threshold not crossed in configured escalation.'];
+
+  const lines = [
+    '# Stress Test Report',
+    '',
+    `- Run timestamp: ${new Date().toISOString()}`,
+    `- Base URL: ${BASE_URL}`,
+    `- Total wall-clock: ${(elapsedMs / 1000).toFixed(1)}s`,
+    `- Budget check (<= 300s): ${elapsedMs <= TOTAL_BUDGET_MS ? 'PASS' : 'FAIL'}`,
+    '',
+    '## Assumptions',
+    ...assumptionsLines,
+    '',
+    '## What Broke',
+    ...issueLines,
+    '',
+    '## What Degraded First',
+    `- Most degraded phase: ${firstDegraded.phase} (p95=${firstDegraded.p95}ms, errorRate=${firstDegraded.errorRate})`,
+    ...breakpointLines,
+    '',
+    '## Reproduction Commands',
+    '- Full suite:',
+    '```bash',
+    `BASE_URL=${BASE_URL} ./stress/run_all.sh`,
+    '```',
+    '- Focus burst only:',
+    '```bash',
+    `BASE_URL=${BASE_URL} BURST_VUS=180 node stress/run_all.mjs`,
+    '```',
+    '',
+    '## Evidence',
+    `- Latency and error summaries: \`${artifactsDir}/*.json\``,
+    `- Resource samples: \`${resourceLog}\``,
+    `- Failed payloads: \`${failuresFile}\``,
+    `- UI screenshots: \`${join(artifactsDir, 'screenshots')}\``,
+    `- Runner log: \`${runnerLog}\``,
+  ];
 
   writeFileSync(
     join(process.cwd(), 'stress', 'README.md'),

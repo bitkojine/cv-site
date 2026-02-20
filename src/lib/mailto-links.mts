@@ -36,14 +36,14 @@ const DEFAULT_CONFIRM_MESSAGE =
   'This will open your email client with a pre-filled template message to send to me. Continue?';
 
 export function buildMailtoHref(link: MailtoLink): string | null {
-  const local = link.getAttribute('data-email-local') || '',
-    domain = link.getAttribute('data-email-domain') || '';
+  const local = link.dataset.emailLocal ?? '',
+    domain = link.dataset.emailDomain ?? '';
   if (!local || !domain) {
     return null;
   }
 
-  const subject = link.getAttribute('data-email-subject') || '',
-    body = link.getAttribute('data-email-body') || '',
+  const subject = link.dataset.emailSubject ?? '',
+    body = link.dataset.emailBody ?? '',
     params = [];
   if (subject) {
     params.push(`subject=${subject}`);
@@ -95,8 +95,7 @@ export function bindMailtoLinks(
         typeof win.confirm === 'function' && !('document' in win);
       if (useLegacyConfirm) {
         const confirmMessage =
-          link.getAttribute('data-mailto-confirm-message') ||
-          DEFAULT_CONFIRM_MESSAGE;
+          link.dataset.mailtoConfirmMessage || DEFAULT_CONFIRM_MESSAGE;
         if (!win.confirm?.(confirmMessage)) {
           cancelDraft();
           return;
@@ -201,7 +200,7 @@ function confirmMailtoOpen(
   doc: Document,
   options: { title: string }
 ): boolean | Promise<boolean> {
-  if (modalPromise) return modalPromise;
+  if (modalPromise !== null) return modalPromise;
   const modal = ensureMailtoModal(doc);
   if (!modal || typeof modal.dialog.showModal !== 'function') {
     return true;
