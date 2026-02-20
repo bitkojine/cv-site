@@ -1,7 +1,4 @@
 ---
-import { FileText } from '@lucide/astro';
-import SiteLayout from '../layouts/SiteLayout.astro';
-import SectionLastUpdated from '../components/SectionLastUpdated.astro';
 import { cvData } from '../data/cv.mts';
 
 const {
@@ -21,220 +18,292 @@ const timeline = [...experience, ...independentProjects].sort((a, b) => {
   return toScore(b.startDate) - toScore(a.startDate);
 });
 
-const schemaExtras = {
-  about:
-    'Printable CV page with work experience timeline, core skills, and contact details.',
+const issuedDate = new Intl.DateTimeFormat('en-CA', {
+  timeZone: 'Europe/Vilnius',
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+}).format(new Date());
+
+const receiptWidth = 42;
+const separator = '='.repeat(receiptWidth);
+const subSeparator = '-'.repeat(receiptWidth);
+const center = (value: string) => {
+  if (value.length >= receiptWidth) return value.slice(0, receiptWidth);
+  const left = Math.floor((receiptWidth - value.length) / 2);
+  return `${' '.repeat(left)}${value}`;
 };
+const wrapText = (value: string, width = receiptWidth) => {
+  const words = value.replace(/\s+/g, ' ').trim().split(' ');
+  const out: string[] = [];
+  let line = '';
+  for (const word of words) {
+    if (!word) continue;
+    if (!line) {
+      if (word.length <= width) {
+        line = word;
+      } else {
+        out.push(word.slice(0, width));
+        line = word.slice(width);
+      }
+      continue;
+    }
+    if (`${line} ${word}`.length <= width) {
+      line = `${line} ${word}`;
+    } else {
+      out.push(line);
+      if (word.length <= width) {
+        line = word;
+      } else {
+        out.push(word.slice(0, width));
+        line = word.slice(width);
+      }
+    }
+  }
+  if (line) out.push(line);
+  return out.length > 0 ? out : [''];
+};
+const labelLine = (label: string, value: string) => {
+  const key = `${label.toUpperCase()}`.padEnd(10, '.');
+  const firstPrefix = `${key}: `;
+  const lines = wrapText(value, receiptWidth - firstPrefix.length);
+  const first = `${firstPrefix}${lines[0]}`;
+  const rest = lines
+    .slice(1)
+    .map((line) => `${' '.repeat(firstPrefix.length)}${line}`);
+  return [first, ...rest];
+};
+const section = (title: string, lines: string[]) => [
+  '',
+  title.toUpperCase(),
+  subSeparator,
+  ...lines,
+];
+const bulletWrap = (value: string) => {
+  const prefix = '  * ';
+  const lines = wrapText(value, receiptWidth - prefix.length);
+  return [
+    prefix + lines[0],
+    ...lines.slice(1).map((line) => ' '.repeat(prefix.length) + line),
+  ];
+};
+
+const cvPlainText = [
+  separator,
+  center('PLAIN TEXT CV RECEIPT'),
+  center('ROBERTAS RUDYS'),
+  center(`ISSUED ${issuedDate}`),
+  separator,
+  ...section('Contact', [
+    ...labelLine('Email', personalInfo.contact.email),
+    ...labelLine('Location', personalInfo.contact.location),
+    ...labelLine('Remote', personalInfo.contact.remote),
+    ...labelLine('Stack', personalInfo.contact.stack),
+  ]),
+  ...section('Profile', wrapText(personalInfo.profile)),
+  ...section(
+    'Core Skills',
+    coreSkills.flatMap((skill) => bulletWrap(`${skill.label}: ${skill.value}`))
+  ),
+  ...section(
+    'Work Experience',
+    timeline.flatMap((item) => [
+      ...wrapText(`${item.startDate} - ${item.endDate ?? 'Present'}`),
+      ...wrapText(`${item.title} @ ${item.company}`),
+      ...labelLine('Place', item.location),
+      ...item.description.flatMap((line) => bulletWrap(line)),
+      '',
+    ])
+  ),
+  ...section(
+    'Current Focus',
+    lookingFor.flatMap((line) => bulletWrap(line))
+  ),
+  '',
+  ...wrapText('PRIMARY STACK: TYPESCRIPT + AI AGENTS'),
+  ...wrapText('ALSO OPEN TO: C# / .NET ROLES'),
+  center('END OF CV'),
+  separator,
+].join('\n');
 ---
 
-<SiteLayout
-  canonicalPath="/cv"
-  description="Printable CV and work experience timeline for Robertas Rudys."
-  roleLabel="Curriculum Vitae"
-  schemaExtras={schemaExtras}
-  schemaType="ProfilePage"
-  title="Robertas Rudys | CV"
->
-  <section aria-labelledby="cv-heading" class="mode-hero cv-hero">
-    <div class="headline-row">
-      <span aria-hidden="true" class="headline-icon"
-        ><FileText size={86} /></span
-      >
-      <h1 id="cv-heading">Curriculum Vitae</h1>
-    </div>
-    <p class="cta-note">
-      Direct experience timeline, core skills, and role fit summary.
-    </p>
-    <div class="cta-row cv-actions">
-      <button class="cta-primary" data-cv-print type="button">
-        Print Or Save PDF
-      </button>
-      <a class="cta-secondary" href="/cv?view=print">Open Print View</a>
-      <a class="cta-secondary" href="/hiring">Back To Hiring</a>
-    </div>
-  </section>
-
-  <section aria-labelledby="cv-profile" class="card">
-    <h2 id="cv-profile">{personalInfo.name}</h2>
-    <SectionLastUpdated />
-    <p>
-      <strong>{personalInfo.title}</strong>
-    </p>
-    <p>{personalInfo.profile}</p>
-    <ul>
-      <li>
-        <strong>Email:</strong>
-        <a href={`mailto:${personalInfo.contact.email}`}>
-          {personalInfo.contact.email}
-        </a>
-      </li>
-      <li>
-        <strong>Location:</strong>
-        {personalInfo.contact.location}
-      </li>
-      <li>
-        <strong>Remote:</strong>
-        {personalInfo.contact.remote}
-      </li>
-      <li>
-        <strong>Stack focus:</strong>
-        {personalInfo.contact.stack}
-      </li>
-    </ul>
-  </section>
-
-  <section aria-labelledby="cv-skills" class="card">
-    <h2 id="cv-skills">Core Skills</h2>
-    <SectionLastUpdated />
-    <ul>
-      {
-        coreSkills.map((skill) => (
-          <li>
-            <strong>{skill.label}:</strong>
-            {skill.value}
-          </li>
-        ))
-      }
-    </ul>
-  </section>
-
-  <section aria-labelledby="cv-experience" class="card">
-    <h2 id="cv-experience">Work Experience</h2>
-    <SectionLastUpdated />
-    <div class="cv-timeline">
-      {
-        timeline.map((item) => (
-          <article class="cv-role">
-            <h3>{item.title}</h3>
-            <p class="cv-role-meta">
-              <strong>{item.company}</strong>
-              <span>{item.location}</span>
-              <span>
-                {item.startDate}
-                {' — '}
-                {item.endDate ?? 'Present'}
-              </span>
-            </p>
-            <ul>
-              {item.description.map((line) => (
-                <li>{line}</li>
-              ))}
-            </ul>
-          </article>
-        ))
-      }
-    </div>
-  </section>
-
-  <section aria-labelledby="cv-looking-for" class="card">
-    <h2 id="cv-looking-for">Current Focus</h2>
-    <SectionLastUpdated />
-    <ul>
-      {lookingFor.map((line) => <li>{line}</li>)}
-    </ul>
-  </section>
-</SiteLayout>
-
-<style>
-  .cv-actions {
-    margin-top: 0.7rem;
-  }
-
-  .cv-timeline {
-    display: grid;
-    gap: 0.8rem;
-  }
-
-  .cv-role {
-    border: 1px solid var(--line);
-    border-radius: 10px;
-    padding: 0.65rem;
-    background: color-mix(in oklab, var(--surface) 94%, var(--accent-soft));
-  }
-
-  .cv-role h3 {
-    margin: 0;
-    font-size: 1.02rem;
-  }
-
-  .cv-role-meta {
-    margin: 0.35rem 0 0.55rem;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.45rem;
-    color: var(--muted);
-    font-size: 0.9rem;
-  }
-
-  .cv-role-meta strong {
-    color: var(--text);
-  }
-
-  .cv-role ul {
-    margin: 0;
-  }
-
-  body[data-cv-view='print'] .mail-topbar,
-  body[data-cv-view='print'] .site-footer,
-  body[data-cv-view='print'] .site-global-echo {
-    display: none;
-  }
-
-  body[data-cv-view='print'] .site-shell {
-    max-width: 100%;
-    padding: 0;
-  }
-
-  @media print {
-    .mail-topbar,
-    .site-footer,
-    .site-global-echo,
-    .cv-actions {
-      display: none;
-    }
-
-    .site-shell {
-      max-width: 100%;
-      padding: 0;
-    }
-
-    .card {
-      page-break-inside: avoid;
-    }
-  }
-</style>
-
-<script>
-  (() => {
-    const reportEvent = (eventName, props = {}) => {
-      const sendEvent = window.cvReportEvent ?? window.cvTrack;
-      if (typeof sendEvent === 'function') {
-        sendEvent(eventName, props);
-      }
-    };
-
-    const init = () => {
-      const params = new URLSearchParams(window.location.search);
-      if (params.get('view') === 'print') {
-        document.body.dataset.cvView = 'print';
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Robertas Rudys | CV</title>
+    <meta
+      name="description"
+      content="Plain text CV for print and PDF export."
+    />
+    <link rel="canonical" href={new URL('/cv', Astro.site)} />
+    <style>
+      @page {
+        size: A4;
+        margin: 16mm;
       }
 
-      const printButton = document.querySelector('[data-cv-print]');
-      if (!(printButton instanceof HTMLButtonElement)) return;
-      if (printButton.dataset.boundPrint === '1') return;
-      printButton.dataset.boundPrint = '1';
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: #ecebe4;
+        color: #111;
+      }
 
-      printButton.addEventListener('click', () => {
-        reportEvent('cv_exported', { method: 'print_dialog' });
-        window.print();
-      });
-    };
+      .cv-root {
+        max-width: 52ch;
+        margin: 0 auto;
+        padding: 0.9rem 0.8rem 1.1rem;
+        border: 1px solid #c9c7bb;
+        border-radius: 6px;
+        background:
+          radial-gradient(
+              circle at 1px 1px,
+              rgba(0, 0, 0, 0.03) 1px,
+              transparent 0
+            )
+            0 0 / 10px 10px,
+          linear-gradient(180deg, #fffdf3 0%, #fffbea 100%);
+        box-shadow:
+          0 8px 24px rgba(0, 0, 0, 0.08),
+          inset 0 1px 0 rgba(255, 255, 255, 0.85);
+        position: relative;
+      }
 
-    document.addEventListener('astro:page-load', init);
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', init, { once: true });
-    } else {
-      init();
-    }
-  })();
-</script>
+      .cv-root::before,
+      .cv-root::after {
+        content: '';
+        position: absolute;
+        top: 0.35rem;
+        bottom: 0.35rem;
+        width: 7px;
+        border-radius: 999px;
+        background: radial-gradient(
+            circle at 50% 4px,
+            #d8d5c7 2px,
+            transparent 2.5px
+          )
+          center top / 7px 12px repeat-y;
+        opacity: 0.9;
+        pointer-events: none;
+      }
+
+      .cv-root::before {
+        left: -4px;
+      }
+
+      .cv-root::after {
+        right: -4px;
+      }
+
+      .cv-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 0.75rem;
+      }
+
+      .cv-action-btn {
+        appearance: none;
+        border: 1px solid #222;
+        border-radius: 6px;
+        background: #fff;
+        color: #111;
+        padding: 0.4rem 0.75rem;
+        font:
+          600 0.9rem/1.2 system-ui,
+          -apple-system,
+          Segoe UI,
+          Roboto,
+          sans-serif;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+      }
+
+      pre {
+        margin: 0;
+        white-space: pre;
+        overflow-x: auto;
+        letter-spacing: 0.005em;
+        border: 1px dashed #c9c5b2;
+        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.5);
+        padding: 0.85rem 0.65rem 0.95rem;
+        font:
+          400 10pt/1.42 Menlo,
+          Consolas,
+          Monaco,
+          monospace;
+      }
+
+      @media print {
+        .cv-actions {
+          display: none;
+        }
+
+        .cv-root {
+          max-width: 100%;
+          margin: 0;
+          padding: 0;
+          border: 0;
+          border-radius: 0;
+          background: #fff;
+          box-shadow: none;
+        }
+
+        html,
+        body {
+          background: #fff;
+          color: #000;
+        }
+
+        .cv-root::before,
+        .cv-root::after {
+          display: none;
+        }
+
+        pre {
+          border: 0;
+          border-radius: 0;
+          background: #fff;
+          padding: 0;
+          font-size: 10pt;
+          line-height: 1.42;
+          white-space: pre;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="cv-root" id="main-content">
+      <div class="cv-actions">
+        <button class="cv-action-btn" data-cv-print type="button">
+          Save As PDF
+        </button>
+        <a class="cv-action-btn" href="/">Back Home</a>
+      </div>
+      <pre>{cvPlainText}</pre>
+    </main>
+
+    <script>
+      (() => {
+        const printButton = document.querySelector('[data-cv-print]');
+        if (!(printButton instanceof HTMLButtonElement)) return;
+        if (printButton.dataset.boundPrint === '1') return;
+        printButton.dataset.boundPrint = '1';
+
+        printButton.addEventListener('click', () => {
+          const sendEvent = window.cvReportEvent ?? window.cvTrack;
+          if (typeof sendEvent === 'function') {
+            sendEvent('cv_exported', { method: 'print_dialog' });
+          }
+          window.print();
+        });
+      })();
+    </script>
+  </body>
+</html>
