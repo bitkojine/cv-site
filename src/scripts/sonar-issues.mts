@@ -46,7 +46,10 @@ const pageSize = Math.min(
   Math.max(50, Number.parseInt(args.get('ps') ?? '500', 10))
 );
 const outRoot = resolve(process.cwd(), 'audit', 'sonar');
-const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+const timestamp = new Date()
+  .toISOString()
+  .replaceAll(':', '-')
+  .replaceAll('.', '-');
 const outDir = join(outRoot, timestamp);
 
 function fail(message: string): never {
@@ -69,7 +72,8 @@ function toFilePath(component: string) {
 }
 
 function authHeader(value: string) {
-  return `Basic ${Buffer.from(`${value}:`).toString('base64')}`;
+  const credentials = `${value}:`;
+  return `Basic ${Buffer.from(credentials).toString('base64')}`;
 }
 
 async function fetchIssuesPage(page: number): Promise<SonarIssuesResponse> {
@@ -227,4 +231,4 @@ async function main() {
   process.stdout.write(`Open issues: ${String(total)}\n`);
 }
 
-void main();
+await main();

@@ -174,7 +174,7 @@ async function runWorkers({
             (aggregate.statusCounts[res.status] || 0) + 1;
           endpointMetric.statusCounts[res.status] =
             (endpointMetric.statusCounts[res.status] || 0) + 1;
-          const expected = expectedStatuses || req.expectedStatuses;
+          const expected = expectedStatuses ?? req.expectedStatuses;
           const ok = expected
             ? expected.includes(res.status)
             : res.status < 500;
@@ -662,7 +662,7 @@ function detectBreakpointIssue(breakpoint) {
 }
 
 function detectWriteIssue(writes) {
-  if (writes && writes.statusCounts['500']) {
+  if (writes?.statusCounts['500']) {
     issues.push({
       title: 'Server 500s during write-concurrency attack',
       severity: 'P0',
@@ -720,7 +720,7 @@ function detectChaosIssue(chaos) {
 }
 
 function detectFuzzIssue(fuzz) {
-  if (fuzz && fuzz.statusCounts['500']) {
+  if (fuzz?.statusCounts['500']) {
     issues.push({
       title: 'API fuzz produced server 500 responses',
       severity: 'P0',

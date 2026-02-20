@@ -4,10 +4,11 @@ type MailtoLink = HTMLElement & {
   dataset: DOMStringMap;
 };
 
-type MailtoDocument = Pick<
-  Document,
-  'querySelectorAll' | 'readyState' | 'addEventListener'
->;
+type MailtoDocument = {
+  querySelectorAll: (selectors: string) => NodeListOf<Element>;
+  readyState: DocumentReadyState;
+  addEventListener: Document['addEventListener'];
+};
 
 type MailtoWindow = Pick<Window, 'location'> & {
   __cvMailtoInstallerReady?: boolean;
@@ -65,10 +66,7 @@ export function buildMailtoHref(link: MailtoLink): string | null {
   return `mailto:${local}@${domain}${query}`;
 }
 
-export function bindMailtoLinks(
-  doc: Pick<Document, 'querySelectorAll'> & Document,
-  win: MailtoWindow
-): void {
+export function bindMailtoLinks(doc: MailtoDocument, win: MailtoWindow): void {
   const links = Array.from(doc.querySelectorAll('[data-mailto-link]'));
   links.forEach((rawLink) => {
     if (!isMailtoLink(rawLink)) {
@@ -148,7 +146,7 @@ export function installMailtoLinkHandler(
   win.__cvMailtoInstallerReady = true;
 
   const init = () => {
-    bindMailtoLinks(doc as Document, win);
+    bindMailtoLinks(doc, win);
   };
   doc.addEventListener('astro:page-load', init);
 
