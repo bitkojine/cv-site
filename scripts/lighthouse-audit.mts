@@ -101,7 +101,7 @@ async function runLighthouseWithRetry({
   route,
   mode,
   outputPath,
-  maxAttempts = 3,
+  maxAttempts = 5,
 }) {
   const reportPath = `${outputPath}.report.json`;
 
@@ -126,7 +126,7 @@ async function runLighthouseWithRetry({
       output.includes('missing metric scores for specified navigation') ||
       Boolean(report?.runtimeError);
 
-    if (result.status === 0 && valid) {
+    if (result.status === 0 && valid && !hasLanternError) {
       return report;
     }
 
