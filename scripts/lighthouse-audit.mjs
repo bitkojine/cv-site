@@ -24,6 +24,12 @@ const routes = [
   '/blog',
   '/blog/welcome',
 ];
+const scoreCategories = [
+  'performance',
+  'accessibility',
+  'best-practices',
+  'seo',
+];
 
 function run(cmd, cmdArgs, options = {}) {
   const result = spawnSync(cmd, cmdArgs, {
@@ -49,6 +55,96 @@ function slugify(route) {
 
 function categoryScore(report, key) {
   return Math.round((report.categories[key]?.score ?? 0) * 100);
+}
+
+function parseReport(reportPath) {
+  try {
+    return JSON.parse(readFileSync(reportPath, 'utf8'));
+  } catch {
+    return null;
+  }
+}
+
+function hasValidScores(report) {
+  return scoreCategories.every((key) => {
+    const value = report?.categories?.[key]?.score;
+    return Number.isFinite(value);
+  });
+}
+
+function buildLighthouseArgs(url, mode, outputPath) {
+  const baseArgs = [
+    '-y',
+    'lighthouse',
+    url,
+    '--only-categories=performance,accessibility,best-practices,seo',
+    '--throttling-method=provided',
+    '--quiet',
+    '--chrome-flags=--headless --no-sandbox --disable-dev-shm-usage',
+    '--output=json',
+    '--output=html',
+    `--output-path=${outputPath}`,
+  ];
+
+  if (mode === 'desktop') {
+    return [...baseArgs, '--preset=desktop'];
+  }
+
+  return [...baseArgs, '--emulated-form-factor=mobile'];
+}
+
+async function runLighthouseWithRetry({
+  url,
+  route,
+  mode,
+  outputPath,
+  maxAttempts = 3,
+}) {
+  const reportPath = `${outputPath}.report.json`;
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    const result = spawnSync(
+      'npx',
+      buildLighthouseArgs(url, mode, outputPath),
+      {
+        encoding: 'utf8',
+        shell: false,
+      }
+    );
+
+    if (result.stdout) process.stdout.write(result.stdout);
+    if (result.stderr) process.stderr.write(result.stderr);
+
+    const report = parseReport(reportPath);
+    const valid = report !== null && hasValidScores(report);
+    const output = `${result.stdout ?? ''}\n${result.stderr ?? ''}`;
+    const hasLanternError =
+      output.includes('LanternError') ||
+      output.includes('missing metric scores for specified navigation') ||
+      Boolean(report?.runtimeError);
+
+    if (result.status === 0 && valid) {
+      return report;
+    }
+
+    if (attempt < maxAttempts) {
+      process.stdout.write(
+        `Retrying Lighthouse for ${route} [${mode}] (attempt ${String(attempt + 1)}/${String(maxAttempts)})...\n`
+      );
+      await sleep(1500 * attempt);
+      continue;
+    }
+
+    const runtimeCode = report?.runtimeError?.code
+      ? ` runtimeError=${report.runtimeError.code}`
+      : '';
+    const lanternHint = hasLanternError ? ' Lantern/trace error detected.' : '';
+    throw new Error(
+      `Lighthouse failed for ${route} [${mode}] after ${String(maxAttempts)} attempts.${runtimeCode}${lanternHint}`
+    );
+  }
+
+  throw new Error(`Unreachable Lighthouse retry state for ${route} [${mode}]`);
 }
 
 async function main() {
@@ -91,38 +187,23 @@ async function main() {
   for (const route of routes) {
     const slug = slugify(route);
     const url = `${baseUrl}${route}`;
-
-    run('npx', [
-      '-y',
-      'lighthouse',
-      url,
-      '--only-categories=performance,accessibility,best-practices,seo',
-      '--emulated-form-factor=mobile',
-      '--throttling-method=provided',
-      '--quiet',
-      '--chrome-flags=--headless --no-sandbox --disable-dev-shm-usage',
-      '--output=json',
-      '--output=html',
-      `--output-path=${join(outDir, 'mobile', slug)}`,
-    ]);
-
-    run('npx', [
-      '-y',
-      'lighthouse',
-      url,
-      '--only-categories=performance,accessibility,best-practices,seo',
-      '--preset=desktop',
-      '--throttling-method=provided',
-      '--quiet',
-      '--chrome-flags=--headless --no-sandbox --disable-dev-shm-usage',
-      '--output=json',
-      '--output=html',
-      `--output-path=${join(outDir, 'desktop', slug)}`,
-    ]);
+    const reports = {
+      mobile: await runLighthouseWithRetry({
+        url,
+        route,
+        mode: 'mobile',
+        outputPath: join(outDir, 'mobile', slug),
+      }),
+      desktop: await runLighthouseWithRetry({
+        url,
+        route,
+        mode: 'desktop',
+        outputPath: join(outDir, 'desktop', slug),
+      }),
+    };
 
     for (const mode of ['mobile', 'desktop']) {
-      const reportPath = join(outDir, mode, `${slug}.report.json`);
-      const report = JSON.parse(readFileSync(reportPath, 'utf8'));
+      const report = reports[mode];
       rows.push({
         mode,
         route,
