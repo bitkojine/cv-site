@@ -15,6 +15,16 @@ type MailtoWindow = Pick<Window, 'location'> & {
   document?: unknown;
 };
 
+const isPromiseLike = (
+  value: boolean | Promise<boolean>
+): value is Promise<boolean> => typeof value !== 'boolean';
+
+const isMailtoLink = (value: unknown): value is MailtoLink =>
+  typeof value === 'object' &&
+  value !== null &&
+  'dataset' in value &&
+  'addEventListener' in value;
+
 type MailtoModalParts = {
   dialog: HTMLDialogElement;
   title: HTMLElement;
@@ -59,8 +69,12 @@ export function bindMailtoLinks(
   doc: Pick<Document, 'querySelectorAll'> & Document,
   win: MailtoWindow
 ): void {
-  const links = doc.querySelectorAll<MailtoLink>('[data-mailto-link]');
-  links.forEach((link) => {
+  const links = Array.from(doc.querySelectorAll('[data-mailto-link]'));
+  links.forEach((rawLink) => {
+    if (!isMailtoLink(rawLink)) {
+      return;
+    }
+    const link = rawLink;
     if (link.dataset.mailtoBound === '1') {
       return;
     }
@@ -104,7 +118,7 @@ export function bindMailtoLinks(
         return;
       }
 
-      if (typeof maybeConfirmation === 'boolean') {
+      if (!isPromiseLike(maybeConfirmation)) {
         if (maybeConfirmation) {
           openDraft();
         } else {
@@ -125,8 +139,8 @@ export function bindMailtoLinks(
 }
 
 export function installMailtoLinkHandler(
-  win: MailtoWindow = window,
-  doc: MailtoDocument = document
+  win: MailtoWindow = globalThis as MailtoWindow,
+  doc: MailtoDocument = globalThis.document as MailtoDocument
 ): void {
   if (win.__cvMailtoInstallerReady) {
     return;
