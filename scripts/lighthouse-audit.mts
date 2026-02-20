@@ -75,13 +75,14 @@ function hasValidScores(report) {
   });
 }
 
-function buildLighthouseArgs(url, mode, outputPath) {
+function buildLighthouseArgs(url, mode, outputPath, throttlingMethod) {
   const baseArgs = [
+    '--no-install',
     '-y',
     'lighthouse',
     url,
     '--only-categories=performance,accessibility,best-practices,seo',
-    '--throttling-method=provided',
+    `--throttling-method=${throttlingMethod}`,
     '--quiet',
     '--chrome-flags=--headless --no-sandbox --disable-dev-shm-usage',
     '--output=json',
@@ -104,11 +105,14 @@ async function runLighthouseWithRetry({
   maxAttempts = 5,
 }) {
   const reportPath = `${outputPath}.report.json`;
+  const throttlingPlan = ['provided', 'provided', 'provided', 'devtools', 'devtools'];
 
   for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    const throttlingMethod =
+      throttlingPlan[attempt - 1] ?? throttlingPlan[throttlingPlan.length - 1];
     const result = spawnSync(
       'npx',
-      buildLighthouseArgs(url, mode, outputPath),
+      buildLighthouseArgs(url, mode, outputPath, throttlingMethod),
       {
         encoding: 'utf8',
         shell: false,
@@ -131,8 +135,14 @@ async function runLighthouseWithRetry({
     }
 
     if (attempt < maxAttempts) {
+      const nextThrottlingMethod =
+        throttlingPlan[attempt] ?? throttlingPlan[throttlingPlan.length - 1];
+      const methodSwitchNote =
+        nextThrottlingMethod !== throttlingMethod
+          ? `; switching throttling method to ${nextThrottlingMethod}`
+          : '';
       process.stdout.write(
-        `Retrying Lighthouse for ${route} [${mode}] (attempt ${String(attempt + 1)}/${String(maxAttempts)})...\n`
+        `Retrying Lighthouse for ${route} [${mode}] (attempt ${String(attempt + 1)}/${String(maxAttempts)}, method=${nextThrottlingMethod}${methodSwitchNote})...\n`
       );
       await sleep(1500 * attempt);
       continue;
@@ -143,7 +153,7 @@ async function runLighthouseWithRetry({
       : '';
     const lanternHint = hasLanternError ? ' Lantern/trace error detected.' : '';
     throw new Error(
-      `Lighthouse failed for ${route} [${mode}] after ${String(maxAttempts)} attempts.${runtimeCode}${lanternHint}`
+      `Lighthouse failed for ${route} [${mode}] after ${String(maxAttempts)} attempts (last method=${throttlingMethod}).${runtimeCode}${lanternHint}`
     );
   }
 
