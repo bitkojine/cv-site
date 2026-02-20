@@ -1,52 +1,53 @@
 {
   "personalInfo": {
     "name": "Robertas Rudys",
-    "title": "Senior .NET Software Engineer",
+    "title": "Senior Backend Engineer (TypeScript-first, C# capable)",
     "contact": {
       "email": "robertas.rudys+www@gmail.com",
       "location": "Lithuania / EU",
       "remote": "Open to Remote (EU time zones)",
-      "stack": "Backend (.NET, C#, REST APIs)"
+      "stack": "Backend (TypeScript, APIs, AI coding agents; open to C#/.NET)"
     },
-    "profile": "Senior .NET Software Engineer working as a professional developer since 2015, delivering backend systems for product-focused environments. Core strengths include C#, .NET, ASP.NET Core, REST API design, and improving reliability in mature codebases.\n\nI have worked in both stable product teams and fast-changing environments, which built a pragmatic and ownership-driven engineering approach. I am focused on long-term product work with clear expectations, sustainable pace, and consistent delivery."
+    "profile": "Backend engineer shipping production software since 2015. Current day-to-day work is TypeScript-first with AI coding agents used for faster implementation and review loops. I am also open to C#/.NET roles where deep prior experience is relevant.\n\nI work best in product teams that need clear ownership, pragmatic scope decisions, and reliable delivery in existing systems."
   },
   "coreSkills": [
     {
       "label": "Backend",
-      "value": "C#, .NET (Framework/Core/modern .NET), ASP.NET Core, REST APIs, backend services"
+      "value": "TypeScript backend services, REST APIs, service boundaries, reliability hardening, C#/.NET (strong prior experience)"
     },
     {
       "label": "Data",
-      "value": "Relational databases, query optimization, data modeling, performance tuning"
+      "value": "Relational databases, query optimization, schema changes, data modeling, performance tuning"
     },
     {
-      "label": "Frontend",
-      "value": "Angular (working knowledge), TypeScript, JavaScript, HTML, CSS"
+      "label": "Delivery Workflow",
+      "value": "AI coding agents, iterative implementation/review loops, concise technical handoffs, practical execution planning"
     },
     {
       "label": "Architecture",
-      "value": "Monoliths, modular systems, service integrations, API-driven design"
+      "value": "Monoliths, modular systems, service integrations, API-driven design, migration staging"
     },
     {
       "label": "Practices",
-      "value": "Code reviews, debugging legacy systems, production troubleshooting, cross-functional collaboration"
+      "value": "Code reviews, legacy debugging, incident response, production troubleshooting, cross-functional collaboration"
     },
     {
       "label": "Other",
-      "value": "Git, CI/CD pipelines, cloud fundamentals (Azure - working knowledge)"
+      "value": "Git, CI/CD pipelines, Docker, cloud fundamentals (Azure - working knowledge)"
     }
   ],
   "experience": [
     {
-      "title": "Senior .NET Software Engineer",
+      "title": "Senior Backend Engineer",
       "company": "Product Company (EU, Remote)",
       "location": "EU, Remote",
       "startDate": "2026",
       "endDate": null,
       "description": [
-        "Own and maintain backend services and APIs that support core product workflows",
-        "Improve .NET service performance, reliability, and production stability",
-        "Collaborate with product and data stakeholders to deliver long-term roadmap features"
+        "Own backend services and APIs that support core product workflows",
+        "Deliver TypeScript-first features with AI-assisted coding and human-reviewed diffs",
+        "Improve production reliability through targeted fixes and clear operational ownership",
+        "Collaborate with product and data stakeholders to ship roadmap work with explicit scope"
       ]
     },
     {
@@ -56,9 +57,9 @@
       "startDate": "2025",
       "endDate": "2025",
       "description": [
-        "Built scalable AdTech backend services and API endpoints in a high-concurrency production environment",
-        "Delivered and optimized mission-critical features in large, existing codebases",
-        "Worked in a mature engineering organization with high quality, testing, and reliability standards"
+        "Built and maintained AdTech backend services and APIs in a high-concurrency environment",
+        "Delivered mission-critical features in large existing codebases without delivery slowdowns",
+        "Improved runtime behavior through focused performance and reliability work"
       ]
     },
     {
@@ -69,7 +70,7 @@
       "endDate": "2023",
       "description": [
         "Refactored and maintained enterprise .NET internal systems used by business teams",
-        "Extended complex legacy code while preserving stability, performance, and maintainability"
+        "Extended legacy systems while preserving stability and maintainability under active usage"
       ]
     },
     {
@@ -80,7 +81,7 @@
       "endDate": "2022",
       "description": [
         "Developed and shipped decentralized applications and smart-contract integrations",
-        "Delivered end-to-end features in a fast-paced, early-stage product setting"
+        "Delivered end-to-end features in a fast-moving early-stage product setting"
       ]
     },
     {
@@ -118,7 +119,7 @@
         "Architected a deterministic effect management system for high-integrity applications",
         "Implemented 'Radical Determinism' patterns to eliminate race conditions and side-effect bugs",
         "Built a comprehensive suite of developer tools including a time-travel debugger",
-        "maintained 100% test coverage and zero-comment policy in core libraries"
+        "Maintained 100% test coverage and zero-comment policy in core libraries"
       ]
     },
     {
@@ -136,8 +137,8 @@
     }
   ],
   "lookingFor": [
-    "Short-to-mid term backend contracts focused on .NET, C#, and API-heavy product work",
-    "Teams with urgent reliability, delivery, or refactor goals and clear ownership boundaries",
-    "Remote collaboration in English with straightforward communication and practical scope"
+    "Backend contracts and roles where TypeScript delivery speed and reliability are top priorities",
+    "Teams that value explicit ownership, practical scope control, and production quality",
+    "Also open to C#/.NET backend roles where prior experience is useful"
   ]
 }
