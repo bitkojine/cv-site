@@ -67,6 +67,11 @@ const routeMapData = routes.map((route) => {
     initialWordCount: route.initialWordCount,
   };
 });
+
+const routeScanData = routes.map((route) => ({
+  path: route.path,
+  initialWordCount: route.initialWordCount,
+}));
 ---
 
 <section aria-labelledby="route-map-summary" class="card" id="admin-map">
@@ -82,6 +87,18 @@ const routeMapData = routes.map((route) => {
   <p>
     One place to inspect all routes, link reachability, word counts, and Echo
     guidance.
+  </p>
+  <p class="route-scan-controls">
+    <button
+      class="cta-secondary route-scan-button"
+      data-route-scan-trigger
+      type="button"
+    >
+      Run full route scan
+    </button>
+    <span class="route-scan-status" data-route-scan-status>
+      Scan is paused to keep first load fast.
+    </span>
   </p>
 </section>
 
@@ -287,6 +304,24 @@ const routeMapData = routes.map((route) => {
     color: var(--muted);
   }
 
+  .route-scan-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.55rem;
+  }
+
+  .route-scan-button {
+    min-height: 38px;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.85rem;
+  }
+
+  .route-scan-status {
+    color: var(--muted);
+    font-size: 0.84rem;
+  }
+
   @media (min-width: 860px) {
     .route-map-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -294,7 +329,7 @@ const routeMapData = routes.map((route) => {
   }
 </style>
 
-<script define:vars={{ routeMapData, buildVersion: BUILD_VERSION }}>
+<script define:vars={{ routeScanData, buildVersion: BUILD_VERSION }}>
   (() => {
     const hasOwn = (obj, key) => Object.prototype.hasOwnProperty.call(obj, key);
     const metricsVersion = 'v4';
@@ -302,6 +337,7 @@ const routeMapData = routes.map((route) => {
     const latestCacheKey = `system-map-metrics:${metricsVersion}:latest`;
     const legacyCachePrefix = 'system-map-metrics:v2:';
     let activeRunId = 0;
+    let scanning = false;
 
     const scheduleIdle = () =>
       new Promise((resolve) => {
@@ -383,9 +419,23 @@ const routeMapData = routes.map((route) => {
       }
     };
 
-    const init = async () => {
+    const setScanStatus = (message) => {
+      const statusNode = document.querySelector('[data-route-scan-status]');
+      if (statusNode instanceof HTMLElement) {
+        statusNode.textContent = message;
+      }
+    };
+
+    const setScanButtonState = ({ disabled, label }) => {
+      const button = document.querySelector('[data-route-scan-trigger]');
+      if (!(button instanceof HTMLButtonElement)) return;
+      button.disabled = disabled;
+      button.textContent = label;
+    };
+
+    const buildBaseState = () => {
       const runId = ++activeRunId;
-      const routePaths = routeMapData.map((route) => route.path);
+      const routePaths = routeScanData.map((route) => route.path);
       const known = new Set(routePaths);
       const outboundByRoute = {};
       const inboundByRoute = {};
@@ -394,16 +444,24 @@ const routeMapData = routes.map((route) => {
       routePaths.forEach((path) => {
         outboundByRoute[path] = [];
         inboundByRoute[path] = [];
-        const routeMeta = routeMapData.find((route) => route.path === path);
+        const routeMeta = routeScanData.find((route) => route.path === path);
         wordCounts[path] =
           typeof routeMeta?.initialWordCount === 'number'
             ? routeMeta.initialWordCount
             : undefined;
       });
 
-      renderState({ routePaths, outboundByRoute, inboundByRoute, wordCounts });
+      return {
+        runId,
+        routePaths,
+        known,
+        outboundByRoute,
+        inboundByRoute,
+        wordCounts,
+      };
+    };
 
-      let hasBuildFreshCache = false;
+    const applyCachedState = ({ runId, routePaths }) => {
       try {
         const candidateCacheKeys = [
           cacheKey,
@@ -434,82 +492,137 @@ const routeMapData = routes.map((route) => {
             wordCounts: cached.wordCounts || {},
           });
 
-          hasBuildFreshCache = key === cacheKey;
-          if (hasBuildFreshCache) return;
-          break;
+          setScanStatus(
+            key === cacheKey
+              ? 'Loaded route metrics from this build cache.'
+              : 'Loaded route metrics from previous cache.'
+          );
+          setScanButtonState({
+            disabled: false,
+            label: 'Re-run full route scan',
+          });
+          return true;
         }
       } catch {}
+      return false;
+    };
 
-      if (hasBuildFreshCache) return;
+    const runFullScan = async () => {
+      if (scanning) return;
+      scanning = true;
+      setScanButtonState({ disabled: true, label: 'Scanning routes…' });
+      setScanStatus('Running full route scan...');
 
-      for (const path of routePaths) {
-        if (runId !== activeRunId) return;
-        await scheduleIdle();
-        if (runId !== activeRunId) return;
-
-        try {
-          const response = await fetch(path, { credentials: 'same-origin' });
-          if (!response.ok) continue;
-          const html = await response.text();
-          const doc = new DOMParser().parseFromString(html, 'text/html');
-
-          const main = path.startsWith('/blog/')
-            ? doc.querySelector('#blog-post-content .prose') ||
-              doc.querySelector('#blog-post-content') ||
-              doc.querySelector('#main-content') ||
-              doc.body
-            : doc.querySelector('#main-content') || doc.body;
-          const mainClone = main.cloneNode(true);
-          if (mainClone instanceof Element) {
-            mainClone
-              .querySelectorAll('script, style, noscript, svg')
-              .forEach((node) => node.remove());
-          }
-          const text = mainClone.textContent || '';
-          wordCounts[path] = countWords(text);
-
-          const links = new Set();
-          main.querySelectorAll('a[href]').forEach((anchor) => {
-            if (!(anchor instanceof HTMLAnchorElement)) return;
-            const normalized = normalizePath(anchor.getAttribute('href') || '');
-            if (!normalized) return;
-            if (!known.has(normalized)) return;
-            if (normalized === path) return;
-            links.add(normalized);
-          });
-          outboundByRoute[path] = Array.from(links).sort();
-        } catch {}
-      }
-
-      routePaths.forEach((fromPath) => {
-        outboundByRoute[fromPath].forEach((toPath) => {
-          if (!hasOwn(inboundByRoute, toPath)) return;
-          inboundByRoute[toPath].push(fromPath);
-        });
-      });
-
-      routePaths.forEach((path) => {
-        inboundByRoute[path] = Array.from(new Set(inboundByRoute[path])).sort();
-      });
-
-      if (runId !== activeRunId) return;
-      renderState({ routePaths, outboundByRoute, inboundByRoute, wordCounts });
       try {
-        const payload = JSON.stringify({
+        const state = buildBaseState();
+        const { runId, routePaths, known, outboundByRoute, inboundByRoute } =
+          state;
+        const { wordCounts } = state;
+
+        for (const path of routePaths) {
+          if (runId !== activeRunId) return;
+          await scheduleIdle();
+          if (runId !== activeRunId) return;
+
+          try {
+            const response = await fetch(path, { credentials: 'same-origin' });
+            if (!response.ok) continue;
+            const html = await response.text();
+            const doc = new DOMParser().parseFromString(html, 'text/html');
+
+            const main = path.startsWith('/blog/')
+              ? doc.querySelector('#blog-post-content .prose') ||
+                doc.querySelector('#blog-post-content') ||
+                doc.querySelector('#main-content') ||
+                doc.body
+              : doc.querySelector('#main-content') || doc.body;
+            const mainClone = main.cloneNode(true);
+            if (mainClone instanceof Element) {
+              mainClone
+                .querySelectorAll('script, style, noscript, svg')
+                .forEach((node) => node.remove());
+            }
+            const text = mainClone.textContent || '';
+            wordCounts[path] = countWords(text);
+
+            const links = new Set();
+            main.querySelectorAll('a[href]').forEach((anchor) => {
+              if (!(anchor instanceof HTMLAnchorElement)) return;
+              const normalized = normalizePath(
+                anchor.getAttribute('href') || ''
+              );
+              if (!normalized) return;
+              if (!known.has(normalized)) return;
+              if (normalized === path) return;
+              links.add(normalized);
+            });
+            outboundByRoute[path] = Array.from(links).sort();
+          } catch {}
+        }
+
+        routePaths.forEach((fromPath) => {
+          outboundByRoute[fromPath].forEach((toPath) => {
+            if (!hasOwn(inboundByRoute, toPath)) return;
+            inboundByRoute[toPath].push(fromPath);
+          });
+        });
+
+        routePaths.forEach((path) => {
+          inboundByRoute[path] = Array.from(
+            new Set(inboundByRoute[path])
+          ).sort();
+        });
+
+        if (runId !== activeRunId) return;
+        renderState({
           routePaths,
           outboundByRoute,
           inboundByRoute,
           wordCounts,
-          createdAt: Date.now(),
-          buildVersion,
         });
-        localStorage.setItem(cacheKey, payload);
-        localStorage.setItem(latestCacheKey, payload);
-      } catch {}
+        try {
+          const payload = JSON.stringify({
+            routePaths,
+            outboundByRoute,
+            inboundByRoute,
+            wordCounts,
+            createdAt: Date.now(),
+            buildVersion,
+          });
+          localStorage.setItem(cacheKey, payload);
+          localStorage.setItem(latestCacheKey, payload);
+        } catch {}
+
+        setScanStatus('Full route scan complete.');
+        setScanButtonState({
+          disabled: false,
+          label: 'Re-run full route scan',
+        });
+      } finally {
+        scanning = false;
+      }
+    };
+
+    const init = () => {
+      const state = buildBaseState();
+      renderState(state);
+      const hasCachedState = applyCachedState(state);
+      if (!hasCachedState) {
+        setScanStatus('Scan is paused to keep first load fast.');
+        setScanButtonState({ disabled: false, label: 'Run full route scan' });
+      }
+      const button = document.querySelector('[data-route-scan-trigger]');
+      if (button instanceof HTMLButtonElement && button.dataset.bound !== '1') {
+        button.dataset.bound = '1';
+        button.addEventListener('click', () => {
+          void runFullScan();
+        });
+      }
     };
 
     window.addEventListener('pagehide', () => {
       activeRunId += 1;
+      scanning = false;
     });
 
     document.addEventListener('astro:page-load', init);
