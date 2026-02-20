@@ -125,8 +125,11 @@ function printPlan(items: WorkItem[]) {
   process.stdout.write(`- Severity: ${next.topSeverity}\n`);
   process.stdout.write(`- Type: ${next.topType}\n`);
   process.stdout.write(`- Matching issues: ${String(next.count)}\n`);
+  const sampleLineSuffix = next.sampleIssue.line
+    ? ` (line ${String(next.sampleIssue.line)})`
+    : '';
   process.stdout.write(
-    `- Sample: ${next.sampleIssue.message}${next.sampleIssue.line ? ` (line ${String(next.sampleIssue.line)})` : ''}\n`
+    `- Sample: ${next.sampleIssue.message}${sampleLineSuffix}\n`
   );
   process.stdout.write('\n');
   process.stdout.write('## Queue\n');

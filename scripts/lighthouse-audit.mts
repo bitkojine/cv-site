@@ -105,7 +105,13 @@ async function runLighthouseWithRetry({
   maxAttempts = 5,
 }) {
   const reportPath = `${outputPath}.report.json`;
-  const throttlingPlan = ['provided', 'provided', 'provided', 'devtools', 'devtools'];
+  const throttlingPlan = [
+    'provided',
+    'provided',
+    'provided',
+    'devtools',
+    'devtools',
+  ];
 
   for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
     const throttlingMethod =

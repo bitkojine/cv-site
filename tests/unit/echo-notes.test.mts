@@ -30,7 +30,9 @@ describe('echo notes', () => {
       a.localeCompare(b)
     );
 
-    expect(mappedSlugs).toEqual(blogSlugs.sort((a, b) => a.localeCompare(b)));
+    expect(mappedSlugs).toEqual(
+      blogSlugs.toSorted((a, b) => a.localeCompare(b))
+    );
     blogSlugs.forEach((slug) => {
       const note = resolveEchoNote(slug);
       expect(note.id).not.toBe('blog-post-generic');
