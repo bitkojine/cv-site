@@ -29,7 +29,7 @@ BASE_URL=http://127.0.0.1:4321 ./stress/run_all.sh
 - Focus burst only:
 
 ```bash
-BASE_URL=http://127.0.0.1:4321 BURST_VUS=180 node stress/run_all.mjs
+BASE_URL=http://127.0.0.1:4321 BURST_VUS=180 tsx stress/run_all.mts
 ```
 
 ## Evidence

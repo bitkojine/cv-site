@@ -44,13 +44,13 @@ Code moved from a single HTML file into structured app files:
 - `src/components/*`
 - `src/data/cv.json`
 - `src/styles/global.css`
-- project config files like `astro.config.mjs`, `package.json`, `tsconfig.json`
+- project config files like `astro.config.mts`, `package.json`, `tsconfig.json`
 
 Deployment and domain handling followed immediately:
 
 - `de96899` GitHub Actions deploy workflow (`.github/workflows/deploy.yml`)
 - `396d9e1` Move CNAME to `public/CNAME`
-- `1688162` Base path/domain fix in `astro.config.mjs`
+- `1688162` Base path/domain fix in `astro.config.mts`
 
 ## Phase 3: Production Hardening (Quality, SEO, Tests)
 

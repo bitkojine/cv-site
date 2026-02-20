@@ -836,7 +836,7 @@ function buildReport() {
     '```',
     '- Focus burst only:',
     '```bash',
-    `BASE_URL=${BASE_URL} BURST_VUS=180 node stress/run_all.mjs`,
+    `BASE_URL=${BASE_URL} BURST_VUS=180 tsx stress/run_all.mts`,
     '```',
     '',
     '## Evidence',
