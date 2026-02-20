@@ -1,0 +1,240 @@
+---
+import { FileText } from '@lucide/astro';
+import SiteLayout from '../layouts/SiteLayout.astro';
+import SectionLastUpdated from '../components/SectionLastUpdated.astro';
+import { cvData } from '../data/cv.mts';
+
+const {
+  personalInfo,
+  coreSkills,
+  experience,
+  independentProjects,
+  lookingFor,
+} = cvData;
+
+const timeline = [...experience, ...independentProjects].sort((a, b) => {
+  const toScore = (value: string | null) => {
+    if (!value || value === 'Present') return 9999;
+    const parsed = Number.parseInt(value.slice(0, 4), 10);
+    return Number.isFinite(parsed) ? parsed : 0;
+  };
+  return toScore(b.startDate) - toScore(a.startDate);
+});
+
+const schemaExtras = {
+  about:
+    'Printable CV page with work experience timeline, core skills, and contact details.',
+};
+---
+
+<SiteLayout
+  canonicalPath="/cv"
+  description="Printable CV and work experience timeline for Robertas Rudys."
+  roleLabel="Curriculum Vitae"
+  schemaExtras={schemaExtras}
+  schemaType="ProfilePage"
+  title="Robertas Rudys | CV"
+>
+  <section aria-labelledby="cv-heading" class="mode-hero cv-hero">
+    <div class="headline-row">
+      <span aria-hidden="true" class="headline-icon"
+        ><FileText size={86} /></span
+      >
+      <h1 id="cv-heading">Curriculum Vitae</h1>
+    </div>
+    <p class="cta-note">
+      Direct experience timeline, core skills, and role fit summary.
+    </p>
+    <div class="cta-row cv-actions">
+      <button class="cta-primary" data-cv-print type="button">
+        Print Or Save PDF
+      </button>
+      <a class="cta-secondary" href="/cv?view=print">Open Print View</a>
+      <a class="cta-secondary" href="/hiring">Back To Hiring</a>
+    </div>
+  </section>
+
+  <section aria-labelledby="cv-profile" class="card">
+    <h2 id="cv-profile">{personalInfo.name}</h2>
+    <SectionLastUpdated />
+    <p>
+      <strong>{personalInfo.title}</strong>
+    </p>
+    <p>{personalInfo.profile}</p>
+    <ul>
+      <li>
+        <strong>Email:</strong>
+        <a href={`mailto:${personalInfo.contact.email}`}>
+          {personalInfo.contact.email}
+        </a>
+      </li>
+      <li>
+        <strong>Location:</strong>
+        {personalInfo.contact.location}
+      </li>
+      <li>
+        <strong>Remote:</strong>
+        {personalInfo.contact.remote}
+      </li>
+      <li>
+        <strong>Stack focus:</strong>
+        {personalInfo.contact.stack}
+      </li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="cv-skills" class="card">
+    <h2 id="cv-skills">Core Skills</h2>
+    <SectionLastUpdated />
+    <ul>
+      {
+        coreSkills.map((skill) => (
+          <li>
+            <strong>{skill.label}:</strong>
+            {skill.value}
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section aria-labelledby="cv-experience" class="card">
+    <h2 id="cv-experience">Work Experience</h2>
+    <SectionLastUpdated />
+    <div class="cv-timeline">
+      {
+        timeline.map((item) => (
+          <article class="cv-role">
+            <h3>{item.title}</h3>
+            <p class="cv-role-meta">
+              <strong>{item.company}</strong>
+              <span>{item.location}</span>
+              <span>
+                {item.startDate}
+                {' — '}
+                {item.endDate ?? 'Present'}
+              </span>
+            </p>
+            <ul>
+              {item.description.map((line) => (
+                <li>{line}</li>
+              ))}
+            </ul>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <section aria-labelledby="cv-looking-for" class="card">
+    <h2 id="cv-looking-for">Current Focus</h2>
+    <SectionLastUpdated />
+    <ul>
+      {lookingFor.map((line) => <li>{line}</li>)}
+    </ul>
+  </section>
+</SiteLayout>
+
+<style>
+  .cv-actions {
+    margin-top: 0.7rem;
+  }
+
+  .cv-timeline {
+    display: grid;
+    gap: 0.8rem;
+  }
+
+  .cv-role {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 0.65rem;
+    background: color-mix(in oklab, var(--surface) 94%, var(--accent-soft));
+  }
+
+  .cv-role h3 {
+    margin: 0;
+    font-size: 1.02rem;
+  }
+
+  .cv-role-meta {
+    margin: 0.35rem 0 0.55rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
+  .cv-role-meta strong {
+    color: var(--text);
+  }
+
+  .cv-role ul {
+    margin: 0;
+  }
+
+  body[data-cv-view='print'] .mail-topbar,
+  body[data-cv-view='print'] .site-footer,
+  body[data-cv-view='print'] .site-global-echo {
+    display: none;
+  }
+
+  body[data-cv-view='print'] .site-shell {
+    max-width: 100%;
+    padding: 0;
+  }
+
+  @media print {
+    .mail-topbar,
+    .site-footer,
+    .site-global-echo,
+    .cv-actions {
+      display: none;
+    }
+
+    .site-shell {
+      max-width: 100%;
+      padding: 0;
+    }
+
+    .card {
+      page-break-inside: avoid;
+    }
+  }
+</style>
+
+<script>
+  (() => {
+    const reportEvent = (eventName, props = {}) => {
+      const sendEvent = window.cvReportEvent ?? window.cvTrack;
+      if (typeof sendEvent === 'function') {
+        sendEvent(eventName, props);
+      }
+    };
+
+    const init = () => {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('view') === 'print') {
+        document.body.dataset.cvView = 'print';
+      }
+
+      const printButton = document.querySelector('[data-cv-print]');
+      if (!(printButton instanceof HTMLButtonElement)) return;
+      if (printButton.dataset.boundPrint === '1') return;
+      printButton.dataset.boundPrint = '1';
+
+      printButton.addEventListener('click', () => {
+        reportEvent('cv_exported', { method: 'print_dialog' });
+        window.print();
+      });
+    };
+
+    document.addEventListener('astro:page-load', init);
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init, { once: true });
+    } else {
+      init();
+    }
+  })();
+</script>

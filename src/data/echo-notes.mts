@@ -239,6 +239,27 @@ const ECHO_NOTES_BY_PATH: Record<string, EchoNote> = {
     },
     minimumWordCount: 180,
   },
+  '/cv': {
+    id: 'cv',
+    variants: {
+      full: 'Use this CV page for role-history clarity: responsibilities, outcomes, and sequence of experience in one printable format.',
+      compressed: 'Check timeline clarity and role scope.',
+      lens: 'Career signal should be easy to verify.',
+    },
+    actionPrompts: [
+      'Can you map role progression without ambiguity?',
+      'Do responsibilities and outcomes read clearly per role?',
+      'Can this page be printed or saved as PDF cleanly?',
+    ],
+    whyExists:
+      'A dedicated CV route keeps timeline verification separate from hiring narrative pages.',
+    focusSection: 'Work Experience',
+    crossRoute: {
+      href: '/hiring',
+      label: 'Return to /hiring for interview flow',
+    },
+    minimumWordCount: 220,
+  },
   '/blog': {
     id: 'blog-index',
     variants: {
