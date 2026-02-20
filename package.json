@@ -27,7 +27,9 @@
     "prepare": "husky",
     "test:e2e:ci": "env -u NO_COLOR playwright test --fail-on-flaky-tests",
     "audit:lighthouse": "node scripts/lighthouse-audit.mjs",
-    "audit:lighthouse:ci": "LIGHTHOUSE_MIN_SCORE=100 node scripts/lighthouse-audit.mjs --ci"
+    "audit:lighthouse:ci": "LIGHTHOUSE_MIN_SCORE=100 node scripts/lighthouse-audit.mjs --ci",
+    "audit:sonar:issues": "tsx src/scripts/sonar-issues.mts",
+    "audit:sonar:next": "tsx src/scripts/sonar-fix-loop.mts"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.0",
