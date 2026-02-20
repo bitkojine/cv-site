@@ -15,7 +15,7 @@ describe('peer share viral loop', () => {
     expect(source).toContain('data-peer-share-prompt');
     expect(source).toContain('data-peer-share-forward');
     expect(source).toContain('data-peer-share-forward-label');
-    expect(source).toContain('Forward profile');
+    expect(source).toContain('Forward Profile');
   });
 
   it('injects the peer share prompt into all role content pages', () => {
