@@ -49,7 +49,7 @@
 
     const button = document.createElement('button');
     button.type = 'button';
-    button.textContent = hasVoted(slug) ? 'Upvoted' : 'Upvote';
+    button.textContent = hasVoted(slug) ? 'Upvoted' : "Upvote: I'd serve this";
     button.disabled = !isConfigured() || hasVoted(slug);
     button.dataset.slug = slug;
     button.style.marginLeft = compact ? '0.25rem' : '0';
@@ -83,7 +83,7 @@
         button.textContent = 'Upvoted';
       } catch (_err) {
         button.disabled = false;
-        button.textContent = 'Upvote';
+        button.textContent = "Upvote: I'd serve this";
       }
     });
 
@@ -124,7 +124,8 @@
         const title = document.createElement('h2');
         title.textContent = 'Community Signal';
         const p = document.createElement('p');
-        p.textContent = 'If this Customer Discovery Brief is useful, upvote it.';
+        p.textContent =
+          "Upvote means: I would most like to serve this customer segment and I know how to help them.";
         const count = Number(counts[currentSlug] || 0);
         const controls = createButton(currentSlug, count, false);
         box.appendChild(title);
