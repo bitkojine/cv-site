@@ -9,6 +9,7 @@ This repo now includes a small backend API in `backend/` for Customer Discovery 
 
 Upvote meaning in this product:
 - One upvote means: "This is the customer segment I most want to serve and feel capable of serving."
+- Users can remove their vote or move it to a different segment at any time.
 
 ## Security measures included
 - Helmet HTTP hardening headers
@@ -44,5 +45,6 @@ Upvote meaning in this product:
 ## Notes
 - Data is stored in Render Postgres and survives service restarts/redeploys.
 - The current anti-spam rule is one upvote per IP per brief.
+- The current anti-spam rule is one active vote per IP hash across all briefs (with move/remove support).
 - If you later want stricter abuse protection, add Cloudflare Turnstile before POST `/api/v1/upvotes/:slug`.
 - Use `/api/v1/upvotes/top` to see which segments your current network is signaling most strongly.

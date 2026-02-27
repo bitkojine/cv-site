@@ -23,34 +23,14 @@
     return slug;
   }
 
-  function votedKey(slug) {
-    return `cdbrief_voted_${slug}`;
-  }
-
-  function markVoted(slug) {
-    try {
-      localStorage.setItem(votedKey(slug), '1');
-    } catch (_err) {
-      // ignore localStorage issues
-    }
-  }
-
-  function hasVoted(slug) {
-    try {
-      return localStorage.getItem(votedKey(slug)) === '1';
-    } catch (_err) {
-      return false;
-    }
-  }
-
   function createButton(slug, compact) {
     const wrapper = document.createElement('div');
     wrapper.className = compact ? 'upvote-controls upvote-controls-compact' : 'upvote-controls';
 
     const button = document.createElement('button');
     button.type = 'button';
-    button.textContent = hasVoted(slug) ? 'Upvoted' : "Upvote: I'd serve this";
-    button.disabled = !isConfigured() || hasVoted(slug);
+    button.textContent = "Upvote: I'd serve this";
+    button.disabled = !isConfigured();
     button.dataset.slug = slug;
     button.className = 'upvote-button';
     button.setAttribute('aria-label', `Upvote ${slug}`);
@@ -76,15 +56,10 @@
         if (!response.ok) {
           throw new Error(data.error || 'Failed to vote');
         }
-        const allCountNodes = document.querySelectorAll(`[data-role="count"][data-slug="${slug}"]`);
-        allCountNodes.forEach((node) => {
-          node.textContent = `(${Number(data.votes || 0)})`;
-        });
-        markVoted(slug);
-        button.textContent = 'Upvoted';
+        setUiState(data.counts || {}, data.my_vote || null);
       } catch (_err) {
         button.disabled = false;
-        button.textContent = "Upvote: I'd serve this";
+        setButtonLabel(button, window.__CD_CURRENT_VOTE || null);
       }
     });
 
@@ -97,14 +72,36 @@
       const response = await fetch(`${apiBase}/api/v1/upvotes`);
       if (!response.ok) return {};
       const data = await response.json();
-      return data.counts || {};
+      return { counts: data.counts || {}, myVote: data.my_vote || null };
     } catch (_err) {
-      return {};
+      return { counts: {}, myVote: null };
     }
   }
 
+  function setButtonLabel(button, myVote) {
+    const slug = button.dataset.slug;
+    if (myVote === slug) {
+      button.textContent = 'Voted here (tap to remove)';
+      button.disabled = !isConfigured();
+      return;
+    }
+    button.textContent = "Upvote: I'd serve this";
+    button.disabled = !isConfigured();
+  }
+
+  function setUiState(counts, myVote) {
+    window.__CD_CURRENT_VOTE = myVote;
+    const countNodes = document.querySelectorAll('[data-role="count"][data-slug]');
+    countNodes.forEach((node) => {
+      const slug = node.dataset.slug;
+      node.textContent = `(${Number((counts && counts[slug]) || 0)})`;
+    });
+    const buttons = document.querySelectorAll('button.upvote-button[data-slug]');
+    buttons.forEach((button) => setButtonLabel(button, myVote));
+  }
+
   async function init() {
-    const counts = await fetchCounts();
+    const { counts, myVote } = await fetchCounts();
 
     const links = document.querySelectorAll('a[href^="/briefs/"][href$=".html"]');
     links.forEach((link) => {
@@ -113,9 +110,6 @@
       const li = link.closest('li');
       if (!li || li.querySelector(`button[data-slug="${slug}"]`)) return;
       li.appendChild(createButton(slug, true));
-      const count = Number(counts[slug] || 0);
-      const countNode = li.querySelector(`[data-role="count"][data-slug="${slug}"]`);
-      if (countNode) countNode.textContent = `(${count})`;
     });
 
     const currentSlug = pathSlug();
@@ -130,15 +124,14 @@
         p.textContent =
           "Upvote means: I would most like to serve this customer segment and I know how to help them.";
         const controls = createButton(currentSlug, false);
-        const count = Number(counts[currentSlug] || 0);
-        const countNode = controls.querySelector(`[data-role="count"][data-slug="${currentSlug}"]`);
-        if (countNode) countNode.textContent = `(${count})`;
         box.appendChild(title);
         box.appendChild(p);
         box.appendChild(controls);
         heading.parentNode.insertBefore(box, heading.nextSibling);
       }
     }
+
+    setUiState(counts, myVote);
   }
 
   if (document.readyState === 'loading') {
