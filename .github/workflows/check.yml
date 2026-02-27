@@ -1,0 +1,32 @@
+name: check
+
+on:
+  push:
+    branches:
+      - main
+      - codex/**
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: self-hosted
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate required files exist
+        run: |
+          test -f index.html
+          test -f briefs/index.html
+          test -f briefs/_template.html
+
+      - name: Basic HTML sanity check
+        run: |
+          grep -q "<!doctype html>" index.html
+          grep -q "<main>" index.html
+          grep -q "<h1>" briefs/b2b-saas-head-of-sales.html
