@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: cv-site-upvotes-api
+    runtime: node
+    rootDir: backend
+    buildCommand: npm ci
+    startCommand: npm start
+    plan: starter
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: cv-site-upvotes-db
+          property: connectionString
+      - key: DATABASE_SSL
+        value: "true"
+      - key: ALLOWED_ORIGINS
+        value: "https://robertasrudys.com,https://www.robertasrudys.com"
+      - key: VOTE_SALT
+        generateValue: true
+
+databases:
+  - name: cv-site-upvotes-db
+    plan: free
