@@ -1,10 +1,10 @@
-# Render Setup: Upvotes Backend (Manual, No Blueprint)
+# Render Setup: Upvotes Backend (Free Plans)
 
 This repo includes a small backend API in `backend/` for Customer Discovery Brief voting.
 
 ## What was added
 - API service: `backend/src/server.js`
-- Render config reference: `render.yaml` (optional)
+- Render blueprint config: `render.yaml` (free plan values only)
 - Frontend scripts: `upvote-config.js`, `upvotes.js`
 
 Upvote meaning in this product:
@@ -21,24 +21,12 @@ Upvote meaning in this product:
 - Salted hash for IP (`VOTE_SALT`) so raw IP is not stored
 - Parameterized SQL queries
 
-## Manual steps you need to do (free setup)
-1. Create a free Postgres database manually in Render:
-   - Dashboard -> New -> PostgreSQL
-   - Name: `cv-site-upvotes-db`
-   - Plan: `Free`
-2. Create a free Web Service manually in Render (do not use Blueprint):
-   - Dashboard -> New -> Web Service
-   - Connect this repo
-   - Root Directory: `backend`
-   - Build Command: `npm ci`
-   - Start Command: `npm start`
-   - Plan: `Free`
-3. Add environment variables in the web service:
-   - `DATABASE_URL`: value from Render Postgres connection string
-   - `DATABASE_SSL`: `true`
-   - `ALLOWED_ORIGINS`: `https://robertasrudys.com,https://www.robertasrudys.com`
-   - `ALLOW_NO_ORIGIN`: `false` (recommended in production)
-   - `VOTE_SALT`: long random string (16+ chars)
+## Setup option A: Blueprint (free only)
+1. In Render: Dashboard -> New -> Blueprint.
+2. Connect this repo and deploy.
+3. Confirm generated resources are free tier:
+   - Web service plan: `Free`
+   - Postgres plan: `Free`
 4. Wait for deploy and copy your service URL:
    - Example: `https://cv-site-upvotes-api.onrender.com`
 5. Update frontend config in this repo:
@@ -53,6 +41,16 @@ Upvote meaning in this product:
    - Open `/briefs/index.html`
    - Vote a brief, remove vote, and move vote to a different brief
    - Counts should persist after refresh.
+
+## Setup option B: Manual (if Blueprint is unavailable)
+1. Create free Postgres manually (`Free` plan).
+2. Create free Web Service manually (`Free` plan), root `backend`, build `npm ci`, start `npm start`.
+3. Set env vars:
+   - `DATABASE_URL`
+   - `DATABASE_SSL=true`
+   - `ALLOWED_ORIGINS=https://robertasrudys.com,https://www.robertasrudys.com`
+   - `ALLOW_NO_ORIGIN=false`
+   - `VOTE_SALT=<random 16+ chars>`
 
 ## Notes
 - Data is stored in Render Postgres and survives service restarts/redeploys.
