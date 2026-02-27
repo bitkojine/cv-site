@@ -4,8 +4,9 @@ set -euo pipefail
 : "${GH_OWNER:?Set GH_OWNER (for example: bitkojine)}"
 : "${GH_REPO:?Set GH_REPO (for example: cv-site)}"
 : "${RUNNER_TOKEN:?Set RUNNER_TOKEN from GitHub -> Settings -> Actions -> Runners -> New self-hosted runner}"
+: "${RUNNER_SHA256:?Set RUNNER_SHA256 from the GitHub runner download page}"
 
-RUNNER_VERSION="${RUNNER_VERSION:-2.327.1}"
+RUNNER_VERSION="${RUNNER_VERSION:-2.331.0}"
 LABELS="${RUNNER_LABELS:-cv-site,ephemeral}"
 RUNNER_NAME="${RUNNER_NAME:-ephemeral-$(hostname)-$(date +%s)}"
 
@@ -49,6 +50,8 @@ RUNNER_URL="https://github.com/actions/runner/releases/download/v${RUNNER_VERSIO
 
 echo "Downloading runner: $RUNNER_URL"
 curl -fsSL -o "$RUNNER_TGZ" "$RUNNER_URL"
+echo "${RUNNER_SHA256}  ${RUNNER_TGZ}" | shasum -a 256 -c -
+
 tar xzf "$RUNNER_TGZ"
 
 REPO_URL="https://github.com/${GH_OWNER}/${GH_REPO}"

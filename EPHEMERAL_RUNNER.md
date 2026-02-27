@@ -19,10 +19,12 @@ Workflow file: `.github/workflows/check.yml`
 GH_OWNER=bitkojine \
 GH_REPO=cv-site \
 RUNNER_TOKEN=YOUR_TOKEN_HERE \
+RUNNER_SHA256=PASTE_HASH_FROM_GITHUB_RUNNER_DOWNLOAD_PAGE \
 bash scripts/start-ephemeral-runner.sh
 ```
 
 The runner registers with `--ephemeral`, processes one job, exits, and deletes its local runner directory.
+The script verifies the downloaded tarball using `RUNNER_SHA256` before extraction.
 
 ## Trigger a job
 
