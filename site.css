@@ -41,6 +41,54 @@ section {
   margin-bottom: 18px;
 }
 
+main ul li,
+main ol li {
+  margin-bottom: 10px;
+}
+
+main ul li > a,
+main ol li > a {
+  display: inline-block;
+  min-height: 44px;
+  line-height: 1.3;
+  padding: 10px 0;
+}
+
+.upvote-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+  margin-bottom: 2px;
+  flex-wrap: wrap;
+}
+
+.upvote-controls-compact {
+  padding-left: 0;
+}
+
+.upvote-button {
+  min-height: 44px;
+  min-width: 178px;
+  padding: 10px 14px;
+  border: 1px solid var(--secondary-color);
+  background: transparent;
+  color: inherit;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.12);
+}
+
+.upvote-button:disabled {
+  opacity: 0.65;
+}
+
+.upvote-count {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  font-weight: 600;
+}
+
 @media (min-width: 768px) {
   .container {
     max-width: 72ch;
