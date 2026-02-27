@@ -9,7 +9,7 @@ on:
 
 jobs:
   check:
-    runs-on: self-hosted
+    runs-on: [self-hosted, cv-site, ephemeral]
     timeout-minutes: 10
 
     steps:
