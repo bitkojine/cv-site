@@ -43,21 +43,22 @@
     }
   }
 
-  function createButton(slug, count, compact) {
-    const wrapper = document.createElement('span');
-    wrapper.style.marginLeft = '0.5rem';
+  function createButton(slug, compact) {
+    const wrapper = document.createElement('div');
+    wrapper.className = compact ? 'upvote-controls upvote-controls-compact' : 'upvote-controls';
 
     const button = document.createElement('button');
     button.type = 'button';
     button.textContent = hasVoted(slug) ? 'Upvoted' : "Upvote: I'd serve this";
     button.disabled = !isConfigured() || hasVoted(slug);
     button.dataset.slug = slug;
-    button.style.marginLeft = compact ? '0.25rem' : '0';
+    button.className = 'upvote-button';
+    button.setAttribute('aria-label', `Upvote ${slug}`);
 
     const countNode = document.createElement('span');
     countNode.dataset.slug = slug;
     countNode.dataset.role = 'count';
-    countNode.style.marginLeft = '0.35rem';
+    countNode.className = 'upvote-count';
     countNode.textContent = `(${count})`;
 
     wrapper.appendChild(button);
@@ -111,8 +112,10 @@
       if (!slug) return;
       const li = link.closest('li');
       if (!li || li.querySelector(`button[data-slug="${slug}"]`)) return;
+      li.appendChild(createButton(slug, true));
       const count = Number(counts[slug] || 0);
-      li.appendChild(createButton(slug, count, true));
+      const countNode = li.querySelector(`[data-role="count"][data-slug="${slug}"]`);
+      if (countNode) countNode.textContent = `(${count})`;
     });
 
     const currentSlug = pathSlug();
@@ -126,8 +129,10 @@
         const p = document.createElement('p');
         p.textContent =
           "Upvote means: I would most like to serve this customer segment and I know how to help them.";
+        const controls = createButton(currentSlug, false);
         const count = Number(counts[currentSlug] || 0);
-        const controls = createButton(currentSlug, count, false);
+        const countNode = controls.querySelector(`[data-role="count"][data-slug="${currentSlug}"]`);
+        if (countNode) countNode.textContent = `(${count})`;
         box.appendChild(title);
         box.appendChild(p);
         box.appendChild(controls);
