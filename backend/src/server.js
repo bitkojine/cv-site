@@ -97,6 +97,22 @@ async function initDb() {
   `);
 
   await pool.query(`
+    CREATE TABLE IF NOT EXISTS voter_choice (
+      id BIGSERIAL PRIMARY KEY,
+      ip_hash TEXT NOT NULL,
+      brief_slug TEXT NOT NULL,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      UNIQUE (ip_hash)
+    );
+  `);
+
+  await pool.query(`
+    CREATE INDEX IF NOT EXISTS idx_voter_choice_brief_slug
+    ON voter_choice (brief_slug);
+  `);
+
+  await pool.query(`
     CREATE TABLE IF NOT EXISTS vote_events (
       id BIGSERIAL PRIMARY KEY,
       brief_slug TEXT NOT NULL,
@@ -110,15 +126,36 @@ async function initDb() {
     CREATE INDEX IF NOT EXISTS idx_vote_events_brief_slug
     ON vote_events (brief_slug);
   `);
+
+  await pool.query(`
+    INSERT INTO voter_choice (ip_hash, brief_slug)
+    SELECT DISTINCT ON (ip_hash) ip_hash, brief_slug
+    FROM vote_events
+    ORDER BY ip_hash, created_at DESC
+    ON CONFLICT (ip_hash) DO NOTHING;
+  `);
+
+  await pool.query('TRUNCATE TABLE brief_votes;');
+  await pool.query(`
+    INSERT INTO brief_votes (brief_slug, votes, updated_at)
+    SELECT brief_slug, COUNT(*)::BIGINT AS votes, NOW()
+    FROM voter_choice
+    GROUP BY brief_slug;
+  `);
 }
 
 app.get('/healthz', (_req, res) => {
   res.json({ ok: true });
 });
 
-app.get('/api/v1/upvotes', async (_req, res, next) => {
+app.get('/api/v1/upvotes', async (req, res, next) => {
+  const ipHash = hashIp(getClientIp(req));
   try {
     const { rows } = await pool.query('SELECT brief_slug, votes FROM brief_votes;');
+    const myVoteResult = await pool.query(
+      'SELECT brief_slug FROM voter_choice WHERE ip_hash = $1;',
+      [ipHash]
+    );
     const counts = {};
 
     for (const slug of validBriefSlugs) {
@@ -131,6 +168,7 @@ app.get('/api/v1/upvotes', async (_req, res, next) => {
 
     res.json({
       counts,
+      my_vote: myVoteResult.rowCount > 0 ? myVoteResult.rows[0].brief_slug : null,
       description:
         "Upvote means: this is a customer segment I most want to serve and feel capable of serving."
     });
@@ -185,42 +223,77 @@ app.post('/api/v1/upvotes/:slug', upvoteLimiter, async (req, res, next) => {
   try {
     await client.query('BEGIN');
 
-    const insertVoteEvent = await client.query(
+    const currentChoice = await client.query(
       `
-      INSERT INTO vote_events (brief_slug, ip_hash)
-      VALUES ($1, $2)
-      ON CONFLICT (brief_slug, ip_hash) DO NOTHING
-      RETURNING id;
+      SELECT brief_slug
+      FROM voter_choice
+      WHERE ip_hash = $1
+      FOR UPDATE;
       `,
-      [slug, ipHash]
+      [ipHash]
     );
 
-    let added = false;
-    let votes;
+    let action;
+    let previousSlug = null;
 
-    if (insertVoteEvent.rowCount === 1) {
-      added = true;
-      const upsertVotes = await client.query(
+    if (currentChoice.rowCount === 0) {
+      action = 'added';
+      await client.query(
         `
-        INSERT INTO brief_votes (brief_slug, votes)
-        VALUES ($1, 1)
-        ON CONFLICT (brief_slug)
-        DO UPDATE SET votes = brief_votes.votes + 1, updated_at = NOW()
-        RETURNING votes;
+        INSERT INTO voter_choice (ip_hash, brief_slug)
+        VALUES ($1, $2);
         `,
-        [slug]
+        [ipHash, slug]
       );
-      votes = Number(upsertVotes.rows[0].votes);
     } else {
-      const existingVotes = await client.query(
-        'SELECT votes FROM brief_votes WHERE brief_slug = $1;',
-        [slug]
-      );
-      votes = existingVotes.rowCount > 0 ? Number(existingVotes.rows[0].votes) : 0;
+      previousSlug = currentChoice.rows[0].brief_slug;
+      if (previousSlug === slug) {
+        action = 'removed';
+        await client.query(
+          `
+          DELETE FROM voter_choice
+          WHERE ip_hash = $1;
+          `,
+          [ipHash]
+        );
+      } else {
+        action = 'moved';
+        await client.query(
+          `
+          UPDATE voter_choice
+          SET brief_slug = $2, updated_at = NOW()
+          WHERE ip_hash = $1;
+          `,
+          [ipHash, slug]
+        );
+      }
+    }
+
+    await client.query('TRUNCATE TABLE brief_votes;');
+    await client.query(`
+      INSERT INTO brief_votes (brief_slug, votes, updated_at)
+      SELECT brief_slug, COUNT(*)::BIGINT AS votes, NOW()
+      FROM voter_choice
+      GROUP BY brief_slug;
+    `);
+
+    const countsResult = await client.query('SELECT brief_slug, votes FROM brief_votes;');
+    const counts = {};
+    for (const validSlug of validBriefSlugs) {
+      counts[validSlug] = 0;
+    }
+    for (const row of countsResult.rows) {
+      counts[row.brief_slug] = Number(row.votes);
     }
 
     await client.query('COMMIT');
-    res.json({ slug, votes, added });
+    res.json({
+      slug,
+      previous_slug: previousSlug,
+      action,
+      my_vote: action === 'removed' ? null : slug,
+      counts
+    });
   } catch (err) {
     await client.query('ROLLBACK');
     next(err);
