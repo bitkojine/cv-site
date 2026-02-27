@@ -7,6 +7,9 @@ This repo now includes a small backend API in `backend/` for Customer Discovery 
 - Render blueprint: `render.yaml`
 - Frontend scripts: `upvote-config.js`, `upvotes.js`
 
+Upvote meaning in this product:
+- One upvote means: "This is the customer segment I most want to serve and feel capable of serving."
+
 ## Security measures included
 - Helmet HTTP hardening headers
 - CORS allowlist (`ALLOWED_ORIGINS`)
@@ -32,6 +35,7 @@ This repo now includes a small backend API in `backend/` for Customer Discovery 
 5. Verify endpoints:
    - `GET https://<your-render-url>/healthz`
    - `GET https://<your-render-url>/api/v1/upvotes`
+   - `GET https://<your-render-url>/api/v1/upvotes/top?limit=10`
 6. Verify in browser:
    - Open `/briefs/index.html`
    - Click an upvote button
@@ -41,3 +45,4 @@ This repo now includes a small backend API in `backend/` for Customer Discovery 
 - Data is stored in Render Postgres and survives service restarts/redeploys.
 - The current anti-spam rule is one upvote per IP per brief.
 - If you later want stricter abuse protection, add Cloudflare Turnstile before POST `/api/v1/upvotes/:slug`.
+- Use `/api/v1/upvotes/top` to see which segments your current network is signaling most strongly.

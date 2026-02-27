@@ -129,7 +129,39 @@ app.get('/api/v1/upvotes', async (_req, res, next) => {
       counts[row.brief_slug] = Number(row.votes);
     }
 
-    res.json({ counts });
+    res.json({
+      counts,
+      description:
+        "Upvote means: this is a customer segment I most want to serve and feel capable of serving."
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.get('/api/v1/upvotes/top', async (req, res, next) => {
+  const limitRaw = Number.parseInt(String(req.query.limit || '10'), 10);
+  const limit = Number.isInteger(limitRaw) ? Math.min(Math.max(limitRaw, 1), 50) : 10;
+  try {
+    const { rows } = await pool.query(
+      `
+      SELECT brief_slug, votes
+      FROM brief_votes
+      ORDER BY votes DESC, brief_slug ASC
+      LIMIT $1;
+      `,
+      [limit]
+    );
+
+    res.json({
+      description:
+        "Segments your network most wants to serve now (proxy signal from upvotes).",
+      top: rows.map((row, idx) => ({
+        rank: idx + 1,
+        slug: row.brief_slug,
+        votes: Number(row.votes)
+      }))
+    });
   } catch (err) {
     next(err);
   }
