@@ -3,8 +3,27 @@ set -euo pipefail
 
 : "${GH_OWNER:?Set GH_OWNER (for example: bitkojine)}"
 : "${GH_REPO:?Set GH_REPO (for example: cv-site)}"
-: "${RUNNER_TOKEN:?Set RUNNER_TOKEN from GitHub -> Settings -> Actions -> Runners -> New self-hosted runner}"
-: "${RUNNER_SHA256:?Set RUNNER_SHA256 from the GitHub runner download page}"
+
+if [ -z "${RUNNER_TOKEN:-}" ]; then
+  if [ -t 0 ]; then
+    printf "Enter RUNNER_TOKEN: " >&2
+    read -rs RUNNER_TOKEN
+    printf "\n" >&2
+  else
+    echo "RUNNER_TOKEN is required." >&2
+    exit 1
+  fi
+fi
+
+if [ -z "${RUNNER_SHA256:-}" ]; then
+  if [ -t 0 ]; then
+    printf "Enter RUNNER_SHA256: " >&2
+    read -r RUNNER_SHA256
+  else
+    echo "RUNNER_SHA256 is required." >&2
+    exit 1
+  fi
+fi
 
 RUNNER_VERSION="${RUNNER_VERSION:-2.331.0}"
 LABELS="${RUNNER_LABELS:-cv-site,ephemeral}"

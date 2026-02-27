@@ -1,0 +1,59 @@
+/* Mobile-first overrides on top of terminal.css */
+:root {
+  --global-font-size: 16px;
+}
+
+body.terminal {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+.container {
+  padding-left: max(12px, env(safe-area-inset-left));
+  padding-right: max(12px, env(safe-area-inset-right));
+  padding-top: max(12px, env(safe-area-inset-top));
+  padding-bottom: max(12px, env(safe-area-inset-bottom));
+}
+
+nav[aria-label="Main navigation"] {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 10px 0 16px;
+}
+
+nav[aria-label="Main navigation"] a {
+  display: inline-block;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--secondary-color);
+}
+
+h1,
+h2,
+p,
+li,
+a {
+  overflow-wrap: anywhere;
+}
+
+section {
+  margin-bottom: 18px;
+}
+
+@media (min-width: 768px) {
+  .container {
+    max-width: 72ch;
+  }
+}
+
+@media (orientation: landscape) and (max-height: 430px) {
+  :root {
+    --global-font-size: 15px;
+    --global-space: 8px;
+  }
+
+  nav[aria-label="Main navigation"] {
+    margin-bottom: 10px;
+  }
+}
