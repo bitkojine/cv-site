@@ -11,6 +11,7 @@ const { Pool } = require('pg');
 const PORT = Number(process.env.PORT || 3000);
 const DATABASE_URL = process.env.DATABASE_URL;
 const VOTE_SALT = process.env.VOTE_SALT;
+const ALLOW_NO_ORIGIN = process.env.ALLOW_NO_ORIGIN === 'true';
 
 if (!DATABASE_URL) {
   throw new Error('DATABASE_URL is required');
@@ -42,7 +43,15 @@ app.use(
 app.use(
   cors({
     origin(origin, cb) {
-      if (!origin || allowedOrigins.includes(origin)) {
+      if (!origin) {
+        if (ALLOW_NO_ORIGIN) {
+          cb(null, true);
+          return;
+        }
+        cb(new Error('Origin required'));
+        return;
+      }
+      if (allowedOrigins.includes(origin)) {
         cb(null, true);
         return;
       }
@@ -76,10 +85,6 @@ function loadValidBriefSlugs() {
 }
 
 function getClientIp(req) {
-  const xff = req.headers['x-forwarded-for'];
-  if (typeof xff === 'string' && xff.length > 0) {
-    return xff.split(',')[0].trim();
-  }
   return req.ip || 'unknown';
 }
 
@@ -245,6 +250,15 @@ app.post('/api/v1/upvotes/:slug', upvoteLimiter, async (req, res, next) => {
         `,
         [ipHash, slug]
       );
+      await client.query(
+        `
+        INSERT INTO brief_votes (brief_slug, votes, updated_at)
+        VALUES ($1, 1, NOW())
+        ON CONFLICT (brief_slug)
+        DO UPDATE SET votes = brief_votes.votes + 1, updated_at = NOW();
+        `,
+        [slug]
+      );
     } else {
       previousSlug = currentChoice.rows[0].brief_slug;
       if (previousSlug === slug) {
@@ -256,6 +270,22 @@ app.post('/api/v1/upvotes/:slug', upvoteLimiter, async (req, res, next) => {
           `,
           [ipHash]
         );
+        await client.query(
+          `
+          UPDATE brief_votes
+          SET votes = votes - 1, updated_at = NOW()
+          WHERE brief_slug = $1;
+          `,
+          [previousSlug]
+        );
+        await client.query(
+          `
+          DELETE FROM brief_votes
+          WHERE brief_slug = $1
+            AND votes <= 0;
+          `,
+          [previousSlug]
+        );
       } else {
         action = 'moved';
         await client.query(
@@ -266,16 +296,33 @@ app.post('/api/v1/upvotes/:slug', upvoteLimiter, async (req, res, next) => {
           `,
           [ipHash, slug]
         );
+        await client.query(
+          `
+          UPDATE brief_votes
+          SET votes = votes - 1, updated_at = NOW()
+          WHERE brief_slug = $1;
+          `,
+          [previousSlug]
+        );
+        await client.query(
+          `
+          DELETE FROM brief_votes
+          WHERE brief_slug = $1
+            AND votes <= 0;
+          `,
+          [previousSlug]
+        );
+        await client.query(
+          `
+          INSERT INTO brief_votes (brief_slug, votes, updated_at)
+          VALUES ($1, 1, NOW())
+          ON CONFLICT (brief_slug)
+          DO UPDATE SET votes = brief_votes.votes + 1, updated_at = NOW();
+          `,
+          [slug]
+        );
       }
     }
-
-    await client.query('TRUNCATE TABLE brief_votes;');
-    await client.query(`
-      INSERT INTO brief_votes (brief_slug, votes, updated_at)
-      SELECT brief_slug, COUNT(*)::BIGINT AS votes, NOW()
-      FROM voter_choice
-      GROUP BY brief_slug;
-    `);
 
     const countsResult = await client.query('SELECT brief_slug, votes FROM brief_votes;');
     const counts = {};
@@ -303,6 +350,10 @@ app.post('/api/v1/upvotes/:slug', upvoteLimiter, async (req, res, next) => {
 });
 
 app.use((err, _req, res, _next) => {
+  if (err && err.message === 'Origin required') {
+    res.status(403).json({ error: 'Origin required' });
+    return;
+  }
   if (err && err.message === 'Origin not allowed') {
     res.status(403).json({ error: 'Origin not allowed' });
     return;

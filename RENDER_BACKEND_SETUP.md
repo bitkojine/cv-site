@@ -37,6 +37,7 @@ Upvote meaning in this product:
    - `DATABASE_URL`: value from Render Postgres connection string
    - `DATABASE_SSL`: `true`
    - `ALLOWED_ORIGINS`: `https://robertasrudys.com,https://www.robertasrudys.com`
+   - `ALLOW_NO_ORIGIN`: `false` (recommended in production)
    - `VOTE_SALT`: long random string (16+ chars)
 4. Wait for deploy and copy your service URL:
    - Example: `https://cv-site-upvotes-api.onrender.com`
